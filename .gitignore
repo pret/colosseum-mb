@@ -1,0 +1,7 @@
+*.map
+*.gba
+*.elf
+build/
+tools/agbcc
+tools/binutils
+*.exe
