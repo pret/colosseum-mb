@@ -1,4 +1,5 @@
 	.include "asm/macros/function.inc"
+	.include "constants/gba_constants.inc"
 	.text
 	.syntax unified
 
@@ -26,7 +27,7 @@ _init:
 	mov r0, #0x1f
 	msr cpsr_fc, r0
 	ldr sp, _020000F4 @=0x03007e60
-	ldr r1, _020000FC @=0x03007ffc
+	ldr r1, _020000FC @=INTR_VECTOR
 	adr r0, _intr
 	str r0, [r1]
 	ldr r1, _02000100 @=AgbMain
@@ -37,7 +38,7 @@ _init:
 
 _020000F4: .4byte 0x03007e60
 _020000F8: .4byte 0x03007fa0
-_020000FC: .4byte 0x03007ffc
+_020000FC: .4byte INTR_VECTOR
 _02000100: .4byte AgbMain
 
 	arm_func_start _intr

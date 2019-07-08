@@ -19,9 +19,9 @@ C_OBJS := $(C_SRCS:%.c=$(BUILD_DIR)/%.o)
 DATA_ASM_SRCS := $(wildcard data/*.s)
 DATA_ASM_OBJS := $(DATA_ASM_SRCS:%.s=$(BUILD_DIR)/%.o)
 
-CC1 := tools/agbcc/bin/agbcc
+CC1 := tools/agbcc/bin/old_agbcc
 CPPFLAGS := -I tools/agbcc/include -iquote include -nostdinc -undef
-CFLAGS := -O2 -mthumb-interwork -fhex-asm
+CFLAGS := -O2 -mthumb-interwork -fhex-asm -Wimplicit -Werror
 ASFLAGS := -mcpu=arm7tdmi
 LIBS := -L../../tools/agbcc/lib -lgcc -lc
 
@@ -32,6 +32,10 @@ ALL_OBJS := $(ASM_OBJS) $(C_OBJS) $(DATA_ASM_OBJS)
 TOOLDIRS := $(filter-out tools/agbcc tools/binutils,$(wildcard tools/*))
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
+
+# Special rules for particular files
+$(BUILD_DIR)/src/unk_200E344.o: CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
+$(BUILD_DIR)/src/siirtc.o:      CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
 
 # Build tools when building the rom
 # Disable dependency scanning for clean/tidy/tools
@@ -79,10 +83,10 @@ endif
 $(ASM_OBJS): $(BUILD_DIR)/%.o: %.s $$(asm_dep)
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(C_OBJS): $(BUILD_DIR)/%.o: %.s $$(c_dep)
-	$(CPP) $(CPPFLAGS) -o $*.i $<
-	$(PREPROC) $*.i charmap.txt | $(CC1) $(CFLAGS) -o $*.s
-	$(AS) $(ASFLAGS) -o $@ $*.i
+$(C_OBJS): $(BUILD_DIR)/%.o: %.c $$(c_dep)
+	$(CPP) $(CPPFLAGS) -o $(BUILD_DIR)/$*.i $<
+	$(PREPROC) $(BUILD_DIR)/$*.i charmap.txt | $(CC1) $(CFLAGS) -o $(BUILD_DIR)/$*.s
+	$(AS) $(ASFLAGS) -o $@ $(BUILD_DIR)/$*.s
 
 $(DATA_ASM_OBJS): $(BUILD_DIR)/%.o: %.s $$(data_dep)
 	$(PREPROC) $< charmap.txt | $(CPP) $(CPPFLAGS) | $(AS) $(ASFLAGS) -o $@

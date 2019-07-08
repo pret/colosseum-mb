@@ -139,7 +139,7 @@ _0200032C:
 	ldr r0, =sub_0200D9EC
 	bl sub_020086A0
 	bl sub_0200930C
-	ldr r0, =0x03004000
+	ldr r0, =gUnknown_03004000
 	bl sub_0200902C
 	bl sub_020007F0
 _02000384:
@@ -746,7 +746,7 @@ sub_02000838: @ 0x02000838
 	ldr r6, [sp, #0x24]
 	lsls r1, r1, #6
 	lsls r0, r0, #1
-	ldr r2, =0x03002000
+	ldr r2, =gUnknown_03002000
 	adds r0, r0, r2
 	adds r2, r1, r0
 	strh r6, [r2]
@@ -2712,7 +2712,7 @@ sub_020017E8: @ 0x020017E8
 	ldr r1, =0x06008000
 	bl sub_020092C0
 	ldr r0, =gUnknown_0201B2F8
-	ldr r1, =0x03001000
+	ldr r1, =gUnknown_03001000
 	bl sub_020092C0
 	ldr r0, =gUnknown_0201D05C
 	ldr r1, =0x05000200
@@ -5537,10 +5537,10 @@ sub_02002FEC: @ 0x02002FEC
 	lsls r1, r1, #0x13
 	bl sub_020092C0
 	ldr r0, =gUnknown_0201C428
-	ldr r1, =0x03002000
+	ldr r1, =gUnknown_03002000
 	bl sub_020092C0
 	ldr r0, =gUnknown_0201C228
-	ldr r1, =0x03003000
+	ldr r1, =gUnknown_03003000
 	bl sub_020092C0
 	ldr r1, =gUnknown_02022C20
 	movs r4, #0
@@ -8478,10 +8478,10 @@ sub_02004AC4: @ 0x02004AC4
 	ldr r1, =0x05000140
 	bl sub_020092C0
 	ldr r0, =gUnknown_0201D420
-	ldr r1, =0x03003000
+	ldr r1, =gUnknown_03003000
 	bl sub_020092C0
 	ldr r0, =gUnknown_0201D5A4
-	ldr r1, =0x03002800
+	ldr r1, =gUnknown_03002800
 	bl sub_020092C0
 	ldr r1, =gUnknown_02022C20
 	movs r4, #0

@@ -1,4 +1,6 @@
 	.include "asm/macros/function.inc"
+	.include "constants/gba_constants.inc"
+	.include "constants/m4a_constants.inc"
 	.text
 	.syntax unified
 
@@ -14,9 +16,9 @@ __umul3232H32: @ 0x020064F8
 
 	thumb_func_start SoundMain
 SoundMain: @ 0x02006504
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r0, [r0]
-	ldr r2, =0x68736D53
+	ldr r2, =ID_NUMBER
 	ldr r3, [r0]
 	cmp r2, r3
 	beq _02006512
@@ -432,7 +434,7 @@ _02006908:
 	b _02006620
 _02006912:
 	ldr r0, [sp, #0x18]
-	ldr r3, =0x68736D53
+	ldr r3, =ID_NUMBER
 	str r3, [r0]
 	add sp, #0x1c
 	pop {r0, r1, r2, r3, r4, r5, r6, r7}
@@ -789,9 +791,9 @@ ply_port: @ 0x02006B40
 
 	thumb_func_start m4aSoundVSync
 m4aSoundVSync: @ 0x02006B58
-	ldr r0, _02006DF4 @=0x03007FF0
+	ldr r0, _02006DF4 @=SOUND_INFO_PTR
 	ldr r0, [r0]
-	ldr r2, _02006DF8 @=0x68736D53
+	ldr r2, _02006DF8 @=ID_NUMBER
 	ldr r3, [r0]
 	subs r3, r3, r2
 	cmp r3, #1
@@ -818,7 +820,7 @@ _02006B84:
 
 	thumb_func_start MPlayMain
 MPlayMain: @ 0x02006B90
-	ldr r2,_02006DF8 @=0x68736D53
+	ldr r2,_02006DF8 @=ID_NUMBER
 	ldr r3, [r0, #0x34]
 	cmp r2, r3
 	beq _02006B9A
@@ -846,7 +848,7 @@ _02006BAC:
 	bge _02006BC4
 	b _02006DDC
 _02006BC4:
-	ldr r0, _02006DF4 @=0x03007FF0
+	ldr r0, _02006DF4 @=SOUND_INFO_PTR
 	ldr r0, [r0]
 	mov r8, r0
 	adds r0, r7, #0
@@ -1139,7 +1141,7 @@ _02006DD2:
 	adds r5, r5, r0
 	bgt _02006D2C
 _02006DDC:
-	ldr r0, _02006DF8 @=0x68736D53
+	ldr r0, _02006DF8 @=ID_NUMBER
 	str r0, [r7, #0x34]
 	pop {r0, r1, r2, r3, r4, r5, r6, r7}
 	mov r8, r0
@@ -1153,8 +1155,8 @@ sub_02006DEC: @ 0x02006DEC
 	bx r3
 	.align 2, 0
 	.pool
-_02006DF4: .4byte 0x03007FF0
-_02006DF8: .4byte 0x68736D53
+_02006DF4: .4byte SOUND_INFO_PTR
+_02006DF8: .4byte ID_NUMBER
 
 	thumb_func_start TrackStop
 TrackStop: @ 0x02006DFC
@@ -1176,7 +1178,7 @@ _02006E10:
 	movs r3, #7
 	ands r0, r3
 	beq _02006E28
-	ldr r3, =0x03007FF0
+	ldr r3, =SOUND_INFO_PTR
 	ldr r3, [r3]
 	ldr r3, [r3, #0x2c]
 	bl sub_02006DEC
@@ -1207,7 +1209,7 @@ ply_note: @ 0x02006E40
 	sub sp, #0x18
 	str r1, [sp]
 	adds r5, r2, #0
-	ldr r1, =0x03007FF0
+	ldr r1, =SOUND_INFO_PTR
 	ldr r1, [r1]
 	str r1, [sp, #4]
 	ldr r1, =gUnknown_0201D938
@@ -1640,7 +1642,7 @@ UnusedDummyFunc: @ 0x0200714C
 MPlayContinue: @ 0x02007150
 	adds r2, r0, #0
 	ldr r3, [r2, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r3, r0
 	bne _02007162
 	ldr r0, [r2, #4]
@@ -1658,7 +1660,7 @@ MPlayFadeOut: @ 0x0200716C
 	lsls r1, r1, #0x10
 	lsrs r1, r1, #0x10
 	ldr r3, [r2, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r3, r0
 	bne _02007184
 	strh r1, [r2, #0x26]
@@ -2025,10 +2027,10 @@ MPlayExtender: @ 0x02007414
 	ldr r1, =0x0000FF77
 	adds r0, r1, #0
 	strh r0, [r2]
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r4, [r0]
 	ldr r6, [r4]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r6, r0
 	bne _020074D8
 	adds r0, r6, #1
@@ -2169,7 +2171,7 @@ SoundInit: @ 0x02007564
 	adds r1, #4
 	ldr r0, =0x040000A4
 	str r0, [r1]
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	str r5, [r0]
 	str r3, [sp]
 	ldr r2, =0x050003EC
@@ -2194,7 +2196,7 @@ SoundInit: @ 0x02007564
 	movs r0, #0x80
 	lsls r0, r0, #0xb
 	bl sub_0200762C
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r5]
 	add sp, #4
 	pop {r4, r5}
@@ -2207,7 +2209,7 @@ SoundInit: @ 0x02007564
 sub_0200762C: @ 0x0200762C
 	push {r4, r5, r6, lr}
 	adds r2, r0, #0
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r4, [r0]
 	movs r0, #0xf0
 	lsls r0, r0, #0xc
@@ -2272,10 +2274,10 @@ _02007698:
 m4aSoundMode: @ 0x020076D0
 	push {r4, r5, lr}
 	adds r3, r0, #0
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r5, [r0]
 	ldr r1, [r5]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r1, r0
 	bne _02007756
 	adds r0, r1, #1
@@ -2339,7 +2341,7 @@ _0200773E:
 	adds r0, r4, #0
 	bl sub_0200762C
 _02007752:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r5]
 _02007756:
 	pop {r4, r5}
@@ -2351,10 +2353,10 @@ _02007756:
 	thumb_func_start SoundClear
 SoundClear: @ 0x02007768
 	push {r4, r5, r6, r7, lr}
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r6, [r0]
 	ldr r1, [r6]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r1, r0
 	bne _020077AE
 	adds r0, r1, #1
@@ -2385,7 +2387,7 @@ _02007796:
 	cmp r5, #4
 	ble _02007796
 _020077AA:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r6]
 _020077AE:
 	pop {r4, r5, r6, r7}
@@ -2398,7 +2400,7 @@ _020077AE:
 m4aSoundVSyncOff: @ 0x020077BC
 	push {lr}
 	sub sp, #4
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r2, [r0]
 	ldr r1, [r2]
 	ldr r3, =0x978C92AD
@@ -2431,10 +2433,10 @@ _020077F0:
 	thumb_func_start m4aSoundVSyncOn
 m4aSoundVSyncOn: @ 0x02007808
 	push {r4, lr}
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r2, [r0]
 	ldr r3, [r2]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r3, r0
 	beq _02007830
 	ldr r0, =0x040000C6
@@ -2470,10 +2472,10 @@ MPlayOpen: @ 0x02007844
 	bls _02007858
 	movs r4, #0x10
 _02007858:
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r5, [r0]
 	ldr r1, [r5]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r1, r0
 	bne _020078A8
 	adds r0, r1, #1
@@ -2509,7 +2511,7 @@ _0200789C:
 	str r7, [r5, #0x24]
 	ldr r0, =MPlayMain
 	str r0, [r5, #0x20]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r5]
 	str r0, [r7, #0x34]
 _020078A8:
@@ -2527,7 +2529,7 @@ MPlayStart: @ 0x020078BC
 	adds r5, r0, #0
 	adds r7, r1, #0
 	ldr r1, [r5, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r1, r0
 	bne _02007962
 	adds r0, r1, #1
@@ -2604,7 +2606,7 @@ _0200794E:
 	ldrb r0, [r7, #3]
 	bl m4aSoundMode
 _0200795E:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r5, #0x34]
 _02007962:
 	pop {r3}
@@ -2620,7 +2622,7 @@ m4aMPlayStop: @ 0x02007970
 	push {r4, r5, r6, lr}
 	adds r6, r0, #0
 	ldr r1, [r6, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r1, r0
 	bne _020079A6
 	adds r0, r1, #1
@@ -2643,7 +2645,7 @@ _02007992:
 	cmp r4, #0
 	bgt _02007992
 _020079A2:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r6, #0x34]
 _020079A6:
 	pop {r4, r5, r6}
@@ -3041,7 +3043,7 @@ CgbSound: @ 0x02007C58
 	mov r5, r8
 	push {r5, r6, r7}
 	sub sp, #0x20
-	ldr r0, =0x03007FF0
+	ldr r0, =SOUND_INFO_PTR
 	ldr r0, [r0]
 	str r0, [sp, #4]
 	ldrb r0, [r0, #0xa]
@@ -3610,7 +3612,7 @@ m4aMPlayTempoControl: @ 0x0200809C
 	lsls r1, r1, #0x10
 	lsrs r1, r1, #0x10
 	ldr r3, [r2, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r3, r0
 	bne _020080B8
 	strh r1, [r2, #0x1e]
@@ -3637,7 +3639,7 @@ m4aMPlayVolumeControl: @ 0x020080C4
 	lsrs r7, r1, #0x10
 	lsls r6, r2, #0x10
 	ldr r3, [r4, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r3, r0
 	bne _0200811C
 	adds r0, r3, #1
@@ -3673,7 +3675,7 @@ _0200810E:
 	cmp r2, #0
 	bgt _020080F4
 _02008118:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r4, #0x34]
 _0200811C:
 	pop {r3, r4}
@@ -3699,7 +3701,7 @@ m4aMPlayPitchControl: @ 0x0200812C
 	lsls r2, r2, #0x10
 	lsrs r6, r2, #0x10
 	ldr r3, [r4, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r3, r0
 	bne _0200818E
 	adds r0, r3, #1
@@ -3737,7 +3739,7 @@ _02008180:
 	cmp r2, #0
 	bgt _02008164
 _0200818A:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r4, #0x34]
 _0200818E:
 	pop {r3, r4, r5}
@@ -3762,7 +3764,7 @@ m4aMPlayPanpotControl: @ 0x020081A0
 	lsls r2, r2, #0x18
 	lsrs r6, r2, #0x18
 	ldr r3, [r4, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r3, r0
 	bne _020081F8
 	adds r0, r3, #1
@@ -3797,7 +3799,7 @@ _020081EA:
 	cmp r2, #0
 	bgt _020081D0
 _020081F4:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r4, #0x34]
 _020081F8:
 	pop {r3, r4}
@@ -3845,7 +3847,7 @@ m4aMPlayModDepthSet: @ 0x02008228
 	lsrs r2, r2, #0x18
 	mov r8, r2
 	ldr r1, [r6, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r1, r0
 	bne _02008288
 	adds r0, r1, #1
@@ -3880,7 +3882,7 @@ _0200827A:
 	cmp r5, #0
 	bgt _02008258
 _02008284:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r6, #0x34]
 _02008288:
 	pop {r3, r4, r5}
@@ -3908,7 +3910,7 @@ m4aMPlayLFOSpeedSet: @ 0x0200829C
 	lsrs r2, r2, #0x18
 	mov r8, r2
 	ldr r1, [r6, #0x34]
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	cmp r1, r0
 	bne _020082FC
 	adds r0, r1, #1
@@ -3943,7 +3945,7 @@ _020082EE:
 	cmp r5, #0
 	bgt _020082CC
 _020082F8:
-	ldr r0, =0x68736D53
+	ldr r0, =ID_NUMBER
 	str r0, [r6, #0x34]
 _020082FC:
 	pop {r3, r4, r5}
