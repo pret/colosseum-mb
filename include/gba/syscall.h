@@ -45,4 +45,7 @@ void RLUnCompVram(const void *src, void *dest);
 
 int MultiBoot(struct MultiBootParam *mp);
 
+int Div(int dividend, int divisor);
+int Mod(int dividend, int divisor);
+
 #endif // GUARD_GBA_SYSCALL_H

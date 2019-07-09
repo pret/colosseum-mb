@@ -173,10 +173,10 @@ gUnknown_0201F2A4::
 gUnknown_0201F2B4::
 	.incbin "baserom.gba", 0x1F2B4, 0x50
 
-gUnknown_0201F304::
+sDefaultRTC::
 	.incbin "baserom.gba", 0x1F304, 0x14
 
-gUnknown_0201F318::
+sDaysPerMonth::
 	.incbin "baserom.gba", 0x1F318, 0x194
 
 gUnknown_0201F4AC::

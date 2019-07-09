@@ -1933,7 +1933,7 @@ _02009522:
 	str r6, [r2]
 	mov r0, sb
 	str r0, [r7]
-	ldr r7, =gUnknown_02022ED8
+	ldr r7, =gSaveBlock2Ptr
 	mov r1, sl
 	ldr r0, [r1]
 	adds r0, #0x88
@@ -2034,7 +2034,7 @@ _020095D0:
 	adds r6, r6, r1
 	str r6, [r2]
 	str r5, [r7]
-	ldr r0, =gUnknown_02022ED8
+	ldr r0, =gSaveBlock2Ptr
 	mov sb, r0
 	mov r1, sl
 	ldr r0, [r1]
@@ -2055,7 +2055,7 @@ _0200965C:
 	.align 2, 0
 	.pool
 _02009680:
-	ldr r1, =gUnknown_02022ED8
+	ldr r1, =gSaveBlock2Ptr
 	mov sb, r1
 	ldr r2, =gUnknown_020251E8
 	mov sl, r2
@@ -2163,7 +2163,7 @@ _0200972C:
 	str r6, [r2]
 	mov r2, sb
 	str r5, [r2]
-	ldr r7, =gUnknown_02022ED8
+	ldr r7, =gSaveBlock2Ptr
 	mov r1, sl
 	ldr r0, [r1]
 	adds r0, #0x88
@@ -2218,7 +2218,7 @@ _020097BE:
 	adds r0, r2, r0
 	str r0, [r1]
 	ldr r3, =gUnknown_02022EC8
-	ldr r0, =gUnknown_02022ED8
+	ldr r0, =gSaveBlock2Ptr
 	ldr r0, [r0]
 	ldr r1, [r4, #0x58]
 	adds r0, r0, r1
@@ -2368,7 +2368,7 @@ _02009950:
 sub_02009958: @ 0x02009958
 	push {r4, r5, lr}
 	ldr r2, =gUnknown_0202054C
-	ldr r0, =gUnknown_02022ED8
+	ldr r0, =gSaveBlock2Ptr
 	ldr r0, [r0]
 	str r0, [r2]
 	ldr r0, =gUnknown_02022ECC
@@ -3521,7 +3521,7 @@ _0200A2E2:
 	rsbs r0, r0, #0
 	ands r1, r0
 	str r1, [r2, #8]
-	ldr r0, =gUnknown_02022ED8
+	ldr r0, =gSaveBlock2Ptr
 	ldr r3, [r0]
 	movs r1, #0
 	ldr r0, =gUnknown_020251E8
@@ -9129,7 +9129,7 @@ sub_0200CD38: @ 0x0200CD38
 	bne _0200CD60
 	ldr r0, =gUnknown_020251E8
 	ldr r0, [r0]
-	ldr r1, =gUnknown_02022ED8
+	ldr r1, =gSaveBlock2Ptr
 	ldr r1, [r1]
 	adds r0, #0x98
 	ldr r0, [r0]
@@ -9171,7 +9171,7 @@ sub_0200CD88: @ 0x0200CD88
 	bne _0200CDB4
 	ldr r0, =gUnknown_020251E8
 	ldr r0, [r0]
-	ldr r1, =gUnknown_02022ED8
+	ldr r1, =gSaveBlock2Ptr
 	ldr r1, [r1]
 	adds r0, #0xd8
 	ldr r0, [r0]

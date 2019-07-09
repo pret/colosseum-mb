@@ -57,19 +57,19 @@ gUnknown_0202137C::
 gUnknown_02021380::
 	.space 0x8
 
-gUnknown_02021388::
+sRtcInfoWork::
 	.space 0x10
 
-gUnknown_02021398::
+sRtcProbeStatus::
 	.space 0x8
 
-gUnknown_020213A0::
+sRtcInfoBuffer::
 	.space 0xc
 
-gUnknown_020213AC::
+sRtcProbeCode::
 	.space 0x2
 
-gUnknown_020213AE::
+sImeBak::
 	.space 0x4
 
 gUnknown_020213B2::
@@ -195,7 +195,7 @@ gUnknown_02022ED0::
 gUnknown_02022ED4::
 	.space 0x4
 
-gUnknown_02022ED8::
+gSaveBlock2Ptr::
 	.space 0x4
 
 gUnknown_02022EDC::
@@ -321,10 +321,10 @@ gUnknown_0202524C::
 gUnknown_02025250::
 	.space 0x8
 
-gUnknown_02025258::
+gTimeSinceBerryUpdate::
 	.space 0x8
 
-gUnknown_02025260::
+gRtcUTCTime::
 	.space 0xc
 
 gUnknown_0202526C::

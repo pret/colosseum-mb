@@ -89,7 +89,7 @@ _02000308:
 	add r0, sp, #0x44
 	mov r1, sp
 	movs r2, #0
-	bl sub_0200E4BC
+	bl main_callback
 	ldr r1, [sp, #0x44]
 	cmp r1, #5
 	bne _0200031A
@@ -127,7 +127,7 @@ _0200032C:
 	strh r0, [r2]
 	ldr r0, =0x04000208
 	strh r3, [r0]
-	ldr r0, =gUnknown_02022ED8
+	ldr r0, =gSaveBlock2Ptr
 	ldr r0, [r0]
 	ldr r1, =gUnknown_02022ECC
 	ldr r1, [r1]
@@ -226,7 +226,7 @@ _02000458:
 	add r0, sp, #0x40
 	mov r1, sp
 	movs r2, #0
-	bl sub_0200E4BC
+	bl main_callback
 	ldr r1, [sp, #0x40]
 	cmp r1, #5
 	bne _0200046A
@@ -10952,7 +10952,7 @@ _020060A6:
 _020060C0:
 	ldr r6, =gUnknown_020251E8
 	ldr r0, [r6]
-	ldr r5, =gUnknown_02022ED8
+	ldr r5, =gSaveBlock2Ptr
 	ldr r1, [r5]
 	adds r0, #0xd8
 	ldr r0, [r0]
