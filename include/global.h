@@ -26,7 +26,8 @@
 
 #define asm_unified(x) asm(".syntax unified\n" x "\n.syntax divided\n")
 
-#define ARRAY_COUNT(array) (sizeof(array) / sizeof((array)[0]))
+
+#define NELEMS(arr) (sizeof(arr)/sizeof(*(arr)))
 
 
 #define POKEMON_SLOTS_NUMBER 412
@@ -861,6 +862,7 @@ struct HallOfFame
     u8 filler[0x1F00];
 };
 
+extern u16 * gUnknown_02022EE4;
 extern struct SaveBlock2 * gSaveBlock2Ptr;
 
 #define RomHeaderGameTitle       ((const char *)0x080000A0)

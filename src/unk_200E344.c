@@ -1,7 +1,6 @@
 #include "global.h"
 #include "siirtc.h"
-
-#define NELEMS(arr) (sizeof(arr)/sizeof(*(arr)))
+#include "constants/vars.h"
 
 struct RomHeader
 {
@@ -44,6 +43,8 @@ extern u16 sImeBak;
 extern u16 sRtcProbeStatus;
 extern u8 sRtcProbeCode;
 extern struct SiiRtcInfo sRtcInfoBuffer;
+
+bool32 sub_02009EC8(void);
 
 bool32 rtc_maincb_is_rtc_working(void);
 bool32 rtc_maincb_is_time_since_last_berry_update_positive(u8 *);
@@ -602,4 +603,55 @@ void rtc_sub_time_from_time(struct Time * dest, struct Time * diff, struct Time 
         dest->hours += 24;
         dest->days--;
     }
+}
+
+void sub_0200F324(u8 unused)
+{
+    return;
+}
+
+void sub_0200F338(void)
+{
+    return;
+}
+
+void sub_0200F344(void)
+{
+    return;
+}
+
+u16 * sub_0200F350(u16 a0)
+{
+    if (a0 < VARS_START)
+        return NULL;
+    if (a0 < VAR_SPECIAL_0)
+        return &gUnknown_02022EE4[a0 - VARS_START];
+    return NULL;
+}
+
+bool32 sub_0200F3A0(void)
+{
+    u8 sp0;
+    u16 * data = sub_0200F350(VAR_PACIFIDLOG_TM_RECEIVED_DAY);
+    rtc_maincb_is_time_since_last_berry_update_positive(&sp0);
+    if (*data <= gRtcUTCTime.days)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+bool32 sub_0200F3E4(void)
+{
+    u16 * varAddr;
+    u8 sp0;
+    if (sub_0200F3A0() == TRUE)
+        return TRUE;
+    rtc_maincb_is_time_since_last_berry_update_positive(&sp0);
+    if (gRtcUTCTime.days < 0)
+        return FALSE;
+    varAddr = sub_0200F350(VAR_PACIFIDLOG_TM_RECEIVED_DAY);
+    *varAddr = 1;
+    if (sub_02009EC8() != TRUE)
+        return FALSE;
+    return TRUE;
 }
