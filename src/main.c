@@ -1,12 +1,12 @@
 #include "gba/gba.h"
 #include "m4a.h"
 
-extern u8 gUnknown_02020A34[];
+extern u8 ewram_start[];
 extern u32 gUnknown_02022C08;
 extern void (*gUnknown_02022BD0[])(void);
 extern void (*gUnknown_02022C0C)(void);
 extern u16 gUnknown_02022EB8;
-extern u8 gUnknown_0202526C[];
+extern u8 ewram_end[];
 
 void sub_02008638(void);
 void sub_020086B8(void);
@@ -29,8 +29,8 @@ void AgbMain(void)
 {
     REG_IME = 0;
     RegisterRamReset(RESET_ALL & ~(RESET_EWRAM | RESET_IWRAM));
-    CpuFill16(0, gUnknown_02020A34, gUnknown_0202526C - gUnknown_02020A34);
-    REG_WAITCNT = 0x45B4;
+    CpuFill16(0, ewram_start, ewram_end - ewram_start);
+    REG_WAITCNT = WAITCNT_SRAM_4 | WAITCNT_WS0_N_3 | WAITCNT_WS0_S_1 | WAITCNT_WS1_N_3 | WAITCNT_WS1_S_1 | WAITCNT_WS2_N_3 | WAITCNT_WS2_S_1 | WAITCNT_PREFETCH_ENABLE;
     sub_02008638();
     sub_020087B4();
     sub_02008C80();

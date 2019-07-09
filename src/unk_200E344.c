@@ -2,47 +2,17 @@
 #include "siirtc.h"
 #include "constants/vars.h"
 
-struct RomHeader
-{
-    u32 initialBranch;
-    u8 nintendoLogo[0xA0-0x04];
-    char title[12];    // a0
-    char code[4];      // ac
-    char makerCode[2]; // b0
-    char fixed;        // b2
-    char unitCode;     // b3
-    char deviceType;   // b4
-    char filler[7];
-    char gameVersion;  // bc
-    char complement;   // bd
-    short checksum;    // be
-};
-
+extern u32 gUnknown_0202524C;
 extern u32 gUnknown_02025250;
-extern struct SiiRtcInfo sRtcInfoWork;
-
-extern const u8 ROMHeader_Title[15];
-extern const u8 ROMHeader_Language;
-extern const u8 ROMHeader_MakerCodeLo;
-extern const u8 ROMHeader_MakerCodeHi;
-extern const u8 ROMHeader_Magic;
-extern const u8 ROMHeader_Version;
-
-extern const u8 gUnknown_0201F298[6][2];
-extern const u8 gUnknown_0201F2A4[16];
-extern const u8 gUnknown_0201F2B4[16];
-extern const s32 sDaysPerMonth[12];
-extern const struct SiiRtcInfo sDefaultRTC;
-
 extern struct Time gTimeSinceBerryUpdate;
 extern struct Time gRtcUTCTime;
 
-extern u32 gUnknown_02021380;
-extern u32 gUnknown_0202524C;
-extern u16 sImeBak;
-extern u16 sRtcProbeStatus;
-extern u8 sRtcProbeCode;
-extern struct SiiRtcInfo sRtcInfoBuffer;
+EWRAM_DATA u32 gUnknown_02021380 = 0;
+EWRAM_DATA struct SiiRtcInfo sRtcInfoWork = {};
+EWRAM_DATA u16 sRtcProbeStatus = 0;
+EWRAM_DATA struct SiiRtcInfo sRtcInfoBuffer = {};
+EWRAM_DATA u8 sRtcProbeCode = 0;
+EWRAM_DATA u16 sImeBak = 0;
 
 bool32 sub_02009EC8(void);
 
@@ -62,7 +32,19 @@ void rtc_intr_enable(void);
 bool8 is_leap_year(u8 year);
 u16 rtc_validate_datetime(struct SiiRtcInfo * info);
 
-bool32 memcmp_u8(const u8 * a0, const u8 * a1, u32 a2)
+const u8 gUnknown_0201F298[6][2] = {
+    {'J', 1},
+    {'E', 2},
+    {'D', 1},
+    {'F', 1},
+    {'I', 1},
+    {'S', 1}
+};
+
+const char gUnknown_0201F2A4[16] = "POKEMON RUBYAXV";
+const char gUnknown_0201F2B4[16] = "POKEMON SAPPAXP";
+
+bool32 memcmp_u8(const char * a0, const char * a1, u32 a2)
 {
     u32 i;
 
@@ -84,8 +66,8 @@ s32 validate_rom_header_internal(void)
     s32 languageCode;
     s32 version;
 
-    languageCode = ROMHeader_Language;
-    version = ROMHeader_Version;
+    languageCode = *(const u8 *)0x080000AF;
+    version = *(const u8 *)0x080000BC;
     sp4 = -1;
     for (i = 0; i < NELEMS(gUnknown_0201F298); i++)
     {
@@ -107,7 +89,7 @@ s32 validate_rom_header_internal(void)
     {
         return 6;
     }
-    if (memcmp_u8(ROMHeader_Title, gUnknown_0201F2A4, 15) == TRUE)
+    if (memcmp_u8((const u8 *)0x080000A0, gUnknown_0201F2A4, 15) == TRUE)
     {
         if (sp4 == 0)
         {
@@ -119,7 +101,7 @@ s32 validate_rom_header_internal(void)
             return 3;
         }
     }
-    if (memcmp_u8(ROMHeader_Title, gUnknown_0201F2B4, 15) == TRUE)
+    if (memcmp_u8((const u8 *)0x080000A0, gUnknown_0201F2B4, 15) == TRUE)
     {
         if (sp4 == 0)
         {
@@ -137,13 +119,13 @@ s32 validate_rom_header_internal(void)
 
 s32 validate_rom_header(void)
 {
-    if (ROMHeader_MakerCodeLo != '0')
+    if (*(u8 *)0x080000B0 != '0')
         return 6;
     
-    if (ROMHeader_MakerCodeHi != '1')
+    if (*(u8 *)0x080000B1 != '1')
         return 6;
     
-    if (ROMHeader_Magic != 0x96)
+    if (*(u8 *)0x080000B2 != 0x96)
         return 6;
     
     return validate_rom_header_internal();
@@ -312,6 +294,8 @@ void sii_rtc_inc_month(struct SiiRtcInfo * a0)
     a0->month = MONTH_JAN;
 }
 
+const s32 sDaysPerMonth[];
+
 void sii_rtc_inc_day(struct SiiRtcInfo * a0)
 {
     sii_rtc_inc(&a0->day);
@@ -407,6 +391,19 @@ char * print_rtc(char * a0)
     return a0;
 }
 
+const struct SiiRtcInfo sDefaultRTC = {
+    .year = 0, // 2000
+    .month = 1, // January
+    .day = 1, // 01
+    .dayOfWeek = 0,
+    .hour = 0,
+    .minute = 0,
+    .second = 0,
+    .status = 0,
+    .alarmHour = 0,
+    .alarmMinute = 0
+};
+
 void rtc_intr_disable(void)
 {
     sImeBak = REG_IME;
@@ -432,6 +429,21 @@ bool8 is_leap_year(u8 year)
     else
         return FALSE;
 }
+
+const s32 sDaysPerMonth[] = {
+    31,
+    28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31
+};
 
 u16 rtc_count_days_parameterized(u8 year, u8 month, u8 day)
 {

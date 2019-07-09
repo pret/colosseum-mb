@@ -1,4 +1,5 @@
 	.section .rodata
+	.align 2, 0
 gUnknown_0201002C::
 	.incbin "baserom.gba", 0x1002C, 0x20
 
@@ -89,95 +90,10 @@ gUnknown_0201D420::
 gUnknown_0201D5A4::
 	.incbin "baserom.gba", 0x1D5A4, 0x120
 
-gUnknown_0201D6C4::
-	.incbin "baserom.gba", 0x1D6C4, 0x90
-
-gUnknown_0201D754::
-	.incbin "baserom.gba", 0x1D754, 0xb4
-
-gUnknown_0201D808::
-	.incbin "baserom.gba", 0x1D808, 0x30
-
-gUnknown_0201D838::
-	.incbin "baserom.gba", 0x1D838, 0x18
-
-gUnknown_0201D850::
-	.incbin "baserom.gba", 0x1D850, 0x84
-
-gUnknown_0201D8D4::
-	.incbin "baserom.gba", 0x1D8D4, 0x18
-
-gUnknown_0201D8EC::
-	.incbin "baserom.gba", 0x1D8EC, 0x3c
-
-gUnknown_0201D928::
-	.incbin "baserom.gba", 0x1D928, 0x10
-
-gUnknown_0201D938::
-	.incbin "baserom.gba", 0x1D938, 0x34
-
-gUnknown_0201D96C::
-	.incbin "baserom.gba", 0x1D96C, 0x48c
-
-gUnknown_0201DDF8::
-	.incbin "baserom.gba", 0x1DDF8, 0xc
-
-gUnknown_0201DE04::
-	.incbin "baserom.gba", 0x1DE04, 0x974
-
-gUnknown_0201E778::
-	.incbin "baserom.gba", 0x1E778, 0x2
-
-gUnknown_0201E77A::
-	.incbin "baserom.gba", 0x1E77A, 0x76
-
-gUnknown_0201E7F0::
-	.incbin "baserom.gba", 0x1E7F0, 0x18
-
-gUnknown_0201E808::
-	.incbin "baserom.gba", 0x1E808, 0x4b8
-
-gUnknown_0201ECC0::
-	.incbin "baserom.gba", 0x1ECC0, 0x80
-
-gUnknown_0201ED40::
-	.incbin "baserom.gba", 0x1ED40, 0x17
-
-gUnknown_0201ED57::
-	.incbin "baserom.gba", 0x1ED57, 0x4
-
-gUnknown_0201ED5B::
-	.incbin "baserom.gba", 0x1ED5B, 0x9
-
-gUnknown_0201ED64::
-	.incbin "baserom.gba", 0x1ED64, 0x338
-
-gUnknown_0201F09C::
-	.incbin "baserom.gba", 0x1F09C, 0x18
-
-gUnknown_0201F0B4::
-	.incbin "baserom.gba", 0x1F0B4, 0x48
-
-gUnknown_0201F0FC::
-	.incbin "baserom.gba", 0x1F0FC, 0x84
-
-gUnknown_0201F180::
-	.incbin "baserom.gba", 0x1F180, 0x118
-
-gUnknown_0201F298::
-	.incbin "baserom.gba", 0x1F298, 0xc
-
-gUnknown_0201F2A4::
-	.incbin "baserom.gba", 0x1F2A4, 0x10
-
-gUnknown_0201F2B4::
-	.incbin "baserom.gba", 0x1F2B4, 0x50
-
-sDefaultRTC::
-	.incbin "baserom.gba", 0x1F304, 0x14
-
-sDaysPerMonth::
-	.incbin "baserom.gba", 0x1F318, 0x194
+	.data
+	.align 2
+gUnknown_0201F3A0::
+	.incbin "baserom.gba", 0x1F374, 0x138
 
 gUnknown_0201F4AC::
 	.incbin "baserom.gba", 0x1F4AC, 0x4
@@ -403,24 +319,3 @@ gUnknown_0202010F::
 
 gUnknown_02020508::
 	.incbin "baserom.gba", 0x20508, 0x44
-
-gUnknown_0202054C::
-	.incbin "baserom.gba", 0x2054C, 0x70
-
-gUnknown_020205BC::
-	.incbin "baserom.gba", 0x205BC, 0x70
-
-gUnknown_0202062C::
-	.incbin "baserom.gba", 0x2062C, 0x8
-
-gUnknown_02020634::
-	.incbin "baserom.gba", 0x20634, 0x100
-
-gUnknown_02020734::
-	.incbin "baserom.gba", 0x20734, 0x100
-
-gUnknown_02020834::
-	.incbin "baserom.gba", 0x20834, 0x100
-
-gUnknown_02020934::
-	.incbin "baserom.gba", 0x20934, 0x100
