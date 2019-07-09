@@ -60,9 +60,12 @@ struct RomInfo
 };
 
 extern u8 ewram_start[];
-extern u32 gUnknown_02022C08;
 extern void (*gUnknown_02022BD0[])(void);
+extern u32 gUnknown_02022C08;
 extern void (*gUnknown_02022C0C)(void);
+extern u16 gUnknown_02022C10[4];
+extern u16 gUnknown_02022C18[4];
+extern u8 gUnknown_02022C20[4];
 extern u16 gUnknown_02022EB8;
 extern struct RomInfo *gUnknown_020251E8;
 extern u8 ewram_end[];
@@ -159,4 +162,89 @@ void sub_020086B8(void)
 void sub_02008708(void)
 {
     
+}
+
+void sub_0200870C(void)
+{
+    s32 i;
+    u16 bgCnt;
+    void * screenBase;
+    size_t size;
+    s32 r2;
+    REG_BG0HOFS = gUnknown_02022C10[0];
+    REG_BG1HOFS = gUnknown_02022C10[1];
+    REG_BG2HOFS = gUnknown_02022C10[2];
+    REG_BG3HOFS = gUnknown_02022C10[3];
+    REG_BG0VOFS = gUnknown_02022C18[0];
+    REG_BG1VOFS = gUnknown_02022C18[1];
+    REG_BG2VOFS = gUnknown_02022C18[2];
+    REG_BG3VOFS = gUnknown_02022C18[3];
+    for (i = 0; i < 4; i++)
+    {
+        if (gUnknown_02022C20[i])
+        {
+            gUnknown_02022C20[i] = 0;
+            bgCnt = *(vu16 *)(REG_ADDR_BG0CNT + 2 * i);
+            screenBase = (void *)(BG_VRAM + ((bgCnt & 0x1F00) << 3));
+            r2 = bgCnt & 0xC000 ? 2 : 1;
+            CpuCopy32((void *)(0x03000000 + 0x1000 * i), screenBase, r2 * 0x800);
+        }
+    }
+}
+
+void sub_020087B4(void)
+{
+    CpuFill16(0, (void *)0x03000000, 0x4000);
+    CpuFill16(0, gUnknown_02022C10, 8);
+    CpuFill16(0, gUnknown_02022C18, 8);
+    gUnknown_02022C20[3] = 0;
+    gUnknown_02022C20[2] = 0;
+    gUnknown_02022C20[1] = 0;
+    gUnknown_02022C20[0] = 0;
+}
+
+void sub_0200880C(int bgNum, int left, int top, int width, int height, const u16 * src)
+{
+    int x;
+    u16 * r2 = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+    while (height)
+    {
+        for (x = 0; x < width; x++, src++)
+        {
+            r2[x] = *src;
+        }
+        r2 += 32;
+        height--;
+    }
+}
+
+void sub_02008850(int bgNum, int left, int top, int width, int height, u16 * dest)
+{
+    int x;
+    u16 * r2 = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+    while (height)
+    {
+        for (x = 0; x < width; x++, dest++)
+        {
+            *dest = r2[x];
+        }
+        r2 += 32;
+        height--;
+    }
+}
+
+void sub_02008894(int bgNum, int left, int top, int width, int height, int paletteNum)
+{
+    int x;
+    u16 * r2 = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+    while (height)
+    {
+        for (x = 0; x < width; x++)
+        {
+            r2[x] &= 0xFFF;
+            r2[x] |= paletteNum << 12;
+        }
+        r2 += 32;
+        height--;
+    }
 }
