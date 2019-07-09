@@ -499,7 +499,7 @@ sub_02000650: @ 0x02000650
 	lsls r0, r0, #5
 	ldr r2, =gUnknown_020217C0
 	adds r0, r0, r2
-	bl sub_0200CE5C
+	bl StringCopy
 	pop {r0}
 	bx r0
 	.align 2, 0
@@ -1811,7 +1811,7 @@ _020010CE:
 	bl sub_0200C378
 	add r0, sp, #8
 	add r1, sp, #0x20
-	bl sub_0200CEA0
+	bl StringCompare
 	cmp r0, #0
 	beq _02001120
 	mov r3, r8
@@ -2406,7 +2406,7 @@ _020015AA:
 	bl sub_0200C378
 	add r0, sp, #8
 	add r1, sp, #0x20
-	bl sub_0200CEA0
+	bl StringCompare
 	cmp r0, #0
 	beq _020015FC
 	mov r3, r8
@@ -9353,7 +9353,7 @@ _020052B6:
 _020052D4:
 	add r0, sp, #0xc
 	ldr r1, =gUnknown_02020027
-	bl sub_0200CE5C
+	bl StringCopy
 _020052DC:
 	adds r0, r4, #0
 	add r1, sp, #0xc
@@ -9499,7 +9499,7 @@ _020053FE:
 	add r0, sb
 	add r0, r8
 	adds r1, r4, #0
-	bl sub_0200CEA0
+	bl StringCompare
 	cmp r0, #0
 	bne _0200544E
 	ldrb r0, [r5]
@@ -9581,14 +9581,14 @@ sub_02005468: @ 0x02005468
 	bl sub_0200531C
 	adds r1, r0, #0
 	adds r0, r5, #0
-	bl sub_0200CE5C
+	bl StringCopy
 	adds r4, r5, #0
 	adds r4, #0x20
 	movs r0, #1
 	bl sub_0200531C
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl sub_0200CE5C
+	bl StringCopy
 	ldr r0, =gUnknown_02024960
 	ldrb r0, [r0, #7]
 	cmp r0, #4
@@ -9598,13 +9598,13 @@ sub_02005468: @ 0x02005468
 	bl sub_0200531C
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl sub_0200CE5C
+	bl StringCopy
 	adds r4, #0x20
 	movs r0, #3
 	bl sub_0200531C
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl sub_0200CE5C
+	bl StringCopy
 	b _02005518
 	.align 2, 0
 	.pool
@@ -9612,11 +9612,11 @@ _02005504:
 	adds r0, r5, #0
 	adds r0, #0x40
 	add r1, sp, #0xc
-	bl sub_0200CE5C
+	bl StringCopy
 	adds r0, r5, #0
 	adds r0, #0x60
 	add r1, sp, #0xc
-	bl sub_0200CE5C
+	bl StringCopy
 _02005518:
 	ldr r0, =gUnknown_02021A20
 	ldr r0, [r0, #0x18]
@@ -9749,7 +9749,7 @@ sub_020055D4: @ 0x020055D4
 _02005648:
 	ldr r1, =gUnknown_02020027
 	add r0, sp, #0x24
-	bl sub_0200CE5C
+	bl StringCopy
 _02005650:
 	movs r0, #0
 	add r1, sp, #0x24
@@ -10751,7 +10751,7 @@ sub_02005F08: @ 0x02005F08
 _02005F28:
 	ldr r1, =gUnknown_02020027
 	mov r0, sp
-	bl sub_0200CE5C
+	bl StringCopy
 _02005F30:
 	movs r0, #0
 	mov r1, sp

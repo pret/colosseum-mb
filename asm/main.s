@@ -3,11 +3,6 @@
 	.text
 	.syntax unified
 
-	thumb_func_start sub_02008708
-sub_02008708: @ 0x02008708
-	bx lr
-	.align 2, 0
-
 	thumb_func_start sub_0200870C
 sub_0200870C: @ 0x0200870C
 	push {r4, r5, r6, lr}
@@ -5240,7 +5235,7 @@ _0200B084:
 	ldr r1, =gUnknown_0202062C
 _0200B092:
 	adds r0, r6, #0
-	bl sub_0200CE5C
+	bl StringCopy
 	b _0200B0FC
 	.align 2, 0
 	.pool
@@ -5288,10 +5283,10 @@ _0200B0D6:
 	mov r0, sp
 	adds r0, #2
 	adds r1, r6, #0
-	bl sub_0200CE5C
+	bl StringCopy
 	adds r0, r6, #0
 	mov r1, sp
-	bl sub_0200CE5C
+	bl StringCopy
 _0200B0FC:
 	adds r0, r6, #0
 	bl sub_0200CE1C
@@ -8291,10 +8286,10 @@ _0200C6D4:
 	adds r1, r0, r1
 _0200C6DE:
 	adds r0, r4, #0
-	bl sub_0200CE5C
+	bl StringCopy
 	adds r0, r4, #0
 	adds r1, r5, #0
-	bl sub_0200CE78
+	bl StringAppend
 	b _0200C722
 	.align 2, 0
 	.pool
@@ -8320,7 +8315,7 @@ _0200C712:
 	adds r1, r2, #0
 	adds r1, r3, r1
 	adds r0, r4, #0
-	bl sub_0200CE5C
+	bl StringCopy
 _0200C722:
 	pop {r4, r5}
 	pop {r0}
@@ -8759,7 +8754,7 @@ _0200CA60:
 	adds r2, r6, r0
 	adds r0, r7, #4
 	adds r1, r2, #0
-	bl sub_0200CE5C
+	bl StringCopy
 	mov r2, r8
 	ldr r1, [r2]
 	adds r0, r1, #0
@@ -9281,8 +9276,8 @@ _0200CE52:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_0200CE5C
-sub_0200CE5C: @ 0x0200CE5C
+	thumb_func_start StringCopy
+StringCopy: @ 0x0200CE5C
 	adds r3, r0, #0
 	b _0200CE66
 _0200CE60:
@@ -9300,8 +9295,8 @@ _0200CE66:
 	bx lr
 	.align 2, 0
 
-	thumb_func_start sub_0200CE78
-sub_0200CE78: @ 0x0200CE78
+	thumb_func_start StringAppend
+StringAppend: @ 0x0200CE78
 	adds r2, r0, #0
 	b _0200CE7E
 _0200CE7C:
@@ -9327,8 +9322,8 @@ _0200CE8E:
 	bx lr
 	.align 2, 0
 
-	thumb_func_start sub_0200CEA0
-sub_0200CEA0: @ 0x0200CEA0
+	thumb_func_start StringCompare
+StringCompare: @ 0x0200CEA0
 	adds r2, r0, #0
 	b _0200CEB0
 _0200CEA4:
