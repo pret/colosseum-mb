@@ -69,12 +69,12 @@ struct UnkStruct_02020CD0
     u16 unk8;
     u16 unkA;
     u32 unkC;
-    u32 unk10;
-    u32 unk14[4];
+    void (*unk10)(struct UnkStruct_02020CD0 *);
+    void * unk14[4];
 };
 
 extern u8 ewram_start[];
-extern struct UnkStruct_02020CD0 gUnknown_02020CD0[];
+extern struct UnkStruct_02020CD0 gUnknown_02020CD0[18];
 extern void (*gUnknown_02022BD0[])(void);
 extern u32 gUnknown_02022C08;
 extern void (*gUnknown_02022C0C)(void);
@@ -336,9 +336,9 @@ struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, s32 c)
     r7->unk2 = 0;
     r7->unk4 = 0;
     r7->unk6 = 0;
-    r7->unk10 = 0;
+    r7->unk10 = NULL;
     for (i = 0; i < 4; i++)
-        r7->unk14[i] = 0;
+        r7->unk14[i] = NULL;
     return r7;
 }
 

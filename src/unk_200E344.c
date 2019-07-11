@@ -7,12 +7,12 @@ extern u32 gUnknown_02025250;
 extern struct Time gTimeSinceBerryUpdate;
 extern struct Time gRtcUTCTime;
 
-EWRAM_DATA u32 gUnknown_02021380 = 0;
-EWRAM_DATA struct SiiRtcInfo sRtcInfoWork = {};
-EWRAM_DATA u16 sRtcProbeStatus = 0;
-EWRAM_DATA struct SiiRtcInfo sRtcInfoBuffer = {};
-EWRAM_DATA u8 sRtcProbeCode = 0;
-EWRAM_DATA u16 sImeBak = 0;
+BSS_DATA ALIGNED(8) u32 gUnknown_02021380;
+BSS_DATA ALIGNED(8) struct SiiRtcInfo sRtcInfoWork;
+BSS_DATA ALIGNED(8) u16 sRtcProbeStatus;
+BSS_DATA ALIGNED(8) struct SiiRtcInfo sRtcInfoBuffer;
+BSS_DATA u8 sRtcProbeCode;
+BSS_DATA u16 sImeBak;
 
 bool32 sub_02009EC8(void);
 

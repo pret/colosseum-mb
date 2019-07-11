@@ -36,6 +36,7 @@ infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst 
 
 # Special rules for particular files
 $(OBJ_DIR)/src/unk_200E344.o: CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
+$(OBJ_DIR)/src/siirtc.o:      CC1    := tools/agbcc/bin/agbcc
 $(OBJ_DIR)/src/siirtc.o:      CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
 
 # Build tools when building the rom

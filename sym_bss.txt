@@ -1,17 +1,125 @@
-gUnknown_03001000:
-	.space 0x1000
+	.space 0x8
 
-gUnknown_03002000:
-	.space 0x800
+gUnknown_02020A40:
+	.space 0x4
 
-gUnknown_03002800:
-	.space 0x800
+gUnknown_02020A44:
+	.space 0x4
 
-gUnknown_03003000:
-	.space 0x1000
+gUnknown_02020A48:
+	.space 0x288
 
-gUnknown_03004000:
-	.space 0x400
+gUnknown_02020CD0:
+	.space 0x288
 
-gUnknown_03004400:
-	.space 0x3C00
+gUnknown_02020F58:
+	.space 0x404
+
+gUnknown_0202135C:
+	.space 0x4
+
+gUnknown_02021360:
+	.space 0x2
+
+gUnknown_02021362:
+	.space 0x2
+
+gUnknown_02021364:
+	.space 0x4
+
+gUnknown_02021368:
+	.space 0x1
+
+gUnknown_02021369:
+	.space 0x3
+
+gUnknown_0202136C:
+	.space 0x4
+
+gUnknown_02021370:
+	.space 0x4
+
+gUnknown_02021374:
+	.space 0x2
+
+gUnknown_02021376:
+	.space 0x2
+
+gUnknown_02021378:
+	.space 0x4
+
+gUnknown_0202137C:
+	.space 0x4
+
+	.include "src/unk_200E344.o"
+	.include "src/siirtc.o"
+
+	.align 2
+gUnknown_020213B4:
+	.space 0x1
+
+gUnknown_020213B5:
+	.space 0x3ff
+
+gUnknown_020217B4:
+	.space 0x4
+
+gUnknown_020217B8:
+	.space 0x8
+
+gUnknown_020217C0:
+	.space 0xa0
+
+gUnknown_02021860:
+	.space 0x125
+
+gUnknown_02021985:
+	.space 0xb
+
+gUnknown_02021990:
+	.space 0x44
+
+gUnknown_020219D4:
+	.space 0xa
+
+gUnknown_020219DE:
+	.space 0x1
+
+gUnknown_020219DF:
+	.space 0x1
+
+gUnknown_020219E0:
+	.space 0x4
+
+gUnknown_020219E4:
+	.space 0xc
+
+gUnknown_020219F0:
+	.space 0x10
+
+gUnknown_02021A00:
+	.space 0x20
+
+gUnknown_02021A20:
+	.space 0x20
+
+gUnknown_02021A40:
+	.space 0xfb0
+
+gUnknown_020229F0:
+	.space 0x4
+
+gUnknown_020229F4:
+	.space 0x84
+
+gUnknown_02022A78:
+	.space 0x4
+
+gUnknown_02022A7C:
+	.space 0x4
+
+gUnknown_02022A80:
+	.space 0x140
+
+gUnknown_02022BC0:
+	.space 0x10
