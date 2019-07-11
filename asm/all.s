@@ -2700,26 +2700,26 @@ sub_020017E8: @ 0x020017E8
 	ldr r0, =gUnknown_0201B1A0
 	movs r1, #0xa0
 	lsls r1, r1, #0x13
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201A8B4
 	ldr r1, =0x06004000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201AD0C
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201B0FC
 	ldr r1, =0x06008000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201B2F8
 	ldr r1, =gUnknown_03001000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201D05C
 	ldr r1, =0x05000200
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201C5A4
 	ldr r1, =0x06010000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_02021860
 	movs r1, #0x8c
 	lsls r1, r1, #1
@@ -2796,7 +2796,7 @@ _0200191C:
 	ldr r0, [r1, #8]
 	ldr r0, =gUnknown_0201B430
 	ldr r1, =0x06014000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	movs r2, #0x8d
 	lsls r2, r2, #1
 	adds r0, r6, r2
@@ -5528,20 +5528,20 @@ sub_02002FEC: @ 0x02002FEC
 	ldr r0, =gUnknown_0201C10C
 	movs r1, #0xa0
 	lsls r1, r1, #0x13
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201B4AC
 	ldr r1, =0x06008000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201BFF8
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201C428
 	ldr r1, =gUnknown_03002000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201C228
 	ldr r1, =gUnknown_03003000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r1, =gUnknown_02022C20
 	movs r4, #0
 	movs r0, #1
@@ -5549,10 +5549,10 @@ sub_02002FEC: @ 0x02002FEC
 	strb r0, [r1, #3]
 	ldr r0, =gUnknown_0201D05C
 	ldr r1, =0x05000200
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201C5A4
 	ldr r1, =0x06010000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	mov r0, sp
 	strh r4, [r0]
 	ldr r4, =gUnknown_02021990
@@ -5638,7 +5638,7 @@ _02003140:
 	adds r7, r0, #0
 	ldr r0, [r4]
 	adds r1, r7, #0
-	bl LZ77UnCompVRAM
+	bl LZ77UnCompVram
 	ldrh r0, [r6, #0x14]
 	mov r1, r8
 	adds r2, r7, #0
@@ -5650,7 +5650,7 @@ _02003140:
 	adds r4, r7, r1
 	ldr r0, [r0]
 	adds r1, r4, #0
-	bl LZ77UnCompWRAM
+	bl LZ77UnCompWram
 	ldr r1, =gUnknown_0201FA3C
 	lsls r0, r5, #2
 	adds r0, r0, r1
@@ -7145,11 +7145,11 @@ _02003F20:
 	adds r0, r6, #0
 	bl sub_0200B5C4
 	ldr r1, =0x06012800
-	bl LZ77UnCompVRAM
+	bl LZ77UnCompVram
 	adds r0, r6, #0
 	bl sub_0200B65C
 	ldr r1, =0x05000260
-	bl LZ77UnCompVRAM
+	bl LZ77UnCompVram
 	adds r0, r6, #0
 	bl sub_0200B7D0
 	adds r4, r0, #0
@@ -8016,24 +8016,24 @@ sub_0200465C: @ 0x0200465C
 	movs r4, #0xa0
 	lsls r4, r4, #0x13
 	adds r1, r4, #0
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201A894
 	ldr r1, =0x050001C0
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201B0FC
 	ldr r1, =0x06008000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201A450
 	adds r1, r4, #0
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_02017F0C
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201A618
 	movs r1, #0xc0
 	lsls r1, r1, #0x12
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =0x0000E001
 	str r0, [sp]
 	movs r0, #0
@@ -8466,23 +8466,23 @@ sub_02004AC4: @ 0x02004AC4
 	movs r5, #0xa0
 	lsls r5, r5, #0x13
 	adds r1, r5, #0
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201A8B4
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201D180
 	ldr r1, =0x06008000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201D3F0
 	ldr r1, =0x05000140
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201D420
 	ldr r1, =gUnknown_03003000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201D5A4
 	ldr r1, =gUnknown_03002800
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r1, =gUnknown_02022C20
 	movs r4, #0
 	movs r0, #1
@@ -8490,10 +8490,10 @@ sub_02004AC4: @ 0x02004AC4
 	strb r0, [r1, #3]
 	ldr r0, =gUnknown_0201D05C
 	ldr r1, =0x05000200
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201C5A4
 	ldr r1, =0x06010000
-	bl sub_020092C0
+	bl AutoUnCompVram
 	ldr r1, =0x00005108
 	adds r0, r1, #0
 	strh r0, [r5]
@@ -8585,7 +8585,7 @@ _02004C2A:
 	adds r5, r0, #0
 	ldr r0, [r4]
 	adds r1, r5, #0
-	bl LZ77UnCompVRAM
+	bl LZ77UnCompVram
 	ldr r4, =0x00000181
 	ldrh r0, [r6, #0xc]
 	cmp r0, r4
@@ -8611,7 +8611,7 @@ _02004C7A:
 	bl sub_0200C2BC
 	ldr r0, [r0]
 	adds r1, r5, #0
-	bl LZ77UnCompWRAM
+	bl LZ77UnCompWram
 	ldrh r6, [r6, #0xc]
 	cmp r6, r4
 	bne _02004CB2

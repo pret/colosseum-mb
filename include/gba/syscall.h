@@ -43,6 +43,8 @@ void RLUnCompWram(const void *src, void *dest);
 
 void RLUnCompVram(const void *src, void *dest);
 
+void HuffUnComp(const void *src, void *dest);
+
 int MultiBoot(struct MultiBootParam *mp);
 
 int Div(int dividend, int divisor);

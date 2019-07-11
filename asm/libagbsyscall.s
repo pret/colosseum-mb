@@ -24,18 +24,18 @@ HuffUnComp: @ 0x0200FD14
 	svc #0x13
 	bx lr
 
-	thumb_func_start LZ77UnCompVRAM
-LZ77UnCompVRAM: @ 0x0200FD18
+	thumb_func_start LZ77UnCompVram
+LZ77UnCompVram: @ 0x0200FD18
 	svc #0x12
 	bx lr
 
-	thumb_func_start LZ77UnCompWRAM
-LZ77UnCompWRAM: @ 0x0200FD1C
+	thumb_func_start LZ77UnCompWram
+LZ77UnCompWram: @ 0x0200FD1C
 	svc #0x11
 	bx lr
 
-	thumb_func_start RLUnCompVRAM
-RLUnCompVRAM: @ 0x0200FD20
+	thumb_func_start RLUnCompVram
+RLUnCompVram: @ 0x0200FD20
 	svc #0x15
 	bx lr
 

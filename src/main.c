@@ -59,7 +59,22 @@ struct RomInfo
     /*0xFC*/ const u8 *moveDescriptions;
 };
 
+struct UnkStruct_02020CD0
+{
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u16 unk4;
+    u16 unk6;
+    u16 unk8;
+    u16 unkA;
+    u32 unkC;
+    u32 unk10;
+    u32 unk14[4];
+};
+
 extern u8 ewram_start[];
+extern struct UnkStruct_02020CD0 gUnknown_02020CD0[];
 extern void (*gUnknown_02022BD0[])(void);
 extern u32 gUnknown_02022C08;
 extern void (*gUnknown_02022C0C)(void);
@@ -206,14 +221,15 @@ void sub_020087B4(void)
 void sub_0200880C(int bgNum, int left, int top, int width, int height, const u16 * src)
 {
     int x;
-    u16 * r2 = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+    u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+
     while (height)
     {
         for (x = 0; x < width; x++, src++)
         {
-            r2[x] = *src;
+            ptr[x] = *src;
         }
-        r2 += 32;
+        ptr += 32;
         height--;
     }
 }
@@ -221,14 +237,15 @@ void sub_0200880C(int bgNum, int left, int top, int width, int height, const u16
 void sub_02008850(int bgNum, int left, int top, int width, int height, u16 * dest)
 {
     int x;
-    u16 * r2 = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+    u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+
     while (height)
     {
         for (x = 0; x < width; x++, dest++)
         {
-            *dest = r2[x];
+            *dest = ptr[x];
         }
-        r2 += 32;
+        ptr += 32;
         height--;
     }
 }
@@ -236,15 +253,109 @@ void sub_02008850(int bgNum, int left, int top, int width, int height, u16 * des
 void sub_02008894(int bgNum, int left, int top, int width, int height, int paletteNum)
 {
     int x;
-    u16 * r2 = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+    u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+
     while (height)
     {
         for (x = 0; x < width; x++)
         {
-            r2[x] &= 0xFFF;
-            r2[x] |= paletteNum << 12;
+            ptr[x] &= 0xFFF;
+            ptr[x] |= paletteNum << 12;
         }
-        r2 += 32;
+        ptr += 32;
         height--;
+    }
+}
+
+void sub_020088E8(int bgNum, int x, int y, u16 tileNum)
+{
+    u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (y << 6) + (x << 1));
+    *ptr = tileNum;
+}
+
+void sub_02008904(int bgNum, int left, int top, int width, int height,u16 tileNum)
+{
+    int x;
+    u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
+
+    while (height)
+    {
+        for (x = 0; x < width; x++)
+        {
+            ptr[x] = tileNum;
+        }
+        ptr += 32;
+        height--;
+    }
+}
+
+void sub_02008948(int bgNum, int srcLeft, int srcTop, int width, int height, int destLeft, int destTop)
+{
+    int x;
+    const u16 * srcPtr;
+    u16 * destPtr;
+
+    srcPtr = (void *)(0x03000000 + (bgNum << 12) + (srcTop << 6) + (srcLeft << 1));
+    destPtr = (void *)(0x03000000 + (bgNum << 12) + (destTop << 6) + (destLeft << 1));
+
+    while (height)
+    {
+        for (x = 0; x < width; x++)
+        {
+            destPtr[x] = srcPtr[x];
+        }
+        srcPtr += 32;
+        destPtr += 32;
+        height--;
+    }
+}
+
+void sub_020089A4(int bgNum, u16 x, u16 y)
+{
+    gUnknown_02022C10[bgNum] = x;
+    gUnknown_02022C18[bgNum] = y;
+}
+
+void sub_020089BC(struct UnkStruct_02020CD0 * a0, struct UnkStruct_02020CD0 * a1)
+{
+    a1->unk1 = a0->unk1;
+    a1->unk0 = a0 - gUnknown_02020CD0;
+    a0->unk1 = gUnknown_02020CD0[a0->unk1].unk0 = a1 - gUnknown_02020CD0;
+}
+
+struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, s32 c)
+{
+    s32 i;
+    struct UnkStruct_02020CD0 * r7 = &gUnknown_02020CD0[gUnknown_02020CD0[0].unk1];
+    gUnknown_02020CD0[r7->unk0].unk1 = r7->unk1;
+    gUnknown_02020CD0[r7->unk1].unk0 = r7->unk0;
+    sub_020089BC(&gUnknown_02020CD0[1], r7);
+    r7->unk8 = a;
+    r7->unkA = b;
+    r7->unkC = c;
+    r7->unk2 = 0;
+    r7->unk4 = 0;
+    r7->unk6 = 0;
+    r7->unk10 = 0;
+    for (i = 0; i < 4; i++)
+        r7->unk14[i] = 0;
+    return r7;
+}
+
+asm(".section .text.020092C0");
+
+void AutoUnCompVram(const void * src, void * dest)
+{
+    switch (*(u8 *)src & 0xF0)
+    {
+    case 0x10:
+        LZ77UnCompVram(src, dest);
+        break;
+    case 0x20:
+        HuffUnComp(src, dest);
+        break;
+    case 0x30:
+        RLUnCompVram(src, dest);
+        break;
     }
 }
