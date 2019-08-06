@@ -6,10 +6,16 @@ OBJCOPY := $(PREFIX)objcopy
 PREPROC := tools/preproc/preproc
 SCANINC := tools/scaninc/scaninc
 RAMSCRGEN := tools/ramscrgen/ramscrgen
+GBAFIX := tools/gbafix/gbafix
+GBAGFX := tools/gbagfx/gbagfx
+PYTHON := python3
 
-NAME := payload
+NAME := colosseum-mb
 ROM := $(NAME).gba
 ELF := $(NAME).elf
+
+PAYLOAD   := payload/payload.gba
+PAYLOADLZ := $(PAYLOAD).lz
 
 OBJ_DIR := build/$(NAME)
 
@@ -39,6 +45,7 @@ $(OBJ_DIR)/src/unk_200E344.o: CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -
 $(OBJ_DIR)/src/siirtc.o:      CC1    := tools/agbcc/bin/agbcc
 $(OBJ_DIR)/src/siirtc.o:      CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
 
+MAKEFLAGS += --no-print-directory
 # Build tools when building the rom
 # Disable dependency scanning for clean/tidy/tools
 ifeq (,$(filter-out all compare,$(MAKECMDGOALS)))
@@ -54,9 +61,10 @@ $(shell mkdir -p $(SUBDIRS:%=$(OBJ_DIR)/%))
 .DELETE_ON_ERROR:
 .SECONDEXPANSION:
 
-.PHONY: all rom clean compare tools cleantools mostlyclean
+.PHONY: all rom clean compare tools cleantools mostlyclean payload
 
 all: rom
+	@:
 
 rom: $(ROM)
 
@@ -93,20 +101,24 @@ $(C_OBJS): $(OBJ_DIR)/%.o: %.c $$(c_dep)
 $(DATA_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(data_dep)
 	$(PREPROC) $< charmap.txt | $(CPP) $(CPPFLAGS) | $(AS) $(ASFLAGS) -o $@
 
-$(OBJ_DIR)/sym_bss.ld: sym_bss.txt
-	$(RAMSCRGEN) .bss $< ENGLISH > $@
-
-$(OBJ_DIR)/sym_common.ld: sym_common.txt $(C_OBJS) $(wildcard common_syms/*.txt)
-	$(RAMSCRGEN) COMMON $< ENGLISH -c $(C_BUILDDIR),common_syms > $@
-
-$(OBJ_DIR)/sym_ewram.ld: sym_ewram.txt
-	$(RAMSCRGEN) ewram_data $< ENGLISH > $@
-
-$(OBJ_DIR)/ld_script.ld: ld_script.txt $(OBJ_DIR)/sym_bss.ld $(OBJ_DIR)/sym_common.ld $(OBJ_DIR)/sym_ewram.ld
-	cd $(OBJ_DIR) && sed -f ../../ld_script.sed ../../$< | sed "s#tools/#../../tools/#g" > ld_script.ld
+$(OBJ_DIR)/ld_script.ld: ld_script.txt
+	cd $(OBJ_DIR) && sed "s#tools/#../../tools/#g" ../../$< > ld_script.ld
 
 $(ELF): $(OBJ_DIR)/ld_script.ld $(ALL_OBJS)
 	cd $(OBJ_DIR) && $(LD) -Map ../../$(NAME).map -T ../../$< -o ../../$@ $(LIBS)
+	$(GBAFIX) $@ -cTEST -m01 -r0 --silent
 
 $(ROM): $(ELF)
-	$(OBJCOPY) -O binary $< $@
+	$(OBJCOPY) -O binary --gap-fill 0 --pad-to 0x2028000 $< $@
+	$(GBAFIX) $@ --silent
+	@# Hack to get the ROM checksum to match
+	$(PYTHON) fixrom.py $@
+
+payload: $(PAYLOADLZ)
+	@:
+
+%.lz: %
+	$(GBAGFX) $< $@
+
+$(PAYLOAD):
+	@make -C payload

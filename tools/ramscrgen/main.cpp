@@ -27,15 +27,9 @@
 
 void HandleCommonInclude(std::string filename, std::string sourcePath, std::string symOrderPath, std::string lang)
 {
-    auto commonSymbols = GetCommonSymbols(sourcePath, filename);
-    std::size_t dotIndex;
+    auto commonSymbols = GetCommonSymbols(sourcePath + "/" + filename);
 
-    if (filename[0] == '*') {
-        dotIndex = filename.find_last_of(':');
-        filename = filename.substr(dotIndex + 1);
-    }
-
-    dotIndex = filename.find_last_of('.');
+    std::size_t dotIndex = filename.find_last_of('.');
 
     if (dotIndex == std::string::npos)
         FATAL_ERROR("error: \"%s\" doesn't have a file extension\n", filename.c_str());
@@ -79,7 +73,7 @@ void HandleCommonInclude(std::string filename, std::string sourcePath, std::stri
     }
 }
 
-void ConvertSymFile(std::string filename, std::string sectionName, std::string lang, bool common, std::string sourcePath, std::string commonSymPath, std::string libSourcePath)
+void ConvertSymFile(std::string filename, std::string sectionName, std::string lang, bool common, std::string sourcePath, std::string commonSymPath)
 {
     SymFile symFile(filename);
 
@@ -97,7 +91,7 @@ void ConvertSymFile(std::string filename, std::string sectionName, std::string l
             symFile.ExpectEmptyRestOfLine();
             printf(". = ALIGN(4);\n");
             if (common)
-                HandleCommonInclude(incFilename, incFilename[0] == '*' ? libSourcePath : sourcePath, commonSymPath, lang);
+                HandleCommonInclude(incFilename, sourcePath, commonSymPath, lang);
             else
                 printf("%s(%s);\n", incFilename.c_str(), sectionName.c_str());
             break;
@@ -154,7 +148,6 @@ int main(int argc, char **argv)
     std::string lang = std::string(argv[3]);
     std::string sourcePath;
     std::string commonSymPath;
-    std::string libSourcePath;
 
     if (argc > 4)
     {
@@ -173,15 +166,8 @@ int main(int argc, char **argv)
 
         sourcePath = paths.substr(0, commaPos);
         commonSymPath = paths.substr(commaPos + 1);
-        commaPos = commonSymPath.find(',');
-        if (commaPos == std::string::npos) {
-            libSourcePath = "tools/agbcc/lib";
-        } else {
-            libSourcePath = commonSymPath.substr(commaPos + 1);
-            commonSymPath = commonSymPath.substr(0, commaPos);
-        }
     }
 
-    ConvertSymFile(symFileName, sectionName, lang, common, sourcePath, commonSymPath, libSourcePath);
+    ConvertSymFile(symFileName, sectionName, lang, common, sourcePath, commonSymPath);
     return 0;
 }

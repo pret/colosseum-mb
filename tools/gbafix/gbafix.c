@@ -62,14 +62,14 @@ typedef struct
     uint8_t        logo[0xA0-0x04];    // logo data
     uint8_t        title[0xC];            // game title name
     uint32_t    game_code;            //
-    uint16_t    maker_code;            // b0
-    uint8_t        fixed;                // 0x96 b2
-    uint8_t        unit_code;            // 0x00 b3
-    uint8_t        device_type;        // 0x00 b4
+    uint16_t    maker_code;            //
+    uint8_t        fixed;                // 0x96
+    uint8_t        unit_code;            // 0x00
+    uint8_t        device_type;        // 0x00
     uint8_t        unused[7];            //
-    uint8_t        game_version;        // 0x00 bc
-    uint8_t        complement;            // 800000A0..800000BC bd
-    uint16_t    checksum;            // 0x0000 be
+    uint8_t        game_version;        // 0x00
+    uint8_t        complement;            // 800000A0..800000BC
+    uint16_t    checksum;            // 0x0000
 } Header;
 
 
@@ -142,7 +142,6 @@ int main(int argc, char *argv[])
     int schedule_pad = 0;
 
     int size,bit;
-    int noLogo = 0;
 
     // show syntax
     if (argc <= 1)
@@ -157,7 +156,6 @@ int main(int argc, char *argv[])
         printf("    -m<maker_code>  Patch maker code (two characters)\n");
         printf("    -r<version>     Patch game version (number)\n");
         printf("    -d<debug>       Enable debugging handler and set debug entry point (0 or 1)\n");
-        printf("    -L              Don't fix logo\n");
         printf("    --silent           Silence non-error output\n");
         return -1;
     }
@@ -201,6 +199,7 @@ int main(int argc, char *argv[])
     }
 
     // fix some data
+    memcpy(header.logo, good_header.logo, sizeof(header.logo));
     memcpy(&header.fixed, &good_header.fixed, sizeof(header.fixed));
     memcpy(&header.device_type, &good_header.device_type, sizeof(header.device_type));
 
@@ -211,9 +210,6 @@ int main(int argc, char *argv[])
         {
             switch (ARGV[1])
             {
-                case 'L':
-                    noLogo = 1;
-                    break;
                 case 'p':    // pad
                 {
                     schedule_pad = 1;
@@ -289,10 +285,6 @@ int main(int argc, char *argv[])
             }
         }
     }
-
-    // fix some data
-    if (!noLogo)
-        memcpy(header.logo, good_header.logo, sizeof(header.logo));
 
     // update complement check & total checksum
     header.complement = 0;

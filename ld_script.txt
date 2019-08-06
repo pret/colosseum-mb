@@ -1,51 +1,38 @@
 SECTIONS {
-    . = 0x02000000;
+	. = 0x02000000;
     .text :
     ALIGN(4)
     {
 		asm/crt0.o(.text);
-        asm/all.o(.text);
-		asm/m4a.o(.text);
-		src/main.o(.text);
-		asm/main.o(.text);
-		src/main.o(.text.020092C0);
-		asm/main.o(.text.020092F0);
-		src/unk_200E344.o(.text);
-		asm/unk_200E344.o(.text);
-		src/siirtc.o(.text);
+        src/main.o(.text);
 		asm/libagbsyscall.o(.text);
 		*libgcc.a:_call_via_rX.o(.text);
-		*libgcc.a:_divsi3.o(.text);
-		*libgcc.a:_dvmd_tls.o(.text);
-		*libgcc.a:_modsi3.o(.text);
-		*libgcc.a:_umodsi3.o(.text);
-		*libc.a:memcpy.o(.text);
     } =0
+
+    . += 0x100;
     .rodata :
     ALIGN(4)
     {
-		data/all.o(.rodata);
-		data/m4a.o(.rodata);
-		data/main.o(.rodata);
-		src/unk_200E344.o(.rodata);
-		data/all.o(.data);
-		data/main.o(.data);
+		data/payload.o(.rodata);
+		. = ALIGN(16);
+		src/main.o(.rodata);
     } =0
-	ewram_start = .;
-    wram (NOLOAD) :
+    bootstrap :
     ALIGN(4)
     {
-	<BSS>
-	<EWRAM>
+    	asm/iwram.o(.text);
+    } =0
+
+    . = 0x3000000;
+    iwram (NOLOAD) :
+    ALIGN(4)
+    {
+		arm_LZ77UnCompWRAM_Buffer = .;
+		. += 0x130;
+		arm_LZ77UnCompWRAM_FuncStart = .;
+		. += 0x94;
+		arm_LZ77UnCompWRAM_BufferEnd = .;
     }
-	ewram_end = .;
-	wram_extra (NOLOAD) :
-	ALIGN(4)
-	{
-	gUnknown_0202526C = .;
-	}
-	. = 0x080000C6;
-	GPIOPortDirection = .;
     /DISCARD/ :
     {
         *(*);
