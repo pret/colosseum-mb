@@ -22,5 +22,8 @@ void m4aMPlayFadeOut(struct MusicPlayerInfo *mplayInfo, u16 speed);
 void m4aMPlayFadeOutTemporarily(struct MusicPlayerInfo *mplayInfo);
 void m4aMPlayFadeIn(struct MusicPlayerInfo *mplayInfo, u16 speed);
 void m4aMPlayImmInit(struct MusicPlayerInfo *mplayInfo);
+void m4aMPlayVolumeControl(struct MusicPlayerInfo * mplayInfo, u16 chanMask, u16 volume);
+void m4aMPlayTempoControl(struct MusicPlayerInfo * mplayInfo, u16 volume);
+void m4aMPlayPitchControl(struct MusicPlayerInfo * mplayInfo, u16 chanMask, s16 pitch);
 
 #endif //GUARD_M4A_H

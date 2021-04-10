@@ -416,3 +416,69 @@ void sub_02009344(u16 a0)
     MPlayStart(mPlayInfo, gUnknown_0201DE04[a0].songHeader);
     m4aMPlayFadeOutTemporarily(mPlayInfo);
 }
+
+void sub_02009378(u16 a0)
+{
+    struct MusicPlayerInfo * mPlayInfo;
+
+    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    m4aMPlayStop(mPlayInfo);
+}
+
+void sub_020093A0(void)
+{
+    m4aMPlayAllStop();
+}
+
+bool8 sub_020093AC(void)
+{
+    return TRUE;
+}
+
+void sub_020093B0(u16 a0, u16 a1)
+{
+    struct MusicPlayerInfo * mPlayInfo;
+
+    u16 speed = a1 >> 4;
+    if (speed == 0)
+        speed = 1;
+
+    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    m4aMPlayFadeOut(mPlayInfo, speed);
+}
+
+void sub_020093E8(u16 a0, u16 a1)
+{
+    struct MusicPlayerInfo * mPlayInfo;
+
+    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    m4aMPlayVolumeControl(mPlayInfo, 0xFF, a1);
+}
+
+void sub_0200941C(u16 a0, u16 a1)
+{
+    struct MusicPlayerInfo * mPlayInfo;
+
+    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    m4aMPlayTempoControl(mPlayInfo, a1);
+}
+
+void sub_0200944C(u16 a0, s16 a1)
+{
+    struct MusicPlayerInfo * mPlayInfo;
+
+    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    m4aMPlayPitchControl(mPlayInfo, 0xFF, a1);
+}
+
+void sub_02009480(void)
+{
+    gUnknown_02021369 = 0;
+    m4aSoundVSyncOff();
+}
+
+void sub_02009494(void)
+{
+    m4aSoundVSyncOn();
+    gUnknown_02021369 = 1;
+}
