@@ -59,6 +59,14 @@ struct RomInfo
     /*0xFC*/ const u8 *moveDescriptions;
 };
 
+struct UnkStruct_02020CD0_sub
+{
+    u32 unk_0;
+    struct Coords16 pos;
+    u16 unk_8;
+    u16 unk_a;
+};
+
 struct UnkStruct_02020CD0
 {
     u8 unk0;
@@ -66,9 +74,8 @@ struct UnkStruct_02020CD0
     u8 unk2;
     u16 unk4;
     u16 unk6;
-    u16 unk8;
-    u16 unkA;
-    u32 unkC;
+    struct Coords16 unk8;
+    const struct UnkStruct_02020CD0_sub * unkC;
     void (*unk10)(struct UnkStruct_02020CD0 *);
     void * unk14[4];
 };
@@ -329,15 +336,15 @@ void sub_020089BC(struct UnkStruct_02020CD0 * a0, struct UnkStruct_02020CD0 * a1
     a0->unk1 = gUnknown_02020CD0[a0->unk1].unk0 = a1 - gUnknown_02020CD0;
 }
 
-struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, s32 c)
+struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, const struct UnkStruct_02020CD0_sub * c)
 {
     s32 i;
     struct UnkStruct_02020CD0 * r7 = &gUnknown_02020CD0[gUnknown_02020CD0[0].unk1];
     gUnknown_02020CD0[r7->unk0].unk1 = r7->unk1;
     gUnknown_02020CD0[r7->unk1].unk0 = r7->unk0;
     sub_020089BC(&gUnknown_02020CD0[1], r7);
-    r7->unk8 = a;
-    r7->unkA = b;
+    r7->unk8.x = a;
+    r7->unk8.y = b;
     r7->unkC = c;
     r7->unk2 = 0;
     r7->unk4 = 0;
@@ -346,6 +353,106 @@ struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, s32 c)
     for (i = 0; i < 4; i++)
         r7->unk14[i] = NULL;
     return r7;
+}
+
+struct UnkStruct_02020F58
+{
+    struct OamData unk_0000[0x80];
+    u8 unk_4000;
+};
+
+extern struct UnkStruct_02020F58 gUnknown_02020F58;
+
+void sub_02008A84(struct UnkStruct_02020CD0 * ptr)
+{
+    u32 ip;
+    struct OamData * r7;
+    const struct UnkStruct_02020CD0_sub * r4;
+    s32 r0;
+    s32 r5;
+    s32 r3;
+    s32 sb;
+    u32 r2;
+    u32 r8;
+
+    ip = gUnknown_02020F58.unk_4000;
+    r7 = &gUnknown_02020F58.unk_0000[ip];
+
+    r4 = ptr->unkC;
+    while (r4->unk_0 != 0xFFFF)
+    {
+        if (ip == 0x80)
+            return;
+
+        if ((r5 = r4->pos.x + ptr->unk8.x) < 0xF0 && (r3 = r4->pos.y + ptr->unk8.y) < 0xA0)
+        {
+            r2 = ((r4->unk_0 & 0xC000) >> 12) + (r4->unk_0 >> 30);
+            r8 = r4->unk_0;
+            switch (r2)
+            {
+            case 0:
+            case 8:
+            case 9:
+                r0 = 8;
+                break;
+            case 1:
+            case 4:
+            case 10:
+                r0 = 16;
+                break;
+            case 2:
+            case 5:
+            case 6:
+            case 11:
+                r0 = 32;
+                break;;
+            case 3:
+            case 7:
+                r0 = 64;
+                break;
+            default:
+                r0 = 0;
+                break;
+            }
+            if (r5 + r0 >= 0)
+            {
+                switch (r2)
+                {
+                case 0:
+                case 4:
+                case 5:
+                    sb = 8;
+                    break;
+                case 1:
+                case 6:
+                case 8:
+                    sb = 16;
+                    break;
+                case 2:
+                case 7:
+                case 9:
+                case 10:
+                    sb = 32;
+                    break;
+                case 3:
+                case 11:
+                    sb = 64;
+                    break;
+                }
+                if (r3 + sb >= 0)
+                {
+                    r5 &= 0x1FF;
+                    r3 &= 0xFF;
+                    *(u32 *)r7 = r3 | ((r5 << 16) | r8);
+                    *((u16 *)r7 + 2) = ((r4->unk_8 & 0xFFF) | ptr->unk4) + ptr->unk6;
+                    r7++;
+                    ip++;
+                }
+            }
+        }
+        r4++;
+    }
+    gUnknown_02020F58.unk_4000 = ip;
 }
 
 asm(".section .text.020092C0");

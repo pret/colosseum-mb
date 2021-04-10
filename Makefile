@@ -127,7 +127,7 @@ $(ELF): $(OBJ_DIR)/ld_script.ld $(ALL_OBJS)
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary --gap-fill $(GAPFILL) --pad-to 0x2028000 $< $@
 	$(GBAFIX) $@ --silent
-	@# Hack to get the ROM checksum to match
+	@# Hack to get the ROM header complement to match
 	$(PYTHON) fixrom.py $@
 
 %.lz: %
