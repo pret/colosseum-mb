@@ -11,6 +11,18 @@ GBAGFX := tools/gbagfx/gbagfx
 PYTHON := python3
 
 NAME := colosseum-mb
+TARGET ?= EM
+ifeq ($(TARGET),EM)
+GAPFILL := 0
+NAME := $(NAME)-em
+else
+ifeq ($(TARGET),FRLG)
+GAPFILL := 255
+NAME := $(NAME)-frlg
+else
+$(error TARGET must be one of "EM" or "FRLG")
+endif
+endif
 ROM := $(NAME).gba
 ELF := $(NAME).elf
 
@@ -61,20 +73,24 @@ $(shell mkdir -p $(SUBDIRS:%=$(OBJ_DIR)/%))
 .DELETE_ON_ERROR:
 .SECONDEXPANSION:
 
-.PHONY: all rom clean compare tools cleantools mostlyclean payload
+.PHONY: all rom clean compare tools cleantools mostlyclean payload frlg em
+
+ALL_ROMS := colosseum-mb-em.gba colosseum-mb-frlg.gba
 
 all: rom
 	@:
 
 rom: $(ROM)
 ifeq ($(COMPARE),1)
-	sha1sum -c rom.sha1
+	sha1sum -c $(NAME).sha1
 endif
 
 mostlyclean:
-	rm -f $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS)
+	$(MAKE) -C payload mostlyclean
+	$(RM) -r $(ALL_ROMS) $(ALL_ROMS:%.gba=%.elf) $(ALL_ROMS:%.gba=%.map) build/
 
 clean: mostlyclean
+	$(MAKE) -C payload clean
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) clean -C $(tool);)
 
 tools:
@@ -109,7 +125,7 @@ $(ELF): $(OBJ_DIR)/ld_script.ld $(ALL_OBJS)
 	$(GBAFIX) $@ -cTEST -m01 -r0 --silent
 
 $(ROM): $(ELF)
-	$(OBJCOPY) -O binary --gap-fill 0 --pad-to 0x2028000 $< $@
+	$(OBJCOPY) -O binary --gap-fill $(GAPFILL) --pad-to 0x2028000 $< $@
 	$(GBAFIX) $@ --silent
 	@# Hack to get the ROM checksum to match
 	$(PYTHON) fixrom.py $@
@@ -125,3 +141,6 @@ $(PAYLOAD): payload
 
 compare:
 	@$(MAKE) COMPARE=1
+
+frlg: ; @$(MAKE) TARGET=FRLG
+em:   ; @$(MAKE) TARGET=EM

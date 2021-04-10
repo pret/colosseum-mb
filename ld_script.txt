@@ -7,9 +7,9 @@ SECTIONS {
         src/main.o(.text);
 		asm/libagbsyscall.o(.text);
 		*libgcc.a:_call_via_rX.o(.text);
+    	. += 0x100;
     } =0
 
-    . += 0x100;
     .rodata :
     ALIGN(4)
     {
