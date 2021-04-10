@@ -88,6 +88,8 @@ extern u8 ewram_end[];
 BSS_DATA u16 gUnknown_02021360;
 BSS_DATA u16 gUnknown_02021362;
 BSS_DATA u16 gUnknown_02021364;
+BSS_DATA u8 gUnknown_02021368;
+BSS_DATA u8 gUnknown_02021369;
 
 void sub_02008638(void);
 void sub_020086B8(void);
@@ -98,7 +100,7 @@ void sub_02008C00(void);
 void sub_02008C80(void);
 void sub_02008D1C(void);
 void sub_02009228(void);
-bool32 sub_02009324(u8);
+bool32 sub_02009324(u32);
 
 extern void sub_020002B4(void);
 
@@ -369,4 +371,48 @@ void AutoUnCompVram(const void * src, void * dest)
         RLUnCompVram(src, dest);
         break;
     }
+}
+
+void sub_020092F0(void)
+{
+    gUnknown_02021368 = 0;
+    gUnknown_02021369 = 0;
+    m4aSoundInit();
+}
+
+void sub_0200930C(void)
+{
+    gUnknown_02021368 = 1;
+    gUnknown_02021369 = 0;
+}
+
+bool32 sub_02009324(u32 a0)
+{
+    if (a0 && gUnknown_02021368)
+        gUnknown_02021369 = 1;
+    return gUnknown_02021369;
+}
+
+struct UnkStruct_201DE04
+{
+    struct SongHeader * songHeader;
+    u16 player;
+};
+
+struct UnkStruct_201DDF8
+{
+    struct MusicPlayerInfo * mPlayInfo;
+    u8 unknown[8];
+};
+
+extern const struct UnkStruct_201DE04 gUnknown_0201DE04[];
+extern const struct UnkStruct_201DDF8 gUnknown_0201DDF8[];
+
+void sub_02009344(u16 a0)
+{
+    struct MusicPlayerInfo * mPlayInfo;
+
+    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    MPlayStart(mPlayInfo, gUnknown_0201DE04[a0].songHeader);
+    m4aMPlayFadeOutTemporarily(mPlayInfo);
 }
