@@ -60,6 +60,9 @@ all: rom
 	@:
 
 rom: $(ROM)
+ifeq ($(COMPARE),1)
+	sha1sum -c rom.sha1
+endif
 
 mostlyclean:
 	rm -f $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS)
@@ -67,8 +70,8 @@ mostlyclean:
 clean: mostlyclean
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) clean -C $(tool);)
 
-compare: rom
-	sha1sum -c rom.sha1
+compare:
+	@$(MAKE) COMPARE=1
 
 tools:
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) -C $(tool);)

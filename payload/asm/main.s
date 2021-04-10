@@ -1101,19 +1101,6 @@ _02009298:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_020092A4
-sub_020092A4: @ 0x020092A4
-	ldr r2, =gUnknown_02021360
-	strh r0, [r2]
-	ldr r0, =gUnknown_02021362
-	strh r1, [r0]
-	ldr r1, =gUnknown_02021364
-	movs r0, #1
-	strh r0, [r1]
-	bx lr
-	.align 2, 0
-	.pool
-
 	.section .text.020092F0
 
 	thumb_func_start sub_020092F0

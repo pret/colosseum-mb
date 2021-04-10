@@ -67,15 +67,15 @@ all: rom
 	@:
 
 rom: $(ROM)
+ifeq ($(COMPARE),1)
+	sha1sum -c rom.sha1
+endif
 
 mostlyclean:
 	rm -f $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS)
 
 clean: mostlyclean
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) clean -C $(tool);)
-
-compare: rom
-	sha1sum -c rom.sha1
 
 tools:
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) -C $(tool);)
@@ -114,11 +114,14 @@ $(ROM): $(ELF)
 	@# Hack to get the ROM checksum to match
 	$(PYTHON) fixrom.py $@
 
-payload: $(PAYLOADLZ)
-	@:
-
 %.lz: %
 	$(GBAGFX) $< $@
 
-$(PAYLOAD):
-	@make -C payload
+payload:
+	@$(MAKE) -C payload COMPARE=$(COMPARE)
+
+$(PAYLOAD): payload
+	@:
+
+compare:
+	@$(MAKE) COMPARE=1

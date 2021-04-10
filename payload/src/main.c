@@ -85,6 +85,10 @@ extern u16 gUnknown_02022EB8;
 extern struct RomInfo *gUnknown_020251E8;
 extern u8 ewram_end[];
 
+BSS_DATA u16 gUnknown_02021360;
+BSS_DATA u16 gUnknown_02021362;
+BSS_DATA u16 gUnknown_02021364;
+
 void sub_02008638(void);
 void sub_020086B8(void);
 void sub_02008708(void);
@@ -343,6 +347,13 @@ struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, s32 c)
 }
 
 asm(".section .text.020092C0");
+
+void sub_020092A4(u16 a0, u16 a1)
+{
+    gUnknown_02021360 = a0;
+    gUnknown_02021362 = a1;
+    gUnknown_02021364 = 1;
+}
 
 void AutoUnCompVram(const void * src, void * dest)
 {
