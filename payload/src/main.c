@@ -61,7 +61,7 @@ struct RomInfo
 
 struct UnkStruct_02020CD0_sub
 {
-    u32 unk_0;
+    u32 oam;
     struct Coords16 pos;
     u16 unk_8;
     u16 unk_a;
@@ -74,8 +74,8 @@ struct UnkStruct_02020CD0
     u8 unk2;
     u16 unk4;
     u16 unk6;
-    struct Coords16 unk8;
-    const struct UnkStruct_02020CD0_sub * unkC;
+    struct Coords16 spritesOffset;
+    const struct UnkStruct_02020CD0_sub * spriteTemplates;
     void (*unk10)(struct UnkStruct_02020CD0 *);
     void * unk14[4];
 };
@@ -343,9 +343,9 @@ struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, const struct UnkStruct_02
     gUnknown_02020CD0[r7->unk0].unk1 = r7->unk1;
     gUnknown_02020CD0[r7->unk1].unk0 = r7->unk0;
     sub_020089BC(&gUnknown_02020CD0[1], r7);
-    r7->unk8.x = a;
-    r7->unk8.y = b;
-    r7->unkC = c;
+    r7->spritesOffset.x = a;
+    r7->spritesOffset.y = b;
+    r7->spriteTemplates = c;
     r7->unk2 = 0;
     r7->unk4 = 0;
     r7->unk6 = 0;
@@ -357,102 +357,131 @@ struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, const struct UnkStruct_02
 
 struct UnkStruct_02020F58
 {
-    struct OamData unk_0000[0x80];
-    u8 unk_4000;
+    struct OamData oamBuffer[0x80];
+    u8 numSprites;
 };
 
 extern struct UnkStruct_02020F58 gUnknown_02020F58;
 
 void sub_02008A84(struct UnkStruct_02020CD0 * ptr)
 {
-    u32 ip;
-    struct OamData * r7;
-    const struct UnkStruct_02020CD0_sub * r4;
-    s32 r0;
-    s32 r5;
-    s32 r3;
-    s32 sb;
-    u32 r2;
-    u32 r8;
+    u32 num_sprites;
+    struct OamData * oam_p;
+    const struct UnkStruct_02020CD0_sub * templates;
+    s32 width;
+    s32 left;
+    s32 top;
+    s32 height;
+    u32 size;
+    u32 flags;
 
-    ip = gUnknown_02020F58.unk_4000;
-    r7 = &gUnknown_02020F58.unk_0000[ip];
+    num_sprites = gUnknown_02020F58.numSprites;
+    oam_p = &gUnknown_02020F58.oamBuffer[num_sprites];
 
-    r4 = ptr->unkC;
-    while (r4->unk_0 != 0xFFFF)
+    templates = ptr->spriteTemplates;
+    while (templates->oam != 0xFFFF)
     {
-        if (ip == 0x80)
+        if (num_sprites == 0x80)
             return;
 
-        if ((r5 = r4->pos.x + ptr->unk8.x) < 0xF0 && (r3 = r4->pos.y + ptr->unk8.y) < 0xA0)
+        if ((left = templates->pos.x + ptr->spritesOffset.x) < 0xF0 && (top = templates->pos.y + ptr->spritesOffset.y) < 0xA0)
         {
-            r2 = ((r4->unk_0 & 0xC000) >> 12) + (r4->unk_0 >> 30);
-            r8 = r4->unk_0;
-            switch (r2)
+            size = ((templates->oam & 0xC000) >> 12) + (templates->oam >> 30);
+            flags = templates->oam;
+            switch (size)
             {
-            case 0:
-            case 8:
-            case 9:
-                r0 = 8;
+            case SPRITE_SIZE_8x8:
+            case SPRITE_SIZE_8x16:
+            case SPRITE_SIZE_8x32:
+                width = 8;
                 break;
-            case 1:
-            case 4:
-            case 10:
-                r0 = 16;
+            case SPRITE_SIZE_16x16:
+            case SPRITE_SIZE_16x8:
+            case SPRITE_SIZE_16x32:
+                width = 16;
                 break;
-            case 2:
-            case 5:
-            case 6:
-            case 11:
-                r0 = 32;
+            case SPRITE_SIZE_32x32:
+            case SPRITE_SIZE_32x8:
+            case SPRITE_SIZE_32x16:
+            case SPRITE_SIZE_32x64:
+                width = 32;
                 break;;
-            case 3:
-            case 7:
-                r0 = 64;
+            case SPRITE_SIZE_64x64:
+            case SPRITE_SIZE_64x32:
+                width = 64;
                 break;
             default:
-                r0 = 0;
+                width = 0;
                 break;
             }
-            if (r5 + r0 >= 0)
+            if (left + width >= 0)
             {
-                switch (r2)
+                switch (size)
                 {
-                case 0:
-                case 4:
-                case 5:
-                    sb = 8;
+                case SPRITE_SIZE_8x8:
+                case SPRITE_SIZE_16x8:
+                case SPRITE_SIZE_32x8:
+                    height = 8;
                     break;
-                case 1:
-                case 6:
-                case 8:
-                    sb = 16;
+                case SPRITE_SIZE_16x16:
+                case SPRITE_SIZE_32x16:
+                case SPRITE_SIZE_8x16:
+                    height = 16;
                     break;
-                case 2:
-                case 7:
-                case 9:
-                case 10:
-                    sb = 32;
+                case SPRITE_SIZE_32x32:
+                case SPRITE_SIZE_64x32:
+                case SPRITE_SIZE_8x32:
+                case SPRITE_SIZE_16x32:
+                    height = 32;
                     break;
-                case 3:
-                case 11:
-                    sb = 64;
+                case SPRITE_SIZE_64x64:
+                case SPRITE_SIZE_32x64:
+                    height = 64;
                     break;
                 }
-                if (r3 + sb >= 0)
+                if (top + height >= 0)
                 {
-                    r5 &= 0x1FF;
-                    r3 &= 0xFF;
-                    *(u32 *)r7 = r3 | ((r5 << 16) | r8);
-                    *((u16 *)r7 + 2) = ((r4->unk_8 & 0xFFF) | ptr->unk4) + ptr->unk6;
-                    r7++;
-                    ip++;
+                    left &= 0x1FF;
+                    top &= 0xFF;
+                    *(u32 *)oam_p = top | ((left << 16) | flags);
+                    *((u16 *)oam_p + 2) = ((templates->unk_8 & 0xFFF) | ptr->unk4) + ptr->unk6;
+                    oam_p++;
+                    num_sprites++;
                 }
             }
         }
-        r4++;
+        templates++;
     }
-    gUnknown_02020F58.unk_4000 = ip;
+    gUnknown_02020F58.numSprites = num_sprites;
+}
+
+void sub_02008C00(void)
+{
+    s32 r2;
+    s32 i;
+    struct OamData * r4;
+    struct UnkStruct_02020CD0 * ptr;
+
+    i = gUnknown_02020CD0[1].unk1;
+
+    while (i != 1)
+    {
+        ptr = &gUnknown_02020CD0[i];
+
+        if (ptr->unk10 != NULL)
+            ptr->unk10(ptr);
+
+        if (!(ptr->unk2 & 1))
+            sub_02008A84(ptr);
+        i = ptr->unk1;
+    }
+
+    r4 = &gUnknown_02020F58.oamBuffer[gUnknown_02020F58.numSprites];
+    for (r2 = gUnknown_02020F58.numSprites; r2 < 0x80 && *(u16 *)r4 != 0x200; r2++, r4++)
+    {
+        *(u16 *)r4 = 0x200;
+    }
+    gUnknown_02020F58.numSprites = 0;
 }
 
 asm(".section .text.020092C0");
