@@ -92,12 +92,6 @@ extern u16 gUnknown_02022EB8;
 extern struct RomInfo *gUnknown_020251E8;
 extern u8 ewram_end[];
 
-BSS_DATA u16 gUnknown_02021360;
-BSS_DATA u16 gUnknown_02021362;
-BSS_DATA u16 gUnknown_02021364;
-BSS_DATA u8 gUnknown_02021368;
-BSS_DATA u8 gUnknown_02021369;
-
 void sub_02008638(void);
 void sub_020086B8(void);
 void sub_02008708(void);
@@ -329,6 +323,14 @@ void sub_020089A4(int bgNum, u16 x, u16 y)
     gUnknown_02022C18[bgNum] = y;
 }
 
+struct UnkStruct_02020F58
+{
+    struct OamData oamBuffer[0x80];
+    u8 numSprites;
+};
+
+BSS_DATA struct UnkStruct_02020F58 gUnknown_02020F58;
+
 void sub_020089BC(struct UnkStruct_02020CD0 * a0, struct UnkStruct_02020CD0 * a1)
 {
     a1->unk1 = a0->unk1;
@@ -354,14 +356,6 @@ struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, const struct UnkStruct_02
         r7->unk14[i] = NULL;
     return r7;
 }
-
-struct UnkStruct_02020F58
-{
-    struct OamData oamBuffer[0x80];
-    u8 numSprites;
-};
-
-extern struct UnkStruct_02020F58 gUnknown_02020F58;
 
 void sub_02008A84(struct UnkStruct_02020CD0 * ptr)
 {
@@ -518,7 +512,15 @@ void sub_02008D1C(void)
     DmaCopy32(3, gUnknown_02020F58.oamBuffer, (void *)OAM, OAM_SIZE);
 }
 
+BSS_DATA u32 ** gUnknown_0202135C;
+
 asm(".section .text.020092C0");
+
+BSS_DATA u16 gUnknown_02021360;
+BSS_DATA u16 gUnknown_02021362;
+BSS_DATA u16 gUnknown_02021364;
+BSS_DATA u8 gUnknown_02021368;
+BSS_DATA u8 gUnknown_02021369;
 
 void sub_020092A4(u16 a0, u16 a1)
 {

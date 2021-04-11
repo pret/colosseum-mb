@@ -36,6 +36,7 @@ SECTIONS {
     ALIGN(4)
     {
 	<BSS>
+	<COMMON>
 	<EWRAM>
     }
 	ewram_end = .;
