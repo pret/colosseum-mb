@@ -484,6 +484,40 @@ void sub_02008C00(void)
     gUnknown_02020F58.numSprites = 0;
 }
 
+void sub_02008C80(void)
+{
+    s32 i;
+    struct OamData * r2;
+    struct UnkStruct_02020CD0 * r4;
+
+    CpuFill16(0, gUnknown_02020CD0, sizeof(gUnknown_02020CD0));
+    gUnknown_02020CD0[0].unk1 = 0;
+    gUnknown_02020CD0[0].unk0 = 0;
+    gUnknown_02020CD0[1].unk1 = 1;
+    gUnknown_02020CD0[1].unk0 = 1;
+
+    for (i = 2; i < 18; i++)
+    {
+        sub_020089BC(&gUnknown_02020CD0[0], &gUnknown_02020CD0[i]);
+    }
+    gUnknown_02020F58.numSprites = 0;
+    r2 = &gUnknown_02020F58.oamBuffer[0];
+    for (i = 0; i < 0x80; i++, r2++)
+        *(u16 *)r2 = 0x200;
+}
+
+void sub_02008CEC(struct UnkStruct_02020CD0 * a0)
+{
+    gUnknown_02020CD0[a0->unk0].unk1 = a0->unk1;
+    gUnknown_02020CD0[a0->unk1].unk0 = a0->unk0;
+    sub_020089BC(&gUnknown_02020CD0[0], a0);
+}
+
+void sub_02008D1C(void)
+{
+    DmaCopy32(3, gUnknown_02020F58.oamBuffer, (void *)OAM, OAM_SIZE);
+}
+
 asm(".section .text.020092C0");
 
 void sub_020092A4(u16 a0, u16 a1)
