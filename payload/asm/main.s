@@ -3,45 +3,6 @@
 	.text
 	.syntax unified
 
-	thumb_func_start sub_02008D3C
-sub_02008D3C: @ 0x02008D3C
-	strh r1, [r0, #8]
-	strh r2, [r0, #0xa]
-	bx lr
-	.align 2, 0
-
-	thumb_func_start sub_02008D44
-sub_02008D44: @ 0x02008D44
-	ldrh r3, [r0, #8]
-	adds r1, r3, r1
-	strh r1, [r0, #8]
-	ldrh r1, [r0, #0xa]
-	adds r2, r1, r2
-	strh r2, [r0, #0xa]
-	bx lr
-	.align 2, 0
-
-	thumb_func_start sub_02008D54
-sub_02008D54: @ 0x02008D54
-	lsls r1, r1, #0xc
-	strh r1, [r0, #4]
-	bx lr
-	.align 2, 0
-
-	thumb_func_start sub_02008D5C
-sub_02008D5C: @ 0x02008D5C
-	strh r1, [r0, #6]
-	bx lr
-
-	thumb_func_start sub_02008D60
-sub_02008D60: @ 0x02008D60
-	movs r2, #0xfe
-	ldrb r3, [r0, #2]
-	ands r2, r3
-	orrs r2, r1
-	strb r2, [r0, #2]
-	bx lr
-
 	thumb_func_start sub_02008D6C
 sub_02008D6C: @ 0x02008D6C
 	push {r4, r5, r6, r7, lr}

@@ -11,7 +11,6 @@ SECTIONS {
 		src/main.o(.text.020092C0);
 		asm/main.o(.text.020092F0);
 		src/unk_200E344.o(.text);
-		asm/unk_200E344.o(.text);
 		src/siirtc.o(.text);
 		asm/libagbsyscall.o(.text);
 		*libgcc.a:_call_via_rX.o(.text);

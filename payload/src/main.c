@@ -512,6 +512,33 @@ void sub_02008D1C(void)
     DmaCopy32(3, gUnknown_02020F58.oamBuffer, (void *)OAM, OAM_SIZE);
 }
 
+void sub_02008D3C(struct UnkStruct_02020CD0 * r0, s32 r1, s32 r2)
+{
+    r0->spritesOffset.x = r1;
+    r0->spritesOffset.y = r2;
+}
+
+void sub_02008D44(struct UnkStruct_02020CD0 * r0, s32 r1, s32 r2)
+{
+    r0->spritesOffset.x += r1;
+    r0->spritesOffset.y += r2;
+}
+
+void sub_02008D54(struct UnkStruct_02020CD0 * r0, s32 r1)
+{
+    r0->unk4 = r1 << 12;
+}
+
+void sub_02008D5C(struct UnkStruct_02020CD0 * r0, s32 r1)
+{
+    r0->unk6 = r1;
+}
+
+void sub_02008D60(struct UnkStruct_02020CD0 * r0, s32 r1)
+{
+    r0->unk2 = ((r0->unk2 & ~1) | r1);
+}
+
 BSS_DATA u32 ** gUnknown_0202135C;
 
 asm(".section .text.020092C0");
