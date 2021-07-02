@@ -4,6 +4,7 @@ SECTIONS {
     ALIGN(4)
     {
 		asm/crt0.o(.text);
+        src/all.o(.text);
         asm/all.o(.text);
 		asm/m4a.o(.text);
 		src/main.o(.text);

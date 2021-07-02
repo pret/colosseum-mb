@@ -2,57 +2,6 @@
 	.text
 	.syntax unified
 
-	thumb_func_start sub_0200023C
-sub_0200023C: @ 0x0200023C
-	push {lr}
-	bl sub_02006490
-	ldr r1, =gUnknown_02024960
-	ldrb r0, [r1, #3]
-	lsls r0, r0, #0x19
-	cmp r0, #0
-	bne _02000260
-	ldr r2, =0x00000858
-	adds r0, r1, r2
-	ldrb r1, [r0]
-	movs r1, #1
-	b _02000268
-	.align 2, 0
-	.pool
-_02000260:
-	ldr r3, =0x00000858
-	adds r0, r1, r3
-	ldrb r1, [r0]
-	movs r1, #2
-_02000268:
-	strb r1, [r0]
-	bl sub_02006490
-	adds r1, r0, #0
-	movs r0, #0
-	movs r2, #1
-	bl sub_02002A9C
-	ldr r1, =gUnknown_02024960
-	ldr r2, =0x0000087E
-	adds r0, r1, r2
-	ldrb r2, [r0]
-	ldr r3, =0x0000087B
-	adds r0, r1, r3
-	ldrb r0, [r0]
-	lsls r0, r0, #0x10
-	orrs r0, r2
-	adds r3, #5
-	adds r2, r1, r3
-	str r0, [r2]
-	ldr r0, =0x0000087F
-	adds r1, r1, r0
-	ldrb r0, [r1]
-	movs r0, #1
-	strb r0, [r1]
-	movs r0, #0
-	pop {r1}
-	bx r1
-	.align 2, 0
-	.pool
-
 	thumb_func_start sub_020002B4
 sub_020002B4: @ 0x020002B4
 	push {r4, r5, r6, r7, lr}
