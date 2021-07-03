@@ -8543,7 +8543,7 @@ _0200D12C:
 	blo _0200D19C
 	movs r0, #0
 	str r0, [r2, #0x1c]
-	ldr r0, =gUnknown_0202517C
+	ldr r0, =gUnknown_02024960 + 0x81C
 	str r0, [r2]
 	ldr r1, =0xFFFFF7E4
 	adds r0, r0, r1
@@ -8600,7 +8600,7 @@ sub_0200D1AC: @ 0x0200D1AC
 	ldr r1, [r1]
 	ldr r0, [r0]
 	adds r6, r1, r0
-	ldr r5, =gUnknown_020251C8
+	ldr r5, =gUnknown_02024960 + 0x868
 	ldr r1, =gUnknown_020251F0
 	ldrb r0, [r1, #0xa]
 	adds r4, r1, #0
@@ -8779,7 +8779,7 @@ _0200D322:
 	str r0, [r4, #4]
 	movs r0, #0
 	str r0, [r4, #0x1c]
-	ldr r0, =gUnknown_020251BC
+	ldr r0, =gUnknown_02024960 + 0x85C
 _0200D346:
 	str r0, [r4]
 _0200D348:
@@ -9151,7 +9151,7 @@ sub_0200D624: @ 0x0200D624
 	ldr r1, [r1]
 	ldr r0, [r0]
 	adds r6, r1, r0
-	ldr r5, =gUnknown_020251C8
+	ldr r5, =gUnknown_02024960 + 0x868
 	ldr r1, =gUnknown_020251F0
 	ldrb r0, [r1, #0xa]
 	adds r4, r1, #0
