@@ -1,3 +1,6 @@
+gNumMusicPlayers = 1;
+gMaxLines = 0;
+
 SECTIONS {
     . = 0x02000000;
     .text :
@@ -7,6 +10,7 @@ SECTIONS {
         src/all.o(.text);
         asm/all.o(.text);
 		asm/m4a.o(.text);
+		/* src/m4a.o(.text); */
 		src/main.o(.text);
 		asm/main.o(.text);
 		src/main.o(.text.020092C0);
@@ -26,6 +30,9 @@ SECTIONS {
     {
 		data/all.o(.rodata);
 		data/m4a.o(.rodata);
+		data/sound_data.o(.rodata);
+		sound/songs/song_00.o(.rodata);
+		sound/songs/song_01.o(.rodata);
 		data/main.o(.rodata);
 		src/unk_200E344.o(.rodata);
 		data/all.o(.data);

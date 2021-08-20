@@ -485,6 +485,8 @@ _0200695E:
 	str r1, [r0, #0x2c]
 _02006962:
 	bx lr
+
+	thumb_func_start ply_fine
 ply_fine:
 	push {r4, r5, lr}
 	adds r5, r1, #0
@@ -557,7 +559,8 @@ sub_020069CA: @ 0x020069CA
 	str r3, [r1, #0x40]
 	ldrb r3, [r2]
 	b chk_adr_r2
-	.align 2, 0
+
+	thumb_func_start ply_goto
 ply_goto:
 	push {lr}
 _020069D6:
@@ -958,7 +961,7 @@ _02006C70:
 	beq _02006CF8
 	b _02006C9C
 _02006C92:
-	ldr r0, =gUnknown_0201D938
+	ldr r0, =gClockTable
 	subs r1, #0x80
 	adds r1, r1, r0
 	ldrb r0, [r1]
@@ -1212,7 +1215,7 @@ ply_note: @ 0x02006E40
 	ldr r1, =SOUND_INFO_PTR
 	ldr r1, [r1]
 	str r1, [sp, #4]
-	ldr r1, =gUnknown_0201D938
+	ldr r1, =gClockTable
 	adds r0, r0, r1
 	ldrb r0, [r0]
 	strb r0, [r5, #4]
@@ -1596,10 +1599,10 @@ MidiKeyToFreq: @ 0x020070E8
 	movs r7, #0xff
 	lsls r7, r7, #0x18
 _020070FC:
-	ldr r3, =gUnknown_0201D754
+	ldr r3, =gScaleTable
 	adds r0, r6, r3
 	ldrb r5, [r0]
-	ldr r4, =gUnknown_0201D808
+	ldr r4, =gFreqTable
 	movs r2, #0xf
 	adds r0, r5, #0
 	ands r0, r2
@@ -1696,7 +1699,7 @@ m4aSoundInit: @ 0x0200718C
 	lsrs r0, r0, #0x10
 	cmp r0, #0
 	beq _020071E8
-	ldr r1, =gUnknown_0201DDF8
+	ldr r1, =gMPlayTable
 	mov r8, r1
 	mov r5, r8
 	movs r7, #0
@@ -1738,8 +1741,8 @@ m4aSoundMain: @ 0x02007218
 m4aSongNumStart: @ 0x02007224
 	push {lr}
 	lsls r0, r0, #0x10
-	ldr r2, =gUnknown_0201DDF8
-	ldr r1, =gUnknown_0201DE04
+	ldr r2, =gMPlayTable
+	ldr r1, =gSongTable
 	lsrs r0, r0, #0xd
 	adds r0, r0, r1
 	ldrh r3, [r0, #4]
@@ -1760,8 +1763,8 @@ m4aSongNumStart: @ 0x02007224
 m4aSongNumStartOrChange: @ 0x02007250
 	push {lr}
 	lsls r0, r0, #0x10
-	ldr r2, =gUnknown_0201DDF8
-	ldr r1, =gUnknown_0201DE04
+	ldr r2, =gMPlayTable
+	ldr r1, =gSongTable
 	lsrs r0, r0, #0xd
 	adds r0, r0, r1
 	ldrh r3, [r0, #4]
@@ -1799,8 +1802,8 @@ _02007298:
 m4aSongNumStartOrContinue: @ 0x0200729C
 	push {lr}
 	lsls r0, r0, #0x10
-	ldr r2, =gUnknown_0201DDF8
-	ldr r1, =gUnknown_0201DE04
+	ldr r2, =gMPlayTable
+	ldr r1, =gSongTable
 	lsrs r0, r0, #0xd
 	adds r0, r0, r1
 	ldrh r3, [r0, #4]
@@ -1841,8 +1844,8 @@ _020072EC:
 m4aSongNumStop: @ 0x020072F0
 	push {lr}
 	lsls r0, r0, #0x10
-	ldr r2, =gUnknown_0201DDF8
-	ldr r1, =gUnknown_0201DE04
+	ldr r2, =gMPlayTable
+	ldr r1, =gSongTable
 	lsrs r0, r0, #0xd
 	adds r0, r0, r1
 	ldrh r3, [r0, #4]
@@ -1867,8 +1870,8 @@ _02007316:
 m4aSongNumContinue: @ 0x02007324
 	push {lr}
 	lsls r0, r0, #0x10
-	ldr r2, =gUnknown_0201DDF8
-	ldr r1, =gUnknown_0201DE04
+	ldr r2, =gMPlayTable
+	ldr r1, =gSongTable
 	lsrs r0, r0, #0xd
 	adds r0, r0, r1
 	ldrh r3, [r0, #4]
@@ -1897,7 +1900,7 @@ m4aMPlayAllStop: @ 0x02007358
 	lsrs r0, r0, #0x10
 	cmp r0, #0
 	beq _02007376
-	ldr r5, =gUnknown_0201DDF8
+	ldr r5, =gMPlayTable
 	adds r4, r0, #0
 _02007368:
 	ldr r0, [r5]
@@ -1929,7 +1932,7 @@ m4aMPlayAllContinue: @ 0x02007390
 	lsrs r0, r0, #0x10
 	cmp r0, #0
 	beq _020073AE
-	ldr r5, =gUnknown_0201DDF8
+	ldr r5, =gMPlayTable
 	adds r4, r0, #0
 _020073A0:
 	ldr r0, [r5]
@@ -2035,7 +2038,7 @@ MPlayExtender: @ 0x02007414
 	bne _020074D8
 	adds r0, r6, #1
 	str r0, [r4]
-	ldr r1, =gUnknown_020229F0
+	ldr r1, =gMPlayJumpTable
 	ldr r0, =ply_memacc
 	str r0, [r1, #0x20]
 	ldr r0, =ply_lfos
@@ -2046,7 +2049,7 @@ MPlayExtender: @ 0x02007414
 	str r0, [r1, #0x70]
 	ldr r0, =ply_endtie
 	str r0, [r1, #0x74]
-	ldr r0, =sub_0200762C
+	ldr r0, =SampleFreqSet
 	str r0, [r1, #0x78]
 	ldr r0, =TrackStop
 	str r0, [r1, #0x7c]
@@ -2189,13 +2192,13 @@ SoundInit: @ 0x02007564
 	str r0, [r5, #0x2c]
 	str r0, [r5, #0x30]
 	str r0, [r5, #0x3c]
-	ldr r4, =gUnknown_020229F0
+	ldr r4, =gMPlayJumpTable
 	adds r0, r4, #0
 	bl MPlayJumpTableCopy
 	str r4, [r5, #0x34]
 	movs r0, #0x80
 	lsls r0, r0, #0xb
-	bl sub_0200762C
+	bl SampleFreqSet
 	ldr r0, =ID_NUMBER
 	str r0, [r5]
 	add sp, #4
@@ -2205,8 +2208,8 @@ SoundInit: @ 0x02007564
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200762C
-sub_0200762C: @ 0x0200762C
+	thumb_func_start SampleFreqSet
+SampleFreqSet: @ 0x0200762C
 	push {r4, r5, r6, lr}
 	adds r2, r0, #0
 	ldr r0, =SOUND_INFO_PTR
@@ -2217,7 +2220,7 @@ sub_0200762C: @ 0x0200762C
 	lsrs r2, r0, #0x10
 	movs r6, #0
 	strb r2, [r4, #8]
-	ldr r1, =gUnknown_0201D838
+	ldr r1, =gPcmSamplesPerVBlankTable
 	subs r0, r2, #1
 	lsls r0, r0, #1
 	adds r0, r0, r1
@@ -2339,7 +2342,7 @@ _0200773E:
 	beq _02007752
 	bl m4aSoundVSyncOff
 	adds r0, r4, #0
-	bl sub_0200762C
+	bl SampleFreqSet
 _02007752:
 	ldr r0, =ID_NUMBER
 	str r0, [r5]
@@ -2861,7 +2864,7 @@ _02007B14:
 	bls _02007B22
 	movs r5, #0x3b
 _02007B22:
-	ldr r0, =gUnknown_0201D8EC
+	ldr r0, =gNoiseTable
 	adds r0, r5, r0
 	ldrb r0, [r0]
 	b _02007B92
@@ -2885,10 +2888,10 @@ _02007B3C:
 	movs r1, #0xff
 	mov ip, r1
 _02007B4E:
-	ldr r3, =gUnknown_0201D850
+	ldr r3, =gCgbScaleTable
 	adds r0, r5, r3
 	ldrb r6, [r0]
-	ldr r4, =gUnknown_0201D8D4
+	ldr r4, =gCgbFreqTable
 	movs r2, #0xf
 	adds r0, r6, #0
 	ands r0, r2
@@ -3536,7 +3539,7 @@ _02007FFA:
 	strb r0, [r1]
 	cmp r6, #3
 	bne _0200804C
-	ldr r0, =gUnknown_0201D928
+	ldr r0, =gCgb3Vol
 	ldrb r1, [r4, #9]
 	adds r0, r1, r0
 	ldrb r0, [r0]
@@ -4142,7 +4145,7 @@ ply_xcmd: @ 0x02008468
 	ldrb r3, [r2]
 	adds r2, #1
 	str r2, [r1, #0x40]
-	ldr r2, =gUnknown_0201D96C
+	ldr r2, =gXcmdTable
 	lsls r3, r3, #2
 	adds r3, r3, r2
 	ldr r2, [r3]
@@ -4155,7 +4158,7 @@ ply_xcmd: @ 0x02008468
 	thumb_func_start ply_xxx
 ply_xxx: @ 0x02008488
 	push {lr}
-	ldr r2, =gUnknown_020229F0
+	ldr r2, =gMPlayJumpTable
 	ldr r2, [r2]
 	bl _call_via_r2
 	pop {r0}

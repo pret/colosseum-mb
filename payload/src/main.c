@@ -592,27 +592,12 @@ bool32 sub_02009324(u32 a0)
     return gUnknown_02021369;
 }
 
-struct UnkStruct_201DE04
-{
-    struct SongHeader * songHeader;
-    u16 player;
-};
-
-struct UnkStruct_201DDF8
-{
-    struct MusicPlayerInfo * mPlayInfo;
-    u8 unknown[8];
-};
-
-extern const struct UnkStruct_201DE04 gUnknown_0201DE04[];
-extern const struct UnkStruct_201DDF8 gUnknown_0201DDF8[];
-
 void sub_02009344(u16 a0)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
-    MPlayStart(mPlayInfo, gUnknown_0201DE04[a0].songHeader);
+    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
+    MPlayStart(mPlayInfo, gSongTable[a0].header);
     m4aMPlayFadeOutTemporarily(mPlayInfo);
 }
 
@@ -620,7 +605,7 @@ void sub_02009378(u16 a0)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
     m4aMPlayStop(mPlayInfo);
 }
 
@@ -642,7 +627,7 @@ void sub_020093B0(u16 a0, u16 a1)
     if (speed == 0)
         speed = 1;
 
-    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
     m4aMPlayFadeOut(mPlayInfo, speed);
 }
 
@@ -650,7 +635,7 @@ void sub_020093E8(u16 a0, u16 a1)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
     m4aMPlayVolumeControl(mPlayInfo, 0xFF, a1);
 }
 
@@ -658,7 +643,7 @@ void sub_0200941C(u16 a0, u16 a1)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
     m4aMPlayTempoControl(mPlayInfo, a1);
 }
 
@@ -666,7 +651,7 @@ void sub_0200944C(u16 a0, s16 a1)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gUnknown_0201DDF8[gUnknown_0201DE04[a0].player].mPlayInfo;
+    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
     m4aMPlayPitchControl(mPlayInfo, 0xFF, a1);
 }
 
