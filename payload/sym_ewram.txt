@@ -117,16 +117,7 @@ gUnknown_02024950:
 	.space 0x10
 
 gUnknown_02024960:
-	.space 0x81c @ 0x884
-
-gUnknown_0202517C:
-	.space 0x40
-
-gUnknown_020251BC:
-	.space 0xc
-
-gUnknown_020251C8:
-	.space 0x1c
+	.space 0x884
 
 gUnknown_020251E4:
 	.space 0x4

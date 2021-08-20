@@ -3178,7 +3178,7 @@ _02001D44:
 	lsls r1, r0, #1
 	adds r1, r1, r0
 	lsls r1, r1, #2
-	ldr r0, =gUnknown_0202517C
+	ldr r0, =gUnknown_02024960 + 0x81C
 	adds r1, r1, r0
 	movs r0, #0
 	bl sub_02000650
@@ -3200,7 +3200,7 @@ _02001D78:
 	lsls r1, r0, #1
 	adds r1, r1, r0
 	lsls r1, r1, #2
-	ldr r0, =gUnknown_0202517C
+	ldr r0, =gUnknown_02024960 + 0x81C
 	adds r1, r1, r0
 	movs r0, #0
 	bl sub_02000650
@@ -3222,7 +3222,7 @@ _02001DAC:
 	lsls r1, r0, #1
 	adds r1, r1, r0
 	lsls r1, r1, #2
-	ldr r0, =gUnknown_0202517C
+	ldr r0, =gUnknown_02024960 + 0x81C
 	adds r1, r1, r0
 	movs r0, #0
 	bl sub_02000650
