@@ -87,5 +87,3 @@ gXcmdTable::
 	.4byte ply_xiecl
 	.4byte ply_xleng
 	.4byte ply_xswee
-
-	.incbin "baserom.gba", 0x1D99C, 0x45c

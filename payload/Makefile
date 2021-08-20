@@ -46,7 +46,7 @@ DATA_ASM_OBJS := $(DATA_ASM_SRCS:%.s=$(OBJ_DIR)/%.o)
 CC1 := ../tools/agbcc/bin/old_agbcc
 CPPFLAGS := -I ../tools/agbcc/include -iquote include -nostdinc -undef
 CFLAGS := -O2 -g -mthumb-interwork -fhex-asm -Wimplicit -Werror
-ASFLAGS := -mcpu=arm7tdmi
+ASFLAGS := -mcpu=arm7tdmi -I include
 LIBS := -L../../../tools/agbcc/lib -lgcc -lc
 
 SUBDIRS := asm src data sound sound/songs
