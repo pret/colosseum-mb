@@ -30,5 +30,5 @@ song_01_part0:
 	.global song_01
 song_01:
 	.byte 1, 0, 10, 0
-	.4byte gMPlay_song_00_Tone
+	.4byte voicegroup000
 	.4byte song_01_part0

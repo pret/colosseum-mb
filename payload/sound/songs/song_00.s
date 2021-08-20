@@ -25,5 +25,5 @@ song_00_part0:
 	.global song_00
 song_00:
 	.byte 1, 0, 10, 0 @ trackCount, blockCount, priority, reverb
-	.4byte gMPlay_song_00_Tone @ tone
+	.4byte voicegroup000 @ tone
 	.4byte song_00_part0 @ part
