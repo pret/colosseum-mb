@@ -41,28 +41,4 @@ gUnknown_02021A00:
 gUnknown_02021A20:
 	.space 0x20
 
-@ m4a
-
-gUnknown_02021A40:
-	.space 0xfb0
-
-gMPlayJumpTable:
-	.space 0x4
-
-gUnknown_020229F4:
-	.space 0x84
-
-gUnknown_02022A78:
-	.space 0x4
-
-gUnknown_02022A7C:
-	.space 0x4
-
-gUnknown_02022A80:
-	.space 0x100
-
-gMPlay1Info:
-	.space 0x40
-
-gUnknown_02022BC0:
-	.space 0x10
+	.include "m4a.o"

@@ -1,0 +1,5 @@
+gSoundInfo
+gMPlayJumpTable
+gCgbChans
+gMPlay1Info
+gMPlayMemAccArea

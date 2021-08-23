@@ -17,8 +17,8 @@ SECTIONS {
     ALIGN(4)
     {
         asm/m4a_1.o(.text);
-        asm/m4a.o(.text);
-        /* src/m4a.o(.text); */
+        /* asm/m4a.o(.text); */
+        src/m4a.o(.text);
         src/main.o(.text);
         asm/main.o(.text);
         src/main.o(.text.020092C0);
@@ -71,7 +71,7 @@ SECTIONS {
     ALIGN(4)
     {
     <BSS>
-    asm/m4a.o(.bss.code);
+    src/m4a.o(.bss.code);
     <COMMON>
     <EWRAM>
     }

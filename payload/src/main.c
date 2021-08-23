@@ -598,7 +598,7 @@ void sub_02009344(u16 a0)
 
     mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
     MPlayStart(mPlayInfo, gSongTable[a0].header);
-    m4aMPlayFadeOutTemporarily(mPlayInfo);
+    m4aMPlayImmInit(mPlayInfo);
 }
 
 void sub_02009378(u16 a0)
