@@ -1,7 +1,7 @@
 
 	.align 2, 0
 voicegroup127::
-	voice_directsound_no_resample 60, 0, _0201DE18, 255, 0, 255, 0
+	voice_directsound_no_resample 60, 0, gDirectSoundSample_se_select, 255, 0, 255, 0
 	voice_square_1 0, 2, 0, 0, 15, 0
 	voice_square_1 0, 2, 0, 0, 15, 0
 	voice_square_1 0, 2, 0, 0, 15, 0

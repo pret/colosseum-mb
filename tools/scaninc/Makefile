@@ -1,4 +1,4 @@
-CXX ?= g++
+CXX = g++
 
 CXXFLAGS = -Wall -Werror -std=c++11 -O2
 
@@ -8,16 +8,10 @@ HEADERS := scaninc.h asm_file.h c_file.h source_file.h
 
 .PHONY: all clean
 
-ifeq ($(OS),Windows_NT)
-EXE := .exe
-else
-EXE :=
-endif
-
-all: scaninc$(EXE)
+all: scaninc
 	@:
 
-scaninc$(EXE): $(SRCS) $(HEADERS)
+scaninc: $(SRCS) $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(SRCS) -o $@ $(LDFLAGS)
 
 clean:
