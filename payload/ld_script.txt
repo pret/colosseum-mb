@@ -16,6 +16,7 @@ SECTIONS {
     lib_text :
     ALIGN(4)
     {
+        asm/m4a_1.o(.text);
         asm/m4a.o(.text);
         /* src/m4a.o(.text); */
         src/main.o(.text);
@@ -52,7 +53,17 @@ SECTIONS {
     {
         data/main.o(.rodata);
         src/unk_200E344.o(.rodata);
+	} =0
+
+	.data :
+	ALIGN(4)
+	{
         data/all.o(.data);
+	} =0
+
+	lib_data :
+	ALIGN(4)
+	{
         data/main.o(.data);
     } =0
     ewram_start = .;
@@ -60,6 +71,7 @@ SECTIONS {
     ALIGN(4)
     {
     <BSS>
+    asm/m4a.o(.bss.code);
     <COMMON>
     <EWRAM>
     }

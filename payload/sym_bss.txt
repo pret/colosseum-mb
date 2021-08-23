@@ -9,8 +9,7 @@ gUnknown_02020A44:
 gUnknown_02020A48:
 	.space 0x8
 
-gMPlay1Track: @ 0x02020A50
-	.space 0x280
+.include "asm/m4a_1.o"
 
 @ main
 
@@ -60,9 +59,3 @@ gUnknown_0202137C:
 	.include "src/siirtc.o"
 
 	@ m4a
-	.align 2
-gUnknown_020213B4:
-	.space 0x1
-
-gUnknown_020213B5:
-	.space 0x3ff
