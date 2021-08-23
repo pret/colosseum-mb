@@ -115,10 +115,10 @@ $(OBJ_DIR)/src/%.o: c_dep :=
 $(OBJ_DIR)/data/%.o: data_dep :=
 $(OBJ_DIR)/$(MID_SUBDIR)/%.o: midi_dep :=
 else
-$(OBJ_DIR)/asm/%.o: asm_dep = $(shell $(SCANINC) -I include -I "" $*.s)
-$(OBJ_DIR)/src/%.o: c_dep = $(shell $(SCANINC) -I include -I "" $*.c)
-$(OBJ_DIR)/data/%.o: data_dep = $(shell $(SCANINC) -I include -I "" $*.s)
-$(OBJ_DIR)/$(MID_SUBDIR)/%.o: midi_dep = $(shell $(SCANINC) -I include -I "" $*.s)
+$(OBJ_DIR)/asm/%.o: asm_dep = $(shell $(SCANINC) -I "include" -I "" $*.s)
+$(OBJ_DIR)/src/%.o: c_dep = $(shell $(SCANINC) -I "include" -I "" $*.c)
+$(OBJ_DIR)/data/%.o: data_dep = $(shell $(SCANINC) -I "include" -I "" $*.s)
+$(OBJ_DIR)/$(MID_SUBDIR)/%.o: midi_dep = $(shell $(SCANINC) -I "include" -I "" $*.s)
 endif
 
 $(ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(asm_dep)

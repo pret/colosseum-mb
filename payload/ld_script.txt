@@ -23,6 +23,10 @@ SECTIONS {
         asm/main.o(.text);
         src/main.o(.text.020092C0);
         asm/main.o(.text.020092F0);
+        asm/agb_flash.o(.text);
+        asm/agb_flash_1m.o(.text);
+        asm/agb_flash_mx.o(.text);
+        asm/agb_flash_le.o(.text);
         src/unk_200E344.o(.text);
         src/siirtc.o(.text);
         asm/libagbsyscall.o(.text);
@@ -52,6 +56,10 @@ SECTIONS {
     ALIGN(4)
     {
         data/main.o(.rodata);
+        asm/agb_flash.o(.rodata);
+        asm/agb_flash_1m.o(.rodata);
+        asm/agb_flash_mx.o(.rodata);
+        asm/agb_flash_le.o(.rodata);
         src/unk_200E344.o(.rodata);
 	} =0
 

@@ -43,18 +43,7 @@ gUnknown_0202136C:
 gUnknown_02021370:
 	.space 0x4
 
-gUnknown_02021374:
-	.space 0x2
-
-gUnknown_02021376:
-	.space 0x2
-
-gUnknown_02021378:
-	.space 0x4
-
-gUnknown_0202137C:
-	.space 0x4
-
+	.include "asm/agb_flash.o"
 	.include "src/unk_200E344.o"
 	.include "src/siirtc.o"
 

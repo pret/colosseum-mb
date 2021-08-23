@@ -131,34 +131,34 @@ gUnknown_020251EC:
 gUnknown_020251F0:
 	.space 0x34
 
-gUnknown_02025224:
+gFlashTimeoutFlag:
 	.space 0x4
 
-gUnknown_02025228:
+PollFlashStatus:
 	.space 0x4
 
-gUnknown_0202522C:
+WaitForFlashWrite:
 	.space 0x4
 
-gUnknown_02025230:
+ProgramFlashSector:
 	.space 0x4
 
-gUnknown_02025234:
+gFlashSize:
 	.space 0x4
 
-gUnknown_02025238:
+ProgramFlashByte:
 	.space 0x4
 
-gUnknown_0202523C:
+gFlashRemainingBytes:
 	.space 0x4
 
-gUnknown_02025240:
+EraseFlashChip:
 	.space 0x4
 
-gUnknown_02025244:
+EraseFlashSector:
 	.space 0x4
 
-gUnknown_02025248:
+gFlashMaxTime:
 	.space 0x4
 
 gUnknown_0202524C:
