@@ -30,6 +30,7 @@ PREPROC := ../tools/preproc/preproc
 SCANINC := ../tools/scaninc/scaninc
 RAMSCRGEN := ../tools/ramscrgen/ramscrgen
 MID := ../tools/mid2agb/mid2agb
+AIF := ../tools/aif2pcm/aif2pcm
 
 NAME := payload
 ROM := $(NAME).gba
@@ -149,6 +150,9 @@ $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
 include songs.mk
+
+%.bin: %.aif
+	$(AIF) $< $@ $(AIFFLAGS)
 
 ### Debug Print ###
 
