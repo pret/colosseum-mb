@@ -125,9 +125,11 @@ $(ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(asm_dep)
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(C_OBJS): $(OBJ_DIR)/%.o: %.c $$(c_dep)
-	$(CPP) $(CPPFLAGS) -o $(OBJ_DIR)/$*.i $<
-	$(PREPROC) $(OBJ_DIR)/$*.i charmap.txt | $(CC1) $(CFLAGS) -o $(OBJ_DIR)/$*.s
-	$(AS) $(ASFLAGS) -o $@ $(OBJ_DIR)/$*.s
+	@echo "CC <flags> -o $@ $<"
+	@$(CPP) $(CPPFLAGS) -o $(OBJ_DIR)/$*.i $<
+	@$(PREPROC) $(OBJ_DIR)/$*.i charmap.txt | $(CC1) $(CFLAGS) -o $(OBJ_DIR)/$*.s
+	@echo -ne "\n\t.text\n\t.align 2, 0 @ don't pad with nop\n" >> $(OBJ_DIR)/$*.s
+	@$(AS) $(ASFLAGS) -o $@ $(OBJ_DIR)/$*.s
 
 $(DATA_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(data_dep)
 	$(PREPROC) $< charmap.txt | $(CPP) $(CPPFLAGS) | $(AS) $(ASFLAGS) -o $@
