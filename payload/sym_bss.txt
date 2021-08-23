@@ -43,8 +43,6 @@ gUnknown_0202136C:
 gUnknown_02021370:
 	.space 0x4
 
-	.include "asm/agb_flash.o"
+	.include "src/agb_flash.o"
 	.include "src/unk_200E344.o"
 	.include "src/siirtc.o"
-
-	@ m4a

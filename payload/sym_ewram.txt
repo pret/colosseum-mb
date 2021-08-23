@@ -131,6 +131,8 @@ gUnknown_020251EC:
 gUnknown_020251F0:
 	.space 0x34
 
+@ This is agb_flash(COMMON) but is placed here?
+
 gFlashTimeoutFlag:
 	.space 0x4
 
@@ -143,13 +145,13 @@ WaitForFlashWrite:
 ProgramFlashSector:
 	.space 0x4
 
-gFlashSize:
+gFlash:
 	.space 0x4
 
 ProgramFlashByte:
 	.space 0x4
 
-gFlashRemainingBytes:
+gFlashNumRemainingBytes:
 	.space 0x4
 
 EraseFlashChip:

@@ -72,6 +72,16 @@ $(OBJ_DIR)/src/unk_200E344.o: CFLAGS := -g -mthumb-interwork -fhex-asm -Wimplici
 $(OBJ_DIR)/src/siirtc.o:      CC1    := ../tools/agbcc/bin/agbcc
 $(OBJ_DIR)/src/siirtc.o:      CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
 
+$(OBJ_DIR)/src/agb_flash.o:    CFLAGS := -O -mthumb-interwork
+$(OBJ_DIR)/src/agb_flash.o:    CC1    := ../tools/agbcc/bin/agbcc
+$(OBJ_DIR)/src/agb_flash_1m.o: CFLAGS := -O -mthumb-interwork
+$(OBJ_DIR)/src/agb_flash_1m.o: CC1    := ../tools/agbcc/bin/agbcc
+$(OBJ_DIR)/src/agb_flash_mx.o: CFLAGS := -O -mthumb-interwork
+$(OBJ_DIR)/src/agb_flash_mx.o: CC1    := ../tools/agbcc/bin/agbcc
+$(OBJ_DIR)/src/agb_flash_le.o: CFLAGS := -O -mthumb-interwork
+$(OBJ_DIR)/src/agb_flash_le.o: CC1    := ../tools/agbcc/bin/agbcc
+
+
 # Build tools when building the rom
 # Disable dependency scanning for clean/tidy/tools
 ifeq (,$(filter-out all compare,$(MAKECMDGOALS)))
