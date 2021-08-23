@@ -5322,7 +5322,7 @@ _0200B8C8:
 _0200B904:
 	lsls r0, r2, #1
 	add r0, sb
-	ldr r3, =gUnknown_0201E77A
+	ldr r3, =gUnknown_0201E778 + 2
 	adds r0, r0, r3
 	ldrh r3, [r0]
 	mov r4, ip
@@ -7100,7 +7100,7 @@ _0200C670:
 	lsls r0, r2, #3
 	subs r0, r0, r2
 	lsls r0, r0, #2
-	ldr r1, =gUnknown_0201E7F0
+	ldr r1, =gUnknown_0201E80C - 28
 	adds r0, r0, r1
 _0200C67A:
 	bx lr
@@ -7159,7 +7159,7 @@ _0200C6D4:
 	lsls r0, r2, #3
 	subs r0, r0, r2
 	lsls r0, r0, #2
-	ldr r1, =gUnknown_0201E7F0
+	ldr r1, =gUnknown_0201E80C - 28
 	adds r1, r0, r1
 _0200C6DE:
 	adds r0, r4, #0
