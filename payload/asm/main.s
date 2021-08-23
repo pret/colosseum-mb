@@ -4539,7 +4539,7 @@ _0200B350:
 	ldrh r3, [r2]
 	adds r5, r0, #0
 	adds r1, r6, #0
-	ldr r2, =gUnknown_0201ECC0
+	ldr r2, =gBitTable
 _0200B35A:
 	ldrh r0, [r1]
 	cmp r3, r0

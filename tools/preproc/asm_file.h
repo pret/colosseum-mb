@@ -60,6 +60,7 @@ private:
 
     bool ConsumeComma();
     int ReadPadLength();
+    int ReadPadValue();
     void RemoveComments();
     bool CheckForDirective(std::string name);
     void SkipWhitespace();

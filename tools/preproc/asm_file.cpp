@@ -277,10 +277,16 @@ int AsmFile::ReadString(unsigned char* s)
     {
         SkipWhitespace();
         int padLength = ReadPadLength();
+        int padVal = 0;
+        if (ConsumeComma())
+        {
+            SkipWhitespace();
+            padVal = ReadPadValue();
+        }
 
         while (length < padLength)
         {
-            s[length++] = 0;
+            s[length++] = padVal;
         }
     }
 
@@ -421,6 +427,52 @@ int AsmFile::ReadPadLength()
 
         if (n > kMaxStringLength)
             RaiseError("pad length greater than maximum length (%d)", kMaxStringLength);
+
+        m_pos++;
+    }
+
+    return n;
+}
+
+int AsmFile::ReadPadValue()
+{
+    StringParser stringParser(m_buffer, m_size);
+    int length;
+    if (m_buffer[m_pos] == '"') {
+        unsigned char s[256];
+        try
+        {
+            m_pos += stringParser.ParseString(m_pos, s, length);
+        }
+        catch (std::runtime_error& e)
+        {
+            RaiseError(e.what());
+        }
+        if (length > 1) {
+            RaiseError("too many characters to pad with (max 1)");
+        }
+        return s[0];
+    }
+    if (!IsAsciiDigit(m_buffer[m_pos]))
+        RaiseError("expected integer");
+
+    int radix = 10;
+
+    if (m_buffer[m_pos] == '0' && m_buffer[m_pos + 1] == 'x')
+    {
+        radix = 16;
+        m_pos += 2;
+    }
+
+    unsigned n = 0;
+    int digit;
+
+    while ((digit = ConvertDigit(m_buffer[m_pos], radix)) != -1)
+    {
+        n = n * radix + digit;
+
+        if (n > 255)
+            RaiseError("pad value too wide for u8 string");
 
         m_pos++;
     }
