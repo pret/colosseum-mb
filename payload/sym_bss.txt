@@ -34,7 +34,7 @@ gUnknown_02021364:
 gUnknown_02021368:
 	.space 0x1
 
-gUnknown_02021369:
+isSoundVsync:
 	.space 0x3
 
 gUnknown_0202136C:

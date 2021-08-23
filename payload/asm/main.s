@@ -1857,12 +1857,12 @@ _02009E62:
 	adds r1, r4, r2
 	strh r0, [r1]
 	lsrs r5, r5, #0x18
-	bl sub_02009480
+	bl SoundVSyncOff
 	adds r0, r5, #0
 	adds r1, r4, #0
 	bl ProgramFlashSectorAndVerify
 	adds r4, r0, #0
-	bl sub_02009494
+	bl SoundVSyncOn
 	cmp r4, #0
 	beq _02009EA8
 	ldr r2, =gUnknown_02022F28
@@ -2192,7 +2192,7 @@ sub_0200A118: @ 0x0200A118
 	adds r0, r4, r0
 	lsls r0, r0, #0x10
 	lsrs r4, r0, #0x10
-	bl sub_02009480
+	bl SoundVSyncOff
 	ldr r3, =ProgramFlashByte
 	ldr r1, =0x00000FF8
 	ldr r0, =gUnknown_02022F30
@@ -2213,7 +2213,7 @@ sub_0200A118: @ 0x0200A118
 	ldr r0, [r2]
 	bics r0, r1
 	str r0, [r2]
-	bl sub_02009494
+	bl SoundVSyncOn
 	movs r0, #1
 	b _0200A1AE
 	.align 2, 0
@@ -2227,7 +2227,7 @@ _0200A198:
 	ldr r0, [r2]
 	orrs r0, r1
 	str r0, [r2]
-	bl sub_02009494
+	bl SoundVSyncOn
 	movs r0, #0xff
 _0200A1AE:
 	pop {r4, r5}
@@ -2262,7 +2262,7 @@ sub_0200A1B8: @ 0x0200A1B8
 	adds r0, r4, r0
 	lsls r0, r0, #0x10
 	lsrs r4, r0, #0x10
-	bl sub_02009480
+	bl SoundVSyncOff
 	ldr r3, =ProgramFlashByte
 	ldr r1, =0x00000FF8
 	ldr r0, =gUnknown_02022F30
@@ -2286,7 +2286,7 @@ sub_0200A1B8: @ 0x0200A1B8
 	ldr r0, [r2]
 	bics r0, r1
 	str r0, [r2]
-	bl sub_02009494
+	bl SoundVSyncOn
 	movs r0, #1
 	b _0200A256
 	.align 2, 0
@@ -2300,7 +2300,7 @@ _0200A240:
 	ldr r0, [r2]
 	orrs r0, r1
 	str r0, [r2]
-	bl sub_02009494
+	bl SoundVSyncOn
 	movs r0, #0xff
 _0200A256:
 	pop {r4, r5}
@@ -2493,11 +2493,11 @@ _0200A3DE:
 	strb r0, [r1]
 _0200A3EC:
 	ldr r4, =gUnknown_0202054C
-	bl sub_02009480
+	bl SoundVSyncOff
 	movs r0, #0xd
 	adds r1, r4, #0
 	bl sub_02009F4C
-	bl sub_02009494
+	bl SoundVSyncOn
 	ldr r0, =gUnknown_02022F28
 	ldr r0, [r0]
 	cmp r0, #0
@@ -2596,7 +2596,7 @@ sub_0200A4BC: @ 0x0200A4BC
 	lsls r0, r0, #0x10
 	lsrs r6, r0, #0x10
 	movs r5, #0
-	bl sub_02009480
+	bl SoundVSyncOff
 	ldr r0, =0x00000FFF
 	mov sb, r0
 	ldr r0, =ProgramFlashByte
@@ -2651,7 +2651,7 @@ _0200A532:
 	cmp r5, #0x81
 	bls _0200A4D8
 _0200A540:
-	bl sub_02009494
+	bl SoundVSyncOn
 	adds r0, r4, #0
 	pop {r3, r4}
 	mov r8, r3
@@ -3036,14 +3036,14 @@ sub_0200A880: @ 0x0200A880
 	lsls r4, r4, #0x10
 	lsrs r4, r4, #0x10
 	movs r6, #1
-	bl sub_02009480
+	bl SoundVSyncOff
 	subs r4, #1
 	lsls r4, r4, #0x10
 	lsrs r4, r4, #0x10
 	adds r0, r4, #0
 	adds r1, r5, #0
 	bl sub_02009F4C
-	bl sub_02009494
+	bl SoundVSyncOn
 	ldr r0, =gUnknown_02022F28
 	ldr r0, [r0]
 	cmp r0, #0

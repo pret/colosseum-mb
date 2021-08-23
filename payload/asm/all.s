@@ -1,3 +1,4 @@
+#include "constants/songs.h"
 	.include "asm/macros/function.inc"
 	.text
 	.syntax unified
@@ -57,7 +58,7 @@ _0200032A:
 	adds r0, r4, #0
 _0200032C:
 	strb r0, [r5]
-	bl sub_020092F0
+	bl InitSound
 	bl sub_02002C44
 	movs r0, #0x28
 	movs r1, #5
@@ -2853,8 +2854,8 @@ _020019D6:
 	movs r0, #4
 	add r1, sp, #8
 	bl sub_02000650
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	ldr r0, [r4]
 	ldr r2, =gUnknown_0201FEC4
 	lsls r1, r5, #2
@@ -3084,8 +3085,8 @@ _02001C58:
 _02001C84:
 	strb r2, [r1]
 _02001C86:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 _02001C8C:
 	movs r0, #0x40
 	ands r4, r0
@@ -3105,8 +3106,8 @@ _02001CAC:
 	movs r0, #2
 _02001CAE:
 	strb r0, [r1]
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 _02001CB6:
 	ldr r1, =gUnknown_02021860
 	movs r3, #0x8a
@@ -3124,8 +3125,8 @@ _02001CB6:
 	.align 2, 0
 	.pool
 _02001CDC:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r0, =gUnknown_02021860
 	movs r3, #0x8a
 	lsls r3, r3, #1
@@ -3158,8 +3159,8 @@ _02001D18:
 	ands r0, r4
 	cmp r0, #1
 	bne _02001D44
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	ldr r0, =gUnknown_02021860
 	movs r1, #0x91
 	lsls r1, r1, #1
@@ -3172,8 +3173,8 @@ _02001D18:
 _02001D44:
 	cmp r0, #2
 	bne _02001D78
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	asrs r0, r4, #0x10
 	lsls r1, r0, #1
 	adds r1, r1, r0
@@ -3194,8 +3195,8 @@ _02001D44:
 _02001D78:
 	cmp r0, #4
 	bne _02001DAC
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	asrs r0, r4, #0x10
 	lsls r1, r0, #1
 	adds r1, r1, r0
@@ -3216,8 +3217,8 @@ _02001D78:
 _02001DAC:
 	cmp r0, #3
 	bne _02001DE0
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	asrs r0, r4, #0x10
 	lsls r1, r0, #1
 	adds r1, r1, r0
@@ -3243,8 +3244,8 @@ _02001DE0:
 	bl sub_0200646C
 	cmp r0, #1
 	bne _02001E04
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	ldrb r0, [r5]
 	movs r1, #0xa
 	b _02001E1C
@@ -3259,8 +3260,8 @@ _02001E04:
 	cmp r0, r1
 	bne _02001E24
 _02001E12:
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	ldrb r0, [r5]
 	movs r1, #0xb
 _02001E1C:
@@ -3291,8 +3292,8 @@ _02001E44:
 	beq _02001E80
 	b _02001E20
 _02001E4E:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldrb r2, [r5]
 	ldr r3, =0x0000087E
 	adds r0, r4, r3
@@ -3308,21 +3309,21 @@ _02001E4E:
 	.align 2, 0
 	.pool
 _02001E74:
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	ldrb r0, [r5]
 	movs r1, #0xd
 	b _02001E1C
 _02001E80:
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	ldrb r0, [r5]
 	movs r1, #0xc
 	bl sub_020019B4
 	b _02001E20
 _02001E90:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	bl sub_020007F0
 	ldr r5, =gUnknown_02021860
 	ldr r1, =0x0000011B
@@ -3536,8 +3537,8 @@ _0200201C:
 	.align 2, 0
 	.pool
 _02002098:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	b _020021C6
 _020020A0:
 	movs r0, #1
@@ -3611,8 +3612,8 @@ _02002110:
 _02002134:
 	strb r3, [r1]
 _02002136:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	b _020023C6
 _0200213E:
 	ldr r1, =gUnknown_02021860
@@ -3631,8 +3632,8 @@ _0200213E:
 	.align 2, 0
 	.pool
 _02002164:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r0, =gUnknown_02021860
 	movs r3, #0x8a
 	lsls r3, r3, #1
@@ -3675,16 +3676,16 @@ _020021A0:
 	ldrb r0, [r0]
 	cmp r3, r0
 	bne _020021D4
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 _020021C6:
 	movs r4, #1
 	b _020023C6
 	.align 2, 0
 	.pool
 _020021D4:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldrb r0, [r4]
 	adds r0, #1
 	strb r0, [r4]
@@ -3858,8 +3859,8 @@ _0200234C:
 	.align 2, 0
 	.pool
 _0200235C:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	bl sub_020007F0
 	ldr r4, =gUnknown_02021860
 	ldr r3, =0x0000011B
@@ -3986,20 +3987,20 @@ _02002450:
 	cmp r0, #0
 	bne _02002484
 _0200246C:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	movs r0, #1
 	rsbs r0, r0, #0
 	b _020026E4
 	.align 2, 0
 	.pool
 _02002484:
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	b _0200241A
 _0200248C:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldrb r0, [r4]
 	bl sub_02001A8C
 	adds r1, r0, #0
@@ -4019,8 +4020,8 @@ _020024A8:
 	ands r0, r5
 	cmp r0, #0
 	beq _020024F6
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldrb r0, [r4]
 	adds r1, r0, #0
 	cmp r1, #0
@@ -4054,8 +4055,8 @@ _020024F6:
 	ands r0, r5
 	cmp r0, #0
 	beq _0200253C
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r3, =0x0000011B
 	add r3, r8
 	movs r0, #0x90
@@ -4092,8 +4093,8 @@ _0200253C:
 	ands r0, r5
 	cmp r0, #0
 	beq _0200256A
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r0, =gUnknown_02021860
 	ldr r1, =0x0000011B
 	adds r2, r0, r1
@@ -4115,8 +4116,8 @@ _0200256A:
 	ands r5, r0
 	cmp r5, #0
 	beq _020025C8
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r2, =gUnknown_02021860
 	ldr r0, =0x0000011B
 	adds r3, r2, r0
@@ -4348,8 +4349,8 @@ _02002726:
 	cmp r0, #0
 	beq _0200277C
 	bl sub_02000BFC
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r1, =0x04000154
 	movs r0, #0xff
 	lsls r0, r0, #0x18
@@ -4360,8 +4361,8 @@ _02002726:
 _0200277C:
 	movs r0, #1
 	bl sub_02001738
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 _02002788:
 	adds r0, r4, #0
 	movs r1, #1
@@ -4383,8 +4384,8 @@ _02002788:
 	ldrb r0, [r0]
 	cmp r4, r0
 	beq _020027CC
-	movs r0, #1
-	bl sub_02009344
+	movs r0, #SE_FAILURE
+	bl PlaySE
 	movs r0, #1
 	bl sub_02001738
 	b _02002726
@@ -4471,8 +4472,8 @@ _02002854:
 	ands r0, r4
 	cmp r0, #0
 	beq _0200289E
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r2, =gUnknown_02021860
 	ldr r0, =0x0000011B
 	adds r3, r2, r0
@@ -4509,8 +4510,8 @@ _0200289E:
 	ands r0, r4
 	cmp r0, #0
 	beq _020028E4
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r0, =0x0000011B
 	adds r3, r7, r0
 	movs r1, #0x90
@@ -4547,8 +4548,8 @@ _020028E4:
 	ands r0, r4
 	cmp r0, #0
 	beq _02002912
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r0, =gUnknown_02021860
 	ldr r1, =0x0000011B
 	adds r2, r0, r1
@@ -4570,8 +4571,8 @@ _02002912:
 	ands r4, r0
 	cmp r4, #0
 	beq _02002970
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r2, =gUnknown_02021860
 	ldr r4, =0x0000011B
 	adds r3, r2, r4
@@ -7214,8 +7215,8 @@ _02004034:
 	beq _02004060
 	cmp r5, #0
 	beq _02004060
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	subs r5, #1
 	adds r0, r5, #0
 	movs r1, #0
@@ -7241,8 +7242,8 @@ _02004060:
 	bl sub_0200C1B8
 	cmp r0, #0
 	beq _0200409C
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	adds r5, #1
 	adds r0, r5, #0
 	movs r1, #0
@@ -7254,8 +7255,8 @@ _0200409C:
 	ands r0, r4
 	cmp r0, #0
 	beq _020040B8
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	b _020040D0
 	.align 2, 0
 	.pool
@@ -7264,8 +7265,8 @@ _020040B8:
 	ands r4, r0
 	cmp r4, #0
 	beq _02004034
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r0, =gUnknown_02021990
 	adds r0, #0x50
 	strb r5, [r0]
@@ -7326,8 +7327,8 @@ _02004126:
 	mov r1, r8
 	cmp r1, #0
 	beq _02004158
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	movs r0, #1
 	rsbs r0, r0, #0
 	add r8, r0
@@ -7356,8 +7357,8 @@ _02004158:
 	bl sub_0200C1B8
 	cmp r0, #0
 	beq _02004198
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	movs r0, #1
 	add r8, r0
 	mov r0, r8
@@ -7370,8 +7371,8 @@ _02004198:
 	ands r0, r5
 	cmp r0, #0
 	beq _020041B4
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	b _020044AC
 	.align 2, 0
 	.pool
@@ -7383,8 +7384,8 @@ _020041B4:
 	lsrs r6, r0, #0x10
 	cmp r6, #0
 	beq _020041DC
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	mov r0, r8
 	ldr r1, =gUnknown_020219E0
 	strb r0, [r1]
@@ -7417,8 +7418,8 @@ _020041FA:
 	ands r5, r0
 	cmp r5, #0
 	beq _02004126
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	movs r0, #1
 	str r0, [sp, #0xc]
 	b _02004126
@@ -7522,8 +7523,8 @@ _020042D6:
 	ands r0, r5
 	cmp r0, #0
 	beq _0200431E
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	movs r2, #1
 	rsbs r2, r2, #0
 	ldr r0, =gUnknown_020219DE
@@ -7553,8 +7554,8 @@ _0200431E:
 	ands r0, r5
 	cmp r0, #0
 	beq _02004356
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	movs r2, #1
 	rsbs r2, r2, #0
 	ldr r0, =gUnknown_020219DE
@@ -7647,8 +7648,8 @@ _020043DE:
 	ands r5, r0
 	cmp r5, #0
 	beq _020043F0
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	movs r0, #3
 	str r0, [sp, #0xc]
 _020043F0:
@@ -9095,8 +9096,8 @@ _020050EE:
 _0200510C:
 	cmp r3, r6
 	beq _0200512E
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r0, =gUnknown_02021A20
 	ldr r0, [r0, #8]
 	ldrb r1, [r4]
@@ -9118,8 +9119,8 @@ _0200512E:
 	bne _02005140
 	b _02005008
 _02005140:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 	ldr r0, =gUnknown_02021A20
 	strb r6, [r0, #0x10]
 	ldrb r0, [r4, #2]
@@ -9127,8 +9128,8 @@ _02005140:
 	.align 2, 0
 	.pool
 _02005154:
-	movs r0, #0
-	bl sub_02009344
+	movs r0, #SE_SELECT
+	bl PlaySE
 _0200515A:
 	movs r0, #0
 _0200515C:

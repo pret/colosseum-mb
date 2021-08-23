@@ -547,7 +547,7 @@ BSS_DATA u16 gUnknown_02021360;
 BSS_DATA u16 gUnknown_02021362;
 BSS_DATA u16 gUnknown_02021364;
 BSS_DATA u8 gUnknown_02021368;
-BSS_DATA u8 gUnknown_02021369;
+BSS_DATA bool8 isSoundVsync;
 
 void sub_020092A4(u16 a0, u16 a1)
 {
@@ -572,44 +572,44 @@ void AutoUnCompVram(const void * src, void * dest)
     }
 }
 
-void sub_020092F0(void)
+void InitSound(void)
 {
     gUnknown_02021368 = 0;
-    gUnknown_02021369 = 0;
+    isSoundVsync = 0;
     m4aSoundInit();
 }
 
 void sub_0200930C(void)
 {
     gUnknown_02021368 = 1;
-    gUnknown_02021369 = 0;
+    isSoundVsync = 0;
 }
 
 bool32 sub_02009324(u32 a0)
 {
     if (a0 && gUnknown_02021368)
-        gUnknown_02021369 = 1;
-    return gUnknown_02021369;
+        isSoundVsync = 1;
+    return isSoundVsync;
 }
 
-void sub_02009344(u16 a0)
+void PlaySE(u16 song)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
-    MPlayStart(mPlayInfo, gSongTable[a0].header);
+    mPlayInfo = gMPlayTable[gSongTable[song].ms].info;
+    MPlayStart(mPlayInfo, gSongTable[song].header);
     m4aMPlayImmInit(mPlayInfo);
 }
 
-void sub_02009378(u16 a0)
+void StopSE(u16 song)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
+    mPlayInfo = gMPlayTable[gSongTable[song].ms].info;
     m4aMPlayStop(mPlayInfo);
 }
 
-void sub_020093A0(void)
+void StopAllSound(void)
 {
     m4aMPlayAllStop();
 }
@@ -619,50 +619,50 @@ bool8 sub_020093AC(void)
     return TRUE;
 }
 
-void sub_020093B0(u16 a0, u16 a1)
+void FadeOutSE(u16 song, u16 _speed)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    u16 speed = a1 >> 4;
+    u16 speed = _speed >> 4;
     if (speed == 0)
         speed = 1;
 
-    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
+    mPlayInfo = gMPlayTable[gSongTable[song].ms].info;
     m4aMPlayFadeOut(mPlayInfo, speed);
 }
 
-void sub_020093E8(u16 a0, u16 a1)
+void SetSEVolume(u16 song, u16 volume)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
-    m4aMPlayVolumeControl(mPlayInfo, 0xFF, a1);
+    mPlayInfo = gMPlayTable[gSongTable[song].ms].info;
+    m4aMPlayVolumeControl(mPlayInfo, 0xFF, volume);
 }
 
-void sub_0200941C(u16 a0, u16 a1)
+void SetSETempo(u16 song, u16 tempo)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
-    m4aMPlayTempoControl(mPlayInfo, a1);
+    mPlayInfo = gMPlayTable[gSongTable[song].ms].info;
+    m4aMPlayTempoControl(mPlayInfo, tempo);
 }
 
-void sub_0200944C(u16 a0, s16 a1)
+void SetSEPitch(u16 song, s16 pitch)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
-    mPlayInfo = gMPlayTable[gSongTable[a0].ms].info;
-    m4aMPlayPitchControl(mPlayInfo, 0xFF, a1);
+    mPlayInfo = gMPlayTable[gSongTable[song].ms].info;
+    m4aMPlayPitchControl(mPlayInfo, 0xFF, pitch);
 }
 
-void sub_02009480(void)
+void SoundVSyncOff(void)
 {
-    gUnknown_02021369 = 0;
+    isSoundVsync = 0;
     m4aSoundVSyncOff();
 }
 
-void sub_02009494(void)
+void SoundVSyncOn(void)
 {
     m4aSoundVSyncOn();
-    gUnknown_02021369 = 1;
+    isSoundVsync = 1;
 }
