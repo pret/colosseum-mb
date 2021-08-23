@@ -426,5 +426,5 @@
 	.equ	mem_mem_bls,16		@
 	.equ	mem_mem_blo,17		@
 
-	.equ	reverb_set,0x80		@ SOUND_MODE_REVERB_SET
+	.equ	reverb_set,0		@ SOUND_MODE_REVERB_SET
 	.equ	PAM, PAN		@

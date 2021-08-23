@@ -29,6 +29,7 @@ export OBJCOPY := $(PREFIX)objcopy
 PREPROC := ../tools/preproc/preproc
 SCANINC := ../tools/scaninc/scaninc
 RAMSCRGEN := ../tools/ramscrgen/ramscrgen
+MID := ../tools/mid2agb/mid2agb
 
 NAME := payload
 ROM := $(NAME).gba
@@ -36,12 +37,16 @@ ELF := $(NAME).elf
 
 OBJ_DIR := build/$(NAME)
 
-ASM_SRCS := $(wildcard asm/*.s sound/*.s sound/*/*.s)
+ASM_SRCS := $(wildcard asm/*.s)
 ASM_OBJS := $(ASM_SRCS:%.s=$(OBJ_DIR)/%.o)
 C_SRCS := $(wildcard src/*.c)
 C_OBJS := $(C_SRCS:%.c=$(OBJ_DIR)/%.o)
-DATA_ASM_SRCS := $(wildcard data/*.s)
+DATA_ASM_SRCS := $(wildcard data/*.s sound/*.s sound/*/*.s)
 DATA_ASM_OBJS := $(DATA_ASM_SRCS:%.s=$(OBJ_DIR)/%.o)
+MID_SUBDIR := sound/songs/midi
+MID_ASM_MIDS := $(wildcard $(MID_SUBDIR)/*.mid)
+MID_ASM_SRCS := $(MID_ASM_MIDS:%.mid=%.s)
+MID_ASM_OBJS := $(MID_ASM_SRCS:%.s=$(OBJ_DIR)/%.o)
 
 CC1 := ../tools/agbcc/bin/old_agbcc
 CPPFLAGS := -I ../tools/agbcc/include -iquote include -nostdinc -undef
@@ -49,9 +54,9 @@ CFLAGS := -O2 -g -mthumb-interwork -fhex-asm -Wimplicit -Werror
 ASFLAGS := -mcpu=arm7tdmi -I include
 LIBS := -L../../../tools/agbcc/lib -lgcc -lc
 
-SUBDIRS := asm src data sound sound/songs
+SUBDIRS := asm src data sound sound/songs $(MID_SUBDIR)
 
-ALL_OBJS := $(ASM_OBJS) $(C_OBJS) $(DATA_ASM_OBJS)
+ALL_OBJS := $(ASM_OBJS) $(C_OBJS) $(DATA_ASM_OBJS) $(MID_ASM_OBJS)
 
 TOOLDIRS := $(filter-out ../tools/agbcc ../tools/binutils,$(wildcard ../tools/*))
 
@@ -88,7 +93,7 @@ ifeq ($(COMPARE),1)
 endif
 
 mostlyclean:
-	rm -f $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS)
+	rm -f $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS) $(MID_ASM_SRCS)
 
 clean: mostlyclean
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) clean -C $(tool);)
@@ -103,10 +108,12 @@ ifeq ($(NODEP),1)
 $(OBJ_DIR)/asm/%.o: asm_dep :=
 $(OBJ_DIR)/src/%.o: c_dep :=
 $(OBJ_DIR)/data/%.o: data_dep :=
+$(OBJ_DIR)/$(MID_SUBDIR)/%.o: midi_dep :=
 else
 $(OBJ_DIR)/asm/%.o: asm_dep = $(shell $(SCANINC) -I include $*.s)
 $(OBJ_DIR)/src/%.o: c_dep = $(shell $(SCANINC) -I include $*.c)
 $(OBJ_DIR)/data/%.o: data_dep = $(shell $(SCANINC) -I include $*.s)
+$(OBJ_DIR)/$(MID_SUBDIR)/%.o: midi_dep = $(shell $(SCANINC) -I include $*.s)
 endif
 
 $(ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(asm_dep)
@@ -119,6 +126,9 @@ $(C_OBJS): $(OBJ_DIR)/%.o: %.c $$(c_dep)
 
 $(DATA_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(data_dep)
 	$(PREPROC) $< charmap.txt | $(CPP) $(CPPFLAGS) | $(AS) $(ASFLAGS) -o $@
+
+$(MID_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(midi_dep)
+	$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJ_DIR)/sym_bss.ld: sym_bss.txt
 	$(RAMSCRGEN) .bss $< ENGLISH > $@
@@ -137,3 +147,9 @@ $(ELF): $(OBJ_DIR)/ld_script.ld $(ALL_OBJS)
 
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
+
+include songs.mk
+
+### Debug Print ###
+
+print-% : ; $(info $* is a $(flavor $*) variable set to [$($*)]) @true
