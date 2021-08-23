@@ -41,7 +41,7 @@ SECTIONS {
     m4a_rodata :
     ALIGN(4)
     {
-        data/m4a.o(.rodata);
+        src/m4a_tables.o(.rodata);
         data/sound_data.o(.rodata);
         sound/songs/midi/se_select.o(.rodata);
         sound/songs/midi/se_failure.o(.rodata);

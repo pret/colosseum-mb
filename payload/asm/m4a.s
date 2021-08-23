@@ -519,7 +519,7 @@ _02006988:
 MPlayJumpTableCopy: @ 0x02006994
 	mov ip, lr
 	movs r1, #0x24
-	ldr r2, =gUnknown_0201D6C4
+	ldr r2, =gMPlayJumpTableTemplate
 _0200699A:
 	ldr r3, [r2]
 	bl chk_adr_r2
@@ -537,7 +537,7 @@ chk_adr_r2:
 	push {r0}
 	lsrs r0, r2, #0x19
 	bne _020069C0
-	ldr r0, =gUnknown_0201D6C4
+	ldr r0, =gMPlayJumpTableTemplate
 	cmp r2, r0
 	blo _020069BE
 	lsrs r0, r2, #0xe
