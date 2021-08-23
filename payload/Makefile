@@ -38,6 +38,8 @@ ELF := $(NAME).elf
 
 OBJ_DIR := build/$(NAME)
 
+SHELL := /bin/bash -o pipefail
+
 ASM_SRCS := $(wildcard asm/*.s)
 ASM_OBJS := $(ASM_SRCS:%.s=$(OBJ_DIR)/%.o)
 C_SRCS := $(wildcard src/*.c)
@@ -138,7 +140,7 @@ $(C_OBJS): $(OBJ_DIR)/%.o: %.c $$(c_dep)
 	@echo "CC <flags> -o $@ $<"
 	@$(CPP) $(CPPFLAGS) -o $(OBJ_DIR)/$*.i $<
 	@$(PREPROC) $(OBJ_DIR)/$*.i charmap.txt | $(CC1) $(CFLAGS) -o $(OBJ_DIR)/$*.s
-	@echo -ne "\n\t.text\n\t.align 2, 0 @ don't pad with nop\n" >> $(OBJ_DIR)/$*.s
+	@echo -e ".text\n\t.align\t2, 0 @ Don't pad with nop\n" >> $(OBJ_DIR)/$*.s
 	@$(AS) $(ASFLAGS) -o $@ $(OBJ_DIR)/$*.s
 
 $(DATA_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(data_dep)
