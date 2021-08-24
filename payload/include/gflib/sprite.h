@@ -27,5 +27,12 @@ struct Sprite
 void InitOam(void);
 void UpdateSprites(void);
 void DoOamBufferTransfer(void);
+struct Sprite * AddSprite(s32 x, s32 y, const struct Subsprites * subsprites);
+void MoveSpriteToHead(struct Sprite * a0);
+void SetSpritePos(struct Sprite * r0, s32 r1, s32 r2);
+void AddSpritePos(struct Sprite * r0, s32 r1, s32 r2);
+void SetSpritePaletteNum(struct Sprite * r0, s32 r1);
+void SetSpriteTileOffset(struct Sprite * r0, s32 r1);
+void SetSpriteInvisible(struct Sprite * r0, s32 r1);
 
 #endif //GFLIB_SPRITE_H

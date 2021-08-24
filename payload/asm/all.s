@@ -63,7 +63,7 @@ _0200032C:
 	bl sub_02002C44
 	movs r0, #0x28
 	movs r1, #5
-	bl sub_020092A4
+	bl SetKeyRepeatTiming
 	ldr r0, =0x04000200
 	movs r3, #1
 	strh r3, [r0]
@@ -242,7 +242,7 @@ _020004BA:
 	.align 2, 0
 	.pool
 _020004D0:
-	ldr r6, =gUnknown_02022EB0
+	ldr r6, =gNewKeys
 	movs r7, #3
 _020004D4:
 	movs r0, #1
@@ -3035,7 +3035,7 @@ _02001BF4:
 _02001C14:
 	movs r0, #1
 	bl sub_02008600
-	ldr r0, =gUnknown_02022EB0
+	ldr r0, =gNewKeys
 	ldrh r4, [r0]
 	movs r0, #2
 	ands r0, r4
@@ -3066,7 +3066,7 @@ _02001C48:
 	.align 2, 0
 	.pool
 _02001C58:
-	ldr r0, =gUnknown_02022EB4
+	ldr r0, =gNewAndRepeatedKeys
 	ldrh r4, [r0]
 	movs r0, #0x80
 	ands r0, r4
@@ -3544,7 +3544,7 @@ _02002098:
 _020020A0:
 	movs r0, #1
 	bl sub_02008600
-	ldr r0, =gUnknown_02022EB4
+	ldr r0, =gNewAndRepeatedKeys
 	ldrh r1, [r0]
 	movs r3, #2
 	adds r0, r1, #0
@@ -3957,7 +3957,7 @@ sub_020023E8: @ 0x020023E8
 _0200241A:
 	movs r0, #1
 	bl sub_02008600
-	ldr r0, =gUnknown_02022EB4
+	ldr r0, =gNewAndRepeatedKeys
 	ldrh r5, [r0]
 	cmp r5, #0
 	beq _0200241A
@@ -4331,7 +4331,7 @@ sub_020026F4: @ 0x020026F4
 _02002726:
 	movs r0, #1
 	bl sub_02008600
-	ldr r0, =gUnknown_02022EB4
+	ldr r0, =gNewAndRepeatedKeys
 	ldrh r4, [r0]
 	cmp r4, #0
 	beq _02002726
@@ -7208,7 +7208,7 @@ sub_02004024: @ 0x02004024
 _02004034:
 	movs r0, #1
 	bl sub_02008600
-	ldr r0, =gUnknown_02022EB0
+	ldr r0, =gNewKeys
 	ldrh r4, [r0]
 	movs r0, #0x40
 	ands r0, r4
@@ -7319,7 +7319,7 @@ sub_020040FC: @ 0x020040FC
 _02004126:
 	movs r0, #1
 	bl sub_02008600
-	ldr r0, =gUnknown_02022EB0
+	ldr r0, =gNewKeys
 	ldrh r5, [r0]
 	movs r0, #0x40
 	ands r0, r5
@@ -7515,7 +7515,7 @@ _0200420E:
 _020042D6:
 	movs r0, #1
 	bl sub_02008600
-	ldr r0, =gUnknown_02022EB0
+	ldr r0, =gNewKeys
 	ldrh r5, [r0]
 	ldr r1, =gUnknown_020219DE
 	ldrb r1, [r1]
@@ -8962,7 +8962,7 @@ _02004FF4:
 _02005008:
 	movs r0, #1
 	bl sub_02008600
-	ldr r0, =gUnknown_02022EB0
+	ldr r0, =gNewKeys
 	ldrh r7, [r0]
 	adds r3, r6, #0
 	movs r0, #0x10

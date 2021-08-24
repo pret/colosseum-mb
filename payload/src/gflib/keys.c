@@ -1,40 +1,40 @@
 #include "global.h"
 #include "gflib/keys.h"
 
-u16 gUnknown_02022EB0;
-u16 gUnknown_02022EB4;
-u16 gUnknown_02022EB8;
+u16 gNewKeys;
+u16 gNewAndRepeatedKeys;
+u16 gHeldKeys;
 
-BSS_DATA u16 gUnknown_02021360;
-BSS_DATA u16 gUnknown_02021362;
-BSS_DATA u16 gUnknown_02021364;
+static u16 sKeyRepeatDelay;
+static u16 sKeyRepeatRate;
+static u16 sKeyRepeatTimer;
 
-void sub_02009228(void)
+void ReadKeys(void)
 {
     u32 keyInput;
-    u16 * prevKeys_p = &gUnknown_02022EB8;
+    u16 * prevKeys_p = &gHeldKeys;
     u16 newKeys = (keyInput = REG_KEYINPUT ^ KEYS_MASK) & ~*prevKeys_p;
-    gUnknown_02022EB0 = newKeys;
-    if (gUnknown_02022EB8 != keyInput)
+    gNewKeys = newKeys;
+    if (gHeldKeys != keyInput)
     {
-        gUnknown_02022EB4 = keyInput;
-        gUnknown_02021364 = gUnknown_02021360;
+        gNewAndRepeatedKeys = keyInput;
+        sKeyRepeatTimer = sKeyRepeatDelay;
     }
-    else if (--gUnknown_02021364 == 0)
+    else if (--sKeyRepeatTimer == 0)
     {
-        gUnknown_02022EB4 = keyInput;
-        gUnknown_02021364 = gUnknown_02021362;
+        gNewAndRepeatedKeys = keyInput;
+        sKeyRepeatTimer = sKeyRepeatRate;
     }
     else
     {
-        gUnknown_02022EB4 = 0;
+        gNewAndRepeatedKeys = 0;
     }
-    gUnknown_02022EB8 = keyInput;
+    gHeldKeys = keyInput;
 }
 
-void sub_020092A4(u16 a0, u16 a1)
+void SetKeyRepeatTiming(u16 delay, u16 rate)
 {
-    gUnknown_02021360 = a0;
-    gUnknown_02021362 = a1;
-    gUnknown_02021364 = 1;
+    sKeyRepeatDelay = delay;
+    sKeyRepeatRate = rate;
+    sKeyRepeatTimer = 1;
 }

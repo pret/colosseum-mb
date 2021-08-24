@@ -42,36 +42,13 @@ gUnknown_02021A20:
 	.space 0x20
 
 	.include "m4a.o"
-
-gIntrTable:
-	.space 0x38
-
-gVBlankCounter:
-	.space 0x4
-
-gVBlankCallback:
-	.space 0x4
-
-gBgHofsBuffer:
-	.space 0x8
-
-gBgVofsBuffer:
-	.space 0x8
-
-gBgTilemapBufferTransferScheduled:
-	.space 0x10
+	.include "gflib/init.o"
+	.include "gflib/bg.o"
 
 gUnknown_02022C30:
 	.space 0x280
 
-gUnknown_02022EB0:
-	.space 0x4
-
-gUnknown_02022EB4:
-	.space 0x4
-
-gUnknown_02022EB8:
-	.space 0x4
+	.include "gflib/keys.o"
 
 gUnknown_02022EBC:
 	.space 0x4
@@ -174,8 +151,6 @@ gUnknown_020251EC:
 
 gUnknown_020251F0:
 	.space 0x34
-
-@ This is agb_flash(COMMON) but is placed here?
 
 gFlashTimeoutFlag:
 	.space 0x4

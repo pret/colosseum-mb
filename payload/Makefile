@@ -152,7 +152,7 @@ $(MID_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(midi_dep)
 $(OBJ_DIR)/sym_bss.ld: sym_bss.txt
 	$(RAMSCRGEN) .bss $< ENGLISH | sed "s#tools/#../../../tools/#g" > $@
 
-$(OBJ_DIR)/sym_common.ld: sym_common.txt $(C_OBJS) $(wildcard common_syms/*.txt)
+$(OBJ_DIR)/sym_common.ld: sym_common.txt $(C_OBJS) $(wildcard common_syms/*.txt common_syms/gflib/*.txt)
 	$(RAMSCRGEN) COMMON $< ENGLISH -c $(OBJ_DIR)/src,common_syms | sed "s#tools/#../../../tools/#g" > $@
 
 $(OBJ_DIR)/sym_ewram.ld: sym_ewram.txt

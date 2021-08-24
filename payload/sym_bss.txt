@@ -11,28 +11,17 @@ gUnknown_02020A48:
 
 .include "asm/m4a_1.o"
 
-@ main
+@ gflib
 
 .include "src/gflib/sprite.o"
 
 gUnknown_0202135C:
 	.space 0x4
 
-gUnknown_02021360:
-	.space 0x2
+.include "src/gflib/keys.o"
+.include "src/gflib/sound.o"
 
-gUnknown_02021362:
-	.space 0x2
-
-gUnknown_02021364:
-	.space 0x4
-
-gUnknown_02021368:
-	.space 0x1
-
-isSoundVsync:
-	.space 0x3
-
+	.align 2
 gUnknown_0202136C:
 	.space 0x4
 

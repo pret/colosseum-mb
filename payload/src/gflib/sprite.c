@@ -1,7 +1,7 @@
 #include "global.h"
 #include "gflib/sprite.h"
 
-BSS_DATA struct Sprite sSprites[18];
+static struct Sprite sSprites[18];
 
 struct OamBuffer
 {
@@ -9,7 +9,7 @@ struct OamBuffer
     u8 numSprites;
 };
 
-BSS_DATA struct OamBuffer sOamBuffer;
+static struct OamBuffer sOamBuffer;
 
 void InsertSprite(struct Sprite * a0, struct Sprite * a1)
 {

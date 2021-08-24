@@ -1,0 +1,6 @@
+gBgHofsBuffer
+gBgVofsBuffer
+gBgTilemapBufferTransferScheduled
+filler1
+filler2
+filler3

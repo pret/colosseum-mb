@@ -1,6 +1,13 @@
 #include "global.h"
 #include "gflib/bg.h"
 
+u16 gBgHofsBuffer[4];
+u16 gBgVofsBuffer[4];
+bool8 gBgTilemapBufferTransferScheduled[4];
+u32 filler1;
+u32 filler2;
+u32 filler3;
+
 void DoGpuUpdateAndTilemapTransfers(void)
 {
     s32 i;

@@ -1,8 +1,9 @@
 #ifndef GFLIB_KEYS_H
 #define GFLIB_KEYS_H
 
-extern u16 gUnknown_02022EB8;
+extern u16 gHeldKeys;
 
-void sub_02009228(void);
+void ReadKeys(void);
+void SetKeyRepeatTiming(u16 delay, u16 rate);
 
 #endif //GFLIB_KEYS_H

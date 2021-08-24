@@ -1,4 +1,5 @@
 #include "global.h"
+#include "gflib/init.h"
 #include "gflib/bg.h"
 #include "gflib/sprite.h"
 #include "gflib/keys.h"
@@ -8,17 +9,15 @@ extern void GF_Main(void);
 
 extern char bss_start[], bss_end[];
 
-void (*gIntrTable[14u])(void);
+IntrFunc gIntrTable[14u];
 u32 gVBlankCounter;
-void (*gVBlankCallback)(void);
+IntrFunc gVBlankCallback;
 
 void InitIntr(void);
 void VBlankIntr(void);
 void IntrDummy(void);
 
 #define SR_KEYS (A_BUTTON | B_BUTTON | SELECT_BUTTON | START_BUTTON)
-
-#define TEST_BUTTON(arr, flags) ({(arr) & (flags);})
 
 void AgbMain(void)
 {
@@ -44,8 +43,8 @@ void sub_02008600(u32 a0)
     {
         UpdateSprites();
         VBlankIntrWait();
-        sub_02009228();
-        if (TEST_BUTTON(gUnknown_02022EB8, SR_KEYS) == SR_KEYS)
+        ReadKeys();
+        if (TEST_BUTTON(gHeldKeys, SR_KEYS) == SR_KEYS)
             SoftReset(0);
     }
 }
@@ -62,7 +61,7 @@ void InitIntr(void)
         gIntrTable[1] = IntrDummy;
 }
 
-void SetIntrFunc(int i, void (*func)(void))
+void SetIntrFunc(int i, IntrFunc func)
 {
     if (func != NULL)
         gIntrTable[i] = func;
@@ -70,7 +69,7 @@ void SetIntrFunc(int i, void (*func)(void))
         gIntrTable[i] = IntrDummy;
 }
 
-void SetVBlankCallback(void (*cb)(void))
+void SetVBlankCallback(IntrFunc cb)
 {
     u16 imeBak = REG_IME;
     REG_IME = 0;

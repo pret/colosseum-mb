@@ -26,7 +26,7 @@ SECTIONS {
         src/gflib/keys.o(.text);
         src/gflib/gfxload.o(.text);
         src/gflib/sound.o(.text);
-        asm/gflib.o(.text.020092F0);
+        asm/mb_020094A8.o(.text);
         src/agb_flash.o(.text);
         src/agb_flash_1m.o(.text);
         src/agb_flash_mx.o(.text);
