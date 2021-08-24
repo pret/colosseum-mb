@@ -24,7 +24,7 @@ struct Sprite
     void * unk14[4];
 };
 
-void InitOam(void);
+void ResetSprites(void);
 void UpdateSprites(void);
 void DoOamBufferTransfer(void);
 struct Sprite * AddSprite(s32 x, s32 y, const struct Subsprites * subsprites);

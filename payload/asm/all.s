@@ -92,7 +92,7 @@ _0200032C:
 	bl PauseSoundVSync
 	ldr r0, =0x03004000
 	bl sub_0200902C
-	bl sub_020007F0
+	bl FadeOut
 _02000384:
 	bl sub_020047D4
 	cmp r0, #0
@@ -200,8 +200,8 @@ _0200047C:
 	pop {r1}
 	bx r1
 
-	thumb_func_start StringExpandPlaceholders
-StringExpandPlaceholders: @ 0x02000484
+	thumb_func_start RenderText
+RenderText: @ 0x02000484
 	push {r4, r5, r6, r7, lr}
 	mov r7, sb
 	mov r6, r8
@@ -237,7 +237,7 @@ _020004BA:
 	ldr r0, =gStringBuffers
 	adds r1, r1, r0
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	b _02000562
 	.align 2, 0
 	.pool
@@ -246,7 +246,7 @@ _020004D0:
 	movs r7, #3
 _020004D4:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	adds r0, r7, #0
 	ldrh r1, [r6]
 	ands r0, r1
@@ -456,8 +456,8 @@ BufferString: @ 0x02000650
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02000664
-sub_02000664: @ 0x02000664
+	thumb_func_start GetStringWidth
+GetStringWidth: @ 0x02000664
 	push {r4, lr}
 	adds r3, r0, #0
 	movs r2, #0
@@ -606,7 +606,7 @@ _02000782:
 
 	thumb_func_start sub_02000794
 sub_02000794: @ 0x02000794
-	ldr r0, =gUnknown_02020A40
+	ldr r0, =gScreenIsFadedOut
 	ldrb r0, [r0]
 	bx lr
 	.align 2, 0
@@ -614,17 +614,17 @@ sub_02000794: @ 0x02000794
 
 	thumb_func_start sub_020007A0
 sub_020007A0: @ 0x020007A0
-	ldr r1, =gUnknown_02020A40
+	ldr r1, =gScreenIsFadedOut
 	strb r0, [r1]
 	bx lr
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_020007AC
-sub_020007AC: @ 0x020007AC
+	thumb_func_start FadeIn
+FadeIn: @ 0x020007AC
 	push {r4, r5, lr}
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r2, =0x04000054
 	movs r0, #0x1f
 	strh r0, [r2]
@@ -635,7 +635,7 @@ sub_020007AC: @ 0x020007AC
 	adds r5, r2, #0
 _020007C4:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	strh r4, [r5]
 	subs r4, #2
 	cmp r4, #0
@@ -643,7 +643,7 @@ _020007C4:
 	ldr r0, =0x04000050
 	movs r1, #0
 	strh r1, [r0]
-	ldr r0, =gUnknown_02020A40
+	ldr r0, =gScreenIsFadedOut
 	strb r1, [r0]
 	pop {r4, r5}
 	pop {r0}
@@ -651,14 +651,14 @@ _020007C4:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_020007F0
-sub_020007F0: @ 0x020007F0
+	thumb_func_start FadeOut
+FadeOut: @ 0x020007F0
 	push {r4, r5, lr}
-	ldr r1, =gUnknown_02020A40
+	ldr r1, =gScreenIsFadedOut
 	movs r0, #1
 	strb r0, [r1]
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r2, =0x04000054
 	movs r0, #0
 	strh r0, [r2]
@@ -669,7 +669,7 @@ sub_020007F0: @ 0x020007F0
 	adds r5, r2, #0
 _0200080E:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	strh r4, [r5]
 	adds r4, #2
 	cmp r4, #0x1f
@@ -677,7 +677,7 @@ _0200080E:
 	ldr r1, =0x04000054
 	movs r0, #0x1f
 	strh r0, [r1]
-	bl InitOam
+	bl ResetSprites
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -795,8 +795,8 @@ _020008E2:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02000900
-sub_02000900: @ 0x02000900
+	thumb_func_start NumToPmString3CustomZeroChar
+NumToPmString3CustomZeroChar: @ 0x02000900
 	push {r4, r5, r6, lr}
 	adds r5, r0, #0
 	adds r4, r1, #0
@@ -826,8 +826,8 @@ sub_02000900: @ 0x02000900
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_02000940
-sub_02000940: @ 0x02000940
+	thumb_func_start ClearVram
+ClearVram: @ 0x02000940
 	push {lr}
 	sub sp, #4
 	movs r0, #0
@@ -844,8 +844,8 @@ sub_02000940: @ 0x02000940
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02000964
-sub_02000964: @ 0x02000964
+	thumb_func_start NumToPmString3RightAlign
+NumToPmString3RightAlign: @ 0x02000964
 	push {r4, r5, lr}
 	adds r5, r0, #0
 	adds r4, r1, #0
@@ -901,7 +901,7 @@ sub_020009C4: @ 0x020009C4
 	bl sub_02009164
 	adds r0, r4, #0
 	adds r1, r5, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -1011,7 +1011,7 @@ sub_02000A74: @ 0x02000A74
 	adds r0, r6, #0
 	add r1, sp, #8
 	movs r2, #0x76
-	bl sub_02000900
+	bl NumToPmString3CustomZeroChar
 	add r0, sp, #8
 	add r4, sp, #0xc
 	ldrb r0, [r0]
@@ -1037,7 +1037,7 @@ _02000AEE:
 	adds r0, r5, #0
 	adds r1, r4, #0
 	movs r2, #0x76
-	bl sub_02000900
+	bl NumToPmString3CustomZeroChar
 	ldrb r4, [r4]
 	cmp r4, #0x76
 	bne _02000B0C
@@ -1227,7 +1227,7 @@ _02000C5C:
 	bl sub_02009164
 	adds r0, r5, #0
 	ldr r1, =gUnknown_0202004F
-	bl StringExpandPlaceholders
+	bl RenderText
 _02000C7E:
 	mov r5, r8
 	ldrb r0, [r5]
@@ -1660,11 +1660,11 @@ _02000FBE:
 	bl sub_02009164
 	adds r0, r6, #0
 	adds r1, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	adds r0, r5, #0
 	adds r1, r4, #0
 	movs r2, #0x76
-	bl sub_02000900
+	bl NumToPmString3CustomZeroChar
 	movs r1, #0
 	ldrb r0, [r4]
 	cmp r0, #0x76
@@ -1895,7 +1895,7 @@ _020011D0:
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _020011F2:
 	ldr r2, =gUnknown_02022EF4
 	movs r0, #0x64
@@ -2258,11 +2258,11 @@ _020014A6:
 	bl sub_02009164
 	adds r0, r6, #0
 	adds r1, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	adds r0, r5, #0
 	adds r1, r4, #0
 	movs r2, #0x76
-	bl sub_02000900
+	bl NumToPmString3CustomZeroChar
 	movs r1, #0
 	ldrb r0, [r4]
 	cmp r0, #0x76
@@ -2489,7 +2489,7 @@ _020016A8:
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _020016CA:
 	ldr r2, =gUnknown_02022EF4
 	movs r0, #0x64
@@ -2589,21 +2589,21 @@ _020017A4:
 	bl BufferString
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF54
-	bl StringExpandPlaceholders
+	bl RenderText
 	b _020017DC
 	.align 2, 0
 	.pool
 _020017C4:
 	ldr r0, [r5]
 	ldr r1, =gUnknown_02020056
-	bl StringExpandPlaceholders
+	bl RenderText
 	b _020017DC
 	.align 2, 0
 	.pool
 _020017D4:
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF6E
-	bl StringExpandPlaceholders
+	bl RenderText
 _020017DC:
 	add sp, #0xc
 	pop {r4, r5, r6}
@@ -2620,7 +2620,7 @@ sub_020017E8: @ 0x020017E8
 	ldr r1, =gUnknown_02020A44
 	movs r0, #0x80
 	strh r0, [r1]
-	bl sub_02000940
+	bl ClearVram
 	movs r1, #0x80
 	lsls r1, r1, #0x13
 	movs r2, #0xfa
@@ -2862,7 +2862,7 @@ _020019D6:
 	lsls r1, r5, #2
 	adds r1, r1, r2
 	ldr r1, [r1]
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r0, #6
 	str r0, [sp]
 	mov r0, r8
@@ -2952,7 +2952,7 @@ _02001AC8:
 	bl sub_02009164
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF87
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
 	bl sub_02008F6C
@@ -3026,7 +3026,7 @@ _02001B98:
 	bl sub_02000794
 	cmp r0, #0
 	beq _02001BF4
-	bl sub_020007AC
+	bl FadeIn
 _02001BF4:
 	movs r5, #1
 	b _02001EE6
@@ -3034,7 +3034,7 @@ _02001BF4:
 	.pool
 _02001C14:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r0, =gNewKeys
 	ldrh r4, [r0]
 	movs r0, #2
@@ -3325,7 +3325,7 @@ _02001E80:
 _02001E90:
 	movs r0, #SE_SELECT
 	bl PlaySE
-	bl sub_020007F0
+	bl FadeOut
 	ldr r5, =gUnknown_02021860
 	ldr r1, =0x0000011B
 	adds r4, r5, r1
@@ -3459,7 +3459,7 @@ _02001F50:
 	bl sub_02009164
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF87
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
 	bl sub_02008F6C
@@ -3533,7 +3533,7 @@ _0200201C:
 	bl sub_02000794
 	cmp r0, #0
 	beq _02002098
-	bl sub_020007AC
+	bl FadeIn
 	b _020021C6
 	.align 2, 0
 	.pool
@@ -3543,7 +3543,7 @@ _02002098:
 	b _020021C6
 _020020A0:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r0, =gNewAndRepeatedKeys
 	ldrh r1, [r0]
 	movs r3, #2
@@ -3723,7 +3723,7 @@ _02002208:
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _0200222C:
 	ldr r0, =0x04000154
 	movs r1, #0x80
@@ -3802,7 +3802,7 @@ _020022BC:
 	bl sub_02009164
 	adds r0, r5, #0
 	ldr r1, =gUnknown_0202004F
-	bl StringExpandPlaceholders
+	bl RenderText
 _020022DE:
 	movs r3, #1
 	add r8, r3
@@ -3841,7 +3841,7 @@ _02002314:
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _02002336:
 	ldr r1, =0x04000154
 	movs r0, #0xff
@@ -3862,7 +3862,7 @@ _0200234C:
 _0200235C:
 	movs r0, #SE_SELECT
 	bl PlaySE
-	bl sub_020007F0
+	bl FadeOut
 	ldr r4, =gUnknown_02021860
 	ldr r3, =0x0000011B
 	adds r5, r4, r3
@@ -3956,7 +3956,7 @@ sub_020023E8: @ 0x020023E8
 	mov sl, r4
 _0200241A:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r0, =gNewAndRepeatedKeys
 	ldrh r5, [r0]
 	cmp r5, #0
@@ -4330,7 +4330,7 @@ sub_020026F4: @ 0x020026F4
 	mov sb, r4
 _02002726:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r0, =gNewAndRepeatedKeys
 	ldrh r4, [r0]
 	cmp r4, #0
@@ -4823,9 +4823,9 @@ _02002B12:
 	strb r4, [r0]
 	adds r0, r3, #0
 	bl sub_020017E8
-	bl sub_020007AC
+	bl FadeIn
 	bl sub_020023E8
-	bl sub_020007F0
+	bl FadeOut
 	b _02002C1E
 	.align 2, 0
 	.pool
@@ -4935,9 +4935,9 @@ _02002BC6:
 	ble _02002B80
 	adds r0, r3, #0
 	bl sub_020017E8
-	bl sub_020007AC
+	bl FadeIn
 	bl sub_020026F4
-	bl sub_020007F0
+	bl FadeOut
 _02002C1E:
 	add sp, #0xc
 	pop {r3, r4, r5}
@@ -5141,11 +5141,11 @@ sub_02002D60: @ 0x02002D60
 	bl sub_02009164
 	adds r0, r6, #0
 	add r1, sp, #8
-	bl StringExpandPlaceholders
+	bl RenderText
 	adds r0, r4, #0
 	add r1, sp, #8
 	movs r2, #0x76
-	bl sub_02000900
+	bl NumToPmString3CustomZeroChar
 	movs r1, #0
 	add r0, sp, #8
 	b _02002DD0
@@ -5337,7 +5337,7 @@ _02002F08:
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r5, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _02002F2A:
 	add sp, #4
 	pop {r4, r5}
@@ -5452,7 +5452,7 @@ _02002FC8:
 sub_02002FEC: @ 0x02002FEC
 	push {r4, lr}
 	sub sp, #4
-	bl sub_02000940
+	bl ClearVram
 	movs r1, #0x80
 	lsls r1, r1, #0x13
 	movs r2, #0xfa
@@ -5578,7 +5578,7 @@ _02003140:
 	ldrb r0, [r0, #0x19]
 	lsrs r5, r0, #7
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	mov r2, sl
 	ldr r0, [r2]
 	ldrh r2, [r6, #0x16]
@@ -5709,7 +5709,7 @@ sub_020031F8: @ 0x020031F8
 	bl SetBgTilemapBufferPaletteRect
 	ldr r0, [r7, #0x24]
 	ldr r1, =gUnknown_0201FFE3
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r5, =gUnknown_02022EF4
 	movs r0, #0x64
 	mov r4, sb
@@ -5803,7 +5803,7 @@ _02003326:
 	bl sub_0200C44C
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r0, [r6, #0x24]
 	movs r1, #0
 	movs r2, #0x28
@@ -5813,7 +5813,7 @@ _02003326:
 	bl sub_0200C464
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldrb r0, [r6, #0x18]
 	cmp r0, #0
 	bne _020033A0
@@ -5823,7 +5823,7 @@ _02003326:
 	bl sub_02009164
 	ldr r0, [r6, #0x24]
 	ldr r1, =gUnknown_0201FFE8
-	bl StringExpandPlaceholders
+	bl RenderText
 _020033A0:
 	mov r1, sl
 	ldr r0, [r1]
@@ -5833,7 +5833,7 @@ _020033A0:
 	bl sub_0200C1B8
 	adds r1, r0, #0
 	add r0, sp, #0xc
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	add r1, sp, #0xc
 	movs r0, #0xba
 	strb r0, [r1, #3]
@@ -5845,7 +5845,7 @@ _020033A0:
 	bl sub_0200C1B8
 	adds r1, r0, #0
 	add r0, sp, #0x10
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	ldr r0, [r6, #0x24]
 	movs r1, #0x2d
 	movs r2, #0x40
@@ -5863,7 +5863,7 @@ _020033A0:
 	bl sub_020090E4
 	ldr r0, [r6, #0x24]
 	add r1, sp, #0xc
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldrb r0, [r6, #0x18]
 	cmp r0, #0
 	bne _02003414
@@ -5873,7 +5873,7 @@ _020033A0:
 	bl sub_02009164
 	ldr r0, [r6, #0x24]
 	ldr r1, =gUnknown_0201FFEB
-	bl StringExpandPlaceholders
+	bl RenderText
 _02003414:
 	ldr r0, [r6, #0x24]
 	strb r5, [r0, #0x1c]
@@ -5895,7 +5895,7 @@ _02003414:
 	adds r4, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r4, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	movs r5, #1
 	cmp r4, #9
 	ble _02003452
@@ -5917,7 +5917,7 @@ _02003452:
 	adds r4, #0x1f
 	subs r1, r4, r5
 	adds r0, r7, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r5, =gUnknown_02021990
 	ldrb r0, [r5, #0x18]
 	mov r8, r4
@@ -5929,7 +5929,7 @@ _02003452:
 	bl sub_02009164
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0201FFF2
-	bl StringExpandPlaceholders
+	bl RenderText
 _0200348E:
 	ldr r1, [r5, #0x24]
 	movs r2, #0
@@ -5957,7 +5957,7 @@ _0200348E:
 	adds r5, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r5, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	movs r4, #1
 	cmp r5, #9
 	ble _020034D8
@@ -5978,7 +5978,7 @@ _020034D8:
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r5, =gUnknown_02021990
 	ldr r0, [r5, #0x24]
 	movs r1, #6
@@ -5998,7 +5998,7 @@ _020034D8:
 	bl sub_02009164
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0201FFFA
-	bl StringExpandPlaceholders
+	bl RenderText
 _02003524:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
@@ -6014,7 +6014,7 @@ _02003524:
 	adds r5, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r5, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	movs r4, #1
 	cmp r5, #9
 	ble _02003554
@@ -6035,7 +6035,7 @@ _02003554:
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r5, =gUnknown_02021990
 	ldrb r0, [r5, #0x18]
 	cmp r0, #0
@@ -6046,7 +6046,7 @@ _02003554:
 	bl sub_02009164
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_02020002
-	bl StringExpandPlaceholders
+	bl RenderText
 _0200358C:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
@@ -6062,7 +6062,7 @@ _0200358C:
 	adds r5, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r5, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	movs r4, #1
 	cmp r5, #9
 	ble _020035BC
@@ -6083,7 +6083,7 @@ _020035BC:
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r5, =gUnknown_02021990
 	ldrb r0, [r5, #0x18]
 	cmp r0, #0
@@ -6094,7 +6094,7 @@ _020035BC:
 	bl sub_02009164
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0202000A
-	bl StringExpandPlaceholders
+	bl RenderText
 _020035F4:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
@@ -6110,7 +6110,7 @@ _020035F4:
 	adds r5, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r5, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	movs r4, #1
 	cmp r5, #9
 	ble _02003624
@@ -6131,7 +6131,7 @@ _02003624:
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r4, =gUnknown_02021990
 	ldr r0, [r4, #0x24]
 	movs r1, #2
@@ -6159,7 +6159,7 @@ _02003624:
 	bne _020036A8
 	ldr r0, [r4, #0x24]
 	ldr r1, =gUnknown_02020010
-	bl StringExpandPlaceholders
+	bl RenderText
 	b _020036BA
 	.align 2, 0
 	.pool
@@ -6170,7 +6170,7 @@ _020036A8:
 	bl sub_0200C6A4
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
-	bl StringExpandPlaceholders
+	bl RenderText
 _020036BA:
 	ldr r4, =gUnknown_02021990
 	ldr r0, [r4, #0x28]
@@ -6214,7 +6214,7 @@ _020036CC:
 	bl sub_02009164
 	ldr r0, [r4, #0x28]
 	ldr r1, =gUnknown_0202001B
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0xb
@@ -6231,7 +6231,7 @@ _020036CC:
 	bl sub_020090B0
 	ldr r0, [r4, #0x1c]
 	ldr r1, =gUnknown_0201FFC7
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
@@ -6387,7 +6387,7 @@ _02003898:
 	bl sub_02009164
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r0, [r4, #0x24]
 	movs r1, #2
 	str r1, [sp]
@@ -6401,13 +6401,13 @@ _02003898:
 	beq _02003944
 	add r0, sp, #0xc
 	ldr r1, [sp, #0x1c]
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	movs r0, #0xba
 	mov r1, r8
 	strb r0, [r1, #3]
 	add r0, sp, #0x10
 	ldr r1, [sp, #0x20]
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	mov r2, r8
 	ldrb r0, [r2, #5]
 	strb r0, [r2, #4]
@@ -6424,7 +6424,7 @@ _02003898:
 	bl sub_02009164
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r0, #0
 	movs r1, #0x18
 	ldr r2, [sp, #0x30]
@@ -6445,7 +6445,7 @@ _02003944:
 	bl sub_02009164
 	ldr r0, [r4, #0x24]
 	ldr r1, =gUnknown_02020029
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r4, #0xf0
 	lsls r4, r4, #8
 	movs r0, #0
@@ -6525,7 +6525,7 @@ _020039B2:
 	bl sub_02009164
 	ldr r0, [r4, #0x28]
 	ldr r1, =gUnknown_02020022
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0xb
@@ -6542,7 +6542,7 @@ _020039B2:
 	bl sub_020090B0
 	ldr r0, [r4, #0x1c]
 	ldr r1, =gUnknown_0201FFD6
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
@@ -6603,14 +6603,14 @@ sub_02003A70: @ 0x02003A70
 	ldr r0, [r5, #0x20]
 	ldr r4, =gUnknown_0202002C
 	adds r1, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r0, [r5, #0x20]
 	movs r1, #0x30
 	movs r2, #0x28
 	bl sub_02009164
 	ldr r0, [r5, #0x20]
 	adds r1, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	b _02003B92
 	.align 2, 0
 	.pool
@@ -6639,17 +6639,17 @@ _02003AF4:
 	bhi _02003B38
 	ldr r0, [r5, #0x20]
 	ldr r1, =gUnknown_0202002C
-	bl StringExpandPlaceholders
+	bl RenderText
 	b _02003B48
 	.align 2, 0
 	.pool
 _02003B38:
 	ldrb r1, [r0, #1]
 	add r0, sp, #8
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	ldr r0, [r5, #0x20]
 	add r1, sp, #8
-	bl StringExpandPlaceholders
+	bl RenderText
 _02003B48:
 	ldr r4, =gUnknown_02021990
 	ldr r0, [r4, #0x20]
@@ -6668,17 +6668,17 @@ _02003B48:
 	bne _02003B7C
 	ldr r0, [r4, #0x20]
 	ldr r1, =gUnknown_0202002C
-	bl StringExpandPlaceholders
+	bl RenderText
 	b _02003B8C
 	.align 2, 0
 	.pool
 _02003B7C:
 	ldrb r1, [r1, #3]
 	add r0, sp, #8
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	ldr r0, [r4, #0x20]
 	add r1, sp, #8
-	bl StringExpandPlaceholders
+	bl RenderText
 _02003B8C:
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
@@ -6753,7 +6753,7 @@ _02003BDC:
 	ldr r0, =gBgTilemapBufferTransferScheduled
 	strb r1, [r0, #2]
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	str r4, [sp]
 	movs r0, #4
 	str r0, [sp, #4]
@@ -6767,7 +6767,7 @@ _02003BDC:
 	ldr r0, =gBgTilemapBufferTransferScheduled
 	strb r1, [r0, #2]
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	str r4, [sp]
 	str r6, [sp, #4]
 	str r5, [sp, #8]
@@ -6788,19 +6788,19 @@ _02003BDC:
 	bl sub_02009164
 	ldr r0, [r7, #0x20]
 	ldr r1, =gUnknown_02020030
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r0, [r7, #0x20]
 	movs r1, #0
 	movs r2, #0x28
 	bl sub_02009164
 	ldr r0, [r7, #0x20]
 	ldr r1, =gUnknown_02020036
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r0, [sp, #0xc]
 	mov r1, sb
 	bl sub_02003A70
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	mov r1, r8
 	ldr r0, =gUnknown_020219DF
 	strb r1, [r0]
@@ -6847,7 +6847,7 @@ _02003CB4:
 	movs r4, #1
 	strb r4, [r1, #2]
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	str r5, [sp]
 	str r4, [sp, #4]
 	mov r0, sl
@@ -6869,7 +6869,7 @@ _02003CB4:
 	mov r0, r8
 	strb r4, [r0, #2]
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	str r5, [sp]
 	str r4, [sp, #4]
 	mov r1, sl
@@ -6948,7 +6948,7 @@ _02003DC0:
 	bl sub_02009164
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
-	bl StringExpandPlaceholders
+	bl RenderText
 _02003DEE:
 	add r1, sp, #0xc
 	movs r0, #0x34
@@ -6962,14 +6962,14 @@ _02003DEE:
 	bl sub_02009164
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
-	bl StringExpandPlaceholders
+	bl RenderText
 	adds r0, r6, #0
 	movs r1, #0x38
 	movs r2, #0
 	bl sub_0200C1B8
 	add r1, sp, #0xc
 	movs r2, #0xa1
-	bl sub_02000900
+	bl NumToPmString3CustomZeroChar
 	movs r5, #0
 	add r0, sp, #0xc
 	add r7, sp, #0x1c
@@ -7008,7 +7008,7 @@ _02003E54:
 	mov r1, sp
 	adds r1, r1, r5
 	adds r1, #0xc
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0xd
@@ -7034,7 +7034,7 @@ _02003E54:
 	bl sub_02009164
 	ldr r0, [r4, #0x20]
 	adds r1, r7, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	cmp r5, #0x20
 	beq _02003F0C
 	cmp r5, #0x1d
@@ -7078,7 +7078,7 @@ _02003EE0:
 	bl SetBgTilemapBufferPaletteRect
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
-	bl StringExpandPlaceholders
+	bl RenderText
 _02003F0C:
 	ldr r5, =gUnknown_02021990
 	ldr r0, [r5, #0xc]
@@ -7207,7 +7207,7 @@ sub_02004024: @ 0x02004024
 	bl sub_020031F8
 _02004034:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r0, =gNewKeys
 	ldrh r4, [r0]
 	movs r0, #0x40
@@ -7318,7 +7318,7 @@ sub_020040FC: @ 0x020040FC
 	mov sb, r4
 _02004126:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r0, =gNewKeys
 	ldrh r5, [r0]
 	movs r0, #0x40
@@ -7460,7 +7460,7 @@ _0200420E:
 	ldr r0, [r1, #0x24]
 	ldr r4, =gUnknown_0202003F
 	adds r1, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	movs r1, #0
@@ -7468,7 +7468,7 @@ _0200420E:
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	adds r1, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	mov r0, sp
 	ldrb r1, [r0, #0xc]
 	ldr r0, =gBgTilemapBufferTransferScheduled
@@ -7505,7 +7505,7 @@ _0200420E:
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	adds r1, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	mov r0, sp
 	ldrb r1, [r0, #0xc]
 	ldr r0, =gBgTilemapBufferTransferScheduled
@@ -7514,7 +7514,7 @@ _0200420E:
 	str r0, [sp, #0xc]
 _020042D6:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r0, =gNewKeys
 	ldrh r5, [r0]
 	ldr r1, =gUnknown_020219DE
@@ -7623,7 +7623,7 @@ _02004356:
 	adds r1, r1, r4
 	lsls r1, r1, #4
 	add r1, sl
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r0, #1
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	strb r0, [r1]
@@ -7706,7 +7706,7 @@ _0200441C:
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	ldr r1, =gUnknown_02020022
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r0, #1
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	strb r0, [r1]
@@ -7778,7 +7778,7 @@ sub_020044F0: @ 0x020044F0
 	strb r0, [r4, #0x18]
 	adds r0, r6, #0
 	bl sub_020031F8
-	bl sub_020007AC
+	bl FadeIn
 	mov r8, r4
 	b _0200458E
 	.align 2, 0
@@ -7797,7 +7797,7 @@ _0200451C:
 	rsbs r5, r5, #0
 _02004536:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	movs r0, #2
 	adds r1, r5, #0
 	movs r2, #0
@@ -7825,7 +7825,7 @@ _02004536:
 	movs r4, #4
 _02004576:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	movs r0, #2
 	adds r1, r5, #0
 	movs r2, #0
@@ -7843,7 +7843,7 @@ _0200458E:
 	cmp r6, r5
 	bne _0200451C
 _0200459E:
-	bl sub_020007F0
+	bl FadeOut
 	ldr r0, =gUnknown_02021990
 	adds r0, #0x50
 	ldrb r0, [r0]
@@ -7890,7 +7890,7 @@ sub_020045B8: @ 0x020045B8
 	adds r1, r1, r5
 	lsls r1, r1, #4
 	adds r1, r7, r1
-	bl StringExpandPlaceholders
+	bl RenderText
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
@@ -7944,7 +7944,7 @@ _0200464E:
 sub_0200465C: @ 0x0200465C
 	push {r4, lr}
 	sub sp, #4
-	bl sub_02000940
+	bl ClearVram
 	movs r1, #0x80
 	lsls r1, r1, #0x13
 	movs r2, #0xaa
@@ -8061,7 +8061,7 @@ _02004788:
 	ldr r1, [r0, #0x20]
 _02004798:
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	b _020047C2
 	.align 2, 0
 	.pool
@@ -8074,7 +8074,7 @@ _020047AC:
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #4]
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _020047C2:
 	pop {r4}
 	pop {r0}
@@ -8146,15 +8146,15 @@ _020047FE:
 	bl sub_02000794
 	cmp r0, #1
 	bne _02004862
-	bl sub_020007AC
+	bl FadeIn
 _02004862:
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #0x24]
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _0200486C:
 	movs r0, #0x64
-	bl sub_02008600
+	bl DelayFrames
 	b _0200486C
 	.align 2, 0
 	.pool
@@ -8195,7 +8195,7 @@ _020048B6:
 	rsbs r0, r0, #0
 	ands r0, r1
 	strb r0, [r3]
-	bl sub_020007AC
+	bl FadeIn
 	ldr r0, =gUnknown_020217B4
 	ldrb r0, [r0]
 	cmp r0, #2
@@ -8206,7 +8206,7 @@ _020048B6:
 	bne _0200491C
 _020048F6:
 	movs r0, #0xff
-	bl sub_02008600
+	bl DelayFrames
 	b _020048F6
 	.align 2, 0
 	.pool
@@ -8218,7 +8218,7 @@ _0200491C:
 	ldr r0, =gUnknown_020219E4
 	ldr r0, [r0]
 	ldr r1, =gUnknown_02020508
-	bl StringExpandPlaceholders
+	bl RenderText
 	bl sub_0200472C
 _02004932:
 	ldr r3, =gUnknown_02024960
@@ -8242,7 +8242,7 @@ _02004950:
 	adds r6, r3, r0
 _02004956:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldrb r0, [r6]
 	cmp r0, #0
 	beq _0200496C
@@ -8291,11 +8291,11 @@ _02004998:
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #4]
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _020049C2:
 	cmp r5, #0
 	beq _02004956
-	bl sub_020007F0
+	bl FadeOut
 	subs r0, r5, #1
 	add sp, #0x30
 	pop {r4, r5, r6}
@@ -8318,7 +8318,7 @@ sub_02004A04: @ 0x02004A04
 	adds r4, r4, r0
 	ldr r1, [r4]
 	adds r0, r5, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -8370,17 +8370,17 @@ sub_02004A34: @ 0x02004A34
 	bl sub_02000794
 	cmp r0, #1
 	bne _02004A9A
-	bl sub_020007AC
+	bl FadeIn
 _02004A9A:
 	ldr r0, =gUnknown_0201FBB0
 	lsls r1, r5, #2
 	adds r1, r1, r0
 	ldr r1, [r1]
 	adds r0, r4, #0
-	bl StringExpandPlaceholders
+	bl RenderText
 _02004AA8:
 	movs r0, #0x64
-	bl sub_02008600
+	bl DelayFrames
 	b _02004AA8
 	.align 2, 0
 	.pool
@@ -8389,7 +8389,7 @@ _02004AA8:
 sub_02004AC4: @ 0x02004AC4
 	push {r4, r5, lr}
 	sub sp, #4
-	bl sub_02000940
+	bl ClearVram
 	movs r1, #0x80
 	lsls r1, r1, #0x13
 	movs r2, #0xfa
@@ -8630,7 +8630,7 @@ _02004D34:
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x14]
 	add r1, sp, #8
-	bl StringExpandPlaceholders
+	bl RenderText
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0
@@ -8681,14 +8681,14 @@ sub_02004D68: @ 0x02004D68
 	bl sub_02009164
 	ldr r0, [r4, #0x14]
 	mov r1, sp
-	bl StringExpandPlaceholders
+	bl RenderText
 	adds r0, r7, #0
 	movs r1, #0x38
 	movs r2, #0
 	bl sub_0200C1B8
 	mov r1, sp
 	movs r2, #0xa1
-	bl sub_02000900
+	bl NumToPmString3CustomZeroChar
 	movs r5, #0
 	mov r0, sp
 	add r1, sp, #4
@@ -8719,7 +8719,7 @@ _02004DE4:
 	ldr r0, [r4, #0x14]
 	mov r2, sp
 	adds r1, r2, r5
-	bl StringExpandPlaceholders
+	bl RenderText
 	adds r0, r7, #0
 	movs r1, #2
 	mov r2, sp
@@ -8733,7 +8733,7 @@ _02004DE4:
 	bl sub_02009164
 	ldr r0, [r4, #0x14]
 	mov r1, sp
-	bl StringExpandPlaceholders
+	bl RenderText
 	adds r0, r7, #0
 	movs r1, #0xb
 	movs r2, #0
@@ -8756,7 +8756,7 @@ _02004E38:
 	bl sub_02009164
 	ldr r0, [r5, #0x14]
 	mov r1, sp
-	bl StringExpandPlaceholders
+	bl RenderText
 	adds r0, r7, #0
 	bl sub_0200B7D0
 	adds r4, r0, #0
@@ -8799,7 +8799,7 @@ _02004E84:
 	adds r4, r0, #0
 	mov r0, sp
 	adds r1, r4, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	mov r1, sp
 	movs r0, #0xba
 	strb r0, [r1, #3]
@@ -8810,7 +8810,7 @@ _02004E84:
 	adds r4, r0, #0
 	mov r0, r8
 	adds r1, r4, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x14]
 	movs r1, #0x50
@@ -8821,7 +8821,7 @@ _02004E84:
 	strb r0, [r1, #0x1c]
 	ldr r0, [r4, #0x14]
 	mov r1, sp
-	bl StringExpandPlaceholders
+	bl RenderText
 	strb r5, [r6]
 	add sp, #0x20
 	pop {r3}
@@ -8961,7 +8961,7 @@ _02004FF4:
 	bl SetSpritePos
 _02005008:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	ldr r0, =gNewKeys
 	ldrh r7, [r0]
 	adds r3, r6, #0
@@ -9218,13 +9218,13 @@ sub_02005168: @ 0x02005168
 	adds r5, r0, #0
 	add r0, sp, #8
 	adds r1, r4, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	add r1, sp, #8
 	movs r0, #0xba
 	strb r0, [r1, #3]
 	add r0, sp, #0xc
 	adds r1, r5, #0
-	bl sub_02000964
+	bl NumToPmString3RightAlign
 	add r1, sp, #8
 	adds r0, r1, #0
 	ldrb r0, [r0, #5]
@@ -9729,7 +9729,7 @@ _02005658:
 	lsls r1, r3, #2
 	adds r1, r1, r2
 	ldr r1, [r1]
-	bl StringExpandPlaceholders
+	bl RenderText
 	cmp r7, #0
 	bne _020056DA
 	ldr r0, [r4, #0x18]
@@ -9822,7 +9822,7 @@ sub_02005704: @ 0x02005704
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
-	bl sub_020007AC
+	bl FadeIn
 	movs r2, #1
 	mov r8, r2
 _02005774:
@@ -10056,7 +10056,7 @@ _02005996:
 	.align 2, 0
 	.pool
 _020059A4:
-	bl sub_020007F0
+	bl FadeOut
 	bl sub_02002C80
 	ldr r1, =gUnknown_02024960
 	ldrb r0, [r1, #3]
@@ -10128,7 +10128,7 @@ _02005A00:
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
-	bl sub_020007AC
+	bl FadeIn
 	b _02005B1E
 	.align 2, 0
 	.pool
@@ -10223,7 +10223,7 @@ _02005B1C:
 	strb r0, [r7]
 _02005B1E:
 	movs r0, #1
-	bl sub_02008600
+	bl DelayFrames
 	mov r2, r8
 	cmp r2, #0
 	beq _02005B2C
@@ -10279,7 +10279,7 @@ _02005B74:
 	bl sub_02000794
 	cmp r0, #0
 	bne _02005B9A
-	bl sub_020007F0
+	bl FadeOut
 _02005B9A:
 	movs r0, #0
 	add sp, #0xc
@@ -10594,14 +10594,14 @@ sub_02005DCC: @ 0x02005DCC
 	movs r0, #4
 	add r1, sp, #0xc
 	bl BufferString
-	bl sub_020007AC
+	bl FadeIn
 	ldr r0, [r4, #0x18]
 	ldr r1, =gBattleStringsTable
 	lsls r6, r6, #2
 	adds r6, r6, r1
 	ldr r1, [r6]
-	bl StringExpandPlaceholders
-	bl sub_020007F0
+	bl RenderText
+	bl FadeOut
 	add sp, #0x24
 	pop {r3}
 	mov r8, r3
@@ -11034,11 +11034,11 @@ _020061C4:
 	ble _020061A4
 	bl sub_02005FCC
 	adds r4, r0, #0
-	bl sub_020085F4
+	bl GetFrameTotal
 	adds r1, r0, #0
 	movs r0, #0x3f
 	ands r0, r1
-	bl sub_02008600
+	bl DelayFrames
 	cmp r4, #1
 	beq _02006222
 	cmp r4, #1
@@ -11430,7 +11430,7 @@ _020064E8:
 	.pool
 
 	.lcomm gUnknown_02020A38, 8
-	.lcomm gUnknown_02020A40, 1
+	.lcomm gScreenIsFadedOut, 1
 	.lcomm _padding_02020A41, 2
 	.lcomm gUnknown_02020A44, 2
 	.lcomm _padding_02020A46, 2

@@ -1754,7 +1754,7 @@ _0200A354:
 	strb r0, [r4, #1]
 	strh r1, [r4, #0x10]
 	movs r0, #5
-	bl sub_02008600
+	bl DelayFrames
 	movs r5, #1
 	b _0200A3DE
 	.align 2, 0

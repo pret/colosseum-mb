@@ -27,17 +27,17 @@ void AgbMain(void)
     REG_WAITCNT = WAITCNT_SRAM_4 | WAITCNT_WS0_N_3 | WAITCNT_WS0_S_1 | WAITCNT_WS1_N_3 | WAITCNT_WS1_S_1 | WAITCNT_WS2_N_3 | WAITCNT_WS2_S_1 | WAITCNT_PREFETCH_ENABLE;
     InitIntr();
     ResetGpuBuffers();
-    InitOam();
+    ResetSprites();
     GF_Main();
     SoftReset(RESET_ALL);
 }
 
-u32 sub_020085F4(void)
+u32 GetFrameTotal(void)
 {
     return gVBlankCounter;
 }
 
-void sub_02008600(u32 a0)
+void DelayFrames(u32 a0)
 {
     for (; a0 != 0; a0--)
     {

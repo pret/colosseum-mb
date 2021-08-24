@@ -158,7 +158,7 @@ void UpdateSprites(void)
     sOamBuffer.numSprites = 0;
 }
 
-void InitOam(void)
+void ResetSprites(void)
 {
     s32 i;
     struct OamData * r2;

@@ -31,6 +31,7 @@ SCANINC := ../tools/scaninc/scaninc
 RAMSCRGEN := ../tools/ramscrgen/ramscrgen
 MID := ../tools/mid2agb/mid2agb
 AIF := ../tools/aif2pcm/aif2pcm
+GFX := ../tools/gbagfx/gbagfx
 
 NAME := payload
 ROM := $(NAME).gba
@@ -171,6 +172,21 @@ include songs.mk
 
 sound/%.bin: sound/%.aif
 	$(AIF) $< $@ $(AIFFLAGS)
+
+%.lz: %
+	$(GFX) $(GFXFLAGS) $< $@
+
+%.4bpp: %.png
+	$(GFX) $(GFXFLAGS) $< $@
+
+%.8bpp: %.png
+	$(GFX) $(GFXFLAGS) $< $@
+
+%.gbapal: %.png
+	$(GFX) $(GFXFLAGS) $< $@
+
+%.gbapal: %.pal
+	$(GFX) $(GFXFLAGS) $< $@
 
 ### Debug Print ###
 
