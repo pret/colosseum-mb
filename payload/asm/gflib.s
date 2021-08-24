@@ -669,3 +669,5 @@ _0200920E:
 	bx r0
 	.align 2, 0
 	.pool
+
+	.lcomm gUnknown_0202135C, 4

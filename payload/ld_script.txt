@@ -59,7 +59,7 @@ SECTIONS {
     lib_rodata :
     ALIGN(4)
     {
-        data/gflib.o(.rodata);
+        data/mb_020094A8.o(.rodata);
         src/agb_flash.o(.rodata);
         src/agb_flash_1m.o(.rodata);
         src/agb_flash_mx.o(.rodata);
@@ -77,7 +77,7 @@ SECTIONS {
 	lib_data :
 	ALIGN(4)
 	{
-        data/gflib.o(.data);
+        data/mb_020094A8.o(.data);
     } =0
     bss_start = .;
     wram (NOLOAD) :

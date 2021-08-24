@@ -140,13 +140,13 @@ gUnknown_02024950:
 gUnknown_02024960:
 	.space 0x884
 
-gUnknown_020251E4:
+gRomDetection_IsRS:
 	.space 0x4
 
-gUnknown_020251E8:
+gAgbPmRomParams:
 	.space 0x4
 
-gUnknown_020251EC:
+gRomDetection_IsEnglish:
 	.space 0x4
 
 gUnknown_020251F0:

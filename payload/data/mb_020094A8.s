@@ -280,7 +280,7 @@ gUnknown_0202062C::
 	.string "Bad EGG$"
 
 @ Ruby rev0
-gUnknown_02020634::
+gAgbPmRomParams_AXVE_rev0::
 	.4byte 0x00000002
 	.4byte 0x00000002
 	.ascii "pokemon ruby version"
@@ -343,7 +343,7 @@ gUnknown_02020634::
 	.4byte 0x083c09d8
 
 @ Ruby rev1
-gUnknown_02020734::
+gAgbPmRomParams_AXVE_rev2::
 	.4byte 0x00000002
 	.4byte 0x00000002
 	.ascii "pokemon ruby version"
@@ -406,7 +406,7 @@ gUnknown_02020734::
 	.4byte 0x083c09f4
 
 @ Sapphire rev0
-gUnknown_02020834::
+gAgbPmRomParams_AXPE_rev0::
 	.4byte 0x00000001
 	.4byte 0x00000002
 	.ascii "pokemon sapphire version"
@@ -468,7 +468,7 @@ gUnknown_02020834::
 	.4byte 0x083c0a30
 
 @ Sapphire rev2
-gUnknown_02020934::
+gAgbPmRomParams_AXPE_rev2::
 	.4byte 0x00000001
 	.4byte 0x00000002
 	.ascii "pokemon sapphire version"

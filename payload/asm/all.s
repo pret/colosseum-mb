@@ -8,7 +8,7 @@
 GF_Main: @ 0x020002B4
 	push {r4, r5, r6, r7, lr}
 	sub sp, #0x48
-	bl sub_0200CBF8
+	bl DetectROM
 	ldr r0, =gUnknown_0201F4AC
 	ldr r1, [r0]
 	movs r0, #2
@@ -22,7 +22,7 @@ GF_Main: @ 0x020002B4
 	movs r0, #0
 	str r0, [sp, #0x44]
 	movs r4, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r0, [r0, #4]
 	cmp r0, #2
@@ -127,7 +127,7 @@ _020003EA:
 	ldr r0, [r0]
 	ldr r1, =gUnknown_02022ECC
 	ldr r1, [r1]
-	ldr r2, =gUnknown_020251E8
+	ldr r2, =gAgbPmRomParams
 	ldr r2, [r2]
 	adds r2, #0x8c
 	ldr r2, [r2]
@@ -164,7 +164,7 @@ sub_0200043C: @ 0x0200043C
 	movs r0, #0
 	str r0, [sp, #0x40]
 	movs r4, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r0, [r0, #4]
 	cmp r0, #2
@@ -1103,7 +1103,7 @@ _02000B66:
 	ldr r1, [r4, #0x1c]
 	movs r0, #1
 	ands r1, r0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r2, [r0, #0x38]
 	ldrh r3, [r5, #6]
@@ -1301,7 +1301,7 @@ sub_02000CA4: @ 0x02000CA4
 	str r6, [r4, #0x14]
 	ldr r0, =sub_02000B38
 	str r0, [r4, #0x10]
-	ldr r5, =gUnknown_020251E8
+	ldr r5, =gAgbPmRomParams
 	ldr r0, [r5]
 	ldr r0, [r0, #0x3c]
 	ldrh r2, [r6, #4]
@@ -1475,7 +1475,7 @@ _02000E7E:
 	adds r1, #4
 	ldrb r2, [r2, #1]
 	adds r2, #1
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0x77
 	ldrb r3, [r0]
@@ -2073,7 +2073,7 @@ _02001366:
 	ldrb r1, [r2]
 	adds r1, #3
 	ldrb r2, [r2, #1]
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0x77
 	ldrb r3, [r0]
@@ -2734,7 +2734,7 @@ _0200191C:
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #1]
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r0, [r0, #0x40]
 	ldr r1, =0x040000D4
@@ -5219,7 +5219,7 @@ _02002E2A:
 sub_02002E3C: @ 0x02002E3C
 	push {r4, lr}
 	adds r3, r0, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r2, [r0, #0x38]
 	ldrh r4, [r3, #6]
@@ -5537,7 +5537,7 @@ sub_020030E4: @ 0x020030E4
 	mov sb, r1
 	str r2, [sp]
 	str r3, [sp, #4]
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	mov sl, r0
 	ldr r0, [r0]
 	adds r0, #0xbc
@@ -6262,7 +6262,7 @@ sub_0200378C: @ 0x0200378C
 	ldr r0, [r2]
 	adds r0, r0, r1
 	str r0, [sp, #0x24]
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xcc
 	ldr r0, [r0]
@@ -6571,7 +6571,7 @@ sub_02003A70: @ 0x02003A70
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r7, r0, r1
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xcc
 	ldr r0, [r0]
@@ -8093,14 +8093,14 @@ sub_020047D4: @ 0x020047D4
 	movs r4, #4
 	strb r4, [r0]
 	bl sub_0200465C
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xb8
 	ldrb r0, [r0]
 	lsls r0, r0, #0x1e
 	cmp r0, #0
 	blt _020047FE
-	ldr r0, =gUnknown_020251E4
+	ldr r0, =gRomDetection_IsRS
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _02004898
@@ -8487,7 +8487,7 @@ sub_02004BEC: @ 0x02004BEC
 	adds r6, r0, #0
 	adds r5, r2, #0
 	mov sb, r3
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	mov sl, r0
 	ldr r0, [r0]
 	adds r0, #0xbc
@@ -9157,7 +9157,7 @@ sub_02005168: @ 0x02005168
 	muls r0, r1, r0
 	ldr r6, [r2]
 	adds r6, r6, r0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xcc
 	ldr r7, [r0]
@@ -9389,7 +9389,7 @@ _0200536C:
 	movs r5, #6
 _02005398:
 	movs r6, #0
-	ldr r3, =gUnknown_020251E8
+	ldr r3, =gAgbPmRomParams
 	ldr r0, [r3]
 	adds r0, #0x77
 	mov ip, r2
@@ -10880,7 +10880,7 @@ _02006074:
 	cmp r0, #0
 	beq _02006074
 _02006084:
-	ldr r0, =gUnknown_020251EC
+	ldr r0, =gRomDetection_IsEnglish
 	ldrb r0, [r0]
 	cmp r0, #0
 	beq _020060C0
@@ -10901,7 +10901,7 @@ _020060A6:
 	.align 2, 0
 	.pool
 _020060C0:
-	ldr r6, =gUnknown_020251E8
+	ldr r6, =gAgbPmRomParams
 	ldr r0, [r6]
 	ldr r5, =gSaveBlock2Ptr
 	ldr r1, [r5]
@@ -11428,3 +11428,10 @@ _020064E8:
 	bx lr
 	.align 2, 0
 	.pool
+
+	.lcomm gUnknown_02020A38, 8
+	.lcomm gUnknown_02020A40, 1
+	.lcomm _padding_02020A41, 2
+	.lcomm gUnknown_02020A44, 2
+	.lcomm _padding_02020A46, 2
+	.lcomm gUnknown_02020A48, 4

@@ -64,7 +64,7 @@ _02009520:
 	b _020097BE
 _02009522:
 	ldr r7, =gUnknown_02022ECC
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	mov sl, r0
 	ldr r0, [r0]
 	adds r0, #0x8c
@@ -154,7 +154,7 @@ _020095D0:
 	mov r1, sb
 	str r5, [r1]
 	ldr r7, =gUnknown_02022EC4
-	ldr r2, =gUnknown_020251E8
+	ldr r2, =gAgbPmRomParams
 	mov sl, r2
 	ldr r0, [r2]
 	adds r0, #0x8c
@@ -210,7 +210,7 @@ _0200965C:
 _02009680:
 	ldr r1, =gSaveBlock2Ptr
 	mov sb, r1
-	ldr r2, =gUnknown_020251E8
+	ldr r2, =gAgbPmRomParams
 	mov sl, r2
 	ldr r0, [r2]
 	adds r0, #0x88
@@ -281,7 +281,7 @@ _02009680:
 _0200972C:
 	ldr r1, =gUnknown_02022EC4
 	mov sb, r1
-	ldr r2, =gUnknown_020251E8
+	ldr r2, =gAgbPmRomParams
 	mov sl, r2
 	ldr r0, [r2]
 	adds r0, #0x8c
@@ -351,7 +351,7 @@ _0200972C:
 _020097BE:
 	ldr r3, =gUnknown_02022EF4
 	ldr r1, =gUnknown_02022ECC
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r4, [r0]
 	adds r0, r4, #0
 	adds r0, #0x94
@@ -467,7 +467,7 @@ sub_020098D8: @ 0x020098D8
 	adds r5, r0, #0
 	adds r6, r1, #0
 	ldr r4, =gUnknown_0202054C
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r1, r0, #0
 	adds r1, #0x88
@@ -987,7 +987,7 @@ _02009CF2:
 	ldr r0, [r0]
 	ldr r1, =gUnknown_02022EC4
 	ldr r1, [r1]
-	ldr r2, =gUnknown_020251E8
+	ldr r2, =gAgbPmRomParams
 	ldr r2, [r2]
 	adds r2, #0x8c
 	ldr r2, [r2]
@@ -1677,7 +1677,7 @@ _0200A2E2:
 	ldr r0, =gSaveBlock2Ptr
 	ldr r3, [r0]
 	movs r1, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0x88
 	ldr r0, [r0]
@@ -3473,7 +3473,7 @@ _0200B11E:
 	b _0200B4AC
 _0200B128:
 	movs r4, #0
-	ldr r3, =gUnknown_020251E8
+	ldr r3, =gAgbPmRomParams
 	ldr r0, [r3]
 	adds r0, #0x74
 	ldrb r0, [r0]
@@ -4059,7 +4059,7 @@ sub_0200B4E0: @ 0x0200B4E0
 	lsls r0, r0, #1
 	cmp r7, r0
 	bls _0200B538
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r0, [r0, #0x30]
 	b _0200B56C
@@ -4076,7 +4076,7 @@ _0200B538:
 	eors r0, r3
 	cmp r0, #7
 	bhi _0200B560
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	lsls r1, r7, #3
 	ldr r0, [r0, #0x34]
@@ -4084,7 +4084,7 @@ _0200B538:
 	.align 2, 0
 	.pool
 _0200B560:
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	mov r2, r8
 	lsls r1, r2, #3
@@ -4104,7 +4104,7 @@ _0200B56C:
 sub_0200B57C: @ 0x0200B57C
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xbc
 	ldr r6, [r0]
@@ -4205,7 +4205,7 @@ _0200B640:
 _0200B644:
 	movs r2, #0
 _0200B646:
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xd0
 	ldr r1, [r0]
@@ -4284,7 +4284,7 @@ _0200B6D8:
 _0200B6DC:
 	movs r2, #0
 _0200B6DE:
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xd4
 	ldr r1, [r0]
@@ -4559,7 +4559,7 @@ sub_0200B89C: @ 0x0200B89C
 	lsls r1, r1, #0x11
 	cmp r0, r1
 	bne _0200B9AE
-	ldr r0, =gUnknown_020251EC
+	ldr r0, =gRomDetection_IsEnglish
 	ldrb r0, [r0]
 	movs r1, #7
 	str r1, [sp, #4]
@@ -4906,7 +4906,7 @@ _0200BBDC:
 	b _0200BFFC
 _0200BBF4:
 	movs r2, #0
-	ldr r5, =gUnknown_020251E8
+	ldr r5, =gAgbPmRomParams
 	ldr r0, [r5]
 	adds r0, #0x76
 	ldrb r0, [r0]
@@ -4967,7 +4967,7 @@ _0200BC58:
 	b _0200BFFC
 _0200BC5E:
 	movs r2, #0
-	ldr r5, =gUnknown_020251E8
+	ldr r5, =gAgbPmRomParams
 	ldr r0, [r5]
 	adds r0, #0x74
 	ldrb r0, [r0]
@@ -5703,7 +5703,7 @@ _0200C188:
 	ble _0200C160
 	cmp r7, #0
 	beq _0200C19E
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xf0
 	ldr r0, [r0]
@@ -5802,7 +5802,7 @@ _0200C24E:
 sub_0200C254: @ 0x0200C254
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xbc
 	ldr r6, [r0]
@@ -5864,7 +5864,7 @@ sub_0200C2BC: @ 0x0200C2BC
 	lsls r0, r0, #1
 	cmp r4, r0
 	bls _0200C2DC
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r0, [r0, #0x30]
 	b _0200C30E
@@ -5881,7 +5881,7 @@ _0200C2DC:
 	eors r0, r3
 	cmp r0, #7
 	bls _0200C304
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	lsls r1, r4, #3
 	ldr r0, [r0, #0x30]
@@ -5889,7 +5889,7 @@ _0200C2DC:
 	.align 2, 0
 	.pool
 _0200C304:
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	lsls r1, r5, #3
 	ldr r0, [r0, #0x34]
@@ -5966,7 +5966,7 @@ sub_0200C378: @ 0x0200C378
 	sub sp, #4
 	mov ip, r0
 	adds r5, r1, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r3, [r0, #0x44]
 	movs r1, #0
@@ -6032,7 +6032,7 @@ _0200C3E4:
 sub_0200C3FC: @ 0x0200C3FC
 	push {r4, r5, lr}
 	adds r4, r1, #0
-	ldr r1, =gUnknown_020251E8
+	ldr r1, =gAgbPmRomParams
 	ldr r1, [r1]
 	adds r1, #0xbc
 	ldr r5, [r1]
@@ -6078,7 +6078,7 @@ sub_0200C440: @ 0x0200C440
 	thumb_func_start sub_0200C44C
 sub_0200C44C: @ 0x0200C44C
 	adds r2, r0, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xc0
 	ldr r0, [r0]
@@ -6091,7 +6091,7 @@ sub_0200C44C: @ 0x0200C44C
 
 	thumb_func_start sub_0200C464
 sub_0200C464: @ 0x0200C464
-	ldr r1, =gUnknown_020251E8
+	ldr r1, =gAgbPmRomParams
 	ldr r1, [r1]
 	adds r1, #0xc4
 	ldr r1, [r1]
@@ -6105,7 +6105,7 @@ sub_0200C464: @ 0x0200C464
 	thumb_func_start sub_0200C478
 sub_0200C478: @ 0x0200C478
 	push {r4, lr}
-	ldr r3, =gUnknown_020251E8
+	ldr r3, =gAgbPmRomParams
 	ldr r3, [r3]
 	adds r3, #0xcc
 	ldr r4, [r3]
@@ -6139,7 +6139,7 @@ sub_0200C4B8: @ 0x0200C4B8
 	push {r4, r5, r6, r7, lr}
 	adds r3, r0, #0
 	mov ip, r1
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r1, [r0, #0x48]
 	movs r2, #0
@@ -6216,7 +6216,7 @@ _0200C542:
 sub_0200C544: @ 0x0200C544
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xbc
 	ldr r6, [r0]
@@ -6306,7 +6306,7 @@ sub_0200C5DC: @ 0x0200C5DC
 	adds r5, r0, #0
 	movs r4, #0
 	movs r1, #0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xf8
 	ldr r0, [r0]
@@ -6392,7 +6392,7 @@ _0200C67A:
 sub_0200C680: @ 0x0200C680
 	lsls r0, r0, #0x10
 	lsrs r1, r0, #0x10
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xc8
 	ldr r2, [r0]
@@ -6452,7 +6452,7 @@ _0200C6DE:
 	.align 2, 0
 	.pool
 _0200C6F8:
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xc8
 	ldr r3, [r0]
@@ -6845,7 +6845,7 @@ sub_0200C9C0: @ 0x0200C9C0
 	beq _0200C9E2
 	b _0200CAF0
 _0200C9E2:
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	mov r8, r0
 	ldr r0, [r0]
 	adds r0, #0xb8
@@ -7133,60 +7133,60 @@ _0200CBF4:
 _0200CBF6:
 	bx lr
 
-	thumb_func_start sub_0200CBF8
-sub_0200CBF8: @ 0x0200CBF8
+	thumb_func_start DetectROM
+DetectROM: @ 0x0200CBF8
 	push {r4, r5, lr}
-	ldr r2, =gUnknown_020251EC
+	ldr r2, =gRomDetection_IsEnglish
 	movs r0, #0
 	strb r0, [r2]
-	ldr r1, =gUnknown_020251E4
+	ldr r1, =gRomDetection_IsRS
 	strb r0, [r1]
 	movs r4, #0
 	ldr r0, =0x080000AC
 	ldr r3, [r0]
-	ldr r0, =0x46505841
+	ldr r0, =0x46505841 @ AXPF
 	adds r5, r1, #0
 	cmp r3, r0
 	beq _0200CCA8
 	cmp r3, r0
 	bhi _0200CC54
-	ldr r0, =0x44565841
+	ldr r0, =0x44565841 @ AXVD
 	cmp r3, r0
 	beq _0200CCA8
 	cmp r3, r0
 	bhi _0200CC3C
-	ldr r0, =0x44505841
+	ldr r0, =0x44505841 @ AXPD
 	b _0200CC7C
 	.align 2, 0
 	.pool
 _0200CC3C:
-	ldr r0, =0x45505841
+	ldr r0, =0x45505841 @ AXPE
 	cmp r3, r0
 	beq _0200CC9C
-	ldr r0, =0x45565841
+	ldr r0, =0x45565841 @ AXVE
 	cmp r3, r0
 	beq _0200CC90
 	b _0200CC80
 	.align 2, 0
 	.pool
 _0200CC54:
-	ldr r0, =0x49565841
+	ldr r0, =0x49565841 @ AXVI
 	cmp r3, r0
 	beq _0200CCA8
 	cmp r3, r0
 	bhi _0200CC74
-	ldr r0, =0x46565841
+	ldr r0, =0x46565841 @ AXVF
 	cmp r3, r0
 	beq _0200CCA8
-	ldr r0, =0x49505841
+	ldr r0, =0x49505841 @ AXPI
 	b _0200CC7C
 	.align 2, 0
 	.pool
 _0200CC74:
-	ldr r0, =0x53505841
+	ldr r0, =0x53505841 @ AXPS
 	cmp r3, r0
 	beq _0200CCA8
-	ldr r0, =0x53565841
+	ldr r0, =0x53565841 @ AXVS
 _0200CC7C:
 	cmp r3, r0
 	beq _0200CCA8
@@ -7216,7 +7216,7 @@ _0200CCA8:
 _0200CCAC:
 	cmp r3, #0
 	beq _0200CCC0
-	ldr r1, =gUnknown_020251E8
+	ldr r1, =gAgbPmRomParams
 	ldr r0, =0x08000100
 	b _0200CD10
 	.align 2, 0
@@ -7228,14 +7228,14 @@ _0200CCC0:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _0200CCE0
-	ldr r1, =gUnknown_020251E8
-	ldr r0, =gUnknown_02020634
+	ldr r1, =gAgbPmRomParams
+	ldr r0, =gAgbPmRomParams_AXVE_rev0
 	b _0200CD10
 	.align 2, 0
 	.pool
 _0200CCE0:
-	ldr r1, =gUnknown_020251E8
-	ldr r0, =gUnknown_02020734
+	ldr r1, =gAgbPmRomParams
+	ldr r0, =gAgbPmRomParams_AXVE_rev2
 	b _0200CD10
 	.align 2, 0
 	.pool
@@ -7244,14 +7244,14 @@ _0200CCF0:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _0200CD0C
-	ldr r1, =gUnknown_020251E8
-	ldr r0, =gUnknown_02020834
+	ldr r1, =gAgbPmRomParams
+	ldr r0, =gAgbPmRomParams_AXPE_rev0
 	b _0200CD10
 	.align 2, 0
 	.pool
 _0200CD0C:
-	ldr r1, =gUnknown_020251E8
-	ldr r0, =gUnknown_02020934
+	ldr r1, =gAgbPmRomParams
+	ldr r0, =gAgbPmRomParams_AXPE_rev2
 _0200CD10:
 	str r0, [r1]
 	cmp r3, #1
@@ -7276,11 +7276,11 @@ _0200CD30:
 	thumb_func_start sub_0200CD38
 sub_0200CD38: @ 0x0200CD38
 	push {lr}
-	ldr r0, =gUnknown_020251EC
+	ldr r0, =gRomDetection_IsEnglish
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _0200CD60
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r1, =gSaveBlock2Ptr
 	ldr r1, [r1]
@@ -7318,11 +7318,11 @@ sub_0200CD84: @ 0x0200CD84
 	thumb_func_start sub_0200CD88
 sub_0200CD88: @ 0x0200CD88
 	push {lr}
-	ldr r0, =gUnknown_020251EC
+	ldr r0, =gRomDetection_IsEnglish
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _0200CDB4
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r1, =gSaveBlock2Ptr
 	ldr r1, [r1]
@@ -7354,7 +7354,7 @@ _0200CDCA:
 
 	thumb_func_start sub_0200CDD0
 sub_0200CDD0: @ 0x0200CDD0
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r0, [r0]
 	subs r0, #4
@@ -7372,7 +7372,7 @@ _0200CDE6:
 	thumb_func_start sub_0200CDE8
 sub_0200CDE8: @ 0x0200CDE8
 	ldr r1, =gUnknown_02022ECC
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r2, [r1]
 	ldr r1, [r0, #0x50]
@@ -7875,7 +7875,7 @@ sub_0200D1AC: @ 0x0200D1AC
 	push {r4, r5, r6, lr}
 	adds r3, r0, #0
 	ldr r1, =gUnknown_02022ECC
-	ldr r0, =gUnknown_020251E8
+	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xb4
 	ldr r1, [r1]
@@ -8426,7 +8426,7 @@ _0200D61C:
 sub_0200D624: @ 0x0200D624
 	push {r4, r5, r6, lr}
 	ldr r1, =gUnknown_02022ECC
-	ldr r2, =gUnknown_020251E8
+	ldr r2, =gAgbPmRomParams
 	ldr r0, [r2]
 	adds r0, #0xb4
 	ldr r1, [r1]
@@ -8944,3 +8944,6 @@ _0200DA3E:
 _0200DA4C:
 	bx lr
 	.align 2, 0
+
+	.lcomm gUnknown_0202136C, 4
+    .lcomm gUnknown_02021370, 4
