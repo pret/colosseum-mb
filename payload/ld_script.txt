@@ -79,17 +79,28 @@ SECTIONS {
     wram (NOLOAD) :
     ALIGN(4)
     {
-    <BSS>
+    INCLUDE sym_bss.ld;
     src/m4a.o(.bss.code);
-    <COMMON>
-    <EWRAM>
+    INCLUDE sym_common.ld;
+    INCLUDE sym_ewram.ld;
     }
     ewram_end = .;
     wram_extra (NOLOAD) :
     ALIGN(4)
     {
     gUnknown_0202526C = .;
+    . += 0x400;
     }
+    . = 0x02040000; /* Limit EWRAM size */
+
+    . = 0x03000000;
+    gpu_buffer (NOLOAD) :
+    ALIGN(4)
+    {
+    gBgTilemapBuffers = .;
+    . += 0x4000;
+    }
+    . = 0x03008000; /* Limit IWRAM size */
     /DISCARD/ :
     {
         *(*);

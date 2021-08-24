@@ -4,8 +4,8 @@
 	.equ SE_SELECT,  0
 	.equ SE_FAILURE, 1
 
-	thumb_func_start sub_020002B4
-sub_020002B4: @ 0x020002B4
+	thumb_func_start GF_Main
+GF_Main: @ 0x020002B4
 	push {r4, r5, r6, r7, lr}
 	sub sp, #0x48
 	bl sub_0200CBF8
@@ -88,8 +88,8 @@ _0200032C:
 	adds r0, r6, #0
 	bl sub_0200D924
 	ldr r0, =sub_0200D9EC
-	bl sub_020086A0
-	bl sub_0200930C
+	bl SetVBlankCallback
+	bl PauseSoundVSync
 	ldr r0, =0x03004000
 	bl sub_0200902C
 	bl sub_020007F0
@@ -493,18 +493,18 @@ sub_0200068C: @ 0x0200068C
 	mov r8, r2
 	adds r4, r3, #0
 	ldr r3, =0x0000300A
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	adds r1, r7, #1
 	ldr r3, =0x0000300B
 	mov r0, sb
 	mov r2, r8
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	adds r1, r7, #0
 	adds r1, #8
 	ldr r3, =0x0000300C
 	mov r0, sb
 	mov r2, r8
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r5, =gUnknown_02022EF4
 	movs r0, #0x64
 	mov sl, r0
@@ -566,7 +566,7 @@ _0200073E:
 	mov r0, sb
 	mov r2, r8
 	lsrs r3, r6, #0x10
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	adds r5, #1
 	subs r4, #8
 	cmp r4, #8
@@ -582,7 +582,7 @@ _02000752:
 	lsrs r3, r3, #0x10
 	mov r0, sb
 	mov r2, r8
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	b _02000782
 	.align 2, 0
 	.pool
@@ -591,7 +591,7 @@ _02000774:
 	mov r0, sb
 	mov r2, r8
 	mov r3, sl
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	adds r5, #1
 _02000782:
 	cmp r5, #5
@@ -677,7 +677,7 @@ _0200080E:
 	ldr r1, =0x04000054
 	movs r0, #0x1f
 	strh r0, [r1]
-	bl sub_02008C80
+	bl InitOam
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -837,7 +837,7 @@ sub_02000940: @ 0x02000940
 	ldr r2, =0x05006000
 	mov r0, sp
 	bl CpuSet
-	bl sub_020087B4
+	bl ResetGpuBuffers
 	add sp, #4
 	pop {r0}
 	bx r0
@@ -1122,7 +1122,7 @@ _02000B66:
 	ldrb r1, [r5, #1]
 	ldrb r2, [r5, #2]
 	adds r0, r4, #0
-	bl sub_02008D3C
+	bl SetSpritePos
 	ldr r1, =gUnknown_02021860
 	ldr r2, =0x0000011B
 	adds r0, r1, r2
@@ -1138,7 +1138,7 @@ _02000B66:
 	rsbs r2, r3, #0
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_02008D44
+	bl AddSpritePos
 	b _02000BD6
 	.align 2, 0
 	.pool
@@ -1146,7 +1146,7 @@ _02000BCC:
 	ldrb r1, [r5, #1]
 	ldrb r2, [r5, #2]
 	adds r0, r4, #0
-	bl sub_02008D3C
+	bl SetSpritePos
 _02000BD6:
 	ldr r0, =gUnknown_02021860
 	ldr r2, =0x00000121
@@ -1296,7 +1296,7 @@ sub_02000CA4: @ 0x02000CA4
 	ldr r2, =gUnknown_0201F9F4
 	adds r0, r7, #0
 	mov r1, r8
-	bl sub_02008A10
+	bl AddSprite
 	adds r4, r0, #0
 	str r6, [r4, #0x14]
 	ldr r0, =sub_02000B38
@@ -1392,7 +1392,7 @@ sub_02000D74: @ 0x02000D74
 	adds r0, r0, r4
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_0200880C
+	bl CopyToBgTilemapBufferRect
 	b _02001236
 	.align 2, 0
 	.pool
@@ -1418,7 +1418,7 @@ _02000DE0:
 	adds r0, r0, r4
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_0200880C
+	bl CopyToBgTilemapBufferRect
 	mov r0, sb
 	ldrb r0, [r0, #3]
 	cmp r0, #7
@@ -1454,7 +1454,7 @@ _02000E40:
 _02000E58:
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	b _02000E7E
 	.align 2, 0
 	.pool
@@ -1468,7 +1468,7 @@ _02000E68:
 	movs r0, #5
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 _02000E7E:
 	mov r2, r8
 	ldrb r1, [r2]
@@ -1710,11 +1710,11 @@ _0200104A:
 	lsls r3, r3, #0x10
 	lsrs r3, r3, #0x10
 	movs r0, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	adds r4, #1
 	cmp r4, #3
 	ble _0200104A
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 _0200107A:
@@ -1754,7 +1754,7 @@ _020010C2:
 	movs r0, #0
 	adds r1, r4, #0
 	adds r2, r5, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	b _02001120
 _020010CE:
 	add r0, sp, #0x20
@@ -1796,7 +1796,7 @@ _02001116:
 	movs r0, #0
 	adds r1, r4, #0
 	adds r2, r5, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 _02001120:
 	ldr r4, =gUnknown_02021860
 	movs r1, #0x8c
@@ -1917,7 +1917,7 @@ _020011F2:
 	lsls r1, r2, #3
 	adds r1, #0x15
 	ldr r2, =gUnknown_0201F958
-	bl sub_02008A10
+	bl AddSprite
 	mov r3, sb
 	str r0, [r3, #0x28]
 	movs r1, #0xc
@@ -1991,7 +1991,7 @@ sub_02001258: @ 0x02001258
 	adds r0, r0, r4
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_0200880C
+	bl CopyToBgTilemapBufferRect
 	b _02001714
 	.align 2, 0
 	.pool
@@ -2017,7 +2017,7 @@ _020012C8:
 	adds r0, r0, r4
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_0200880C
+	bl CopyToBgTilemapBufferRect
 	mov r0, sb
 	ldrb r0, [r0, #3]
 	cmp r0, #7
@@ -2053,7 +2053,7 @@ _02001328:
 _02001340:
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	b _02001366
 	.align 2, 0
 	.pool
@@ -2067,7 +2067,7 @@ _02001350:
 	movs r0, #5
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 _02001366:
 	mov r2, r8
 	ldrb r1, [r2]
@@ -2308,7 +2308,7 @@ _02001532:
 	lsls r3, r3, #0x10
 	lsrs r3, r3, #0x10
 	movs r0, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	adds r4, #1
 	cmp r4, #3
 	ble _02001532
@@ -2349,7 +2349,7 @@ _0200159E:
 	movs r0, #0
 	adds r1, r4, #0
 	adds r2, r5, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	b _020015FC
 _020015AA:
 	add r0, sp, #0x20
@@ -2391,7 +2391,7 @@ _020015F2:
 	movs r0, #0
 	adds r1, r4, #0
 	adds r2, r5, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 _020015FC:
 	ldr r4, =gUnknown_02021860
 	movs r1, #0x8c
@@ -2511,7 +2511,7 @@ _020016CA:
 	lsls r1, r2, #3
 	adds r1, #0xf
 	ldr r2, =gUnknown_0201F958
-	bl sub_02008A10
+	bl AddSprite
 	mov r3, sb
 	str r0, [r3, #0x28]
 	movs r1, #0xc
@@ -2523,7 +2523,7 @@ _02001702:
 	adds r0, r0, r4
 	mov r1, sl
 	strb r1, [r0]
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 _02001714:
@@ -2550,7 +2550,7 @@ sub_02001738: @ 0x02001738
 	movs r2, #0x18
 	movs r3, #4
 	bl sub_02000838
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	ldr r1, =gUnknown_0201F8B0
@@ -2647,7 +2647,7 @@ sub_020017E8: @ 0x020017E8
 	rsbs r2, r2, #0
 	movs r0, #3
 	movs r1, #0
-	bl sub_020089A4
+	bl SetBgPos
 	ldr r0, =gUnknown_0201B1A0
 	movs r1, #0xa0
 	lsls r1, r1, #0x13
@@ -2706,7 +2706,7 @@ _020018D8:
 	movs r1, #0xc
 	movs r2, #0x14
 	movs r3, #6
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	str r5, [sp]
 	str r4, [sp, #4]
 _020018F2:
@@ -2716,7 +2716,7 @@ _020018F2:
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #6
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	b _0200191C
 _02001904:
 	movs r0, #2
@@ -2729,9 +2729,9 @@ _02001904:
 	movs r1, #0xc
 	movs r2, #0x14
 	movs r3, #6
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 _0200191C:
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #1]
 	ldr r0, =gUnknown_020251E8
@@ -2779,7 +2779,7 @@ _02001992:
 	adds r5, #4
 	cmp r4, #5
 	ble _02001952
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 	strb r0, [r1, #3]
@@ -2807,7 +2807,7 @@ sub_020019B4: @ 0x020019B4
 	ldr r0, [r4]
 	cmp r0, #0
 	beq _020019D6
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 	movs r0, #0
 	str r0, [r4]
 _020019D6:
@@ -2819,7 +2819,7 @@ _020019D6:
 	movs r0, #2
 	movs r2, #0xc
 	movs r3, #0x1e
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	ldr r0, =0x0000E001
 	str r0, [sp]
 	movs r0, #3
@@ -2840,7 +2840,7 @@ _020019D6:
 	ldr r0, [r4]
 	ldr r1, =0x0000FFFF
 	bl sub_020090B0
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	ldr r2, =gUnknown_02022EF4
@@ -2871,7 +2871,7 @@ _020019D6:
 	movs r1, #3
 	movs r2, #0xe
 	movs r3, #0x18
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	add sp, #0x20
 	pop {r3}
 	mov r8, r3
@@ -3005,7 +3005,7 @@ _02001B98:
 	ldr r2, =gUnknown_0201F910
 	movs r0, #0
 	movs r1, #0
-	bl sub_02008A10
+	bl AddSprite
 	movs r1, #0x8a
 	lsls r1, r1, #1
 	adds r4, r5, r1
@@ -3019,8 +3019,8 @@ _02001B98:
 	ldr r0, [r4]
 	movs r1, #0xa8
 	movs r2, #0x68
-	bl sub_02008D3C
-	ldr r1, =gUnknown_02022C20
+	bl SetSpritePos
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	bl sub_02000794
@@ -3121,7 +3121,7 @@ _02001CB6:
 	lsls r2, r1, #4
 	adds r2, #0x68
 	movs r1, #0xa8
-	bl sub_02008D3C
+	bl SetSpritePos
 	b _02001EE6
 	.align 2, 0
 	.pool
@@ -3135,7 +3135,7 @@ _02001CDC:
 	ldr r0, [r4]
 	cmp r0, #0
 	beq _02001CF8
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 	movs r0, #0
 	str r0, [r4]
 _02001CF8:
@@ -3147,7 +3147,7 @@ _02001CF8:
 	movs r1, #0x14
 	movs r2, #0xc
 	movs r3, #0xa
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	movs r0, #0
 	bl sub_02001738
 	b _02001EEE
@@ -3512,7 +3512,7 @@ _0200201C:
 	ldr r2, =gUnknown_0201F910
 	movs r0, #0
 	movs r1, #0
-	bl sub_02008A10
+	bl AddSprite
 	movs r3, #0x8a
 	lsls r3, r3, #1
 	adds r4, r5, r3
@@ -3526,8 +3526,8 @@ _0200201C:
 	ldr r0, [r4]
 	movs r1, #0xa8
 	movs r2, #0x68
-	bl sub_02008D3C
-	ldr r1, =gUnknown_02022C20
+	bl SetSpritePos
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	bl sub_02000794
@@ -3628,7 +3628,7 @@ _0200213E:
 	lsls r2, r1, #4
 	adds r2, #0x68
 	movs r1, #0xa8
-	bl sub_02008D3C
+	bl SetSpritePos
 	b _020023C6
 	.align 2, 0
 	.pool
@@ -3642,7 +3642,7 @@ _02002164:
 	ldr r0, [r4]
 	cmp r0, #0
 	beq _02002180
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 	movs r0, #0
 	str r0, [r4]
 _02002180:
@@ -3654,7 +3654,7 @@ _02002180:
 	movs r1, #0x14
 	movs r2, #0xc
 	movs r3, #0xa
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	movs r0, #0
 	bl sub_02001738
 	b _020023CE
@@ -4192,7 +4192,7 @@ _020025D4:
 	str r0, [sp]
 	movs r0, #3
 	str r0, [sp, #4]
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	b _02002644
 	.align 2, 0
 	.pool
@@ -4205,7 +4205,7 @@ _0200261C:
 	movs r0, #5
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	b _02002644
 _02002632:
 	movs r0, #2
@@ -4215,7 +4215,7 @@ _02002632:
 	movs r1, #0x18
 	movs r2, #0x12
 	movs r3, #6
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 _02002644:
 	ldr r5, =gUnknown_02021860
 	ldr r4, =0x0000011B
@@ -4259,7 +4259,7 @@ _02002694:
 _020026A0:
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	b _020026D4
 _020026AA:
 	movs r4, #2
@@ -4269,7 +4269,7 @@ _020026AA:
 	movs r1, #0x18
 	movs r2, #0x12
 	movs r3, #6
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	movs r1, #0x8d
 	lsls r1, r1, #1
 	adds r0, r5, r1
@@ -4284,7 +4284,7 @@ _020026D0:
 	mov r0, sl
 	strb r4, [r0]
 _020026D4:
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #3]
 	strb r0, [r1, #1]
@@ -4647,7 +4647,7 @@ _0200297C:
 	str r0, [sp]
 	movs r0, #3
 	str r0, [sp, #4]
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	b _020029EE
 	.align 2, 0
 	.pool
@@ -4660,7 +4660,7 @@ _020029C4:
 	movs r0, #5
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	b _020029EE
 _020029DA:
 	movs r0, #2
@@ -4671,7 +4671,7 @@ _020029DA:
 	movs r1, #0x18
 	movs r2, #0x12
 	movs r3, #6
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 _020029EE:
 	ldr r5, =gUnknown_02021860
 	ldr r1, =0x0000011B
@@ -4715,7 +4715,7 @@ _02002A3C:
 _02002A48:
 	str r0, [sp, #4]
 	movs r0, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	b _02002A7C
 _02002A52:
 	movs r4, #2
@@ -4725,7 +4725,7 @@ _02002A52:
 	movs r1, #0x18
 	movs r2, #0x12
 	movs r3, #6
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	movs r3, #0x8d
 	lsls r3, r3, #1
 	adds r0, r5, r3
@@ -4740,7 +4740,7 @@ _02002A78:
 	mov r1, sb
 	strb r4, [r1]
 _02002A7C:
-	ldr r0, =gUnknown_02022C20
+	ldr r0, =gBgTilemapBufferTransferScheduled
 	movs r2, #1
 	strb r2, [r0, #3]
 	strb r2, [r0, #1]
@@ -5209,7 +5209,7 @@ _02002E2A:
 	movs r0, #0
 	adds r1, r4, #0
 	adds r2, r5, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -5273,7 +5273,7 @@ _02002E94:
 	movs r1, #0xc
 	movs r2, #0x14
 	movs r3, #6
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	str r5, [sp]
 	str r4, [sp, #4]
 _02002EAE:
@@ -5283,7 +5283,7 @@ _02002EAE:
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #6
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	b _02002ED8
 _02002EC0:
 	movs r0, #2
@@ -5296,7 +5296,7 @@ _02002EC0:
 	movs r1, #0xc
 	movs r2, #0x14
 	movs r3, #6
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 _02002ED8:
 	add sp, #0xc
 	pop {r4, r5}
@@ -5493,7 +5493,7 @@ sub_02002FEC: @ 0x02002FEC
 	ldr r0, =gUnknown_0201C228
 	ldr r1, =0x03003000
 	bl AutoUnCompVram
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r4, #0
 	movs r0, #1
 	strb r0, [r1, #2]
@@ -5568,7 +5568,7 @@ sub_020030E4: @ 0x020030E4
 	ldr r0, [r6]
 	cmp r0, #0
 	beq _02003140
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 _02003140:
 	ldrh r1, [r6, #0x14]
 	lsls r0, r1, #3
@@ -5608,7 +5608,7 @@ _02003140:
 	ldr r2, [r0]
 	ldr r0, [sp]
 	ldr r1, [sp, #4]
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r6]
 	movs r1, #4
 	bl sub_02008D54
@@ -5658,7 +5658,7 @@ sub_020031F8: @ 0x020031F8
 	rsbs r1, r1, #0
 	movs r0, #2
 	movs r2, #0
-	bl sub_020089A4
+	bl SetBgPos
 	ldr r7, =gUnknown_02021990
 	ldr r0, [r7, #0x24]
 	movs r1, #0
@@ -5676,14 +5676,14 @@ sub_020031F8: @ 0x020031F8
 	movs r1, #0xb
 	movs r2, #8
 	movs r3, #0x12
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	str r5, [sp]
 	str r4, [sp, #4]
 	movs r0, #0
 	movs r1, #0x10
 	movs r2, #0xb
 	movs r3, #6
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	movs r0, #4
 	str r0, [sp]
 	str r4, [sp, #4]
@@ -5691,7 +5691,7 @@ sub_020031F8: @ 0x020031F8
 	movs r1, #0x11
 	movs r2, #0xd
 	movs r3, #5
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	movs r0, #6
 	str r0, [sp]
 	str r4, [sp, #4]
@@ -5699,14 +5699,14 @@ sub_020031F8: @ 0x020031F8
 	movs r1, #0x1b
 	movs r2, #0xb
 	movs r3, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	str r5, [sp]
 	str r4, [sp, #4]
 	movs r0, #0
 	movs r1, #0xb
 	movs r2, #0x12
 	movs r3, #0x12
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	ldr r0, [r7, #0x24]
 	ldr r1, =gUnknown_0201FFE3
 	bl StringExpandPlaceholders
@@ -5731,12 +5731,12 @@ sub_020031F8: @ 0x020031F8
 	movs r0, #0x7a
 	movs r1, #0x18
 	adds r2, r4, #0
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r7, #4]
 	movs r0, #0xa2
 	movs r1, #0x18
 	adds r2, r4, #0
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r7, #8]
 _020032C8:
 	ldr r0, [r7, #4]
@@ -6188,22 +6188,22 @@ _020036CC:
 	movs r0, #0
 	movs r1, #0x17
 	movs r2, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r3, =0x0000F00D
 	movs r0, #0
 	movs r1, #0x18
 	movs r2, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r3, =0x0000F00C
 	movs r0, #0
 	movs r1, #0x17
 	movs r2, #1
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r3, =0x0000F00E
 	movs r0, #0
 	movs r1, #0x18
 	movs r2, #1
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r0, [r4, #0x28]
 	movs r1, #1
 	movs r2, #8
@@ -6225,14 +6225,14 @@ _020036CC:
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #4
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r4, #0x1c]
 	movs r1, #0
 	bl sub_020090B0
 	ldr r0, [r4, #0x1c]
 	ldr r1, =gUnknown_0201FFC7
 	bl StringExpandPlaceholders
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 	strb r0, [r1, #3]
@@ -6280,7 +6280,7 @@ sub_0200378C: @ 0x0200378C
 	movs r1, #0x18
 	movs r2, #4
 	movs r3, #5
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	adds r4, #0x4c
 	ldr r0, =0x0000FFFF
 	strh r0, [r4]
@@ -6343,7 +6343,7 @@ _020037F4:
 	adds r1, #0x20
 	movs r0, #0x57
 	ldr r2, =gUnknown_0201FA44
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r5]
 _02003856:
 	cmp r6, #0
@@ -6429,12 +6429,12 @@ _02003898:
 	movs r1, #0x18
 	ldr r2, [sp, #0x30]
 	ldr r3, =0x0000F003
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	movs r0, #0
 	movs r1, #0x18
 	ldr r2, [sp, #0x2c]
 	ldr r3, =0x0000F004
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	b _02003972
 	.align 2, 0
 	.pool
@@ -6452,12 +6452,12 @@ _02003944:
 	movs r1, #0x18
 	ldr r2, [sp, #0x30]
 	adds r3, r4, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	movs r0, #0
 	movs r1, #0x18
 	ldr r2, [sp, #0x2c]
 	adds r3, r4, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 _02003972:
 	ldr r0, [sp, #0x2c]
 	adds r0, #2
@@ -6499,22 +6499,22 @@ _020039B2:
 	movs r0, #0
 	movs r1, #0x17
 	movs r2, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r3, =0x0000F00D
 	movs r0, #0
 	movs r1, #0x18
 	movs r2, #0
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r3, =0x0000F00C
 	movs r0, #0
 	movs r1, #0x17
 	movs r2, #1
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r3, =0x0000F00E
 	movs r0, #0
 	movs r1, #0x18
 	movs r2, #1
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	ldr r0, [r4, #0x28]
 	movs r1, #1
 	movs r2, #8
@@ -6536,14 +6536,14 @@ _020039B2:
 	movs r1, #4
 	movs r2, #0x14
 	movs r3, #4
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r4, #0x1c]
 	movs r1, #0
 	bl sub_020090B0
 	ldr r0, [r4, #0x1c]
 	ldr r1, =gUnknown_0201FFD6
 	bl StringExpandPlaceholders
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 	strb r0, [r1, #2]
@@ -6593,7 +6593,7 @@ sub_02003A70: @ 0x02003A70
 	movs r1, #7
 	movs r2, #0xf
 	movs r3, #3
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	cmp r6, #4
 	bne _02003AF4
 	ldr r0, [r5, #0x20]
@@ -6680,7 +6680,7 @@ _02003B7C:
 	add r1, sp, #8
 	bl StringExpandPlaceholders
 _02003B8C:
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 _02003B92:
@@ -6733,11 +6733,11 @@ _02003BDC:
 	movs r1, #0
 	movs r2, #0x12
 	movs r3, #0xa
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	movs r1, #1
 	mov r8, r1
 	mov r1, r8
-	ldr r0, =gUnknown_02022C20
+	ldr r0, =gBgTilemapBufferTransferScheduled
 	strb r1, [r0, #3]
 	movs r4, #7
 	str r4, [sp]
@@ -6748,9 +6748,9 @@ _02003BDC:
 	movs r1, #0x14
 	movs r2, #0x14
 	movs r3, #3
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	mov r1, r8
-	ldr r0, =gUnknown_02022C20
+	ldr r0, =gBgTilemapBufferTransferScheduled
 	strb r1, [r0, #2]
 	movs r0, #1
 	bl sub_02008600
@@ -6762,9 +6762,9 @@ _02003BDC:
 	movs r1, #0x14
 	movs r2, #0x14
 	movs r3, #6
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	mov r1, r8
-	ldr r0, =gUnknown_02022C20
+	ldr r0, =gBgTilemapBufferTransferScheduled
 	strb r1, [r0, #2]
 	movs r0, #1
 	bl sub_02008600
@@ -6775,9 +6775,9 @@ _02003BDC:
 	movs r1, #0x14
 	movs r2, #0x14
 	movs r3, #0xa
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	mov r1, r8
-	ldr r0, =gUnknown_02022C20
+	ldr r0, =gBgTilemapBufferTransferScheduled
 	strb r1, [r0, #2]
 	ldr r0, [r7, #0xc]
 	movs r1, #1
@@ -6828,7 +6828,7 @@ _02003CB4:
 	movs r1, #0
 	movs r2, #0
 	movs r3, #0xa
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	str r5, [sp]
 	movs r0, #4
 	str r0, [sp, #4]
@@ -6838,11 +6838,11 @@ _02003CB4:
 	movs r1, #0x14
 	movs r2, #0x14
 	movs r3, #6
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r7, #0xc]
 	movs r1, #0
 	bl sub_02008D60
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	mov r8, r1
 	movs r4, #1
 	strb r4, [r1, #2]
@@ -6856,7 +6856,7 @@ _02003CB4:
 	movs r1, #0
 	movs r2, #0
 	movs r3, #9
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	str r5, [sp]
 	str r5, [sp, #4]
 	mov r1, sl
@@ -6865,7 +6865,7 @@ _02003CB4:
 	movs r1, #0x14
 	movs r2, #0x14
 	movs r3, #3
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	mov r0, r8
 	strb r4, [r0, #2]
 	movs r0, #1
@@ -6878,7 +6878,7 @@ _02003CB4:
 	movs r1, #0
 	movs r2, #0
 	movs r3, #9
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	mov r0, r8
 	strb r4, [r0, #2]
 	ldr r0, [sp, #0xc]
@@ -7017,7 +7017,7 @@ _02003E54:
 	movs r1, #1
 	movs r2, #0xe
 	movs r3, #9
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	adds r0, r6, #0
 	movs r1, #0xb
 	movs r2, #0
@@ -7075,7 +7075,7 @@ _02003EE0:
 	movs r1, #7
 	movs r2, #0x10
 	movs r3, #1
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
 	bl StringExpandPlaceholders
@@ -7087,7 +7087,7 @@ _02003F0C:
 	ldr r2, =gUnknown_0201FA5C
 	movs r0, #0
 	movs r1, #0x80
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r5, #0xc]
 _02003F20:
 	ldr r0, [r5, #0xc]
@@ -7116,7 +7116,7 @@ _02003F20:
 	movs r1, #8
 	movs r2, #0x14
 	movs r3, #0xa
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r5, #0x20]
 	ldr r3, =gUnknown_02020046
 	movs r1, #0
@@ -7128,7 +7128,7 @@ _02003F20:
 	ldr r2, =gUnknown_0201FAF8
 	movs r0, #0x2f
 	movs r1, #0x94
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r5, #0x10]
 _02003F82:
 	ldr r0, [r5, #0x10]
@@ -7149,7 +7149,7 @@ _02003FB0:
 	movs r1, #0
 	movs r2, #0x12
 	movs r3, #0xa
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	ldr r0, [r5, #0x10]
 	cmp r0, #0
 	beq _02003FCE
@@ -7171,7 +7171,7 @@ _02003FCE:
 	movs r0, #0
 	movs r1, #2
 	movs r2, #0x11
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 	b _0200400A
 	.align 2, 0
 	.pool
@@ -7181,9 +7181,9 @@ _02003FFC:
 	movs r0, #0
 	movs r1, #2
 	movs r2, #0x11
-	bl sub_020088E8
+	bl SetBgTilemapBufferTileAt
 _0200400A:
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 	strb r0, [r1, #3]
@@ -7280,9 +7280,9 @@ _020040D0:
 	beq _020040E6
 	ldr r4, =gUnknown_02021990
 	ldr r0, [r4, #4]
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 	ldr r0, [r4, #8]
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 _020040E6:
 	ldr r1, =gUnknown_02021990
 	movs r0, #0
@@ -7310,7 +7310,7 @@ sub_020040FC: @ 0x020040FC
 	movs r0, #2
 	movs r1, #0
 	movs r2, #0
-	bl sub_020089A4
+	bl SetBgPos
 	mov r0, r8
 	bl sub_0200378C
 	movs r0, #0
@@ -7431,7 +7431,7 @@ _0200420E:
 	movs r0, #0x50
 	movs r1, #0x20
 	ldr r2, =gUnknown_0201FA74
-	bl sub_02008A10
+	bl AddSprite
 	mov r1, sb
 	str r0, [r1, #0x40]
 	movs r1, #5
@@ -7450,7 +7450,7 @@ _0200420E:
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #0x14
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	movs r1, #0x20
@@ -7471,7 +7471,7 @@ _0200420E:
 	bl StringExpandPlaceholders
 	mov r0, sp
 	ldrb r1, [r0, #0xc]
-	ldr r0, =gUnknown_02022C20
+	ldr r0, =gBgTilemapBufferTransferScheduled
 	strb r1, [r0]
 	mov r0, r8
 	movs r1, #0
@@ -7487,7 +7487,7 @@ _0200420E:
 	movs r1, #0xb
 	movs r2, #0xf
 	movs r3, #0x12
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	movs r1, #4
@@ -7508,7 +7508,7 @@ _0200420E:
 	bl StringExpandPlaceholders
 	mov r0, sp
 	ldrb r1, [r0, #0xc]
-	ldr r0, =gUnknown_02022C20
+	ldr r0, =gBgTilemapBufferTransferScheduled
 	strb r1, [r0]
 	movs r0, #2
 	str r0, [sp, #0xc]
@@ -7603,7 +7603,7 @@ _02004356:
 	movs r1, #0xb
 	movs r2, #0xf
 	movs r3, #0x12
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	ldr r0, [r6, #0x24]
 	movs r1, #4
 	str r1, [sp]
@@ -7625,7 +7625,7 @@ _02004356:
 	add r1, sl
 	bl StringExpandPlaceholders
 	movs r0, #1
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	strb r0, [r1]
 _020043BC:
 	ldr r0, [r6, #0x40]
@@ -7633,7 +7633,7 @@ _020043BC:
 	lsls r2, r1, #4
 	adds r2, #0x20
 	movs r1, #0x50
-	bl sub_02008D3C
+	bl SetSpritePos
 	ldr r0, [sp, #0x10]
 	cmp r0, #4
 	beq _020043D6
@@ -7665,7 +7665,7 @@ _020043F8:
 _0200441C:
 	mov r1, sb
 	ldr r0, [r1, #0x40]
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 	ldr r0, [sp, #0xc]
 	str r0, [sp]
 	movs r0, #0xa
@@ -7676,7 +7676,7 @@ _0200441C:
 	movs r1, #0
 	movs r2, #0x17
 	movs r3, #0x14
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	str r4, [sp]
@@ -7708,7 +7708,7 @@ _0200441C:
 	ldr r1, =gUnknown_02020022
 	bl StringExpandPlaceholders
 	movs r0, #1
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	strb r0, [r1]
 	strb r0, [r1, #2]
 	mov r0, sb
@@ -7736,7 +7736,7 @@ _020044AC:
 	movs r4, #3
 _020044BC:
 	ldm r5!, {r0}
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 	subs r4, #1
 	cmp r4, #0
 	bge _020044BC
@@ -7801,7 +7801,7 @@ _02004536:
 	movs r0, #2
 	adds r1, r5, #0
 	movs r2, #0
-	bl sub_020089A4
+	bl SetBgPos
 	adds r5, #0x20
 	subs r4, #1
 	cmp r4, r7
@@ -7829,7 +7829,7 @@ _02004576:
 	movs r0, #2
 	adds r1, r5, #0
 	movs r2, #0
-	bl sub_020089A4
+	bl SetBgPos
 	subs r5, #0x20
 	subs r4, #1
 	cmp r4, #0
@@ -7870,7 +7870,7 @@ sub_020045B8: @ 0x020045B8
 	movs r1, #0xb
 	movs r2, #0xf
 	movs r3, #0x12
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	ldr r6, =gUnknown_02021990
 	ldr r0, [r6, #0x24]
 	str r4, [sp]
@@ -7891,7 +7891,7 @@ sub_020045B8: @ 0x020045B8
 	lsls r1, r1, #4
 	adds r1, r7, r1
 	bl StringExpandPlaceholders
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 _0200460C:
@@ -8000,7 +8000,7 @@ sub_0200465C: @ 0x0200465C
 	movs r1, #1
 	movs r2, #8
 	bl sub_0200914C
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
 	strb r0, [r1, #2]
@@ -8122,7 +8122,7 @@ _020047FE:
 	movs r1, #0
 	movs r2, #0x10
 	movs r3, #0x1e
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	ldr r0, =0x0000E001
 	str r0, [sp]
 	movs r0, #3
@@ -8140,7 +8140,7 @@ _020047FE:
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
 	bl sub_020090B0
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	bl sub_02000794
@@ -8346,7 +8346,7 @@ sub_02004A34: @ 0x02004A34
 	movs r1, #0
 	movs r2, #0x10
 	movs r3, #0x1e
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	ldr r0, =0x0000E001
 	str r0, [sp]
 	movs r0, #3
@@ -8364,7 +8364,7 @@ sub_02004A34: @ 0x02004A34
 	ldr r1, =0x0000FFFF
 	adds r0, r4, #0
 	bl sub_020090B0
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	bl sub_02000794
@@ -8434,7 +8434,7 @@ sub_02004AC4: @ 0x02004AC4
 	ldr r0, =gUnknown_0201D5A4
 	ldr r1, =0x03002800
 	bl AutoUnCompVram
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r4, #0
 	movs r0, #1
 	strb r0, [r1, #2]
@@ -8507,7 +8507,7 @@ sub_02004BEC: @ 0x02004BEC
 	ldr r0, [r6]
 	cmp r0, #0
 	beq _02004C2A
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 _02004C2A:
 	ldr r1, =gUnknown_0201FC44
 	ldrh r2, [r6, #0xc]
@@ -8522,7 +8522,7 @@ _02004C2A:
 	ldr r2, [r0]
 	adds r0, r5, #0
 	mov r1, sb
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r6]
 	movs r1, #4
 	bl sub_02008D54
@@ -8638,7 +8638,7 @@ _02004D34:
 	movs r1, #0x14
 	movs r2, #8
 	movs r3, #1
-	bl sub_02008894
+	bl SetBgTilemapBufferPaletteRect
 	ldr r0, [r4, #0x14]
 	movs r1, #1
 	movs r2, #8
@@ -8768,7 +8768,7 @@ _02004E38:
 	ldr r2, =gUnknown_0201FC4C
 	movs r0, #0xa6
 	movs r1, #0x44
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r5, #4]
 _02004E72:
 	ldr r0, [r5, #4]
@@ -8788,8 +8788,8 @@ _02004E84:
 	rsbs r2, r2, #0
 	movs r0, #1
 	movs r1, #0
-	bl sub_020089A4
-	ldr r6, =gUnknown_02022C20
+	bl SetBgPos
+	ldr r6, =gBgTilemapBufferTransferScheduled
 	movs r5, #1
 	strb r5, [r6, #1]
 	adds r0, r7, #0
@@ -8862,7 +8862,7 @@ _02004F32:
 	ldr r0, [r4, #8]
 	cmp r0, #0
 	beq _02004F42
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 	movs r0, #0
 	str r0, [r4, #8]
 _02004F42:
@@ -8897,7 +8897,7 @@ _02004F80:
 _02004F88:
 	movs r0, #0
 	movs r1, #0
-	bl sub_02008A10
+	bl AddSprite
 	str r0, [r4, #8]
 _02004F92:
 	ldr r4, =gUnknown_02021A20
@@ -8907,7 +8907,7 @@ _02004F92:
 	ldr r0, [r4, #8]
 	ldrb r1, [r7]
 	ldrb r2, [r7, #1]
-	bl sub_02008D3C
+	bl SetSpritePos
 	pop {r4, r5, r6, r7}
 	pop {r0}
 	bx r0
@@ -8958,7 +8958,7 @@ _02004FF4:
 	adds r4, r4, r5
 	ldrb r1, [r4]
 	ldrb r2, [r4, #1]
-	bl sub_02008D3C
+	bl SetSpritePos
 _02005008:
 	movs r0, #1
 	bl sub_02008600
@@ -9103,7 +9103,7 @@ _0200510C:
 	ldr r0, [r0, #8]
 	ldrb r1, [r4]
 	ldrb r2, [r4, #1]
-	bl sub_02008D3C
+	bl SetSpritePos
 	ldr r1, [r4, #8]
 	cmp r1, #0
 	beq _0200512E
@@ -9266,14 +9266,14 @@ sub_02005264: @ 0x02005264
 	movs r1, #0
 	movs r2, #0x26
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	str r5, [sp]
 	str r4, [sp, #4]
 	movs r0, #3
 	movs r1, #0
 	movs r2, #0xe
 	movs r3, #0x1e
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #0
@@ -9318,7 +9318,7 @@ _020052DC:
 	ldr r1, =gUnknown_0201FDC4
 	movs r2, #4
 	bl sub_02004F04
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	strb r0, [r1, #3]
@@ -9515,14 +9515,14 @@ sub_02005468: @ 0x02005468
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	str r5, [sp]
 	str r4, [sp, #4]
 	movs r0, #2
 	movs r1, #0
 	movs r2, #0xe
 	movs r3, #0x1e
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	ldr r0, =gUnknown_02021A20
 	ldr r0, [r0, #0x18]
 	ldr r1, =0x0000FFFF
@@ -9574,7 +9574,7 @@ _02005518:
 	ldr r1, =gUnknown_0201FDF4
 	movs r2, #4
 	bl sub_02004F04
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #3]
 	strb r0, [r1, #2]
@@ -9601,14 +9601,14 @@ sub_02005548: @ 0x02005548
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	str r5, [sp]
 	str r4, [sp, #4]
 	movs r0, #2
 	movs r1, #0
 	movs r2, #0xe
 	movs r3, #0x1e
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	ldr r5, =gUnknown_02021A20
 	ldr r0, [r5, #0x18]
 	ldr r1, =0x0000FFFF
@@ -9623,7 +9623,7 @@ sub_02005548: @ 0x02005548
 	adds r1, r4, #0
 	movs r2, #2
 	bl sub_02004F04
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #3]
 	strb r0, [r1, #2]
@@ -9664,7 +9664,7 @@ sub_020055D4: @ 0x020055D4
 	movs r1, #0
 	movs r2, #0xe
 	movs r3, #0x1e
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	str r4, [sp]
 	str r5, [sp, #4]
 	movs r0, #0xe
@@ -9673,13 +9673,13 @@ sub_020055D4: @ 0x020055D4
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #0
 	bl sub_020090B0
 	ldr r0, [r4, #8]
-	bl sub_02008CEC
+	bl MoveSpriteToHead
 	str r5, [r4, #8]
 	cmp r6, #0
 	beq _02005658
@@ -9718,7 +9718,7 @@ _02005658:
 	movs r0, #4
 	add r1, sp, #0xc
 	bl BufferString
-	ldr r6, =gUnknown_02022C20
+	ldr r6, =gBgTilemapBufferTransferScheduled
 	movs r5, #1
 	strb r5, [r6, #2]
 	strb r5, [r6, #3]
@@ -9744,7 +9744,7 @@ _02005658:
 	movs r1, #0
 	movs r2, #0x20
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r4, #0x18]
 	movs r1, #4
 	str r1, [sp]
@@ -9800,7 +9800,7 @@ sub_02005704: @ 0x02005704
 	movs r1, #0
 	movs r2, #0x20
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #4
@@ -9819,7 +9819,7 @@ sub_02005704: @ 0x02005704
 	ldr r1, =gUnknown_0201FD94
 	movs r2, #4
 	bl sub_02004F04
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	bl sub_020007AC
@@ -9855,7 +9855,7 @@ _020057B8:
 	movs r1, #0
 	movs r2, #0x20
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #4
@@ -9875,7 +9875,7 @@ _020057B8:
 	adds r1, r4, #0
 	movs r2, #4
 	bl sub_02004F04
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	adds r0, r4, #0
@@ -9969,12 +9969,12 @@ _020058B8:
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, =gUnknown_02021A20
 	ldr r0, [r0, #0x18]
 	movs r1, #0
 	bl sub_020090B0
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #3]
 	b _02005B1E
@@ -10107,7 +10107,7 @@ _02005A00:
 	movs r1, #0
 	movs r2, #0x20
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	str r5, [sp]
@@ -10125,7 +10125,7 @@ _02005A00:
 	ldr r1, =gUnknown_0201FD94
 	movs r2, #4
 	bl sub_02004F04
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	bl sub_020007AC
@@ -10570,14 +10570,14 @@ sub_02005DCC: @ 0x02005DCC
 	movs r1, #0
 	movs r2, #0x26
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	str r5, [sp]
 	str r4, [sp, #4]
 	movs r0, #3
 	movs r1, #0
 	movs r2, #0xe
 	movs r3, #0x1e
-	bl sub_02008904
+	bl FillBgTilemapBufferRect
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #0
@@ -10625,7 +10625,7 @@ sub_02005E68: @ 0x02005E68
 	movs r1, #0
 	movs r2, #0x20
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #4
@@ -10644,7 +10644,7 @@ sub_02005E68: @ 0x02005E68
 	ldr r1, =gUnknown_0201FD94
 	movs r2, #4
 	bl sub_02004F04
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	add sp, #0xc
@@ -10668,12 +10668,12 @@ sub_02005ECC: @ 0x02005ECC
 	movs r1, #0
 	movs r2, #0x14
 	movs r3, #0x1e
-	bl sub_02008948
+	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, =gUnknown_02021A20
 	ldr r0, [r0, #0x18]
 	movs r1, #0
 	bl sub_020090B0
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #3]
 	add sp, #0xc

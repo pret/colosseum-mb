@@ -13,10 +13,10 @@ gUnknown_02020A48:
 
 @ main
 
-gUnknown_02020CD0:
+gSprites:
 	.space 0x288
 
-gUnknown_02020F58:
+sOamBuffer:
 	.space 0x404
 
 gUnknown_0202135C:

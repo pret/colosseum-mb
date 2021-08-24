@@ -150,16 +150,16 @@ $(MID_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(midi_dep)
 	$(AS) $(ASFLAGS) -I sound -o $@ $<
 
 $(OBJ_DIR)/sym_bss.ld: sym_bss.txt
-	$(RAMSCRGEN) .bss $< ENGLISH > $@
+	$(RAMSCRGEN) .bss $< ENGLISH | sed "s#tools/#../../../tools/#g" > $@
 
 $(OBJ_DIR)/sym_common.ld: sym_common.txt $(C_OBJS) $(wildcard common_syms/*.txt)
-	$(RAMSCRGEN) COMMON $< ENGLISH -c $(OBJ_DIR)/src,common_syms > $@
+	$(RAMSCRGEN) COMMON $< ENGLISH -c $(OBJ_DIR)/src,common_syms | sed "s#tools/#../../../tools/#g" > $@
 
 $(OBJ_DIR)/sym_ewram.ld: sym_ewram.txt
-	$(RAMSCRGEN) ewram_data $< ENGLISH > $@
+	$(RAMSCRGEN) ewram_data $< ENGLISH | sed "s#tools/#../../../tools/#g" > $@
 
 $(OBJ_DIR)/ld_script.ld: ld_script.txt $(OBJ_DIR)/sym_bss.ld $(OBJ_DIR)/sym_common.ld $(OBJ_DIR)/sym_ewram.ld
-	cd $(OBJ_DIR) && sed -f ../../ld_script.sed ../../$< | sed "s#tools/#../../../tools/#g" > ld_script.ld
+	sed "s#tools/#../../../tools/#g" $< > $@
 
 $(ELF): $(OBJ_DIR)/ld_script.ld $(ALL_OBJS)
 	cd $(OBJ_DIR) && $(LD) -Map ../../$(NAME).map -T ../../$< -o ../../$@ $(LIBS)

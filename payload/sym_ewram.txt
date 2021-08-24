@@ -1,23 +1,23 @@
 
-gUnknown_02022BD0:
+gIntrFuncs:
 	.space 0x18
 
 gUnknown_02022BE8:
 	.space 0x20
 
-gUnknown_02022C08:
+gVBlankCounter:
 	.space 0x4
 
-gUnknown_02022C0C:
+gVBlankCallback:
 	.space 0x4
 
-gUnknown_02022C10:
+gBgHofsBuffer:
 	.space 0x8
 
-gUnknown_02022C18:
+gBgVofsBuffer:
 	.space 0x8
 
-gUnknown_02022C20:
+gBgTilemapBufferTransferScheduled:
 	.space 0x10
 
 gUnknown_02022C30:

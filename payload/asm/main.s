@@ -327,7 +327,7 @@ sub_02008F6C: @ 0x02008F6C
 	ldrb r4, [r3, #2]
 	ldrb r7, [r3, #4]
 	adds r0, r7, r4
-	ldr r1, =gUnknown_02022C20
+	ldr r1, =gBgTilemapBufferTransferScheduled
 	mov ip, r1
 	cmp r4, r0
 	bge _02009010
@@ -621,7 +621,7 @@ sub_020091B0: @ 0x020091B0
 	ldrb r3, [r4, #2]
 	ldrb r1, [r4, #4]
 	adds r0, r1, r3
-	ldr r7, =gUnknown_02022C20
+	ldr r7, =gBgTilemapBufferTransferScheduled
 	mov r8, r7
 	cmp r3, r0
 	bge _0200920E
@@ -9600,7 +9600,7 @@ _0200D992:
 	str r0, [r2, #0x30]
 	ldr r1, =sub_0200D80C
 	movs r0, #0
-	bl sub_02008674
+	bl SetIntrFunc
 	ldr r0, =0x04000208
 	strh r6, [r0]
 	pop {r4, r5, r6}

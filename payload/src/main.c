@@ -59,51 +59,53 @@ struct RomInfo
     /*0xFC*/ const u8 *moveDescriptions;
 };
 
-struct UnkStruct_02020CD0_sub
+struct Subsprites
 {
     u32 oam;
-    struct Coords16 pos;
-    u16 unk_8;
+    s16 x;
+    s16 y;
+    u16 baseBlock;
     u16 unk_a;
 };
 
-struct UnkStruct_02020CD0
+struct Sprite
 {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u16 unk4;
-    u16 unk6;
-    struct Coords16 spritesOffset;
-    const struct UnkStruct_02020CD0_sub * spriteTemplates;
-    void (*unk10)(struct UnkStruct_02020CD0 *);
+    u8 prev;
+    u8 next;
+    u8 flag;
+    u16 paletteNum;
+    u16 tileOffset;
+    s16 x;
+    s16 y;
+    const struct Subsprites * spriteTemplates;
+    void (*callback)(struct Sprite *);
     void * unk14[4];
 };
 
 extern u8 ewram_start[];
-extern struct UnkStruct_02020CD0 gUnknown_02020CD0[18];
-extern void (*gUnknown_02022BD0[])(void);
-extern u32 gUnknown_02022C08;
-extern void (*gUnknown_02022C0C)(void);
-extern u16 gUnknown_02022C10[4];
-extern u16 gUnknown_02022C18[4];
-extern u8 gUnknown_02022C20[4];
+extern struct Sprite gSprites[18];
+extern void (*gIntrFuncs[])(void);
+extern u32 gVBlankCounter;
+extern void (*gVBlankCallback)(void);
+extern u16 gBgHofsBuffer[4];
+extern u16 gBgVofsBuffer[4];
+extern u8 gBgTilemapBufferTransferScheduled[4];
 extern u16 gUnknown_02022EB8;
 extern struct RomInfo *gUnknown_020251E8;
 extern u8 ewram_end[];
 
-void sub_02008638(void);
-void sub_020086B8(void);
-void sub_02008708(void);
-void sub_0200870C(void);
-void sub_020087B4(void);
-void sub_02008C00(void);
-void sub_02008C80(void);
-void sub_02008D1C(void);
+void InitIntr(void);
+void VBlankIntr(void);
+void IntrDummy(void);
+void DoGpuUpdateAndTilemapTransfers(void);
+void ResetGpuBuffers(void);
+void UpdateSprites(void);
+void InitOam(void);
+void DoOamBufferTransfer(void);
 void sub_02009228(void);
-bool32 sub_02009324(u32);
+bool32 EnableSoundVSync(u32);
 
-extern void sub_020002B4(void);
+extern void GF_Main(void);
 
 #define SR_KEYS (A_BUTTON | B_BUTTON | SELECT_BUTTON | START_BUTTON)
 
@@ -115,23 +117,23 @@ void AgbMain(void)
     RegisterRamReset(RESET_ALL & ~(RESET_EWRAM | RESET_IWRAM));
     CpuFill16(0, ewram_start, ewram_end - ewram_start);
     REG_WAITCNT = WAITCNT_SRAM_4 | WAITCNT_WS0_N_3 | WAITCNT_WS0_S_1 | WAITCNT_WS1_N_3 | WAITCNT_WS1_S_1 | WAITCNT_WS2_N_3 | WAITCNT_WS2_S_1 | WAITCNT_PREFETCH_ENABLE;
-    sub_02008638();
-    sub_020087B4();
-    sub_02008C80();
-    sub_020002B4();
+    InitIntr();
+    ResetGpuBuffers();
+    InitOam();
+    GF_Main();
     SoftReset(RESET_ALL);
 }
 
 u32 sub_020085F4(void)
 {
-    return gUnknown_02022C08;
+    return gVBlankCounter;
 }
 
 void sub_02008600(u32 a0)
 {
     for (; a0 != 0; a0--)
     {
-        sub_02008C00();
+        UpdateSprites();
         VBlankIntrWait();
         sub_02009228();
         if (TEST_BUTTON(gUnknown_02022EB8, SR_KEYS) == SR_KEYS)
@@ -139,93 +141,93 @@ void sub_02008600(u32 a0)
     }
 }
 
-void sub_02008638(void)
+void InitIntr(void)
 {
     int i;
-    gUnknown_02022C0C = NULL;
+    gVBlankCallback = NULL;
     for (i = 0; i < 14u; i++)
-        gUnknown_02022BD0[i] = sub_02008708;
-    if (sub_020086B8 != NULL)
-        gUnknown_02022BD0[1] = sub_020086B8;
+        gIntrFuncs[i] = IntrDummy;
+    if (VBlankIntr != NULL)
+        gIntrFuncs[1] = VBlankIntr;
     else
-        gUnknown_02022BD0[1] = sub_02008708;
+        gIntrFuncs[1] = IntrDummy;
 }
 
-void sub_02008674(int i, void (*func)(void))
+void SetIntrFunc(int i, void (*func)(void))
 {
     if (func != NULL)
-        gUnknown_02022BD0[i] = func;
+        gIntrFuncs[i] = func;
     else
-        gUnknown_02022BD0[i] = sub_02008708;
+        gIntrFuncs[i] = IntrDummy;
 }
 
-void sub_020086A0(void (*a0)(void))
+void SetVBlankCallback(void (*cb)(void))
 {
     u16 imeBak = REG_IME;
     REG_IME = 0;
-    gUnknown_02022C0C = a0;
+    gVBlankCallback = cb;
     REG_IME = imeBak;
 }
 
-void sub_020086B8(void)
+void VBlankIntr(void)
 {
-    if (sub_02009324(0))
+    if (EnableSoundVSync(0))
         m4aSoundVSync();
-    sub_02008D1C();
-    sub_0200870C();
-    gUnknown_02022C08++;
-    INTR_CHECK = TRUE;
-    if (gUnknown_02022C0C != NULL)
-        gUnknown_02022C0C();
-    if (sub_02009324(1))
+    DoOamBufferTransfer();
+    DoGpuUpdateAndTilemapTransfers();
+    gVBlankCounter++;
+    INTR_CHECK = INTR_FLAG_VBLANK;
+    if (gVBlankCallback != NULL)
+        gVBlankCallback();
+    if (EnableSoundVSync(1))
         m4aSoundMain();
 }
 
-void sub_02008708(void)
+void IntrDummy(void)
 {
     
 }
 
-void sub_0200870C(void)
+void DoGpuUpdateAndTilemapTransfers(void)
 {
     s32 i;
     u16 bgCnt;
     void * screenBase;
     size_t size;
     s32 r2;
-    REG_BG0HOFS = gUnknown_02022C10[0];
-    REG_BG1HOFS = gUnknown_02022C10[1];
-    REG_BG2HOFS = gUnknown_02022C10[2];
-    REG_BG3HOFS = gUnknown_02022C10[3];
-    REG_BG0VOFS = gUnknown_02022C18[0];
-    REG_BG1VOFS = gUnknown_02022C18[1];
-    REG_BG2VOFS = gUnknown_02022C18[2];
-    REG_BG3VOFS = gUnknown_02022C18[3];
+    REG_BG0HOFS = gBgHofsBuffer[0];
+    REG_BG1HOFS = gBgHofsBuffer[1];
+    REG_BG2HOFS = gBgHofsBuffer[2];
+    REG_BG3HOFS = gBgHofsBuffer[3];
+    REG_BG0VOFS = gBgVofsBuffer[0];
+    REG_BG1VOFS = gBgVofsBuffer[1];
+    REG_BG2VOFS = gBgVofsBuffer[2];
+    REG_BG3VOFS = gBgVofsBuffer[3];
     for (i = 0; i < 4; i++)
     {
-        if (gUnknown_02022C20[i])
+        if (gBgTilemapBufferTransferScheduled[i])
         {
-            gUnknown_02022C20[i] = 0;
+            gBgTilemapBufferTransferScheduled[i] = 0;
             bgCnt = *(vu16 *)(REG_ADDR_BG0CNT + 2 * i);
             screenBase = (void *)(BG_VRAM + ((bgCnt & 0x1F00) << 3));
             r2 = bgCnt & 0xC000 ? 2 : 1;
-            CpuCopy32((void *)(0x03000000 + 0x1000 * i), screenBase, r2 * 0x800);
+            CpuCopy32((void *)(0x03000000 + 0x1000 * i), screenBase, r2 * BG_SCREEN_SIZE);
         }
     }
 }
 
-void sub_020087B4(void)
+void ResetGpuBuffers(void)
 {
     CpuFill16(0, (void *)0x03000000, 0x4000);
-    CpuFill16(0, gUnknown_02022C10, 8);
-    CpuFill16(0, gUnknown_02022C18, 8);
-    gUnknown_02022C20[3] = 0;
-    gUnknown_02022C20[2] = 0;
-    gUnknown_02022C20[1] = 0;
-    gUnknown_02022C20[0] = 0;
+    CpuFill16(0, gBgHofsBuffer, 8);
+    CpuFill16(0, gBgVofsBuffer, 8);
+    gBgTilemapBufferTransferScheduled[3] = 0;
+    gBgTilemapBufferTransferScheduled[2] = 0;
+    gBgTilemapBufferTransferScheduled[1] = 0;
+    gBgTilemapBufferTransferScheduled[0] = 0;
 }
 
-void sub_0200880C(int bgNum, int left, int top, int width, int height, const u16 * src)
+void CopyToBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, const u16 * src)
 {
     int x;
     u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
@@ -241,7 +243,7 @@ void sub_0200880C(int bgNum, int left, int top, int width, int height, const u16
     }
 }
 
-void sub_02008850(int bgNum, int left, int top, int width, int height, u16 * dest)
+void CopyFromBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, u16 * dest)
 {
     int x;
     u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
@@ -257,7 +259,7 @@ void sub_02008850(int bgNum, int left, int top, int width, int height, u16 * des
     }
 }
 
-void sub_02008894(int bgNum, int left, int top, int width, int height, int paletteNum)
+void SetBgTilemapBufferPaletteRect(int bgNum, int left, int top, int width, int height, int paletteNum)
 {
     int x;
     u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
@@ -274,13 +276,13 @@ void sub_02008894(int bgNum, int left, int top, int width, int height, int palet
     }
 }
 
-void sub_020088E8(int bgNum, int x, int y, u16 tileNum)
+void SetBgTilemapBufferTileAt(int bgNum, int x, int y, u16 tileNum)
 {
     u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (y << 6) + (x << 1));
     *ptr = tileNum;
 }
 
-void sub_02008904(int bgNum, int left, int top, int width, int height,u16 tileNum)
+void FillBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, u16 tileNum)
 {
     int x;
     u16 * ptr = (void *)(0x03000000 + (bgNum << 12) + (top << 6) + (left << 1));
@@ -296,7 +298,7 @@ void sub_02008904(int bgNum, int left, int top, int width, int height,u16 tileNu
     }
 }
 
-void sub_02008948(int bgNum, int srcLeft, int srcTop, int width, int height, int destLeft, int destTop)
+void CopyRectWithinBgTilemapBuffer(int bgNum, int srcLeft, int srcTop, int width, int height, int destLeft, int destTop)
 {
     int x;
     const u16 * srcPtr;
@@ -317,51 +319,51 @@ void sub_02008948(int bgNum, int srcLeft, int srcTop, int width, int height, int
     }
 }
 
-void sub_020089A4(int bgNum, u16 x, u16 y)
+void SetBgPos(int bgNum, u16 x, u16 y)
 {
-    gUnknown_02022C10[bgNum] = x;
-    gUnknown_02022C18[bgNum] = y;
+    gBgHofsBuffer[bgNum] = x;
+    gBgVofsBuffer[bgNum] = y;
 }
 
-struct UnkStruct_02020F58
+struct OamBuffer
 {
     struct OamData oamBuffer[0x80];
     u8 numSprites;
 };
 
-BSS_DATA struct UnkStruct_02020F58 gUnknown_02020F58;
+BSS_DATA struct OamBuffer sOamBuffer;
 
-void sub_020089BC(struct UnkStruct_02020CD0 * a0, struct UnkStruct_02020CD0 * a1)
+void InsertSprite(struct Sprite * a0, struct Sprite * a1)
 {
-    a1->unk1 = a0->unk1;
-    a1->unk0 = a0 - gUnknown_02020CD0;
-    a0->unk1 = gUnknown_02020CD0[a0->unk1].unk0 = a1 - gUnknown_02020CD0;
+    a1->next = a0->next;
+    a1->prev = a0 - gSprites;
+    a0->next = gSprites[a0->next].prev = a1 - gSprites;
 }
 
-struct UnkStruct_02020CD0 * sub_02008A10(s32 a, s32 b, const struct UnkStruct_02020CD0_sub * c)
+struct Sprite * AddSprite(s32 x, s32 y, const struct Subsprites * subsprites)
 {
     s32 i;
-    struct UnkStruct_02020CD0 * r7 = &gUnknown_02020CD0[gUnknown_02020CD0[0].unk1];
-    gUnknown_02020CD0[r7->unk0].unk1 = r7->unk1;
-    gUnknown_02020CD0[r7->unk1].unk0 = r7->unk0;
-    sub_020089BC(&gUnknown_02020CD0[1], r7);
-    r7->spritesOffset.x = a;
-    r7->spritesOffset.y = b;
-    r7->spriteTemplates = c;
-    r7->unk2 = 0;
-    r7->unk4 = 0;
-    r7->unk6 = 0;
-    r7->unk10 = NULL;
+    struct Sprite * r7 = &gSprites[gSprites[0].next];
+    gSprites[r7->prev].next = r7->next;
+    gSprites[r7->next].prev = r7->prev;
+    InsertSprite(&gSprites[1], r7);
+    r7->x = x;
+    r7->y = y;
+    r7->spriteTemplates = subsprites;
+    r7->flag = 0;
+    r7->paletteNum = 0;
+    r7->tileOffset = 0;
+    r7->callback = NULL;
     for (i = 0; i < 4; i++)
         r7->unk14[i] = NULL;
     return r7;
 }
 
-void sub_02008A84(struct UnkStruct_02020CD0 * ptr)
+void BufferSpriteOAM(struct Sprite * ptr)
 {
     u32 num_sprites;
     struct OamData * oam_p;
-    const struct UnkStruct_02020CD0_sub * templates;
+    const struct Subsprites * templates;
     s32 width;
     s32 left;
     s32 top;
@@ -369,8 +371,8 @@ void sub_02008A84(struct UnkStruct_02020CD0 * ptr)
     u32 size;
     u32 flags;
 
-    num_sprites = gUnknown_02020F58.numSprites;
-    oam_p = &gUnknown_02020F58.oamBuffer[num_sprites];
+    num_sprites = sOamBuffer.numSprites;
+    oam_p = &sOamBuffer.oamBuffer[num_sprites];
 
     templates = ptr->spriteTemplates;
     while (templates->oam != 0xFFFF)
@@ -378,7 +380,7 @@ void sub_02008A84(struct UnkStruct_02020CD0 * ptr)
         if (num_sprites == 0x80)
             return;
 
-        if ((left = templates->pos.x + ptr->spritesOffset.x) < 0xF0 && (top = templates->pos.y + ptr->spritesOffset.y) < 0xA0)
+        if ((left = templates->x + ptr->x) < 0xF0 && (top = templates->y + ptr->y) < 0xA0)
         {
             size = ((templates->oam & 0xC000) >> 12) + (templates->oam >> 30);
             flags = templates->oam;
@@ -438,7 +440,7 @@ void sub_02008A84(struct UnkStruct_02020CD0 * ptr)
                     left &= 0x1FF;
                     top &= 0xFF;
                     *(u32 *)oam_p = top | ((left << 16) | flags);
-                    *((u16 *)oam_p + 2) = ((templates->unk_8 & 0xFFF) | ptr->unk4) + ptr->unk6;
+                    *((u16 *)oam_p + 2) = ((templates->baseBlock & 0xFFF) | ptr->paletteNum) + ptr->tileOffset;
                     oam_p++;
                     num_sprites++;
                 }
@@ -446,97 +448,97 @@ void sub_02008A84(struct UnkStruct_02020CD0 * ptr)
         }
         templates++;
     }
-    gUnknown_02020F58.numSprites = num_sprites;
+    sOamBuffer.numSprites = num_sprites;
 }
 
-void sub_02008C00(void)
+void UpdateSprites(void)
 {
     s32 r2;
     s32 i;
     struct OamData * r4;
-    struct UnkStruct_02020CD0 * ptr;
+    struct Sprite * ptr;
 
-    i = gUnknown_02020CD0[1].unk1;
+    i = gSprites[1].next;
 
     while (i != 1)
     {
-        ptr = &gUnknown_02020CD0[i];
+        ptr = &gSprites[i];
 
-        if (ptr->unk10 != NULL)
-            ptr->unk10(ptr);
+        if (ptr->callback != NULL)
+            ptr->callback(ptr);
 
-        if (!(ptr->unk2 & 1))
-            sub_02008A84(ptr);
-        i = ptr->unk1;
+        if (!(ptr->flag & 1))
+            BufferSpriteOAM(ptr);
+        i = ptr->next;
     }
 
-    r4 = &gUnknown_02020F58.oamBuffer[gUnknown_02020F58.numSprites];
-    for (r2 = gUnknown_02020F58.numSprites; r2 < 0x80 && *(u16 *)r4 != 0x200; r2++, r4++)
+    r4 = &sOamBuffer.oamBuffer[sOamBuffer.numSprites];
+    for (r2 = sOamBuffer.numSprites; r2 < 0x80 && *(u16 *)r4 != 0x200; r2++, r4++)
     {
         *(u16 *)r4 = 0x200;
     }
-    gUnknown_02020F58.numSprites = 0;
+    sOamBuffer.numSprites = 0;
 }
 
-void sub_02008C80(void)
+void InitOam(void)
 {
     s32 i;
     struct OamData * r2;
-    struct UnkStruct_02020CD0 * r4;
+    struct Sprite * r4;
 
-    CpuFill16(0, gUnknown_02020CD0, sizeof(gUnknown_02020CD0));
-    gUnknown_02020CD0[0].unk1 = 0;
-    gUnknown_02020CD0[0].unk0 = 0;
-    gUnknown_02020CD0[1].unk1 = 1;
-    gUnknown_02020CD0[1].unk0 = 1;
+    CpuFill16(0, gSprites, sizeof(gSprites));
+    gSprites[0].next = 0;
+    gSprites[0].prev = 0;
+    gSprites[1].next = 1;
+    gSprites[1].prev = 1;
 
     for (i = 2; i < 18; i++)
     {
-        sub_020089BC(&gUnknown_02020CD0[0], &gUnknown_02020CD0[i]);
+        InsertSprite(&gSprites[0], &gSprites[i]);
     }
-    gUnknown_02020F58.numSprites = 0;
-    r2 = &gUnknown_02020F58.oamBuffer[0];
+    sOamBuffer.numSprites = 0;
+    r2 = &sOamBuffer.oamBuffer[0];
     for (i = 0; i < 0x80; i++, r2++)
         *(u16 *)r2 = 0x200;
 }
 
-void sub_02008CEC(struct UnkStruct_02020CD0 * a0)
+void MoveSpriteToHead(struct Sprite * a0)
 {
-    gUnknown_02020CD0[a0->unk0].unk1 = a0->unk1;
-    gUnknown_02020CD0[a0->unk1].unk0 = a0->unk0;
-    sub_020089BC(&gUnknown_02020CD0[0], a0);
+    gSprites[a0->prev].next = a0->next;
+    gSprites[a0->next].prev = a0->prev;
+    InsertSprite(&gSprites[0], a0);
 }
 
-void sub_02008D1C(void)
+void DoOamBufferTransfer(void)
 {
-    DmaCopy32(3, gUnknown_02020F58.oamBuffer, (void *)OAM, OAM_SIZE);
+    DmaCopy32(3, sOamBuffer.oamBuffer, (void *)OAM, OAM_SIZE);
 }
 
-void sub_02008D3C(struct UnkStruct_02020CD0 * r0, s32 r1, s32 r2)
+void SetSpritePos(struct Sprite * r0, s32 r1, s32 r2)
 {
-    r0->spritesOffset.x = r1;
-    r0->spritesOffset.y = r2;
+    r0->x = r1;
+    r0->y = r2;
 }
 
-void sub_02008D44(struct UnkStruct_02020CD0 * r0, s32 r1, s32 r2)
+void AddSpritePos(struct Sprite * r0, s32 r1, s32 r2)
 {
-    r0->spritesOffset.x += r1;
-    r0->spritesOffset.y += r2;
+    r0->x += r1;
+    r0->y += r2;
 }
 
-void sub_02008D54(struct UnkStruct_02020CD0 * r0, s32 r1)
+void sub_02008D54(struct Sprite * r0, s32 r1)
 {
-    r0->unk4 = r1 << 12;
+    r0->paletteNum = r1 << 12;
 }
 
-void sub_02008D5C(struct UnkStruct_02020CD0 * r0, s32 r1)
+void sub_02008D5C(struct Sprite * r0, s32 r1)
 {
-    r0->unk6 = r1;
+    r0->tileOffset = r1;
 }
 
-void sub_02008D60(struct UnkStruct_02020CD0 * r0, s32 r1)
+void sub_02008D60(struct Sprite * r0, s32 r1)
 {
-    r0->unk2 = ((r0->unk2 & ~1) | r1);
+    r0->flag = ((r0->flag & ~1) | r1);
 }
 
 BSS_DATA u32 ** gUnknown_0202135C;
@@ -579,13 +581,13 @@ void InitSound(void)
     m4aSoundInit();
 }
 
-void sub_0200930C(void)
+void PauseSoundVSync(void)
 {
     gUnknown_02021368 = 1;
     isSoundVsync = 0;
 }
 
-bool32 sub_02009324(u32 a0)
+bool32 EnableSoundVSync(u32 a0)
 {
     if (a0 && gUnknown_02021368)
         isSoundVsync = 1;
