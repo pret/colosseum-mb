@@ -670,56 +670,6 @@ _0200920E:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02009228
-sub_02009228: @ 0x02009228
-	ldr r2, =gUnknown_02022EB8
-	ldr r0, =0x04000130
-	ldrh r1, [r0]
-	ldr r3, =0x000003FF
-	adds r0, r3, #0
-	adds r3, r0, #0
-	eors r3, r1
-	adds r0, r3, #0
-	ldrh r1, [r2]
-	bics r0, r1
-	ldr r1, =gUnknown_02022EB0
-	strh r0, [r1]
-	ldrh r0, [r2]
-	cmp r0, r3
-	beq _02009270
-	ldr r0, =gUnknown_02022EB4
-	strh r3, [r0]
-	ldr r1, =gUnknown_02021364
-	ldr r0, =gUnknown_02021360
-	ldrh r0, [r0]
-	b _02009298
-	.align 2, 0
-	.pool
-_02009270:
-	ldr r1, =gUnknown_02021364
-	ldrh r0, [r1]
-	subs r0, #1
-	strh r0, [r1]
-	lsls r0, r0, #0x10
-	cmp r0, #0
-	bne _02009294
-	ldr r0, =gUnknown_02022EB4
-	strh r3, [r0]
-	ldr r0, =gUnknown_02021362
-	ldrh r0, [r0]
-	b _02009298
-	.align 2, 0
-	.pool
-_02009294:
-	ldr r1, =gUnknown_02022EB4
-	movs r0, #0
-_02009298:
-	strh r0, [r1]
-	strh r3, [r2]
-	bx lr
-	.align 2, 0
-	.pool
-
 	.section .text.020092F0
 
 	thumb_func_start sub_020094A8

@@ -1,0 +1,4 @@
+#ifndef GFLIB_GFXLOAD_H
+#define GFLIB_GFXLOAD_H
+
+#endif //GFLIB_GFXLOAD_H

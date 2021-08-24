@@ -13,11 +13,7 @@ gUnknown_02020A48:
 
 @ main
 
-gSprites:
-	.space 0x288
-
-sOamBuffer:
-	.space 0x404
+.include "src/gflib/sprite.o"
 
 gUnknown_0202135C:
 	.space 0x4

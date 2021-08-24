@@ -106,7 +106,7 @@ _020001D4:
 	bic r3, r3, #0xdf
 	orr r3, r3, #0x1f
 	msr cpsr_fc, r3
-	ldr r1, =gIntrFuncs
+	ldr r1, =gIntrTable
 	add r1, r1, ip
 	ldr r0, [r1]
 	stmdb sp!, {lr}

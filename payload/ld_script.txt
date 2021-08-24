@@ -19,10 +19,14 @@ SECTIONS {
         asm/m4a_1.o(.text);
         /* asm/m4a.o(.text); */
         src/m4a.o(.text);
-        src/main.o(.text);
-        asm/main.o(.text);
-        src/main.o(.text.020092C0);
-        asm/main.o(.text.020092F0);
+        src/gflib/init.o(.text);
+        src/gflib/bg.o(.text);
+        src/gflib/sprite.o(.text);
+        asm/gflib.o(.text);
+        src/gflib/keys.o(.text);
+        src/gflib/gfxload.o(.text);
+        src/gflib/sound.o(.text);
+        asm/gflib.o(.text.020092F0);
         src/agb_flash.o(.text);
         src/agb_flash_1m.o(.text);
         src/agb_flash_mx.o(.text);
@@ -55,7 +59,7 @@ SECTIONS {
     lib_rodata :
     ALIGN(4)
     {
-        data/main.o(.rodata);
+        data/gflib.o(.rodata);
         src/agb_flash.o(.rodata);
         src/agb_flash_1m.o(.rodata);
         src/agb_flash_mx.o(.rodata);
@@ -73,23 +77,21 @@ SECTIONS {
 	lib_data :
 	ALIGN(4)
 	{
-        data/main.o(.data);
+        data/gflib.o(.data);
     } =0
-    ewram_start = .;
+    bss_start = .;
     wram (NOLOAD) :
     ALIGN(4)
     {
     INCLUDE sym_bss.ld;
     src/m4a.o(.bss.code);
     INCLUDE sym_common.ld;
-    INCLUDE sym_ewram.ld;
     }
-    ewram_end = .;
+    bss_end = .;
     wram_extra (NOLOAD) :
     ALIGN(4)
     {
-    gUnknown_0202526C = .;
-    . += 0x400;
+    INCLUDE sym_ewram.ld;
     }
     . = 0x02040000; /* Limit EWRAM size */
 

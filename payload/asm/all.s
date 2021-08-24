@@ -1308,10 +1308,10 @@ sub_02000CA4: @ 0x02000CA4
 	adds r0, r2, r0
 	ldrb r1, [r0]
 	adds r0, r4, #0
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	ldrh r1, [r6, #8]
 	adds r0, r4, #0
-	bl sub_02008D5C
+	bl SetSpriteTileOffset
 	ldr r0, [r5]
 	ldr r1, [r0, #0x38]
 	ldrh r2, [r6, #6]
@@ -1921,7 +1921,7 @@ _020011F2:
 	mov r3, sb
 	str r0, [r3, #0x28]
 	movs r1, #0xc
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 _0200122A:
 	ldr r0, =gUnknown_02021860
 	movs r4, #0x90
@@ -2515,7 +2515,7 @@ _020016CA:
 	mov r3, sb
 	str r0, [r3, #0x28]
 	movs r1, #0xc
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 _02001702:
 	ldr r0, =gUnknown_02021860
 	movs r4, #0x90
@@ -3011,7 +3011,7 @@ _02001B98:
 	adds r4, r5, r1
 	str r0, [r4]
 	movs r1, #5
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	ldr r2, =0x00000119
 	adds r1, r5, r2
 	movs r0, #0
@@ -3518,7 +3518,7 @@ _0200201C:
 	adds r4, r5, r3
 	str r0, [r4]
 	movs r1, #5
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	ldr r0, =0x00000119
 	adds r1, r5, r0
 	movs r0, #0
@@ -5611,7 +5611,7 @@ _02003140:
 	bl AddSprite
 	str r0, [r6]
 	movs r1, #4
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	cmp r5, #0
 	bne _020031C8
 	ldr r1, =0x06016000
@@ -5741,29 +5741,29 @@ sub_020031F8: @ 0x020031F8
 _020032C8:
 	ldr r0, [r7, #4]
 	lsls r1, r6, #3
-	bl sub_02008D5C
+	bl SetSpriteTileOffset
 	ldr r4, [r7, #4]
 	adds r0, r6, #0
 	bl sub_0200C440
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	cmp r5, #0
 	beq _0200331C
 	cmp r6, r5
 	beq _0200331C
 	ldr r0, [r7, #8]
 	lsls r1, r5, #3
-	bl sub_02008D5C
+	bl SetSpriteTileOffset
 	ldr r4, [r7, #8]
 	adds r0, r5, #0
 	bl sub_0200C440
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	ldr r0, [r7, #8]
 	movs r1, #0
-	bl sub_02008D60
+	bl SetSpriteInvisible
 	b _02003326
 	.align 2, 0
 	.pool
@@ -5771,7 +5771,7 @@ _0200331C:
 	ldr r0, =gUnknown_02021990
 	ldr r0, [r0, #8]
 	movs r1, #1
-	bl sub_02008D60
+	bl SetSpriteInvisible
 _02003326:
 	ldr r0, =gUnknown_02022EF4
 	mov sl, r0
@@ -6350,23 +6350,23 @@ _02003856:
 	beq _02003890
 	ldr r0, [r5]
 	lsls r1, r7, #3
-	bl sub_02008D5C
+	bl SetSpriteTileOffset
 	ldr r4, [r5]
 	adds r0, r7, #0
 	bl sub_0200C440
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	ldr r0, [r5]
 	movs r1, #0
-	bl sub_02008D60
+	bl SetSpriteInvisible
 	b _02003898
 	.align 2, 0
 	.pool
 _02003890:
 	ldr r0, [r5]
 	movs r1, #1
-	bl sub_02008D60
+	bl SetSpriteInvisible
 _02003898:
 	ldr r4, =gUnknown_02021990
 	ldr r0, [r4, #0x24]
@@ -6720,7 +6720,7 @@ sub_02003BA4: @ 0x02003BA4
 	cmp r0, #0
 	beq _02003BDC
 	movs r1, #1
-	bl sub_02008D60
+	bl SetSpriteInvisible
 _02003BDC:
 	ldr r0, [r7, #0x20]
 	bl sub_020091B0
@@ -6781,7 +6781,7 @@ _02003BDC:
 	strb r1, [r0, #2]
 	ldr r0, [r7, #0xc]
 	movs r1, #1
-	bl sub_02008D60
+	bl SetSpriteInvisible
 	ldr r0, [r7, #0x20]
 	movs r1, #0
 	movs r2, #0x18
@@ -6841,7 +6841,7 @@ _02003CB4:
 	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r7, #0xc]
 	movs r1, #0
-	bl sub_02008D60
+	bl SetSpriteInvisible
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	mov r8, r1
 	movs r4, #1
@@ -7092,7 +7092,7 @@ _02003F0C:
 _02003F20:
 	ldr r0, [r5, #0xc]
 	movs r1, #3
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	adds r0, r6, #0
 	bl sub_0200B5C4
 	ldr r1, =0x06012800
@@ -7133,11 +7133,11 @@ _02003F20:
 _02003F82:
 	ldr r0, [r5, #0x10]
 	movs r1, #0
-	bl sub_02008D60
+	bl SetSpriteInvisible
 	ldr r0, [r5, #0x10]
 	subs r1, r4, #1
 	lsls r1, r1, #2
-	bl sub_02008D5C
+	bl SetSpriteTileOffset
 	b _02003FCE
 	.align 2, 0
 	.pool
@@ -7154,7 +7154,7 @@ _02003FB0:
 	cmp r0, #0
 	beq _02003FCE
 	movs r1, #1
-	bl sub_02008D60
+	bl SetSpriteInvisible
 _02003FCE:
 	adds r0, r6, #0
 	movs r1, #0
@@ -7435,7 +7435,7 @@ _0200420E:
 	mov r1, sb
 	str r0, [r1, #0x40]
 	movs r1, #5
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	mov r0, sb
 	ldr r1, [r0, #0x40]
 	ldr r0, =sub_0200461C
@@ -7921,12 +7921,12 @@ _02004630:
 _02004636:
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_02008D60
+	bl SetSpriteInvisible
 	b _0200464E
 _02004640:
 	adds r0, r4, #0
 	movs r1, #1
-	bl sub_02008D60
+	bl SetSpriteInvisible
 	b _0200464E
 _0200464A:
 	movs r0, #0
@@ -8525,7 +8525,7 @@ _02004C2A:
 	bl AddSprite
 	str r0, [r6]
 	movs r1, #4
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	mov r1, sl
 	ldr r0, [r1]
 	ldrh r2, [r6, #0xe]
@@ -8773,11 +8773,11 @@ _02004E38:
 _02004E72:
 	ldr r0, [r5, #4]
 	movs r1, #0
-	bl sub_02008D60
+	bl SetSpriteInvisible
 	ldr r0, [r5, #4]
 	subs r1, r4, #1
 	lsls r1, r1, #2
-	bl sub_02008D5C
+	bl SetSpriteTileOffset
 _02004E84:
 	movs r0, #1
 	movs r1, #0xc
@@ -8903,7 +8903,7 @@ _02004F92:
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #8]
 	movs r1, #5
-	bl sub_02008D54
+	bl SetSpritePaletteNum
 	ldr r0, [r4, #8]
 	ldrb r1, [r7]
 	ldrb r2, [r7, #1]

@@ -3555,7 +3555,7 @@ gUnknown_0201F3AC::
 
 	.align 2, 0
 gUnknown_0201F4AC::
-	.4byte gUnknown_02022BE8
+	.4byte gIntrTable + 0x18
 
 gUnknown_0201F4B0::
 	.2byte 0xF9D4, 0xF931, 0xF932, 0xF933, 0xF934, 0xF935, 0xF936, 0xF937
