@@ -1,6 +1,9 @@
 
 gUnknown_02022BD0:
-	.space 0x38
+	.space 0x18
+
+gUnknown_02022BE8:
+	.space 0x20
 
 gUnknown_02022C08:
 	.space 0x4
