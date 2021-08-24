@@ -2858,7 +2858,7 @@ _020019D6:
 	movs r0, #SE_FAILURE
 	bl PlaySE
 	ldr r0, [r4]
-	ldr r2, =gUnknown_0201FEC4
+	ldr r2, =gBattleStringsTable
 	lsls r1, r5, #2
 	adds r1, r1, r2
 	ldr r1, [r1]
@@ -9186,7 +9186,7 @@ sub_02005168: @ 0x02005168
 	adds r1, r1, r7
 	ldr r2, =gUnknown_02021A20
 	ldr r0, [r2, #0x18]
-	ldr r2, =gUnknown_0201FE7C
+	ldr r2, =gTypeNames
 	ldrb r1, [r1, #2]
 	lsls r1, r1, #2
 	adds r1, r1, r2
@@ -9724,7 +9724,7 @@ _02005658:
 	strb r5, [r6, #3]
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
-	ldr r2, =gUnknown_0201FEC4
+	ldr r2, =gBattleStringsTable
 	mov r3, sb
 	lsls r1, r3, #2
 	adds r1, r1, r2
@@ -10596,7 +10596,7 @@ sub_02005DCC: @ 0x02005DCC
 	bl BufferString
 	bl sub_020007AC
 	ldr r0, [r4, #0x18]
-	ldr r1, =gUnknown_0201FEC4
+	ldr r1, =gBattleStringsTable
 	lsls r6, r6, #2
 	adds r6, r6, r1
 	ldr r1, [r6]
