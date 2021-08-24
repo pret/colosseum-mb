@@ -1,0 +1,5 @@
+gUnknown_0202524C
+gUnknown_02025250
+gTimeSinceBerryUpdate
+gRtcUTCTime
+padding_2025270

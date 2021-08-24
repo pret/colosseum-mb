@@ -152,44 +152,5 @@ gRomDetection_IsEnglish:
 gUnknown_020251F0:
 	.space 0x34
 
-gFlashTimeoutFlag:
-	.space 0x4
-
-PollFlashStatus:
-	.space 0x4
-
-WaitForFlashWrite:
-	.space 0x4
-
-ProgramFlashSector:
-	.space 0x4
-
-gFlash:
-	.space 0x4
-
-ProgramFlashByte:
-	.space 0x4
-
-gFlashNumRemainingBytes:
-	.space 0x4
-
-EraseFlashChip:
-	.space 0x4
-
-EraseFlashSector:
-	.space 0x4
-
-gFlashMaxTime:
-	.space 0x4
-
-gUnknown_0202524C:
-	.space 0x4
-
-gUnknown_02025250:
-	.space 0x8
-
-gTimeSinceBerryUpdate:
-	.space 0x8
-
-gRtcUTCTime:
-	.space 0xc
+	.include "agb_flash.o"
+	.include "unk_200E344.o"

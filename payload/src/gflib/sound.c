@@ -1,8 +1,8 @@
 #include "global.h"
 #include "gflib/sound.h"
 
-BSS_DATA u8 gUnknown_02021368;
-BSS_DATA bool8 isSoundVsync;
+static u8 gUnknown_02021368;
+static bool8 isSoundVsync;
 
 void InitSound(void)
 {

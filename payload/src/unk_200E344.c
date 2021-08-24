@@ -2,17 +2,20 @@
 #include "siirtc.h"
 #include "constants/vars.h"
 
-extern u32 gUnknown_0202524C;
-extern u32 gUnknown_02025250;
-extern struct Time gTimeSinceBerryUpdate;
-extern struct Time gRtcUTCTime;
+u32 gUnknown_0202524C;
+u32 gUnknown_02025250;
+struct Time gTimeSinceBerryUpdate;
+struct Time gRtcUTCTime;
+u32 padding_2025270;
 
-BSS_DATA ALIGNED(8) u32 gUnknown_02021380;
-BSS_DATA ALIGNED(8) struct SiiRtcInfo sRtcInfoWork;
-BSS_DATA ALIGNED(8) u16 sRtcProbeStatus;
-BSS_DATA ALIGNED(8) struct SiiRtcInfo sRtcInfoBuffer;
-BSS_DATA u8 sRtcProbeCode;
-BSS_DATA u16 sImeBak;
+static u32 gUnknown_02021380;
+static struct SiiRtcInfo sRtcInfoWork;
+static u32 padding_2021394;
+static u16 sRtcProbeStatus;
+static u32 padding_202139C;
+static struct SiiRtcInfo sRtcInfoBuffer;
+static u8 sRtcProbeCode;
+static u16 sImeBak;
 
 bool32 sub_02009EC8(void);
 
