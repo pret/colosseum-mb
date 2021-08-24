@@ -7100,7 +7100,7 @@ _0200C670:
 	lsls r0, r2, #3
 	subs r0, r0, r2
 	lsls r0, r0, #2
-	ldr r1, =gUnknown_0201E80C - 28
+	ldr r1, =gBerries - 28
 	adds r0, r0, r1
 _0200C67A:
 	bx lr
@@ -7159,7 +7159,7 @@ _0200C6D4:
 	lsls r0, r2, #3
 	subs r0, r0, r2
 	lsls r0, r0, #2
-	ldr r1, =gUnknown_0201E80C - 28
+	ldr r1, =gBerries - 28
 	adds r1, r0, r1
 _0200C6DE:
 	adds r0, r4, #0
@@ -8250,7 +8250,7 @@ sub_0200CED8: @ 0x0200CED8
 	adds r0, r0, r1
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
-	ldr r2, =gUnknown_0201F0B4
+	ldr r2, =gRSPokemonCenterMaps
 	ldr r1, =0x0000FFFF
 	ldrh r3, [r2]
 	cmp r3, r1
@@ -8272,7 +8272,7 @@ _0200CF10:
 	cmp r4, r3
 	bne _0200CEFC
 _0200CF1A:
-	ldr r2, =gUnknown_0201F0FC
+	ldr r2, =gRSSpecialAreaMaps
 	ldr r1, =0x0000FFFF
 	ldrh r3, [r2]
 	cmp r3, r1
