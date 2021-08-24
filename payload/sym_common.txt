@@ -5,7 +5,7 @@ gUnknown_020217B4:
 gUnknown_020217B8:
 	.space 0x8
 
-gUnknown_020217C0:
+gStringBuffers:
 	.space 0xa0
 
 gUnknown_02021860:

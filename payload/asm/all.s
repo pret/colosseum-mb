@@ -1,7 +1,8 @@
-#include "constants/songs.h"
 	.include "asm/macros/function.inc"
 	.text
 	.syntax unified
+	.equ SE_SELECT,  0
+	.equ SE_FAILURE, 1
 
 	thumb_func_start sub_020002B4
 sub_020002B4: @ 0x020002B4
@@ -199,8 +200,8 @@ _0200047C:
 	pop {r1}
 	bx r1
 
-	thumb_func_start sub_02000484
-sub_02000484: @ 0x02000484
+	thumb_func_start StringExpandPlaceholders
+StringExpandPlaceholders: @ 0x02000484
 	push {r4, r5, r6, r7, lr}
 	mov r7, sb
 	mov r6, r8
@@ -233,10 +234,10 @@ _020004BA:
 	adds r5, #1
 	ldrb r0, [r5]
 	lsls r1, r0, #5
-	ldr r0, =gUnknown_020217C0
+	ldr r0, =gStringBuffers
 	adds r1, r1, r0
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	b _02000562
 	.align 2, 0
 	.pool
@@ -443,11 +444,11 @@ _02000638:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start sub_02000650
-sub_02000650: @ 0x02000650
+	thumb_func_start BufferString
+BufferString: @ 0x02000650
 	push {lr}
 	lsls r0, r0, #5
-	ldr r2, =gUnknown_020217C0
+	ldr r2, =gStringBuffers
 	adds r0, r0, r2
 	bl StringCopy
 	pop {r0}
@@ -900,7 +901,7 @@ sub_020009C4: @ 0x020009C4
 	bl sub_02009164
 	adds r0, r4, #0
 	adds r1, r5, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -1219,14 +1220,14 @@ _02000C5C:
 	strb r0, [r6, #1]
 	movs r0, #0
 	mov r1, sp
-	bl sub_02000650
+	bl BufferString
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
 	bl sub_02009164
 	adds r0, r5, #0
 	ldr r1, =gUnknown_0202004F
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02000C7E:
 	mov r5, r8
 	ldrb r0, [r5]
@@ -1659,7 +1660,7 @@ _02000FBE:
 	bl sub_02009164
 	adds r0, r6, #0
 	adds r1, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	adds r0, r5, #0
 	adds r1, r4, #0
 	movs r2, #0x76
@@ -1887,14 +1888,14 @@ _020011D0:
 	movs r0, #0xff
 	strb r0, [r1, #1]
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020011F2:
 	ldr r2, =gUnknown_02022EF4
 	movs r0, #0x64
@@ -2257,7 +2258,7 @@ _020014A6:
 	bl sub_02009164
 	adds r0, r6, #0
 	adds r1, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	adds r0, r5, #0
 	adds r1, r4, #0
 	movs r2, #0x76
@@ -2481,14 +2482,14 @@ _020016A8:
 	movs r0, #0xff
 	strb r0, [r1, #1]
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020016CA:
 	ldr r2, =gUnknown_02022EF4
 	movs r0, #0x64
@@ -2585,24 +2586,24 @@ _020017A4:
 	movs r0, #0xff
 	strb r0, [r1, #1]
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF54
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	b _020017DC
 	.align 2, 0
 	.pool
 _020017C4:
 	ldr r0, [r5]
 	ldr r1, =gUnknown_02020056
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	b _020017DC
 	.align 2, 0
 	.pool
 _020017D4:
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF6E
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020017DC:
 	add sp, #0xc
 	pop {r4, r5, r6}
@@ -2853,7 +2854,7 @@ _020019D6:
 	bl sub_0200C1B8
 	movs r0, #4
 	add r1, sp, #8
-	bl sub_02000650
+	bl BufferString
 	movs r0, #SE_FAILURE
 	bl PlaySE
 	ldr r0, [r4]
@@ -2861,7 +2862,7 @@ _020019D6:
 	lsls r1, r5, #2
 	adds r1, r1, r2
 	ldr r1, [r1]
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r0, #6
 	str r0, [sp]
 	mov r0, r8
@@ -2944,14 +2945,14 @@ _02001AC8:
 	bl sub_0200C1B8
 	movs r0, #4
 	add r1, sp, #8
-	bl sub_02000650
+	bl BufferString
 	ldr r0, [r5]
 	movs r1, #0
 	movs r2, #0
 	bl sub_02009164
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF87
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
 	bl sub_02008F6C
@@ -3182,7 +3183,7 @@ _02001D44:
 	ldr r0, =gUnknown_02024960 + 0x81C
 	adds r1, r1, r0
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	ldr r0, =gUnknown_02021860
 	movs r2, #0x91
 	lsls r2, r2, #1
@@ -3204,7 +3205,7 @@ _02001D78:
 	ldr r0, =gUnknown_02024960 + 0x81C
 	adds r1, r1, r0
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	ldr r0, =gUnknown_02021860
 	movs r3, #0x91
 	lsls r3, r3, #1
@@ -3226,7 +3227,7 @@ _02001DAC:
 	ldr r0, =gUnknown_02024960 + 0x81C
 	adds r1, r1, r0
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	ldr r0, =gUnknown_02021860
 	movs r1, #0x91
 	lsls r1, r1, #1
@@ -3451,14 +3452,14 @@ _02001F50:
 	bl sub_0200C1B8
 	movs r0, #4
 	add r1, sp, #8
-	bl sub_02000650
+	bl BufferString
 	ldr r0, [r5]
 	movs r1, #0
 	movs r2, #0
 	bl sub_02009164
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF87
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
 	bl sub_02008F6C
@@ -3715,14 +3716,14 @@ _02002208:
 	orrs r0, r5
 	strb r0, [r1, #1]
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _0200222C:
 	ldr r0, =0x04000154
 	movs r1, #0x80
@@ -3794,14 +3795,14 @@ _020022BC:
 	strb r0, [r6, #1]
 	movs r0, #0
 	adds r1, r6, #0
-	bl sub_02000650
+	bl BufferString
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
 	bl sub_02009164
 	adds r0, r5, #0
 	ldr r1, =gUnknown_0202004F
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020022DE:
 	movs r3, #1
 	add r8, r3
@@ -3833,14 +3834,14 @@ _02002314:
 	movs r0, #0xff
 	strb r0, [r1, #1]
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02002336:
 	ldr r1, =0x04000154
 	movs r0, #0xff
@@ -5140,7 +5141,7 @@ sub_02002D60: @ 0x02002D60
 	bl sub_02009164
 	adds r0, r6, #0
 	add r1, sp, #8
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	adds r0, r4, #0
 	add r1, sp, #8
 	movs r2, #0x76
@@ -5329,14 +5330,14 @@ _02002F08:
 	movs r0, #0xff
 	strb r0, [r1, #1]
 	movs r0, #0
-	bl sub_02000650
+	bl BufferString
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
 	bl sub_02009164
 	ldr r1, =gUnknown_0202004F
 	adds r0, r5, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02002F2A:
 	add sp, #4
 	pop {r4, r5}
@@ -5708,7 +5709,7 @@ sub_020031F8: @ 0x020031F8
 	bl sub_02008894
 	ldr r0, [r7, #0x24]
 	ldr r1, =gUnknown_0201FFE3
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r5, =gUnknown_02022EF4
 	movs r0, #0x64
 	mov r4, sb
@@ -5802,7 +5803,7 @@ _02003326:
 	bl sub_0200C44C
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r0, [r6, #0x24]
 	movs r1, #0
 	movs r2, #0x28
@@ -5812,7 +5813,7 @@ _02003326:
 	bl sub_0200C464
 	adds r1, r0, #0
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldrb r0, [r6, #0x18]
 	cmp r0, #0
 	bne _020033A0
@@ -5822,7 +5823,7 @@ _02003326:
 	bl sub_02009164
 	ldr r0, [r6, #0x24]
 	ldr r1, =gUnknown_0201FFE8
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020033A0:
 	mov r1, sl
 	ldr r0, [r1]
@@ -5862,7 +5863,7 @@ _020033A0:
 	bl sub_020090E4
 	ldr r0, [r6, #0x24]
 	add r1, sp, #0xc
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldrb r0, [r6, #0x18]
 	cmp r0, #0
 	bne _02003414
@@ -5872,7 +5873,7 @@ _020033A0:
 	bl sub_02009164
 	ldr r0, [r6, #0x24]
 	ldr r1, =gUnknown_0201FFEB
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02003414:
 	ldr r0, [r6, #0x24]
 	strb r5, [r0, #0x1c]
@@ -5916,7 +5917,7 @@ _02003452:
 	adds r4, #0x1f
 	subs r1, r4, r5
 	adds r0, r7, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r5, =gUnknown_02021990
 	ldrb r0, [r5, #0x18]
 	mov r8, r4
@@ -5928,7 +5929,7 @@ _02003452:
 	bl sub_02009164
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0201FFF2
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _0200348E:
 	ldr r1, [r5, #0x24]
 	movs r2, #0
@@ -5977,7 +5978,7 @@ _020034D8:
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r5, =gUnknown_02021990
 	ldr r0, [r5, #0x24]
 	movs r1, #6
@@ -5997,7 +5998,7 @@ _020034D8:
 	bl sub_02009164
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0201FFFA
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02003524:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
@@ -6034,7 +6035,7 @@ _02003554:
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r5, =gUnknown_02021990
 	ldrb r0, [r5, #0x18]
 	cmp r0, #0
@@ -6045,7 +6046,7 @@ _02003554:
 	bl sub_02009164
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_02020002
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _0200358C:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
@@ -6082,7 +6083,7 @@ _020035BC:
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r5, =gUnknown_02021990
 	ldrb r0, [r5, #0x18]
 	cmp r0, #0
@@ -6093,7 +6094,7 @@ _020035BC:
 	bl sub_02009164
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0202000A
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020035F4:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
@@ -6130,7 +6131,7 @@ _02003624:
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r4, =gUnknown_02021990
 	ldr r0, [r4, #0x24]
 	movs r1, #2
@@ -6158,7 +6159,7 @@ _02003624:
 	bne _020036A8
 	ldr r0, [r4, #0x24]
 	ldr r1, =gUnknown_02020010
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	b _020036BA
 	.align 2, 0
 	.pool
@@ -6169,7 +6170,7 @@ _020036A8:
 	bl sub_0200C6A4
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020036BA:
 	ldr r4, =gUnknown_02021990
 	ldr r0, [r4, #0x28]
@@ -6213,7 +6214,7 @@ _020036CC:
 	bl sub_02009164
 	ldr r0, [r4, #0x28]
 	ldr r1, =gUnknown_0202001B
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0xb
@@ -6230,7 +6231,7 @@ _020036CC:
 	bl sub_020090B0
 	ldr r0, [r4, #0x1c]
 	ldr r1, =gUnknown_0201FFC7
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r1, =gUnknown_02022C20
 	movs r0, #1
 	strb r0, [r1]
@@ -6386,7 +6387,7 @@ _02003898:
 	bl sub_02009164
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r0, [r4, #0x24]
 	movs r1, #2
 	str r1, [sp]
@@ -6423,7 +6424,7 @@ _02003898:
 	bl sub_02009164
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r0, #0
 	movs r1, #0x18
 	ldr r2, [sp, #0x30]
@@ -6444,7 +6445,7 @@ _02003944:
 	bl sub_02009164
 	ldr r0, [r4, #0x24]
 	ldr r1, =gUnknown_02020029
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r4, #0xf0
 	lsls r4, r4, #8
 	movs r0, #0
@@ -6524,7 +6525,7 @@ _020039B2:
 	bl sub_02009164
 	ldr r0, [r4, #0x28]
 	ldr r1, =gUnknown_02020022
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0xb
@@ -6541,7 +6542,7 @@ _020039B2:
 	bl sub_020090B0
 	ldr r0, [r4, #0x1c]
 	ldr r1, =gUnknown_0201FFD6
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r1, =gUnknown_02022C20
 	movs r0, #1
 	strb r0, [r1]
@@ -6602,14 +6603,14 @@ sub_02003A70: @ 0x02003A70
 	ldr r0, [r5, #0x20]
 	ldr r4, =gUnknown_0202002C
 	adds r1, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r0, [r5, #0x20]
 	movs r1, #0x30
 	movs r2, #0x28
 	bl sub_02009164
 	ldr r0, [r5, #0x20]
 	adds r1, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	b _02003B92
 	.align 2, 0
 	.pool
@@ -6638,7 +6639,7 @@ _02003AF4:
 	bhi _02003B38
 	ldr r0, [r5, #0x20]
 	ldr r1, =gUnknown_0202002C
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	b _02003B48
 	.align 2, 0
 	.pool
@@ -6648,7 +6649,7 @@ _02003B38:
 	bl sub_02000964
 	ldr r0, [r5, #0x20]
 	add r1, sp, #8
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02003B48:
 	ldr r4, =gUnknown_02021990
 	ldr r0, [r4, #0x20]
@@ -6667,7 +6668,7 @@ _02003B48:
 	bne _02003B7C
 	ldr r0, [r4, #0x20]
 	ldr r1, =gUnknown_0202002C
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	b _02003B8C
 	.align 2, 0
 	.pool
@@ -6677,7 +6678,7 @@ _02003B7C:
 	bl sub_02000964
 	ldr r0, [r4, #0x20]
 	add r1, sp, #8
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02003B8C:
 	ldr r1, =gUnknown_02022C20
 	movs r0, #1
@@ -6787,14 +6788,14 @@ _02003BDC:
 	bl sub_02009164
 	ldr r0, [r7, #0x20]
 	ldr r1, =gUnknown_02020030
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r0, [r7, #0x20]
 	movs r1, #0
 	movs r2, #0x28
 	bl sub_02009164
 	ldr r0, [r7, #0x20]
 	ldr r1, =gUnknown_02020036
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r0, [sp, #0xc]
 	mov r1, sb
 	bl sub_02003A70
@@ -6947,7 +6948,7 @@ _02003DC0:
 	bl sub_02009164
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02003DEE:
 	add r1, sp, #0xc
 	movs r0, #0x34
@@ -6961,7 +6962,7 @@ _02003DEE:
 	bl sub_02009164
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	adds r0, r6, #0
 	movs r1, #0x38
 	movs r2, #0
@@ -7007,7 +7008,7 @@ _02003E54:
 	mov r1, sp
 	adds r1, r1, r5
 	adds r1, #0xc
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0xd
@@ -7033,7 +7034,7 @@ _02003E54:
 	bl sub_02009164
 	ldr r0, [r4, #0x20]
 	adds r1, r7, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	cmp r5, #0x20
 	beq _02003F0C
 	cmp r5, #0x1d
@@ -7077,7 +7078,7 @@ _02003EE0:
 	bl sub_02008894
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02003F0C:
 	ldr r5, =gUnknown_02021990
 	ldr r0, [r5, #0xc]
@@ -7459,7 +7460,7 @@ _0200420E:
 	ldr r0, [r1, #0x24]
 	ldr r4, =gUnknown_0202003F
 	adds r1, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	movs r1, #0
@@ -7467,7 +7468,7 @@ _0200420E:
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	adds r1, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	mov r0, sp
 	ldrb r1, [r0, #0xc]
 	ldr r0, =gUnknown_02022C20
@@ -7504,7 +7505,7 @@ _0200420E:
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	adds r1, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	mov r0, sp
 	ldrb r1, [r0, #0xc]
 	ldr r0, =gUnknown_02022C20
@@ -7622,7 +7623,7 @@ _02004356:
 	adds r1, r1, r4
 	lsls r1, r1, #4
 	add r1, sl
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r0, #1
 	ldr r1, =gUnknown_02022C20
 	strb r0, [r1]
@@ -7705,7 +7706,7 @@ _0200441C:
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	ldr r1, =gUnknown_02020022
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r0, #1
 	ldr r1, =gUnknown_02022C20
 	strb r0, [r1]
@@ -7889,7 +7890,7 @@ sub_020045B8: @ 0x020045B8
 	adds r1, r1, r5
 	lsls r1, r1, #4
 	adds r1, r7, r1
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	ldr r1, =gUnknown_02022C20
 	movs r0, #1
 	strb r0, [r1]
@@ -8060,7 +8061,7 @@ _02004788:
 	ldr r1, [r0, #0x20]
 _02004798:
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	b _020047C2
 	.align 2, 0
 	.pool
@@ -8073,7 +8074,7 @@ _020047AC:
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #4]
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020047C2:
 	pop {r4}
 	pop {r0}
@@ -8150,7 +8151,7 @@ _02004862:
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #0x24]
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _0200486C:
 	movs r0, #0x64
 	bl sub_02008600
@@ -8217,7 +8218,7 @@ _0200491C:
 	ldr r0, =gUnknown_020219E4
 	ldr r0, [r0]
 	ldr r1, =gUnknown_02020508
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	bl sub_0200472C
 _02004932:
 	ldr r3, =gUnknown_02024960
@@ -8290,7 +8291,7 @@ _02004998:
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #4]
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _020049C2:
 	cmp r5, #0
 	beq _02004956
@@ -8317,7 +8318,7 @@ sub_02004A04: @ 0x02004A04
 	adds r4, r4, r0
 	ldr r1, [r4]
 	adds r0, r5, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -8376,7 +8377,7 @@ _02004A9A:
 	adds r1, r1, r0
 	ldr r1, [r1]
 	adds r0, r4, #0
-	bl sub_02000484
+	bl StringExpandPlaceholders
 _02004AA8:
 	movs r0, #0x64
 	bl sub_02008600
@@ -8629,7 +8630,7 @@ _02004D34:
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x14]
 	add r1, sp, #8
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0
@@ -8680,7 +8681,7 @@ sub_02004D68: @ 0x02004D68
 	bl sub_02009164
 	ldr r0, [r4, #0x14]
 	mov r1, sp
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	adds r0, r7, #0
 	movs r1, #0x38
 	movs r2, #0
@@ -8718,21 +8719,21 @@ _02004DE4:
 	ldr r0, [r4, #0x14]
 	mov r2, sp
 	adds r1, r2, r5
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	adds r0, r7, #0
 	movs r1, #2
 	mov r2, sp
 	bl sub_0200C1B8
 	movs r0, #4
 	mov r1, sp
-	bl sub_02000650
+	bl BufferString
 	ldr r0, [r4, #0x14]
 	movs r1, #0x2c
 	movs r2, #0
 	bl sub_02009164
 	ldr r0, [r4, #0x14]
 	mov r1, sp
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	adds r0, r7, #0
 	movs r1, #0xb
 	movs r2, #0
@@ -8755,7 +8756,7 @@ _02004E38:
 	bl sub_02009164
 	ldr r0, [r5, #0x14]
 	mov r1, sp
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	adds r0, r7, #0
 	bl sub_0200B7D0
 	adds r4, r0, #0
@@ -8820,7 +8821,7 @@ _02004E84:
 	strb r0, [r1, #0x1c]
 	ldr r0, [r4, #0x14]
 	mov r1, sp
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	strb r5, [r6]
 	add sp, #0x20
 	pop {r3}
@@ -9307,7 +9308,7 @@ _020052D4:
 _020052DC:
 	adds r0, r4, #0
 	add r1, sp, #0xc
-	bl sub_02000650
+	bl BufferString
 	adds r5, #2
 	adds r4, #1
 	cmp r4, #3
@@ -9526,7 +9527,7 @@ sub_02005468: @ 0x02005468
 	ldr r0, [r0, #0x18]
 	ldr r1, =0x0000FFFF
 	bl sub_020090B0
-	ldr r5, =gUnknown_020217C0
+	ldr r5, =gStringBuffers
 	movs r0, #0
 	bl sub_0200531C
 	adds r1, r0, #0
@@ -9703,7 +9704,7 @@ _02005648:
 _02005650:
 	movs r0, #0
 	add r1, sp, #0x24
-	bl sub_02000650
+	bl BufferString
 _02005658:
 	ldr r2, =gUnknown_02022EF4
 	movs r0, #0x64
@@ -9716,7 +9717,7 @@ _02005658:
 	bl sub_0200C1B8
 	movs r0, #4
 	add r1, sp, #0xc
-	bl sub_02000650
+	bl BufferString
 	ldr r6, =gUnknown_02022C20
 	movs r5, #1
 	strb r5, [r6, #2]
@@ -9728,7 +9729,7 @@ _02005658:
 	lsls r1, r3, #2
 	adds r1, r1, r2
 	ldr r1, [r1]
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	cmp r7, #0
 	bne _020056DA
 	ldr r0, [r4, #0x18]
@@ -10592,14 +10593,14 @@ sub_02005DCC: @ 0x02005DCC
 	bl sub_0200C1B8
 	movs r0, #4
 	add r1, sp, #0xc
-	bl sub_02000650
+	bl BufferString
 	bl sub_020007AC
 	ldr r0, [r4, #0x18]
 	ldr r1, =gUnknown_0201FEC4
 	lsls r6, r6, #2
 	adds r6, r6, r1
 	ldr r1, [r6]
-	bl sub_02000484
+	bl StringExpandPlaceholders
 	bl sub_020007F0
 	add sp, #0x24
 	pop {r3}
@@ -10705,7 +10706,7 @@ _02005F28:
 _02005F30:
 	movs r0, #0
 	mov r1, sp
-	bl sub_02000650
+	bl BufferString
 	add sp, #0x1c
 	pop {r0}
 	bx r0
