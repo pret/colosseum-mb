@@ -113,7 +113,7 @@ endif
 
 mostlyclean:
 	$(RM) $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS) $(MID_ASM_SRCS) $(AIF_BINS)
-	find . \( -name "*.rl" -or -name "*.lz" -or -name "*.[148]bpp" -or -name "*.gbapal" \) -exec $(RM) {} +
+	find . \( -name "*.rl" -or -name "*.lz" -or -name "*.[1248]bpp" -or -name "*.gbapal" \) -exec $(RM) {} +
 
 clean: mostlyclean
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) clean -C $(tool);)
@@ -171,6 +171,7 @@ $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
 include songs.mk
+include fonts.mk
 
 sound/%.bin: sound/%.aif
 	$(AIF) $< $@ $(AIFFLAGS)

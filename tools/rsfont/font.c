@@ -162,6 +162,89 @@ void ConvertToTiles1Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, 
     }
 }
 
+void ConvertFromTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, int layout __attribute__((unused)))
+{
+    // layout type 1
+    for (int glyph = 0; glyph < numGlyphs; glyph++)
+    {
+        int tile1Offset = glyph * 32;
+        int tile2Offset = tile1Offset + 8;
+        int tile1bOffset = tile1Offset + 16;
+        int tile2bOffset = tile1bOffset + 8;
+        for (int i = 0; i < 8; i++)
+        {
+            uint8_t srcRow = src[tile1Offset + i];
+            uint8_t srcbRow = src[tile1bOffset + i];
+            for (int j = 0; j < 8; j++)
+            {
+                int x = ((glyph % 16) * 8) + j;
+                int y = ((glyph / 16) * 16) + i;
+                dest[(y * 128) + x] = ((srcRow >> (7 - j)) & 1) | (((srcbRow >> (7 - j)) & 1) << 1);
+            }
+        }
+        for (int i = 0; i < 8; i++)
+        {
+            uint8_t srcRow = src[tile2Offset + i];
+            uint8_t srcbRow = src[tile2bOffset + i];
+            for (int j = 0; j < 8; j++)
+            {
+                int x = ((glyph % 16) * 8) + j;
+                int y = ((glyph / 16) * 16) + 8 + i;
+                dest[(y * 128) + x] = ((srcRow >> (7 - j)) & 1) | (((srcbRow >> (7 - j)) & 1) << 1);
+            }
+        }
+    }
+}
+
+void ConvertToTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, int layout __attribute__((unused)))
+{
+    for (int glyph = 0; glyph < numGlyphs; glyph++)
+    {
+        int tile1Offset = glyph * 32;
+        int tile2Offset = tile1Offset + 8;
+        int tile1bOffset = tile1Offset + 16;
+        int tile2bOffset = tile1Offset + 24;
+        for (int i = 0; i < 8; i++)
+        {
+            uint8_t destRow = 0;
+            uint8_t destbRow = 0;
+            for (int j = 0; j < 8; j++)
+            {
+                int x = ((glyph % 16) * 8) + j;
+                int y = ((glyph / 16) * 16) + i;
+                unsigned char color = src[(y * 128) + x];
+                if (color > 3)
+                    FATAL_ERROR("More than 4 colors in 2 BPP format.\n");
+                destRow <<= 1;
+                destbRow <<= 1;
+                destRow |= color & 1;
+                destbRow |= (color >> 1) & 1;
+            }
+            dest[tile1Offset + i] = destRow;
+            dest[tile1bOffset + i] = destbRow;
+        }
+        for (int i = 0; i < 8; i++)
+        {
+            uint8_t destRow = 0;
+            uint8_t destbRow = 0;
+            for (int j = 0; j < 8; j++)
+            {
+                int x = ((glyph % 16) * 8) + j;
+                int y = ((glyph / 16) * 16) + 8 + i;
+                unsigned char color = src[(y * 128) + x];
+                if (color > 3)
+                    FATAL_ERROR("More than 4 colors in 2 BPP format.\n");
+                destRow <<= 1;
+                destbRow <<= 1;
+                destRow |= color & 1;
+                destbRow |= (color >> 1) & 1;
+            }
+            dest[tile2Offset + i] = destRow;
+            dest[tile2bOffset + i] = destbRow;
+        }
+    }
+}
+
 void ConvertFromTiles4Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, int layout)
 {
     static unsigned char table[16] =
@@ -417,6 +500,8 @@ void ReadFont(char *path, struct Image *image, int numGlyphs, int bpp, int layou
 
     if (bpp == 1)
         ConvertFromTiles1Bpp(buffer, image->pixels, numGlyphs, layout);
+    else if (bpp == 2)
+        ConvertFromTiles2Bpp(buffer, image->pixels, numGlyphs, layout);
     else
         ConvertFromTiles4Bpp(buffer, image->pixels, numGlyphs, layout);
 
@@ -446,6 +531,8 @@ void WriteFont(char *path, struct Image *image, int numGlyphs, int bpp, int layo
 
     if (bpp == 1)
         ConvertToTiles1Bpp(image->pixels, buffer, numGlyphs, layout);
+    else if (bpp == 2)
+        ConvertToTiles2Bpp(image->pixels, buffer, numGlyphs, layout);
     else
         ConvertToTiles4Bpp(image->pixels, buffer, numGlyphs, layout);
 

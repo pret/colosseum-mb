@@ -31,6 +31,8 @@ int ExtensionToBpp(const char *extension)
 {
     if (!strcmp(extension, "1bpp"))
         return 1;
+    else if (!strcmp(extension, "2bpp"))
+        return 2;
     else if (!strcmp(extension, "4bpp"))
         return 4;
     return 0;
@@ -76,6 +78,9 @@ int main(int argc, char **argv)
 
     if (bpp == 1 && layout == 2)
         FATAL_ERROR("Layout type 2 is not supported with 1 BPP fonts.\n");
+
+    if (bpp == 2 && layout != 1)
+        FATAL_ERROR("Only layout type 1 is supported with 2 BPP fonts.\n");
 
     struct Image image;
 
