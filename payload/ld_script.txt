@@ -27,6 +27,8 @@ SECTIONS {
         src/gflib/gfxload.o(.text);
         src/gflib/sound.o(.text);
         asm/mb_020094A8.o(.text);
+        asm/pokemon.o(.text);
+        asm/unk_0200C5DC.o(.text);
         src/agb_flash.o(.text);
         src/agb_flash_1m.o(.text);
         src/agb_flash_mx.o(.text);

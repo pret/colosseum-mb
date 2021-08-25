@@ -144,7 +144,7 @@ _0200040C:
 	adds r0, r0, r4
 	movs r1, #0x37
 	adds r2, r7, #0
-	bl sub_0200C040
+	bl SetMonData
 	adds r4, #0x64
 	adds r5, #1
 	cmp r5, #5
@@ -4889,14 +4889,14 @@ _02002B80:
 	adds r0, r0, r4
 	movs r1, #0x39
 	mov r2, sp
-	bl sub_0200C040
+	bl SetMonData
 	mov r5, sl
 	str r5, [sp, #4]
 	ldr r0, [r7]
 	adds r0, r0, r4
 	movs r1, #0x37
 	ldr r2, [sp, #8]
-	bl sub_0200C040
+	bl SetMonData
 	movs r5, #0
 	adds r6, #1
 	mov r8, r6
@@ -4925,7 +4925,7 @@ _02002BC6:
 	adds r1, r5, #0
 	adds r1, #0x11
 	mov r2, sb
-	bl sub_0200C040
+	bl SetMonData
 	adds r5, #1
 	cmp r5, #3
 	ble _02002BC6
@@ -10351,7 +10351,7 @@ _02005BF4:
 	adds r0, r0, r6
 	movs r1, #0x39
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	ldrh r0, [r7, #0x26]
 	lsls r0, r0, #0x14
 	lsrs r0, r0, #0x14
@@ -10361,7 +10361,7 @@ _02005BF4:
 	adds r0, r0, r6
 	movs r1, #0x37
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	movs r0, #0
 	mov sb, r0
 	strh r0, [r4]
@@ -10388,7 +10388,7 @@ _02005C68:
 	adds r0, r0, r6
 	movs r1, #0x22
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	ldrb r0, [r5]
 	lsls r0, r0, #0x19
 	cmp r0, #0
@@ -10400,7 +10400,7 @@ _02005C68:
 	adds r0, r0, r6
 	movs r1, #0x40
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 _02005C90:
 	mov r2, sb
 	strh r2, [r4]
@@ -10416,7 +10416,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0xc
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	ldrh r0, [r7, #0x2c]
 	strh r0, [r4]
 	mov r1, r8
@@ -10424,7 +10424,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0xd
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	ldrh r0, [r7, #0x2e]
 	strh r0, [r4]
 	mov r2, r8
@@ -10432,7 +10432,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0xe
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	ldrh r0, [r7, #0x30]
 	strh r0, [r4]
 	mov r3, r8
@@ -10440,7 +10440,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0xf
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	ldrh r0, [r7, #0x32]
 	strh r0, [r4]
 	mov r1, r8
@@ -10448,7 +10448,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0x10
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	adds r0, r7, #0
 	adds r0, #0x34
 	ldrb r0, [r0]
@@ -10458,7 +10458,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0x11
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	adds r0, r7, #0
 	adds r0, #0x35
 	ldrb r0, [r0]
@@ -10468,7 +10468,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0x12
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	adds r0, r7, #0
 	adds r0, #0x36
 	ldrb r0, [r0]
@@ -10478,7 +10478,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0x13
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	adds r0, r7, #0
 	adds r0, #0x37
 	ldrb r0, [r0]
@@ -10488,7 +10488,7 @@ _02005CA0:
 	adds r0, r0, r6
 	movs r1, #0x14
 	adds r2, r4, #0
-	bl sub_0200C040
+	bl SetMonData
 	ldr r4, =gUnknown_02024960
 	adds r4, #0x38
 	ldr r3, [sp, #8]
