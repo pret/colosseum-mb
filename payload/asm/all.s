@@ -279,17 +279,17 @@ _0200050E:
 	ldrb r0, [r4, #9]
 	cmp r0, #8
 	bne _02000528
-	ldr r0, =gUnknown_0201704C
+	ldr r0, =gFont1JapanGfx
 	str r0, [r4, #0x10]
-	ldr r0, =gUnknown_02017E0C
+	ldr r0, =gFont1JapanWidths
 	str r0, [r4, #0x14]
 	b _02000544
 	.align 2, 0
 	.pool
 _02000528:
-	ldr r0, =gUnknown_02014F8C
+	ldr r0, =gFont0JapanGfx
 	str r0, [r4, #0x10]
-	ldr r0, =gUnknown_02016F4C
+	ldr r0, =gFont0JapanWidths
 	str r0, [r4, #0x14]
 	b _02000544
 	.align 2, 0
@@ -362,7 +362,7 @@ _020005A6:
 	b _02000636
 _020005B2:
 	ldr r1, [r4, #0x14]
-	ldr r0, =gUnknown_02017E0C
+	ldr r0, =gFont1JapanWidths
 	cmp r1, r0
 	beq _020005C4
 	adds r0, r4, #0
@@ -401,17 +401,17 @@ _020005F2:
 	ldrb r0, [r4, #9]
 	cmp r0, #8
 	bne _0200060C
-	ldr r0, =gUnknown_0201704C
+	ldr r0, =gFont1JapanGfx
 	str r0, [r4, #0x10]
-	ldr r0, =gUnknown_02017E0C
+	ldr r0, =gFont1JapanWidths
 	str r0, [r4, #0x14]
 	b _02000628
 	.align 2, 0
 	.pool
 _0200060C:
-	ldr r0, =gUnknown_02014F8C
+	ldr r0, =gFont0JapanGfx
 	str r0, [r4, #0x10]
-	ldr r0, =gUnknown_02016F4C
+	ldr r0, =gFont0JapanWidths
 	str r0, [r4, #0x14]
 	b _02000628
 	.align 2, 0
@@ -937,16 +937,16 @@ sub_020009DC: @ 0x020009DC
 	str r0, [sp, #0xc]
 	cmp r4, #8
 	bne _02000A30
-	ldr r0, =gUnknown_020140CC
+	ldr r0, =gFont1LatinGfx
 	str r0, [sp, #0x10]
-	ldr r0, =gUnknown_02014E8C
+	ldr r0, =gFont1LatinWidths
 	b _02000A36
 	.align 2, 0
 	.pool
 _02000A30:
-	ldr r0, =gUnknown_0201004C
+	ldr r0, =gFont0LatinGfx
 	str r0, [sp, #0x10]
-	ldr r0, =gUnknown_02013FCC
+	ldr r0, =gFont0LatinWidths
 _02000A36:
 	str r0, [sp, #0x14]
 	adds r0, r6, #0
@@ -8108,7 +8108,7 @@ _020047FE:
 	movs r0, #1
 	bl sub_020007A0
 	add r1, sp, #0x10
-	ldr r0, =gUnknown_0201002C
+	ldr r0, =gFont0LatinInfo
 	ldm r0!, {r2, r3, r5}
 	stm r1!, {r2, r3, r5}
 	ldm r0!, {r2, r3, r5}
@@ -8331,7 +8331,7 @@ sub_02004A34: @ 0x02004A34
 	sub sp, #0x28
 	adds r5, r0, #0
 	add r1, sp, #8
-	ldr r0, =gUnknown_0201002C
+	ldr r0, =gFont0LatinInfo
 	ldm r0!, {r2, r3, r4}
 	stm r1!, {r2, r3, r4}
 	ldm r0!, {r2, r3, r4}
