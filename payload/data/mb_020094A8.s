@@ -261,20 +261,20 @@ gSaveSectors::
 	.4byte gPokemonStoragePtr + 0xF80 * 8, 0x00000004
 
 gUnknown_020205BC::
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
-	.4byte gUnknown_02022F40, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
+	.4byte gSaveReadBuffer, 0x00000f80
 
 gUnknown_0202062C::
 	.string "Bad EGG$"

@@ -56,7 +56,7 @@ gPcItemsPtr:
 gPokemonStoragePtr:
 	.space 0x4
 
-gUnknown_02022EC4:
+gSaveBlock1BakPtr:
 	.space 0x4
 
 gPokedexPtr:
@@ -86,7 +86,7 @@ gVarsPtr:
 gEnigmaBerryPtr:
 	.space 0x4
 
-gUnknown_02022EEC:
+gPlayerPartyBakPtr:
 	.space 0x4
 
 gPlayerPartyCountPtr:
@@ -101,7 +101,7 @@ gDexSeen2Ptr:
 gUnknown_02022EFC:
 	.space 0x4
 
-gUnknown_02022F00:
+gFirstSaveSector:
 	.space 0x4
 
 gUnknown_02022F04:
@@ -113,16 +113,16 @@ gUnknown_02022F10:
 gUnknown_02022F24:
 	.space 0x4
 
-gUnknown_02022F28:
+gDamagedSaveSectors:
 	.space 0x4
 
-gUnknown_02022F2C:
+gSaveCounter:
 	.space 0x4
 
-gUnknown_02022F30:
+gFastSaveSection:
 	.space 0x10
 
-gUnknown_02022F40:
+gSaveReadBuffer:
 	.space 0x1000
 
 gUnknown_02023F40:

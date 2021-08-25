@@ -123,7 +123,7 @@ _020003E4:
 	bl sub_0200023C
 	b _02000384
 _020003EA:
-	ldr r0, =gUnknown_02022EC4
+	ldr r0, =gSaveBlock1BakPtr
 	ldr r0, [r0]
 	ldr r1, =gSaveBlock1Ptr
 	ldr r1, [r1]
@@ -10326,7 +10326,7 @@ _02005BE8:
 	bne _02005BF4
 	b _02005D66
 _02005BF4:
-	ldr r0, =gUnknown_02022EEC
+	ldr r0, =gPlayerPartyBakPtr
 	movs r2, #0x64
 	muls r1, r2, r1
 	ldr r0, [r0]

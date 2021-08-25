@@ -117,7 +117,7 @@ _02009522:
 	str r6, [r0]
 	mov r1, sb
 	str r4, [r1]
-	ldr r2, =gUnknown_02022EC4
+	ldr r2, =gSaveBlock1BakPtr
 	mov sb, r2
 	mov r1, sl
 	ldr r0, [r1]
@@ -153,7 +153,7 @@ _020095D0:
 	str r6, [r0]
 	mov r1, sb
 	str r5, [r1]
-	ldr r7, =gUnknown_02022EC4
+	ldr r7, =gSaveBlock1BakPtr
 	ldr r2, =gAgbPmRomParams
 	mov sl, r2
 	ldr r0, [r2]
@@ -247,7 +247,7 @@ _02009680:
 	adds r6, r6, r1
 	str r6, [r2]
 	str r4, [r7]
-	ldr r7, =gUnknown_02022EC4
+	ldr r7, =gSaveBlock1BakPtr
 	mov r1, sl
 	ldr r0, [r1]
 	adds r0, #0x8c
@@ -279,7 +279,7 @@ _02009680:
 	.align 2, 0
 	.pool
 _0200972C:
-	ldr r1, =gUnknown_02022EC4
+	ldr r1, =gSaveBlock1BakPtr
 	mov sb, r1
 	ldr r2, =gAgbPmRomParams
 	mov sl, r2
@@ -359,8 +359,8 @@ _020097BE:
 	ldr r1, [r0]
 	adds r0, r2, r1
 	str r0, [r3]
-	ldr r3, =gUnknown_02022EEC
-	ldr r0, =gUnknown_02022EC4
+	ldr r3, =gPlayerPartyBakPtr
+	ldr r0, =gSaveBlock1BakPtr
 	ldr r0, [r0]
 	adds r0, r0, r1
 	str r0, [r3]
@@ -495,13 +495,13 @@ sub_020098D8: @ 0x020098D8
 	lsrs r1, r0, #0x10
 	cmp r1, #0
 	bne _0200994C
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	str r1, [r0]
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	strh r1, [r0]
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	str r1, [r0]
-	ldr r1, =gUnknown_02021370
+	ldr r1, =gSaveValidStatus
 	movs r0, #0x80
 	str r0, [r1]
 	movs r0, #0
@@ -574,8 +574,8 @@ SetSaveSectorPtrs: @ 0x02009958
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_020099D0
-sub_020099D0: @ 0x020099D0
+	thumb_func_start GetSaveValidStatus
+GetSaveValidStatus: @ 0x020099D0
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -590,7 +590,7 @@ sub_020099D0: @ 0x020099D0
 	movs r1, #0
 	mov r8, r1
 	movs r5, #0
-	ldr r6, =gUnknown_02022F30
+	ldr r6, =gFastSaveSection
 _020099EE:
 	lsls r0, r5, #0x18
 	lsrs r0, r0, #0x18
@@ -682,13 +682,13 @@ _02009AA8:
 	adds r0, #0xe
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
-	ldr r1, =gUnknown_02022F30
+	ldr r1, =gFastSaveSection
 	ldr r2, [r1]
 	movs r1, #0
 	movs r3, #0x80
 	lsls r3, r3, #5
 	bl ReadFlash
-	ldr r3, =gUnknown_02022F30
+	ldr r3, =gFastSaveSection
 	ldr r2, [r3]
 	ldr r1, =0x00000FF8
 	adds r0, r2, r1
@@ -786,13 +786,13 @@ _02009B7C:
 	adds r0, #1
 	cmp r1, r0
 	bhs _02009B94
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	mov r2, sl
 	b _02009BB4
 	.align 2, 0
 	.pool
 _02009B94:
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	mov r3, sb
 	str r3, [r0]
 	b _02009BE4
@@ -801,14 +801,14 @@ _02009B94:
 _02009BA0:
 	cmp sb, sl
 	bhs _02009BB0
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	mov r1, sl
 	str r1, [r0]
 	b _02009BE4
 	.align 2, 0
 	.pool
 _02009BB0:
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	mov r2, sb
 _02009BB4:
 	str r2, [r0]
@@ -816,7 +816,7 @@ _02009BB4:
 	.align 2, 0
 	.pool
 _02009BBC:
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	mov r3, sb
 	str r3, [r0]
 	cmp r1, #0xff
@@ -827,7 +827,7 @@ _02009BBC:
 _02009BCC:
 	cmp r1, #1
 	bne _02009BE8
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	mov r1, sl
 	str r1, [r0]
 	ldr r2, [sp, #4]
@@ -847,19 +847,19 @@ _02009BE8:
 	bne _02009C08
 	cmp r1, #0
 	bne _02009C08
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	str r1, [r0]
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	strh r1, [r0]
 	movs r0, #0
 	b _02009C14
 	.align 2, 0
 	.pool
 _02009C08:
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	movs r1, #0
 	str r1, [r0]
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	strh r1, [r0]
 	movs r0, #2
 _02009C14:
@@ -874,14 +874,14 @@ _02009C14:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02009C2C
-sub_02009C2C: @ 0x02009C2C
+	thumb_func_start ReadFlashSectorI
+ReadFlashSectorI: @ 0x02009C2C
 	push {r4, r5, r6, r7, lr}
 	adds r5, r1, #0
 	adds r6, r2, #0
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
-	ldr r4, =gUnknown_02022F30
+	ldr r4, =gFastSaveSection
 	ldr r2, [r4]
 	movs r1, #0
 	movs r3, #0x80
@@ -893,9 +893,10 @@ sub_02009C2C: @ 0x02009C2C
 	ldrh r1, [r0]
 	cmp r1, #0
 	bne _02009C54
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	strh r5, [r0]
 _02009C54:
+	@ checksum = CalculateChecksum(gFastSaveSection->data, chunks[id].size);
 	lsls r0, r1, #3
 	adds r1, r0, r6
 	ldr r5, [r4]
@@ -962,10 +963,10 @@ _02009CC6:
 sub_02009CD8: @ 0x02009CD8
 	push {r4, r5, r6, lr}
 	ldr r6, =gSaveSectors
-	ldr r1, =gUnknown_02022F30
-	ldr r0, =gUnknown_02022F40
+	ldr r1, =gFastSaveSection
+	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	ldr r1, [r0]
 	movs r0, #1
 	ands r1, r0
@@ -977,15 +978,15 @@ _02009CF2:
 	adds r0, r4, r5
 	adds r1, r4, #0
 	adds r2, r6, #0
-	bl sub_02009C2C
+	bl ReadFlashSectorI
 	adds r4, #1
 	cmp r4, #0xd
 	ble _02009CF2
-	ldr r0, =gUnknown_02021370
+	ldr r0, =gSaveValidStatus
 	ldr r4, [r0]
 	ldr r0, =gSaveBlock1Ptr
 	ldr r0, [r0]
-	ldr r1, =gUnknown_02022EC4
+	ldr r1, =gSaveBlock1BakPtr
 	ldr r1, [r1]
 	ldr r2, =gAgbPmRomParams
 	ldr r2, [r2]
@@ -1005,16 +1006,16 @@ _02009CF2:
 sub_02009D48: @ 0x02009D48
 	push {r4, r5, r6, lr}
 	ldr r5, =gUnknown_020205BC
-	ldr r0, =gUnknown_02022F30
-	ldr r6, =gUnknown_02022F40
+	ldr r0, =gFastSaveSection
+	ldr r6, =gSaveReadBuffer
 	str r6, [r0]
-	ldr r4, =gUnknown_02021370
+	ldr r4, =gSaveValidStatus
 	adds r0, r5, #0
-	bl sub_020099D0
+	bl GetSaveValidStatus
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
 	str r0, [r4]
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	ldr r1, [r0]
 	movs r0, #1
 	ands r1, r0
@@ -1023,7 +1024,7 @@ sub_02009D48: @ 0x02009D48
 	lsls r0, r0, #1
 	movs r1, #0
 	adds r2, r5, #0
-	bl sub_02009C2C
+	bl ReadFlashSectorI
 	adds r0, r6, #0
 	pop {r4, r5, r6}
 	pop {r1}
@@ -1031,8 +1032,8 @@ sub_02009D48: @ 0x02009D48
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02009D94
-sub_02009D94: @ 0x02009D94
+	thumb_func_start WriteSingleChunk
+WriteSingleChunk: @ 0x02009D94
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -1041,7 +1042,7 @@ sub_02009D94: @ 0x02009D94
 	adds r4, r1, #0
 	lsls r0, r0, #0x10
 	lsrs r6, r0, #0x10
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	ldrh r0, [r0]
 	adds r0, r0, r6
 	lsls r0, r0, #0x10
@@ -1051,7 +1052,7 @@ sub_02009D94: @ 0x02009D94
 	bl __umodsi3
 	lsls r0, r0, #0x10
 	lsrs r5, r0, #0x10
-	ldr r2, =gUnknown_02022F2C
+	ldr r2, =gSaveCounter
 	ldr r1, [r2]
 	movs r0, #1
 	ands r1, r0
@@ -1068,7 +1069,7 @@ sub_02009D94: @ 0x02009D94
 	ldrh r4, [r0, #4]
 	movs r3, #0
 	mov sb, r2
-	ldr r2, =gUnknown_02022F30
+	ldr r2, =gFastSaveSection
 	mov r8, r2
 	mov ip, r8
 	movs r2, #0
@@ -1146,7 +1147,7 @@ _02009E62:
 	bl SoundVSyncOn
 	cmp r4, #0
 	beq _02009EA8
-	ldr r2, =gUnknown_02022F28
+	ldr r2, =gDamagedSaveSectors
 	movs r1, #1
 	lsls r1, r5
 	ldr r0, [r2]
@@ -1157,7 +1158,7 @@ _02009E62:
 	.align 2, 0
 	.pool
 _02009EA8:
-	ldr r2, =gUnknown_02022F28
+	ldr r2, =gDamagedSaveSectors
 	movs r1, #1
 	lsls r1, r5
 	ldr r0, [r2]
@@ -1179,15 +1180,15 @@ _02009EB6:
 sub_02009EC8: @ 0x02009EC8
 	push {r4, r5, r6, lr}
 	ldr r6, =gSaveSectors
-	ldr r1, =gUnknown_02022F30
-	ldr r0, =gUnknown_02022F40
+	ldr r1, =gFastSaveSection
+	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
 	ldr r0, =gUnknown_02022F24
-	ldr r4, =gUnknown_02022F00
+	ldr r4, =gFirstSaveSector
 	ldrh r1, [r4]
 	strh r1, [r0]
 	ldr r2, =gUnknown_02022F04
-	ldr r5, =gUnknown_02022F2C
+	ldr r5, =gSaveCounter
 	ldr r0, [r5]
 	str r0, [r2]
 	adds r1, #1
@@ -1205,20 +1206,20 @@ _02009EFA:
 	lsls r0, r4, #0x10
 	lsrs r0, r0, #0x10
 	adds r1, r6, #0
-	bl sub_02009D94
+	bl WriteSingleChunk
 	adds r4, #1
 	cmp r4, #0xd
 	ble _02009EFA
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	ldr r0, [r0]
 	cmp r0, #0
 	beq _02009F24
 	movs r5, #0xff
-	ldr r1, =gUnknown_02022F00
+	ldr r1, =gFirstSaveSector
 	ldr r0, =gUnknown_02022F24
 	ldrh r0, [r0]
 	strh r0, [r1]
-	ldr r1, =gUnknown_02022F2C
+	ldr r1, =gSaveCounter
 	ldr r0, =gUnknown_02022F04
 	ldr r0, [r0]
 	str r0, [r1]
@@ -1241,7 +1242,7 @@ sub_02009F4C: @ 0x02009F4C
 	adds r4, r1, #0
 	lsls r0, r0, #0x10
 	lsrs r6, r0, #0x10
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	ldrh r0, [r0]
 	adds r0, r0, r6
 	lsls r0, r0, #0x10
@@ -1251,7 +1252,7 @@ sub_02009F4C: @ 0x02009F4C
 	bl __umodsi3
 	lsls r0, r0, #0x10
 	lsrs r5, r0, #0x10
-	ldr r2, =gUnknown_02022F2C
+	ldr r2, =gSaveCounter
 	ldr r1, [r2]
 	movs r0, #1
 	ands r1, r0
@@ -1268,7 +1269,7 @@ sub_02009F4C: @ 0x02009F4C
 	ldrh r3, [r0, #4]
 	movs r4, #0
 	mov sb, r2
-	ldr r2, =gUnknown_02022F30
+	ldr r2, =gFastSaveSection
 	mov r8, r2
 	ldr r7, =EraseFlashSector
 	mov sl, r7
@@ -1359,7 +1360,7 @@ _0200A060:
 _0200A066:
 	cmp r4, r8
 	bhi _0200A084
-	ldr r0, =gUnknown_02022F30
+	ldr r0, =gFastSaveSection
 	ldr r0, [r0]
 	adds r0, r0, r4
 	ldrb r2, [r0]
@@ -1396,7 +1397,7 @@ _0200A0AE:
 	cmp r4, #6
 	bhi _0200A0D0
 	adds r1, r4, r7
-	ldr r0, =gUnknown_02022F30
+	ldr r0, =gFastSaveSection
 	ldr r0, [r0]
 	adds r0, r4, r0
 	adds r0, r0, r7
@@ -1414,7 +1415,7 @@ _0200A0D0:
 	beq _0200A0F0
 	mov r1, sb
 	lsrs r0, r1, #0x18
-	ldr r2, =gUnknown_02022F28
+	ldr r2, =gDamagedSaveSectors
 	movs r1, #1
 	lsls r1, r0
 	ldr r0, [r2]
@@ -1428,7 +1429,7 @@ _0200A0F0:
 	mov r2, sb
 	lsrs r0, r2, #0x18
 _0200A0F4:
-	ldr r2, =gUnknown_02022F28
+	ldr r2, =gDamagedSaveSectors
 	movs r1, #1
 	lsls r1, r0
 	ldr r0, [r2]
@@ -1452,7 +1453,7 @@ sub_0200A118: @ 0x0200A118
 	push {r4, r5, lr}
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
-	ldr r1, =gUnknown_02022F00
+	ldr r1, =gFirstSaveSector
 	ldrh r1, [r1]
 	adds r0, r1, r0
 	subs r0, #1
@@ -1463,7 +1464,7 @@ sub_0200A118: @ 0x0200A118
 	bl __umodsi3
 	lsls r0, r0, #0x10
 	lsrs r4, r0, #0x10
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	ldr r1, [r0]
 	movs r5, #1
 	ands r1, r5
@@ -1476,7 +1477,7 @@ sub_0200A118: @ 0x0200A118
 	bl SoundVSyncOff
 	ldr r3, =ProgramFlashByte
 	ldr r1, =0x00000FF8
-	ldr r0, =gUnknown_02022F30
+	ldr r0, =gFastSaveSection
 	ldr r0, [r0]
 	adds r0, r0, r1
 	ldrb r2, [r0]
@@ -1488,7 +1489,7 @@ sub_0200A118: @ 0x0200A118
 	bne _0200A198
 	lsls r0, r4, #0x18
 	lsrs r0, r0, #0x18
-	ldr r2, =gUnknown_02022F28
+	ldr r2, =gDamagedSaveSectors
 	adds r1, r5, #0
 	lsls r1, r0
 	ldr r0, [r2]
@@ -1502,7 +1503,7 @@ sub_0200A118: @ 0x0200A118
 _0200A198:
 	lsls r0, r4, #0x18
 	lsrs r0, r0, #0x18
-	ldr r2, =gUnknown_02022F28
+	ldr r2, =gDamagedSaveSectors
 	adds r1, r5, #0
 	lsls r1, r0
 	ldr r0, [r2]
@@ -1522,7 +1523,7 @@ sub_0200A1B8: @ 0x0200A1B8
 	push {r4, r5, lr}
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
-	ldr r1, =gUnknown_02022F00
+	ldr r1, =gFirstSaveSector
 	ldrh r1, [r1]
 	adds r0, r1, r0
 	subs r0, #1
@@ -1533,7 +1534,7 @@ sub_0200A1B8: @ 0x0200A1B8
 	bl __umodsi3
 	lsls r0, r0, #0x10
 	lsrs r4, r0, #0x10
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	ldr r1, [r0]
 	movs r5, #1
 	ands r1, r5
@@ -1546,7 +1547,7 @@ sub_0200A1B8: @ 0x0200A1B8
 	bl SoundVSyncOff
 	ldr r3, =ProgramFlashByte
 	ldr r1, =0x00000FF8
-	ldr r0, =gUnknown_02022F30
+	ldr r0, =gFastSaveSection
 	ldr r0, [r0]
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -1561,7 +1562,7 @@ sub_0200A1B8: @ 0x0200A1B8
 	bne _0200A240
 	lsls r0, r4, #0x18
 	lsrs r0, r0, #0x18
-	ldr r2, =gUnknown_02022F28
+	ldr r2, =gDamagedSaveSectors
 	adds r1, r5, #0
 	lsls r1, r0
 	ldr r0, [r2]
@@ -1575,7 +1576,7 @@ sub_0200A1B8: @ 0x0200A1B8
 _0200A240:
 	lsls r0, r4, #0x18
 	lsrs r0, r0, #0x18
-	ldr r2, =gUnknown_02022F28
+	ldr r2, =gDamagedSaveSectors
 	adds r1, r5, #0
 	lsls r1, r0
 	ldr r0, [r2]
@@ -1599,8 +1600,8 @@ _0200A262:
 	ldrh r0, [r4]
 	cmp r0, #0xd
 	bge _0200A290
-	bl sub_02009D94
-	ldr r0, =gUnknown_02022F28
+	bl WriteSingleChunk
+	ldr r0, =gDamagedSaveSectors
 	ldr r0, [r0]
 	movs r1, #0xff
 	cmp r0, #0
@@ -1616,11 +1617,11 @@ _0200A290:
 	movs r1, #0xff
 _0200A292:
 	adds r4, r1, #0
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	ldr r0, [r0]
 	cmp r0, #0
 	beq _0200A2B0
-	bl sub_0200A554
+	bl WipeFailedSectors
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	beq _0200A262
@@ -1703,14 +1704,14 @@ _0200A320:
 	adds r4, #1
 	cmp r4, #0x1f
 	ble _0200A320
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	movs r3, #0
 	str r3, [r0]
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	strh r3, [r0]
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	str r3, [r0]
-	ldr r1, =gUnknown_02021370
+	ldr r1, =gSaveValidStatus
 	movs r0, #0x80
 	str r0, [r1]
 	ldr r2, =gUnknown_02022F10
@@ -1722,15 +1723,15 @@ _0200A320:
 	strb r0, [r2, #1]
 	strh r3, [r2, #0x10]
 _0200A354:
-	ldr r1, =gUnknown_02022F30
-	ldr r0, =gUnknown_02022F40
+	ldr r1, =gFastSaveSection
+	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
 	ldr r0, =gUnknown_02022F24
-	ldr r4, =gUnknown_02022F00
+	ldr r4, =gFirstSaveSector
 	ldrh r1, [r4]
 	strh r1, [r0]
 	ldr r2, =gUnknown_02022F04
-	ldr r5, =gUnknown_02022F2C
+	ldr r5, =gSaveCounter
 	ldr r0, [r5]
 	str r0, [r2]
 	adds r1, #1
@@ -1745,7 +1746,7 @@ _0200A354:
 	ldr r1, =gUnknown_02023F40
 	movs r0, #0
 	strh r0, [r1]
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	movs r1, #0
 	str r1, [r0]
 	ldr r4, =gUnknown_02022F10
@@ -1769,7 +1770,7 @@ _0200A3DE:
 	bl sub_0200A260
 	cmp r0, #0
 	beq _0200A3D4
-	ldr r1, =gUnknown_0202136C
+	ldr r1, =sWipeTries
 	movs r0, #0
 	strb r0, [r1]
 _0200A3EC:
@@ -1779,11 +1780,11 @@ _0200A3EC:
 	adds r1, r4, #0
 	bl sub_02009F4C
 	bl SoundVSyncOn
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	ldr r0, [r0]
 	cmp r0, #0
 	beq _0200A462
-	bl sub_0200A554
+	bl WipeFailedSectors
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	beq _0200A3EC
@@ -1800,7 +1801,7 @@ _0200A42E:
 	ldr r1, =gSaveSectors
 	movs r0, #0xe
 	bl sub_0200A118
-	ldr r1, =gUnknown_02022F28
+	ldr r1, =gDamagedSaveSectors
 	ldr r0, [r1]
 	cmp r0, #0
 	beq _0200A462
@@ -1839,7 +1840,7 @@ _0200A47A:
 	ldr r1, =gSaveSectors
 	movs r0, #0xe
 	bl sub_0200A1B8
-	ldr r1, =gUnknown_02022F28
+	ldr r1, =gDamagedSaveSectors
 	ldr r0, [r1]
 	cmp r0, #0
 	beq _0200A4AE
@@ -1868,8 +1869,8 @@ _0200A4B0:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200A4BC
-sub_0200A4BC: @ 0x0200A4BC
+	thumb_func_start WipeSector
+WipeSector: @ 0x0200A4BC
 	push {r4, r5, r6, r7, lr}
 	mov r7, sb
 	mov r6, r8
@@ -1882,7 +1883,7 @@ sub_0200A4BC: @ 0x0200A4BC
 	mov sb, r0
 	ldr r0, =ProgramFlashByte
 	mov r8, r0
-	ldr r7, =gUnknown_02022F40
+	ldr r7, =gSaveReadBuffer
 _0200A4D8:
 	movs r4, #0
 	adds r5, #1
@@ -1942,19 +1943,19 @@ _0200A540:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_0200A554
-sub_0200A554: @ 0x0200A554
+	thumb_func_start WipeFailedSectors
+WipeFailedSectors: @ 0x0200A554
 	push {r4, r5, r6, lr}
 	ldr r2, =gUnknown_02022F10
 	ldr r0, [r2, #8]
 	movs r1, #2
 	orrs r0, r1
 	str r0, [r2, #8]
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	ldr r1, [r0]
 	cmp r1, #0
 	beq _0200A5B8
-	ldr r0, =gUnknown_0202136C
+	ldr r0, =sWipeTries
 	ldrb r0, [r0]
 	cmp r0, #2
 	bhi _0200A5B8
@@ -1968,7 +1969,7 @@ _0200A574:
 	cmp r0, #0
 	beq _0200A58E
 	adds r0, r4, #0
-	bl sub_0200A4BC
+	bl WipeSector
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	bne _0200A58E
@@ -1979,9 +1980,9 @@ _0200A58E:
 	lsrs r4, r0, #0x10
 	cmp r4, #0x1f
 	bls _0200A574
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	str r6, [r0]
-	ldr r1, =gUnknown_0202136C
+	ldr r1, =sWipeTries
 	ldrb r0, [r1]
 	adds r0, #1
 	strb r0, [r1]
@@ -2000,21 +2001,21 @@ _0200A5BA:
 
 	thumb_func_start sub_0200A5C0
 sub_0200A5C0: @ 0x0200A5C0
-	ldr r0, =gUnknown_02022F40
+	ldr r0, =gSaveReadBuffer
 	bx lr
 	.align 2, 0
 	.pool
 
 	thumb_func_start sub_0200A5C8
 sub_0200A5C8: @ 0x0200A5C8
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	movs r1, #0
 	str r1, [r0]
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	strh r1, [r0]
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	str r1, [r0]
-	ldr r1, =gUnknown_02021370
+	ldr r1, =gSaveValidStatus
 	movs r0, #0x80
 	str r0, [r1]
 	bx lr
@@ -2034,14 +2035,14 @@ _0200A5F6:
 	adds r4, #1
 	cmp r4, #0x1f
 	ble _0200A5F6
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	movs r1, #0
 	str r1, [r0]
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	strh r1, [r0]
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	str r1, [r0]
-	ldr r1, =gUnknown_02021370
+	ldr r1, =gSaveValidStatus
 	movs r0, #0x80
 	str r0, [r1]
 	pop {r4, r5}
@@ -2054,7 +2055,7 @@ _0200A5F6:
 sub_0200A634: @ 0x0200A634
 	push {r4, r5, r6, lr}
 	adds r6, r0, #0
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	ldr r1, [r0]
 	movs r0, #1
 	ands r1, r0
@@ -2066,7 +2067,7 @@ _0200A648:
 	adds r0, r4, r5
 	adds r1, r4, #0
 	adds r2, r6, #0
-	bl sub_02009C2C
+	bl ReadFlashSectorI
 	adds r4, #1
 	cmp r4, #0xd
 	ble _0200A648
@@ -2082,8 +2083,8 @@ sub_0200A664: @ 0x0200A664
 	push {r4, r5, r6, lr}
 	adds r2, r0, #0
 	adds r6, r1, #0
-	ldr r1, =gUnknown_02022F30
-	ldr r0, =gUnknown_02022F40
+	ldr r1, =gFastSaveSection
+	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
 	cmp r2, #0
 	beq _0200A684
@@ -2093,13 +2094,13 @@ sub_0200A664: @ 0x0200A664
 	.align 2, 0
 	.pool
 _0200A684:
-	ldr r4, =gUnknown_02021370
+	ldr r4, =gSaveValidStatus
 	adds r0, r6, #0
-	bl sub_020099D0
+	bl GetSaveValidStatus
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
 	str r0, [r4]
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	ldr r1, [r0]
 	movs r0, #1
 	ands r1, r0
@@ -2108,13 +2109,13 @@ _0200A684:
 	lsls r0, r0, #1
 	movs r1, #0
 	adds r2, r6, #0
-	bl sub_02009C2C
+	bl ReadFlashSectorI
 	ldr r0, [r4]
 	b _0200A6D6
 	.align 2, 0
 	.pool
 _0200A6B4:
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	ldr r1, [r0]
 	ands r1, r2
 	lsls r0, r1, #3
@@ -2125,11 +2126,11 @@ _0200A6C2:
 	adds r0, r4, r5
 	adds r1, r4, #0
 	adds r2, r6, #0
-	bl sub_02009C2C
+	bl ReadFlashSectorI
 	adds r4, #1
 	cmp r4, #0xd
 	ble _0200A6C2
-	ldr r0, =gUnknown_02021370
+	ldr r0, =gSaveValidStatus
 	ldr r0, [r0]
 _0200A6D6:
 	pop {r4, r5, r6}
@@ -2144,26 +2145,26 @@ sub_0200A6E4: @ 0x0200A6E4
 	adds r7, r1, #0
 	lsls r0, r0, #0x10
 	lsrs r2, r0, #0x10
-	ldr r1, =gUnknown_02022F30
-	ldr r0, =gUnknown_02022F40
+	ldr r1, =gFastSaveSection
+	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
 	ldr r0, =0x0000FFFF
 	cmp r2, r0
 	beq _0200A710
 	adds r0, r2, #0
 	adds r1, r7, #0
-	bl sub_02009D94
+	bl WriteSingleChunk
 	adds r5, r0, #0
 	b _0200A760
 	.align 2, 0
 	.pool
 _0200A710:
 	ldr r1, =gUnknown_02022F24
-	ldr r5, =gUnknown_02022F00
+	ldr r5, =gFirstSaveSector
 	ldrh r0, [r5]
 	strh r0, [r1]
 	ldr r1, =gUnknown_02022F04
-	ldr r6, =gUnknown_02022F2C
+	ldr r6, =gSaveCounter
 	ldr r4, [r6]
 	str r4, [r1]
 	adds r0, #1
@@ -2180,20 +2181,20 @@ _0200A736:
 	lsls r0, r4, #0x10
 	lsrs r0, r0, #0x10
 	adds r1, r7, #0
-	bl sub_02009D94
+	bl WriteSingleChunk
 	adds r4, #1
 	cmp r4, #0xd
 	ble _0200A736
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	ldr r0, [r0]
 	cmp r0, #0
 	beq _0200A760
 	movs r5, #0xff
-	ldr r1, =gUnknown_02022F00
+	ldr r1, =gFirstSaveSector
 	ldr r0, =gUnknown_02022F24
 	ldrh r0, [r0]
 	strh r0, [r1]
-	ldr r1, =gUnknown_02022F2C
+	ldr r1, =gSaveCounter
 	ldr r0, =gUnknown_02022F04
 	ldr r0, [r0]
 	str r0, [r1]
@@ -2208,15 +2209,15 @@ _0200A760:
 	thumb_func_start sub_0200A77C
 sub_0200A77C: @ 0x0200A77C
 	push {r4, r5, r6, lr}
-	ldr r1, =gUnknown_02022F30
-	ldr r0, =gUnknown_02022F40
+	ldr r1, =gFastSaveSection
+	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
 	ldr r1, =gUnknown_02022F24
-	ldr r5, =gUnknown_02022F00
+	ldr r5, =gFirstSaveSector
 	ldrh r0, [r5]
 	strh r0, [r1]
 	ldr r1, =gUnknown_02022F04
-	ldr r6, =gUnknown_02022F2C
+	ldr r6, =gSaveCounter
 	ldr r4, [r6]
 	str r4, [r1]
 	adds r0, #1
@@ -2230,7 +2231,7 @@ sub_0200A77C: @ 0x0200A77C
 	ldr r1, =gUnknown_02023F40
 	movs r0, #0
 	strh r0, [r1]
-	ldr r1, =gUnknown_02022F28
+	ldr r1, =gDamagedSaveSectors
 	movs r0, #0
 	str r0, [r1]
 	pop {r4, r5, r6}
@@ -2241,21 +2242,21 @@ sub_0200A77C: @ 0x0200A77C
 
 	thumb_func_start sub_0200A7D8
 sub_0200A7D8: @ 0x0200A7D8
-	ldr r1, =gUnknown_02022F30
-	ldr r0, =gUnknown_02022F40
+	ldr r1, =gFastSaveSection
+	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
 	ldr r1, =gUnknown_02022F24
-	ldr r0, =gUnknown_02022F00
+	ldr r0, =gFirstSaveSector
 	ldrh r0, [r0]
 	strh r0, [r1]
 	ldr r1, =gUnknown_02022F04
-	ldr r0, =gUnknown_02022F2C
+	ldr r0, =gSaveCounter
 	ldr r0, [r0]
 	str r0, [r1]
 	ldr r1, =gUnknown_02023F40
 	movs r0, #0
 	strh r0, [r1]
-	ldr r1, =gUnknown_02022F28
+	ldr r1, =gDamagedSaveSectors
 	movs r0, #0
 	str r0, [r1]
 	bx lr
@@ -2264,11 +2265,11 @@ sub_0200A7D8: @ 0x0200A7D8
 
 	thumb_func_start sub_0200A81C
 sub_0200A81C: @ 0x0200A81C
-	ldr r1, =gUnknown_02022F00
+	ldr r1, =gFirstSaveSector
 	ldr r0, =gUnknown_02022F24
 	ldrh r0, [r0]
 	strh r0, [r1]
-	ldr r1, =gUnknown_02022F2C
+	ldr r1, =gSaveCounter
 	ldr r0, =gUnknown_02022F04
 	ldr r0, [r0]
 	str r0, [r1]
@@ -2287,8 +2288,8 @@ sub_0200A840: @ 0x0200A840
 	cmp r2, r0
 	bge _0200A874
 	adds r0, r2, #0
-	bl sub_02009D94
-	ldr r0, =gUnknown_02022F28
+	bl WriteSingleChunk
+	ldr r0, =gDamagedSaveSectors
 	ldr r0, [r0]
 	movs r1, #0xff
 	cmp r0, #0
@@ -2325,7 +2326,7 @@ sub_0200A880: @ 0x0200A880
 	adds r1, r5, #0
 	bl sub_02009F4C
 	bl SoundVSyncOn
-	ldr r0, =gUnknown_02022F28
+	ldr r0, =gDamagedSaveSectors
 	ldr r0, [r0]
 	cmp r0, #0
 	beq _0200A8AC
@@ -2338,5 +2339,5 @@ _0200A8AC:
 	.align 2, 0
 	.pool
 
-	.lcomm gUnknown_0202136C, 4
-    .lcomm gUnknown_02021370, 4
+	.lcomm sWipeTries, 4
+    .lcomm gSaveValidStatus, 4
