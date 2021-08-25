@@ -41,7 +41,7 @@ sub_02008D6C: @ 0x02008D6C
 	movs r6, #0
 	cmp r6, r2
 	bge _02008E1E
-	ldr r1, =gUnknown_0202135C
+	ldr r1, =sFontHalfrowLookupTablePtr
 	mov r8, r1
 _02008DB8:
 	cmp r6, #8
@@ -193,7 +193,7 @@ _02008E84:
 	cmp r0, #0
 	beq _02008F32
 	lsrs r1, r1, #0x18
-	ldr r7, =gUnknown_0202135C
+	ldr r7, =sFontHalfrowLookupTablePtr
 	ldr r2, [r7]
 	lsls r1, r1, #2
 	adds r1, r1, r2
@@ -219,7 +219,7 @@ _02008E84:
 	adds r1, r6, #0
 	movs r0, #0xff
 	ands r1, r0
-	ldr r3, =gUnknown_0202135C
+	ldr r3, =sFontHalfrowLookupTablePtr
 	ldr r2, [r3]
 	lsls r1, r1, #2
 	adds r1, r1, r2
@@ -277,13 +277,13 @@ _02008F58:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start sub_02008F6C
-sub_02008F6C: @ 0x02008F6C
+	thumb_func_start InitTextWindow
+InitTextWindow: @ 0x02008F6C
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
 	lsls r0, r0, #5
-	ldr r2, =gUnknown_02022C30
+	ldr r2, =gWindows
 	adds r3, r0, r2
 	ldrb r0, [r1]
 	strb r0, [r3]
@@ -378,11 +378,11 @@ _02009010:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200902C
-sub_0200902C: @ 0x0200902C
+	thumb_func_start GenerateFontHalfrowLookupTable
+GenerateFontHalfrowLookupTable: @ 0x0200902C
 	push {r4, lr}
 	adds r3, r0, #0
-	ldr r0, =gUnknown_0202135C
+	ldr r0, =sFontHalfrowLookupTablePtr
 	str r3, [r0]
 	movs r2, #0
 	movs r4, #0x10
@@ -670,4 +670,4 @@ _0200920E:
 	.align 2, 0
 	.pool
 
-	.lcomm gUnknown_0202135C, 4
+	.lcomm sFontHalfrowLookupTablePtr, 4

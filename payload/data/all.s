@@ -1,8 +1,8 @@
-	.macro sprite shape, size, x, y, tile, hflip = 0, vflip = 0
+	.macro sprite shape, size, x, y, tile, hflip = 0, vflip = 0, priority = 0
 	.4byte (\shape << 14) | (\size << 30) | (\hflip << 28) | (\vflip << 29)
 	.2byte \x
 	.2byte \y
-	.2byte \tile
+	.2byte \tile | (\priority << 10)
 	.align 2, 0
 	.endm
 
@@ -243,27 +243,27 @@ gUnknown_0201F9EC::
 	.4byte gUnknown_0201F9D4
 
 gUnknown_0201F9F4::
-	sprite 0, 2, 0, 0, 0x400
+	sprite 0, 2, 0, 0, 0x000, 0, 0, 1
 	dummy_sprite
 
 gUnknown_0201FA0C::
-	sprite 0, 3, 0, 0, 0x500
+	sprite 0, 3, 0, 0, 0x100, 0, 0, 1
 	dummy_sprite
 
 gUnknown_0201FA24::
-	sprite 0, 3, 0, 0, 0x700, 1, 0
+	sprite 0, 3, 0, 0, 0x300, 1, 0, 1
 	dummy_sprite
 
-gUnknown_0201FA3C::
+gMonFrontPicSubspriteTable::
 	.4byte gUnknown_0201FA24
 	.4byte gUnknown_0201FA0C
 
 gUnknown_0201FA44::
-	sprite 1, 2, 0, 0, 0x400
+	sprite 1, 2, 0, 0, 0x000, 0, 0, 1
 	dummy_sprite
 
 gUnknown_0201FA5C::
-	sprite 0, 1, 0, 0, 0x540
+	sprite 0, 1, 0, 0, 0x140, 0, 0, 1
 	dummy_sprite
 
 gUnknown_0201FA74::

@@ -104,6 +104,10 @@ SECTIONS {
     {
     gBgTilemapBuffers = .;
     . += 0x4000;
+    gFontHalfrowLookupTable = .;
+    . += 0x400;
+    gPicUncompBuffer = .;
+    . += 0x800;
     }
     . = 0x03008000; /* Limit IWRAM size */
     /DISCARD/ :

@@ -454,8 +454,8 @@ sub_020098A8: @ 0x020098A8
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_020098D0
-sub_020098D0: @ 0x020098D0
+	thumb_func_start GetPicUncompPtr
+GetPicUncompPtr: @ 0x020098D0
 	ldr r0, =0x03004400
 	bx lr
 	.align 2, 0

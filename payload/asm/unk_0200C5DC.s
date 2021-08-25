@@ -254,8 +254,8 @@ _0200C79C:
 _0200C79E:
 	bx lr
 
-	thumb_func_start sub_0200C7A0
-sub_0200C7A0: @ 0x0200C7A0
+	thumb_func_start DexFlagAction
+DexFlagAction: @ 0x0200C7A0
 	push {r4, r5, r6, r7, lr}
 	lsls r0, r0, #0x10
 	lsls r1, r1, #0x18
@@ -447,8 +447,8 @@ _0200C914:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C920
-sub_0200C920: @ 0x0200C920
+	thumb_func_start SpeciesToNationalDexNum
+SpeciesToNationalDexNum: @ 0x0200C920
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
 	adds r2, r0, #0
@@ -465,7 +465,7 @@ _0200C92E:
 	adds r0, r2, #0
 	b _0200C944
 _0200C93C:
-	ldr r0, =gUnknown_0201ED64
+	ldr r0, =gSpeciesToNationalDexNumLUT
 	lsls r1, r1, #1
 	adds r1, r1, r0
 	ldrh r0, [r1]
@@ -492,7 +492,7 @@ _0200C960:
 	lsls r0, r0, #1
 	cmp r2, r0
 	bhi _0200C978
-	ldr r1, =gUnknown_0201ED64
+	ldr r1, =gSpeciesToNationalDexNumLUT
 	lsls r0, r2, #1
 	adds r0, r0, r1
 	ldrh r0, [r0]
@@ -504,7 +504,7 @@ _0200C978:
 _0200C97A:
 	adds r5, r0, #0
 	movs r1, #1
-	bl sub_0200C7A0
+	bl DexFlagAction
 	cmp r0, #0
 	bne _0200C9A2
 	cmp r4, #0xc9
@@ -526,10 +526,10 @@ _0200C9A2:
 	adds r4, r5, #0
 	adds r0, r4, #0
 	movs r1, #2
-	bl sub_0200C7A0
+	bl DexFlagAction
 	adds r0, r4, #0
 	movs r1, #3
-	bl sub_0200C7A0
+	bl DexFlagAction
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0
@@ -1107,8 +1107,8 @@ _0200CE00:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200CE1C
-sub_0200CE1C: @ 0x0200CE1C
+	thumb_func_start GetStringSizeHandleExtCtrlCodes
+GetStringSizeHandleExtCtrlCodes: @ 0x0200CE1C
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	movs r5, #0
@@ -1126,7 +1126,7 @@ _0200CE28:
 	bne _0200CE4A
 	adds r0, r4, r5
 	ldrb r0, [r0]
-	bl sub_0200CEC0
+	bl ExtCtrlCodeGetLength
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	adds r0, r5, r0
@@ -1213,14 +1213,14 @@ _0200CEB0:
 _0200CEBE:
 	bx lr
 
-	thumb_func_start sub_0200CEC0
-sub_0200CEC0: @ 0x0200CEC0
+	thumb_func_start ExtCtrlCodeGetLength
+ExtCtrlCodeGetLength: @ 0x0200CEC0
 	lsls r0, r0, #0x18
 	lsrs r1, r0, #0x18
 	movs r0, #0
 	cmp r1, #0x16
 	bhi _0200CED0
-	ldr r0, =gUnknown_0201F09C
+	ldr r0, =gExtCtrlCodeLengths
 	adds r0, r1, r0
 	ldrb r0, [r0]
 _0200CED0:

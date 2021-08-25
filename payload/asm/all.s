@@ -91,7 +91,7 @@ _0200032C:
 	bl SetVBlankCallback
 	bl PauseSoundVSync
 	ldr r0, =0x03004000
-	bl sub_0200902C
+	bl GenerateFontHalfrowLookupTable
 	bl FadeOut
 _02000384:
 	bl sub_020047D4
@@ -515,13 +515,13 @@ sub_0200068C: @ 0x0200068C
 	adds r0, r0, r4
 	movs r1, #0x39
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r6, r0, #0
 	ldr r0, [r5]
 	adds r0, r0, r4
 	movs r1, #0x3a
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r1, r0, #0
 	cmp r6, r1
 	ble _020006EC
@@ -684,8 +684,8 @@ _0200080E:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02000838
-sub_02000838: @ 0x02000838
+	thumb_func_start DrawTextWindowBorder
+DrawTextWindowBorder: @ 0x02000838
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -951,7 +951,7 @@ _02000A36:
 	str r0, [sp, #0x14]
 	adds r0, r6, #0
 	mov r1, sp
-	bl sub_02008F6C
+	bl InitTextWindow
 	adds r4, r0, #0
 	movs r1, #0xf
 	movs r2, #1
@@ -1000,13 +1000,13 @@ sub_02000A74: @ 0x02000A74
 	adds r0, r0, r4
 	movs r1, #0x39
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r6, r0, #0
 	ldr r0, [r5]
 	adds r0, r0, r4
 	movs r1, #0x3a
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r5, r0, #0
 	adds r0, r6, #0
 	add r1, sp, #8
@@ -1271,7 +1271,7 @@ sub_02000CA4: @ 0x02000CA4
 	adds r0, r0, r5
 	movs r1, #0x41
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	strh r0, [r6, #4]
 	lsls r0, r0, #0x10
 	cmp r0, #0
@@ -1288,10 +1288,10 @@ sub_02000CA4: @ 0x02000CA4
 	adds r0, r0, r5
 	movs r1, #0
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r1, r0, #0
 	ldrh r0, [r6, #4]
-	bl sub_0200C318
+	bl FixUnownSpecies
 	strh r0, [r6, #6]
 	ldr r2, =gUnknown_0201F9F4
 	adds r0, r7, #0
@@ -1495,9 +1495,9 @@ _02000E7E:
 	adds r0, r0, r1
 	movs r1, #2
 	add r2, sp, #8
-	bl sub_0200C1B8
+	bl GetMonData
 	add r0, sp, #8
-	bl sub_0200CE1C
+	bl GetStringSizeHandleExtCtrlCodes
 	lsls r0, r0, #0x10
 	add r3, sp, #8
 	add r7, sp, #0x20
@@ -1595,7 +1595,7 @@ _02000F6A:
 	adds r0, r0, r1
 	movs r1, #3
 	add r2, sp, #8
-	bl sub_0200C1B8
+	bl GetMonData
 	cmp r0, #1
 	beq _02000F94
 	mov r3, sb
@@ -1647,7 +1647,7 @@ _02000FBE:
 	adds r0, r0, r1
 	movs r1, #0x38
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r5, r0, #0
 	add r4, sp, #0x4c
 	movs r0, #0x60
@@ -1759,7 +1759,7 @@ _020010C2:
 _020010CE:
 	add r0, sp, #0x20
 	ldr r1, [sp, #0x54]
-	bl sub_0200C378
+	bl GetSpeciesName
 	add r0, sp, #8
 	add r1, sp, #0x20
 	bl StringCompare
@@ -1905,7 +1905,7 @@ _020011F2:
 	adds r0, r0, r1
 	movs r1, #0xc
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	cmp r0, #0
 	beq _0200122A
 	mov r1, r8
@@ -2093,9 +2093,9 @@ _02001366:
 	adds r0, r0, r1
 	movs r1, #2
 	add r2, sp, #8
-	bl sub_0200C1B8
+	bl GetMonData
 	add r0, sp, #8
-	bl sub_0200CE1C
+	bl GetStringSizeHandleExtCtrlCodes
 	lsls r0, r0, #0x10
 	add r3, sp, #8
 	add r7, sp, #0x20
@@ -2193,7 +2193,7 @@ _02001452:
 	adds r0, r0, r1
 	movs r1, #3
 	add r2, sp, #8
-	bl sub_0200C1B8
+	bl GetMonData
 	cmp r0, #1
 	beq _0200147C
 	mov r3, sb
@@ -2245,7 +2245,7 @@ _020014A6:
 	adds r0, r0, r1
 	movs r1, #0x38
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r5, r0, #0
 	add r4, sp, #0x4c
 	movs r0, #0x60
@@ -2354,7 +2354,7 @@ _0200159E:
 _020015AA:
 	add r0, sp, #0x20
 	ldr r1, [sp, #0x54]
-	bl sub_0200C378
+	bl GetSpeciesName
 	add r0, sp, #8
 	add r1, sp, #0x20
 	bl StringCompare
@@ -2499,7 +2499,7 @@ _020016CA:
 	adds r0, r0, r1
 	movs r1, #0xc
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	cmp r0, #0
 	beq _02001702
 	mov r1, r8
@@ -2549,13 +2549,13 @@ sub_02001738: @ 0x02001738
 	movs r1, #0x10
 	movs r2, #0x18
 	movs r3, #4
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
 	ldr r1, =gUnknown_0201F8B0
 	movs r0, #0
-	bl sub_02008F6C
+	bl InitTextWindow
 	ldr r4, =gUnknown_02021860
 	movs r1, #0x84
 	lsls r1, r1, #1
@@ -2826,10 +2826,10 @@ _020019D6:
 	movs r1, #0xe
 	movs r2, #0x18
 	movs r3, #6
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	ldr r1, =gUnknown_0201F8F0
 	movs r0, #0
-	bl sub_02008F6C
+	bl InitTextWindow
 	movs r1, #0x88
 	lsls r1, r1, #1
 	adds r4, r6, r1
@@ -2851,7 +2851,7 @@ _020019D6:
 	adds r0, r0, r1
 	movs r1, #2
 	add r2, sp, #8
-	bl sub_0200C1B8
+	bl GetMonData
 	movs r0, #4
 	add r1, sp, #8
 	bl BufferString
@@ -2927,13 +2927,13 @@ _02001AC8:
 	movs r1, #0x10
 	movs r2, #0x14
 	movs r3, #4
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	str r4, [sp]
 	movs r0, #0x14
 	movs r1, #0xc
 	movs r2, #0xa
 	movs r3, #8
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, r8
@@ -2942,7 +2942,7 @@ _02001AC8:
 	adds r0, r0, r1
 	movs r1, #2
 	add r2, sp, #8
-	bl sub_0200C1B8
+	bl GetMonData
 	movs r0, #4
 	add r1, sp, #8
 	bl BufferString
@@ -2955,7 +2955,7 @@ _02001AC8:
 	bl RenderText
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
-	bl sub_02008F6C
+	bl InitTextWindow
 	movs r2, #0x86
 	lsls r2, r2, #1
 	adds r4, r7, r2
@@ -3433,13 +3433,13 @@ _02001F50:
 	movs r1, #0x10
 	movs r2, #0x14
 	movs r3, #4
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	str r4, [sp]
 	movs r0, #0x14
 	movs r1, #0xc
 	movs r2, #0xa
 	movs r3, #8
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	ldr r3, [sp, #0x1c]
@@ -3449,7 +3449,7 @@ _02001F50:
 	adds r0, r0, r1
 	movs r1, #2
 	add r2, sp, #8
-	bl sub_0200C1B8
+	bl GetMonData
 	movs r0, #4
 	add r1, sp, #8
 	bl BufferString
@@ -3462,7 +3462,7 @@ _02001F50:
 	bl RenderText
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
-	bl sub_02008F6C
+	bl InitTextWindow
 	movs r1, #0x86
 	lsls r1, r1, #1
 	adds r5, r7, r1
@@ -4882,7 +4882,7 @@ _02002B80:
 	adds r0, r0, r4
 	movs r1, #0x3a
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	mov r1, sp
 	strh r0, [r1]
 	ldr r0, [r7]
@@ -4905,7 +4905,7 @@ _02002BC6:
 	ldr r0, [r7]
 	adds r0, r0, r6
 	adds r1, r5, #0
-	bl sub_0200B6F4
+	bl GetBoxMonMoveBySlot
 	adds r4, r0, #0
 	lsls r4, r4, #0x10
 	lsrs r4, r4, #0x10
@@ -4913,7 +4913,7 @@ _02002BC6:
 	adds r0, r0, r6
 	movs r1, #0x15
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r1, r0, #0
 	adds r0, r4, #0
 	adds r2, r5, #0
@@ -5128,7 +5128,7 @@ sub_02002D60: @ 0x02002D60
 	adds r0, r0, r1
 	movs r1, #0x38
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r4, r0, #0
 	add r1, sp, #8
 	movs r0, #0x60
@@ -5512,11 +5512,11 @@ sub_02002FEC: @ 0x02002FEC
 	bl CpuSet
 	ldr r1, =gUnknown_0201FB50
 	movs r0, #0
-	bl sub_02008F6C
+	bl InitTextWindow
 	str r0, [r4, #0x24]
 	ldr r1, =gUnknown_0201FB30
 	movs r0, #3
-	bl sub_02008F6C
+	bl InitTextWindow
 	str r0, [r4, #0x20]
 	add sp, #4
 	pop {r4}
@@ -5525,8 +5525,8 @@ sub_02002FEC: @ 0x02002FEC
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_020030E4
-sub_020030E4: @ 0x020030E4
+	thumb_func_start CreatePartyMonFrontPic
+CreatePartyMonFrontPic: @ 0x020030E4
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -5550,7 +5550,7 @@ sub_020030E4: @ 0x020030E4
 	adds r0, r0, r4
 	movs r1, #0xb
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	strh r0, [r6, #0x14]
 	lsls r0, r0, #0x10
 	cmp r0, #0
@@ -5559,11 +5559,11 @@ sub_020030E4: @ 0x020030E4
 	adds r0, r0, r4
 	movs r1, #0
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	mov r8, r0
 	ldrh r0, [r6, #0x14]
 	mov r1, r8
-	bl sub_0200C318
+	bl FixUnownSpecies
 	strh r0, [r6, #0x16]
 	ldr r0, [r6]
 	cmp r0, #0
@@ -5585,7 +5585,7 @@ _02003140:
 	lsls r1, r2, #3
 	ldr r4, [r0, #0x28]
 	adds r4, r4, r1
-	bl sub_020098D0
+	bl GetPicUncompPtr
 	adds r7, r0, #0
 	ldr r0, [r4]
 	adds r1, r7, #0
@@ -5593,7 +5593,7 @@ _02003140:
 	ldrh r0, [r6, #0x14]
 	mov r1, r8
 	adds r2, r7, #0
-	bl sub_0200B89C
+	bl DrawSpindasSpots
 	mov r0, sb
 	bl GetBoxMonPalettePtr
 	movs r1, #0x80
@@ -5602,7 +5602,7 @@ _02003140:
 	ldr r0, [r0]
 	adds r1, r4, #0
 	bl LZ77UnCompWram
-	ldr r1, =gUnknown_0201FA3C
+	ldr r1, =gMonFrontPicSubspriteTable
 	lsls r0, r5, #2
 	adds r0, r0, r1
 	ldr r2, [r0]
@@ -5717,12 +5717,12 @@ sub_020031F8: @ 0x020031F8
 	ldr r0, [r5]
 	adds r0, r0, r4
 	movs r1, #1
-	bl sub_0200C3FC
+	bl GetMonType
 	adds r6, r0, #0
 	ldr r0, [r5]
 	adds r0, r0, r4
 	movs r1, #2
-	bl sub_0200C3FC
+	bl GetMonType
 	adds r5, r0, #0
 	ldr r0, [r7, #4]
 	cmp r0, #0
@@ -5782,7 +5782,7 @@ _02003326:
 	mov r1, sl
 	ldr r0, [r1]
 	add r0, r8
-	bl sub_0200B57C
+	bl GetBoxMonAbility
 	adds r5, r0, #0
 	ldr r6, =gUnknown_02021990
 	ldr r0, [r6, #0x24]
@@ -5830,7 +5830,7 @@ _020033A0:
 	add r0, r8
 	movs r1, #0x39
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r1, r0, #0
 	add r0, sp, #0xc
 	bl NumToPmString3RightAlign
@@ -5842,7 +5842,7 @@ _020033A0:
 	add r0, r8
 	movs r1, #0x3a
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r1, r0, #0
 	add r0, sp, #0x10
 	bl NumToPmString3RightAlign
@@ -5891,7 +5891,7 @@ _02003414:
 	add r0, r8
 	movs r1, #0x3b
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r4, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r4, #0
@@ -5953,7 +5953,7 @@ _0200348E:
 	adds r0, r0, r1
 	movs r1, #0x3c
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r5, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r5, #0
@@ -6010,7 +6010,7 @@ _02003524:
 	adds r0, r0, r1
 	movs r1, #0x3e
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r5, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r5, #0
@@ -6058,7 +6058,7 @@ _0200358C:
 	adds r0, r0, r1
 	movs r1, #0x3f
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r5, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r5, #0
@@ -6106,7 +6106,7 @@ _020035F4:
 	adds r0, r0, r1
 	movs r1, #0x3d
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r5, r0, #0
 	add r0, sp, #0x1c
 	adds r1, r5, #0
@@ -6153,7 +6153,7 @@ _02003624:
 	adds r0, r0, r1
 	movs r1, #0xc
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _020036A8
@@ -6178,7 +6178,7 @@ _020036BA:
 	bne _020036CC
 	ldr r1, =gUnknown_0201FB70
 	movs r0, #1
-	bl sub_02008F6C
+	bl InitTextWindow
 	str r0, [r4, #0x28]
 _020036CC:
 	ldr r0, [r4, #0x28]
@@ -6303,18 +6303,18 @@ sub_0200378C: @ 0x0200378C
 _020037F4:
 	ldr r0, [sp, #0x24]
 	mov r1, sb
-	bl sub_0200B6F4
+	bl GetBoxMonMoveBySlot
 	adds r6, r0, #0
 	mov r2, sb
 	lsls r1, r2, #0x18
 	lsrs r1, r1, #0x18
 	ldr r0, [sp, #0x24]
-	bl sub_0200B728
+	bl GetBoxMonPPByMoveSlot
 	str r0, [sp, #0x1c]
 	ldr r0, [sp, #0x24]
 	movs r1, #0x15
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r1, r0, #0
 	adds r0, r6, #0
 	mov r2, sb
@@ -6489,7 +6489,7 @@ _020039A0:
 	bne _020039B2
 	ldr r1, =gUnknown_0201FB70
 	movs r0, #1
-	bl sub_02008F6C
+	bl InitTextWindow
 	str r0, [r4, #0x28]
 _020039B2:
 	ldr r0, [r4, #0x28]
@@ -6617,7 +6617,7 @@ sub_02003A70: @ 0x02003A70
 _02003AF4:
 	adds r0, r7, #0
 	adds r1, r6, #0
-	bl sub_0200B6F4
+	bl GetBoxMonMoveBySlot
 	adds r6, r0, #0
 	ldr r0, =0x0000FFFF
 	cmp r6, r0
@@ -6919,13 +6919,13 @@ sub_02003D80: @ 0x02003D80
 	adds r1, r5, #0
 	movs r2, #8
 	movs r3, #0x20
-	bl sub_020030E4
+	bl CreatePartyMonFrontPic
 	ldr r0, [r4, #0x1c]
 	cmp r0, #0
 	bne _02003DC0
 	ldr r1, =gUnknown_0201FB10
 	movs r0, #2
-	bl sub_02008F6C
+	bl InitTextWindow
 	str r0, [r4, #0x1c]
 	movs r1, #1
 	movs r2, #8
@@ -6941,7 +6941,7 @@ _02003DC0:
 	adds r0, r6, #0
 	movs r1, #2
 	add r2, sp, #0xc
-	bl sub_0200C1B8
+	bl GetMonData
 	ldr r0, [r4, #0x20]
 	movs r1, #0
 	movs r2, #0
@@ -6966,7 +6966,7 @@ _02003DEE:
 	adds r0, r6, #0
 	movs r1, #0x38
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	add r1, sp, #0xc
 	movs r2, #0xa1
 	bl NumToPmString3CustomZeroChar
@@ -7021,11 +7021,11 @@ _02003E54:
 	adds r0, r6, #0
 	movs r1, #0xb
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r5, r0, #0
 	mov r0, r8
 	adds r1, r5, #0
-	bl sub_0200C378
+	bl GetSpeciesName
 	movs r0, #0xba
 	strb r0, [r7]
 	ldr r0, [r4, #0x20]
@@ -7094,11 +7094,11 @@ _02003F20:
 	movs r1, #3
 	bl SetSpritePaletteNum
 	adds r0, r6, #0
-	bl sub_0200B5C4
+	bl BoxMonCaughtBallToItemId
 	ldr r1, =0x06012800
 	bl LZ77UnCompVram
 	adds r0, r6, #0
-	bl sub_0200B65C
+	bl BoxMonGetCaughtBallItemPalette
 	ldr r1, =0x05000260
 	bl LZ77UnCompVram
 	adds r0, r6, #0
@@ -7162,7 +7162,7 @@ _02003FCE:
 	adds r4, r0, #0
 	adds r0, r6, #0
 	movs r1, #0
-	bl sub_0200B764
+	bl GetBoxMonPokerus
 	cmp r0, #0
 	bne _02003FFC
 	cmp r4, #0
@@ -7240,7 +7240,7 @@ _02004060:
 	adds r0, r0, r1
 	movs r1, #0xb
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	cmp r0, #0
 	beq _0200409C
 	movs r0, #SE_SELECT
@@ -7355,7 +7355,7 @@ _02004158:
 	adds r0, r0, r1
 	movs r1, #0xb
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	cmp r0, #0
 	beq _02004198
 	movs r0, #SE_SELECT
@@ -7991,10 +7991,10 @@ sub_0200465C: @ 0x0200465C
 	movs r1, #0x10
 	movs r2, #0x1e
 	movs r3, #4
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	ldr r1, =gUnknown_0201FB90
 	movs r0, #0
-	bl sub_02008F6C
+	bl InitTextWindow
 	ldr r1, =gUnknown_020219E4
 	str r0, [r1]
 	movs r1, #1
@@ -8129,10 +8129,10 @@ _020047FE:
 	movs r1, #0xe
 	movs r2, #0x18
 	movs r3, #6
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	movs r0, #0
 	add r1, sp, #0x10
-	bl sub_02008F6C
+	bl InitTextWindow
 	adds r4, r0, #0
 	movs r1, #1
 	movs r2, #8
@@ -8325,8 +8325,8 @@ sub_02004A04: @ 0x02004A04
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02004A34
-sub_02004A34: @ 0x02004A34
+	thumb_func_start ErrorPrint
+ErrorPrint: @ 0x02004A34
 	push {r4, r5, lr}
 	sub sp, #0x28
 	adds r5, r0, #0
@@ -8353,10 +8353,10 @@ sub_02004A34: @ 0x02004A34
 	movs r1, #0xe
 	movs r2, #0x18
 	movs r3, #6
-	bl sub_02000838
+	bl DrawTextWindowBorder
 	movs r0, #0
 	add r1, sp, #8
-	bl sub_02008F6C
+	bl InitTextWindow
 	adds r4, r0, #0
 	movs r1, #1
 	movs r2, #8
@@ -8456,11 +8456,11 @@ sub_02004AC4: @ 0x02004AC4
 	bl CpuSet
 	ldr r1, =gUnknown_0201FE3C
 	movs r0, #0
-	bl sub_02008F6C
+	bl InitTextWindow
 	str r0, [r4, #0x14]
 	ldr r1, =gUnknown_0201FE5C
 	movs r0, #1
-	bl sub_02008F6C
+	bl InitTextWindow
 	str r0, [r4, #0x18]
 	ldr r0, [r4, #0x14]
 	movs r1, #1
@@ -8502,7 +8502,7 @@ sub_02004BEC: @ 0x02004BEC
 	ldr r7, [r1, #8]
 	ldrh r0, [r6, #0xc]
 	adds r1, r7, #0
-	bl sub_0200C318
+	bl FixUnownSpecies
 	strh r0, [r6, #0xe]
 	ldr r0, [r6]
 	cmp r0, #0
@@ -8532,7 +8532,7 @@ _02004C2A:
 	lsls r1, r2, #3
 	ldr r4, [r0, #0x28]
 	adds r4, r4, r1
-	bl sub_020098D0
+	bl GetPicUncompPtr
 	adds r5, r0, #0
 	ldr r0, [r4]
 	adds r1, r5, #0
@@ -8549,7 +8549,7 @@ _02004C7A:
 	ldrh r0, [r6, #0xc]
 	adds r1, r7, #0
 	adds r2, r5, #0
-	bl sub_0200B89C
+	bl DrawSpindasSpots
 	ldr r1, =0x06012000
 	movs r2, #0x80
 	lsls r2, r2, #3
@@ -8685,7 +8685,7 @@ sub_02004D68: @ 0x02004D68
 	adds r0, r7, #0
 	movs r1, #0x38
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	mov r1, sp
 	movs r2, #0xa1
 	bl NumToPmString3CustomZeroChar
@@ -8723,7 +8723,7 @@ _02004DE4:
 	adds r0, r7, #0
 	movs r1, #2
 	mov r2, sp
-	bl sub_0200C1B8
+	bl GetMonData
 	movs r0, #4
 	mov r1, sp
 	bl BufferString
@@ -8737,7 +8737,7 @@ _02004DE4:
 	adds r0, r7, #0
 	movs r1, #0xb
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r4, r0, #0
 	cmp r4, #0x20
 	beq _02004E38
@@ -8748,7 +8748,7 @@ _02004DE4:
 _02004E38:
 	mov r0, sp
 	adds r1, r4, #0
-	bl sub_0200C378
+	bl GetSpeciesName
 	ldr r5, =gUnknown_02021A20
 	ldr r0, [r5, #0x14]
 	movs r1, #8
@@ -8795,7 +8795,7 @@ _02004E84:
 	adds r0, r7, #0
 	movs r1, #0x39
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r4, r0, #0
 	mov r0, sp
 	adds r1, r4, #0
@@ -8806,7 +8806,7 @@ _02004E84:
 	adds r0, r7, #0
 	movs r1, #0x3a
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r4, r0, #0
 	mov r0, r8
 	adds r1, r4, #0
@@ -9210,7 +9210,7 @@ sub_02005168: @ 0x02005168
 	adds r0, r6, #0
 	movs r1, #0x15
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	adds r1, r0, #0
 	adds r0, r5, #0
 	mov r2, sl
@@ -9445,7 +9445,7 @@ _020053F2:
 _020053FE:
 	add r4, sp, #4
 	adds r0, r4, #0
-	bl sub_0200C378
+	bl GetSpeciesName
 	ldr r0, =0x0000081C
 	add r0, sb
 	add r0, r8
@@ -9714,7 +9714,7 @@ _02005658:
 	adds r0, r0, r1
 	movs r1, #2
 	add r2, sp, #0xc
-	bl sub_0200C1B8
+	bl GetMonData
 	movs r0, #4
 	add r1, sp, #0xc
 	bl BufferString
@@ -10590,7 +10590,7 @@ sub_02005DCC: @ 0x02005DCC
 	adds r0, r0, r1
 	movs r1, #2
 	add r2, sp, #0xc
-	bl sub_0200C1B8
+	bl GetMonData
 	movs r0, #4
 	add r1, sp, #0xc
 	bl BufferString
@@ -10918,7 +10918,7 @@ _020060C0:
 	rsbs r0, r0, #0
 	str r0, [r1]
 	movs r0, #0xa
-	bl sub_02004A34
+	bl ErrorPrint
 _020060E6:
 	ldr r0, [r6]
 	ldr r1, [r5]
@@ -10935,7 +10935,7 @@ _020060E6:
 	rsbs r0, r0, #0
 	str r0, [r1]
 	movs r0, #0xa
-	bl sub_02004A34
+	bl ErrorPrint
 _02006108:
 	ldr r2, =gPlayerPartyPtr
 	ldr r0, =gUnknown_02024960
@@ -10949,7 +10949,7 @@ _02006108:
 	adds r0, r0, r1
 	movs r1, #0x25
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
 	movs r1, #0x80
@@ -10964,7 +10964,7 @@ _02006108:
 	rsbs r0, r0, #0
 	str r0, [r1]
 	movs r0, #0xa
-	bl sub_02004A34
+	bl ErrorPrint
 _02006144:
 	movs r0, #3
 	bl sub_02004A04
@@ -11108,15 +11108,15 @@ sub_02006264: @ 0x02006264
 	strb r0, [r1]
 	ldrb r0, [r4]
 	movs r1, #1
-	bl sub_0200C7A0
+	bl DexFlagAction
 	cmp r0, #0
 	bne _0200629E
 	ldrb r0, [r4]
 	movs r1, #2
-	bl sub_0200C7A0
+	bl DexFlagAction
 	ldrb r0, [r4]
 	movs r1, #3
-	bl sub_0200C7A0
+	bl DexFlagAction
 _0200629E:
 	movs r4, #0
 	ldr r0, =0x0000085C
@@ -11211,17 +11211,17 @@ sub_02006344: @ 0x02006344
 	ldr r0, [r4]
 	movs r1, #0
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	str r0, [r5, #8]
 	ldr r0, [r4]
 	movs r1, #1
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	str r0, [r5, #0xc]
 	ldr r0, [r4]
 	movs r1, #0xb
 	movs r2, #0
-	bl sub_0200C1B8
+	bl GetMonData
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
 	ldrh r1, [r5, #0x10]
@@ -11230,42 +11230,42 @@ sub_02006344: @ 0x02006344
 	strh r6, [r5, #0x12]
 	ldr r0, [r4]
 	movs r1, #0
-	bl sub_0200B6F4
+	bl GetBoxMonMoveBySlot
 	ldrh r1, [r5, #0x14]
 	strh r0, [r5, #0x14]
 	ldr r0, [r4]
 	movs r1, #1
-	bl sub_0200B6F4
+	bl GetBoxMonMoveBySlot
 	ldrh r1, [r5, #0x16]
 	strh r0, [r5, #0x16]
 	ldr r0, [r4]
 	movs r1, #2
-	bl sub_0200B6F4
+	bl GetBoxMonMoveBySlot
 	ldrh r1, [r5, #0x18]
 	strh r0, [r5, #0x18]
 	ldr r0, [r4]
 	movs r1, #3
-	bl sub_0200B6F4
+	bl GetBoxMonMoveBySlot
 	ldrh r1, [r5, #0x1a]
 	strh r0, [r5, #0x1a]
 	ldr r0, [r4]
 	movs r1, #0
-	bl sub_0200B728
+	bl GetBoxMonPPByMoveSlot
 	ldrb r1, [r5, #0x1c]
 	strb r0, [r5, #0x1c]
 	ldr r0, [r4]
 	movs r1, #1
-	bl sub_0200B728
+	bl GetBoxMonPPByMoveSlot
 	ldrb r1, [r5, #0x1d]
 	strb r0, [r5, #0x1d]
 	ldr r0, [r4]
 	movs r1, #2
-	bl sub_0200B728
+	bl GetBoxMonPPByMoveSlot
 	ldrb r1, [r5, #0x1e]
 	strb r0, [r5, #0x1e]
 	ldr r0, [r4]
 	movs r1, #3
-	bl sub_0200B728
+	bl GetBoxMonPPByMoveSlot
 	ldrb r1, [r5, #0x1f]
 	strb r0, [r5, #0x1f]
 _020063EA:

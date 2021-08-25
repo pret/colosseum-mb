@@ -1114,7 +1114,7 @@ _0200B0D6:
 	bl StringCopy
 _0200B0FC:
 	adds r0, r6, #0
-	bl sub_0200CE1C
+	bl GetStringSizeHandleExtCtrlCodes
 	lsls r0, r0, #0x10
 	lsrs r4, r0, #0x10
 	b _0200B4AC
@@ -1769,8 +1769,8 @@ _0200B56C:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200B57C
-sub_0200B57C: @ 0x0200B57C
+	thumb_func_start GetBoxMonAbility
+GetBoxMonAbility: @ 0x0200B57C
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
 	ldr r0, =gAgbPmRomParams
@@ -1807,8 +1807,8 @@ _0200B5BE:
 	pop {r1}
 	bx r1
 
-	thumb_func_start sub_0200B5C4
-sub_0200B5C4: @ 0x0200B5C4
+	thumb_func_start BoxMonCaughtBallToItemId
+BoxMonCaughtBallToItemId: @ 0x0200B5C4
 	push {lr}
 	movs r1, #0x26
 	movs r2, #0
@@ -1886,8 +1886,8 @@ _0200B646:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200B65C
-sub_0200B65C: @ 0x0200B65C
+	thumb_func_start BoxMonGetCaughtBallItemPalette
+BoxMonGetCaughtBallItemPalette: @ 0x0200B65C
 	push {lr}
 	movs r1, #0x26
 	movs r2, #0
@@ -1965,8 +1965,8 @@ _0200B6DE:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200B6F4
-sub_0200B6F4: @ 0x0200B6F4
+	thumb_func_start GetBoxMonMoveBySlot
+GetBoxMonMoveBySlot: @ 0x0200B6F4
 	push {lr}
 	cmp r1, #1
 	beq _0200B70E
@@ -1999,8 +1999,8 @@ _0200B724:
 	pop {r1}
 	bx r1
 
-	thumb_func_start sub_0200B728
-sub_0200B728: @ 0x0200B728
+	thumb_func_start GetBoxMonPPByMoveSlot
+GetBoxMonPPByMoveSlot: @ 0x0200B728
 	push {lr}
 	lsls r1, r1, #0x18
 	lsrs r1, r1, #0x18
@@ -2037,8 +2037,8 @@ _0200B75E:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_0200B764
-sub_0200B764: @ 0x0200B764
+	thumb_func_start GetBoxMonPokerus
+GetBoxMonPokerus: @ 0x0200B764
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
@@ -2147,7 +2147,7 @@ _0200B81E:
 	bne _0200B834
 	adds r0, r2, #0
 	movs r1, #0
-	bl sub_0200B764
+	bl GetBoxMonPokerus
 	cmp r0, #0
 	bne _0200B832
 	movs r0, #0
@@ -2213,8 +2213,8 @@ _0200B88E:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_0200B89C
-sub_0200B89C: @ 0x0200B89C
+	thumb_func_start DrawSpindasSpots
+DrawSpindasSpots: @ 0x0200B89C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -2242,7 +2242,7 @@ _0200B8C8:
 	lsls r3, r6, #3
 	adds r3, r3, r6
 	lsls r3, r3, #2
-	ldr r0, =gUnknown_0201E778
+	ldr r0, =gSpindaSpotGraphics
 	adds r4, r3, r0
 	ldrb r1, [r4]
 	adds r1, #0xf8
@@ -2272,7 +2272,7 @@ _0200B8C8:
 _0200B904:
 	lsls r0, r2, #1
 	add r0, sb
-	ldr r3, =gUnknown_0201E778 + 2
+	ldr r3, =gSpindaSpotGraphics + 2
 	adds r0, r0, r3
 	ldrh r3, [r0]
 	mov r4, ip
@@ -3391,8 +3391,8 @@ _0200C19E:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C1B8
-sub_0200C1B8: @ 0x0200C1B8
+	thumb_func_start GetMonData
+GetMonData: @ 0x0200C1B8
 	push {lr}
 	adds r3, r0, #0
 	adds r0, r1, #0
@@ -3577,8 +3577,8 @@ _0200C30E:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C318
-sub_0200C318: @ 0x0200C318
+	thumb_func_start FixUnownSpecies
+FixUnownSpecies: @ 0x0200C318
 	push {lr}
 	adds r2, r1, #0
 	lsls r0, r0, #0x10
@@ -3631,8 +3631,8 @@ _0200C372:
 	pop {r1}
 	bx r1
 
-	thumb_func_start sub_0200C378
-sub_0200C378: @ 0x0200C378
+	thumb_func_start GetSpeciesName
+GetSpeciesName: @ 0x0200C378
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -3703,8 +3703,8 @@ _0200C3E4:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start sub_0200C3FC
-sub_0200C3FC: @ 0x0200C3FC
+	thumb_func_start GetMonType
+GetMonType: @ 0x0200C3FC
 	push {r4, r5, lr}
 	adds r4, r1, #0
 	ldr r1, =gAgbPmRomParams
