@@ -50,52 +50,52 @@ gUnknown_02022C30:
 
 	.include "gflib/keys.o"
 
-gUnknown_02022EBC:
+gPcItemsPtr:
 	.space 0x4
 
-gUnknown_02022EC0:
+gPokemonStoragePtr:
 	.space 0x4
 
 gUnknown_02022EC4:
 	.space 0x4
 
-gUnknown_02022EC8:
+gPokedexPtr:
 	.space 0x4
 
-gUnknown_02022ECC:
+gSaveBlock1Ptr:
 	.space 0x4
 
 gUnknown_02022ED0:
 	.space 0x4
 
-gUnknown_02022ED4:
+gFlagsPtr:
 	.space 0x4
 
 gSaveBlock2Ptr:
 	.space 0x4
 
-gUnknown_02022EDC:
+gGiftRibbonsPtr:
 	.space 0x4
 
-gUnknown_02022EE0:
+gDexSeen3Ptr:
 	.space 0x4
 
-gUnknown_02022EE4:
+gVarsPtr:
 	.space 0x4
 
-gUnknown_02022EE8:
+gEnigmaBerryPtr:
 	.space 0x4
 
 gUnknown_02022EEC:
 	.space 0x4
 
-gUnknown_02022EF0:
+gPlayerPartyCountPtr:
 	.space 0x4
 
-gUnknown_02022EF4:
+gPlayerPartyPtr:
 	.space 0x4
 
-gUnknown_02022EF8:
+gDexSeen2Ptr:
 	.space 0x4
 
 gUnknown_02022EFC:

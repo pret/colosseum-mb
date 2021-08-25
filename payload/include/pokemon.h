@@ -151,4 +151,8 @@ struct PokemonStorage
     /*0x83c2*/ u8 wallpaper[14];
 };
 
+void SetMonData(struct Pokemon * pokemon, u32 attr, u8 * data);
+void SetBoxMonData(struct BoxPokemon * boxmon, u32 attr, u8 * data);
+u32 GetBoxMonData(struct BoxPokemon * boxmon, u32 attr, u8 * strbuf);
+
 #endif // GUARD_POKEMON_H

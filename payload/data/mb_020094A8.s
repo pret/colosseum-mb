@@ -244,21 +244,21 @@ gRSSpecialAreaMaps::
 
 	.data
 	.align 2
-gUnknown_0202054C::
-	.4byte gSaveBlock2Ptr, 0x00000004
-	.4byte gUnknown_02022ECC + 0xF80 * 0, 0x00000f80
-	.4byte gUnknown_02022ECC + 0xF80 * 1, 0x00000f80
-	.4byte gUnknown_02022ECC + 0xF80 * 2, 0x00000f80
-	.4byte gUnknown_02022ECC + 0xF80 * 3, 0x00000c40
-	.4byte gUnknown_02022EC0 + 0xF80 * 0, 0x00000f80
-	.4byte gUnknown_02022EC0 + 0xF80 * 1, 0x00000f80
-	.4byte gUnknown_02022EC0 + 0xF80 * 2, 0x00000f80
-	.4byte gUnknown_02022EC0 + 0xF80 * 3, 0x00000f80
-	.4byte gUnknown_02022EC0 + 0xF80 * 4, 0x00000f80
-	.4byte gUnknown_02022EC0 + 0xF80 * 5, 0x00000f80
-	.4byte gUnknown_02022EC0 + 0xF80 * 6, 0x00000f80
-	.4byte gUnknown_02022EC0 + 0xF80 * 7, 0x00000f80
-	.4byte gUnknown_02022EC0 + 0xF80 * 8, 0x00000004
+gSaveSectors::
+	.4byte gSaveBlock2Ptr,                 0x00000004
+	.4byte gSaveBlock1Ptr + 0xF80 * 0,     0x00000f80
+	.4byte gSaveBlock1Ptr + 0xF80 * 1,     0x00000f80
+	.4byte gSaveBlock1Ptr + 0xF80 * 2,     0x00000f80
+	.4byte gSaveBlock1Ptr + 0xF80 * 3,     0x00000c40
+	.4byte gPokemonStoragePtr + 0xF80 * 0, 0x00000f80
+	.4byte gPokemonStoragePtr + 0xF80 * 1, 0x00000f80
+	.4byte gPokemonStoragePtr + 0xF80 * 2, 0x00000f80
+	.4byte gPokemonStoragePtr + 0xF80 * 3, 0x00000f80
+	.4byte gPokemonStoragePtr + 0xF80 * 4, 0x00000f80
+	.4byte gPokemonStoragePtr + 0xF80 * 5, 0x00000f80
+	.4byte gPokemonStoragePtr + 0xF80 * 6, 0x00000f80
+	.4byte gPokemonStoragePtr + 0xF80 * 7, 0x00000f80
+	.4byte gPokemonStoragePtr + 0xF80 * 8, 0x00000004
 
 gUnknown_020205BC::
 	.4byte gUnknown_02022F40, 0x00000f80

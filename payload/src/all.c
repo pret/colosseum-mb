@@ -1,4 +1,5 @@
 #include "global.h"
+#include "gflib.h"
 
 struct UnkStruct_02024960
 {

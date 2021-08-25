@@ -63,7 +63,7 @@ _0200951A:
 _02009520:
 	b _020097BE
 _02009522:
-	ldr r7, =gUnknown_02022ECC
+	ldr r7, =gSaveBlock1Ptr
 	ldr r0, =gAgbPmRomParams
 	mov sl, r0
 	ldr r0, [r0]
@@ -102,7 +102,7 @@ _02009522:
 	adds r4, r4, r1
 	str r4, [r2]
 	str r6, [r7]
-	ldr r0, =gUnknown_02022EC0
+	ldr r0, =gPokemonStoragePtr
 	mov sb, r0
 	bl sub_02009890
 	mov r1, r8
@@ -134,7 +134,7 @@ _02009522:
 	.align 2, 0
 	.pool
 _020095D0:
-	ldr r1, =gUnknown_02022EC0
+	ldr r1, =gPokemonStoragePtr
 	mov sb, r1
 	ldr r2, =gUnknown_02022EFC
 	mov r8, r2
@@ -171,7 +171,7 @@ _020095D0:
 	mov r2, r8
 	str r5, [r2]
 	str r6, [r7]
-	ldr r7, =gUnknown_02022ECC
+	ldr r7, =gSaveBlock1Ptr
 	mov r1, sl
 	ldr r0, [r1]
 	adds r0, #0x8c
@@ -231,7 +231,7 @@ _02009680:
 	str r4, [r2]
 	mov r0, sb
 	str r6, [r0]
-	ldr r7, =gUnknown_02022ECC
+	ldr r7, =gSaveBlock1Ptr
 	mov r1, sl
 	ldr r0, [r1]
 	adds r0, #0x8c
@@ -263,7 +263,7 @@ _02009680:
 	adds r4, r4, r1
 	str r4, [r2]
 	str r6, [r7]
-	ldr r6, =gUnknown_02022EC0
+	ldr r6, =gPokemonStoragePtr
 	bl sub_02009890
 	mov r2, r8
 	ldr r1, [r2]
@@ -302,7 +302,7 @@ _0200972C:
 	str r5, [r2]
 	mov r0, sb
 	str r6, [r0]
-	ldr r1, =gUnknown_02022EC0
+	ldr r1, =gPokemonStoragePtr
 	mov sb, r1
 	bl sub_02009890
 	mov r2, r8
@@ -332,7 +332,7 @@ _0200972C:
 	adds r5, r5, r1
 	str r5, [r2]
 	str r6, [r7]
-	ldr r0, =gUnknown_02022ECC
+	ldr r0, =gSaveBlock1Ptr
 	mov sb, r0
 	mov r1, sl
 	ldr r0, [r1]
@@ -349,8 +349,8 @@ _0200972C:
 	mov r0, sb
 	str r5, [r0]
 _020097BE:
-	ldr r3, =gUnknown_02022EF4
-	ldr r1, =gUnknown_02022ECC
+	ldr r3, =gPlayerPartyPtr
+	ldr r1, =gSaveBlock1Ptr
 	ldr r0, =gAgbPmRomParams
 	ldr r4, [r0]
 	adds r0, r4, #0
@@ -364,47 +364,47 @@ _020097BE:
 	ldr r0, [r0]
 	adds r0, r0, r1
 	str r0, [r3]
-	ldr r1, =gUnknown_02022EF0
+	ldr r1, =gPlayerPartyCountPtr
 	adds r0, r4, #0
 	adds r0, #0x90
 	ldr r0, [r0]
 	adds r0, r2, r0
 	str r0, [r1]
-	ldr r3, =gUnknown_02022EC8
+	ldr r3, =gPokedexPtr
 	ldr r0, =gSaveBlock2Ptr
 	ldr r0, [r0]
 	ldr r1, [r4, #0x58]
 	adds r0, r0, r1
 	str r0, [r3]
-	ldr r1, =gUnknown_02022EF8
+	ldr r1, =gDexSeen2Ptr
 	ldr r0, [r4, #0x5c]
 	adds r0, r2, r0
 	str r0, [r1]
-	ldr r1, =gUnknown_02022EE0
+	ldr r1, =gDexSeen3Ptr
 	ldr r0, [r4, #0x60]
 	adds r0, r2, r0
 	str r0, [r1]
-	ldr r1, =gUnknown_02022ED4
+	ldr r1, =gFlagsPtr
 	ldr r0, [r4, #0x50]
 	adds r0, r2, r0
 	str r0, [r1]
-	ldr r1, =gUnknown_02022EE4
+	ldr r1, =gVarsPtr
 	ldr r0, [r4, #0x54]
 	adds r0, r2, r0
 	str r0, [r1]
-	ldr r1, =gUnknown_02022EDC
+	ldr r1, =gGiftRibbonsPtr
 	adds r0, r4, #0
 	adds r0, #0xf0
 	ldr r0, [r0]
 	adds r0, r2, r0
 	str r0, [r1]
-	ldr r1, =gUnknown_02022EE8
+	ldr r1, =gEnigmaBerryPtr
 	adds r0, r4, #0
 	adds r0, #0xf4
 	ldr r0, [r0]
 	adds r0, r2, r0
 	str r0, [r1]
-	ldr r1, =gUnknown_02022EBC
+	ldr r1, =gPcItemsPtr
 	adds r0, r4, #0
 	adds r0, #0xec
 	ldr r0, [r0]
@@ -466,7 +466,7 @@ sub_020098D8: @ 0x020098D8
 	push {r4, r5, r6, lr}
 	adds r5, r0, #0
 	adds r6, r1, #0
-	ldr r4, =gUnknown_0202054C
+	ldr r4, =gSaveSectors
 	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r1, r0, #0
@@ -517,14 +517,14 @@ _02009950:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_02009958
-sub_02009958: @ 0x02009958
+	thumb_func_start SetSaveSectorPtrs
+SetSaveSectorPtrs: @ 0x02009958
 	push {r4, r5, lr}
-	ldr r2, =gUnknown_0202054C
+	ldr r2, =gSaveSectors
 	ldr r0, =gSaveBlock2Ptr
 	ldr r0, [r0]
 	str r0, [r2]
-	ldr r0, =gUnknown_02022ECC
+	ldr r0, =gSaveBlock1Ptr
 	ldr r1, [r0]
 	str r1, [r2, #8]
 	movs r5, #0xf8
@@ -539,7 +539,7 @@ sub_02009958: @ 0x02009958
 	lsls r3, r3, #6
 	adds r1, r1, r3
 	str r1, [r2, #0x20]
-	ldr r0, =gUnknown_02022EC0
+	ldr r0, =gPokemonStoragePtr
 	ldr r0, [r0]
 	str r0, [r2, #0x28]
 	adds r5, r0, r5
@@ -961,7 +961,7 @@ _02009CC6:
 	thumb_func_start sub_02009CD8
 sub_02009CD8: @ 0x02009CD8
 	push {r4, r5, r6, lr}
-	ldr r6, =gUnknown_0202054C
+	ldr r6, =gSaveSectors
 	ldr r1, =gUnknown_02022F30
 	ldr r0, =gUnknown_02022F40
 	str r0, [r1]
@@ -983,7 +983,7 @@ _02009CF2:
 	ble _02009CF2
 	ldr r0, =gUnknown_02021370
 	ldr r4, [r0]
-	ldr r0, =gUnknown_02022ECC
+	ldr r0, =gSaveBlock1Ptr
 	ldr r0, [r0]
 	ldr r1, =gUnknown_02022EC4
 	ldr r1, [r1]
@@ -1178,7 +1178,7 @@ _02009EB6:
 	thumb_func_start sub_02009EC8
 sub_02009EC8: @ 0x02009EC8
 	push {r4, r5, r6, lr}
-	ldr r6, =gUnknown_0202054C
+	ldr r6, =gSaveSectors
 	ldr r1, =gUnknown_02022F30
 	ldr r0, =gUnknown_02022F40
 	str r0, [r1]
@@ -1594,7 +1594,7 @@ _0200A256:
 sub_0200A260: @ 0x0200A260
 	push {r4, lr}
 _0200A262:
-	ldr r1, =gUnknown_0202054C
+	ldr r1, =gSaveSectors
 	ldr r4, =gUnknown_02023F40
 	ldrh r0, [r4]
 	cmp r0, #0xd
@@ -1773,7 +1773,7 @@ _0200A3DE:
 	movs r0, #0
 	strb r0, [r1]
 _0200A3EC:
-	ldr r4, =gUnknown_0202054C
+	ldr r4, =gSaveSectors
 	bl SoundVSyncOff
 	movs r0, #0xd
 	adds r1, r4, #0
@@ -1797,7 +1797,7 @@ _0200A3EC:
 _0200A42C:
 	movs r4, #0
 _0200A42E:
-	ldr r1, =gUnknown_0202054C
+	ldr r1, =gSaveSectors
 	movs r0, #0xe
 	bl sub_0200A118
 	ldr r1, =gUnknown_02022F28
@@ -1836,7 +1836,7 @@ _0200A46E:
 _0200A478:
 	movs r4, #0
 _0200A47A:
-	ldr r1, =gUnknown_0202054C
+	ldr r1, =gSaveSectors
 	movs r0, #0xe
 	bl sub_0200A1B8
 	ldr r1, =gUnknown_02022F28

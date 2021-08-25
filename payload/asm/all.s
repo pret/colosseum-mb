@@ -14,7 +14,7 @@ GF_Main: @ 0x020002B4
 	movs r0, #2
 	bl sub_020098D8
 	bl sub_020094A8
-	bl sub_02009958
+	bl SetSaveSectorPtrs
 	ldr r4, =gUnknown_020217B4
 	bl sub_02009CD8
 	strb r0, [r4]
@@ -80,7 +80,7 @@ _0200032C:
 	strh r3, [r0]
 	ldr r0, =gSaveBlock2Ptr
 	ldr r0, [r0]
-	ldr r1, =gUnknown_02022ECC
+	ldr r1, =gSaveBlock1Ptr
 	ldr r1, [r1]
 	ldr r2, =gUnknown_020217B4
 	ldrb r2, [r2]
@@ -125,7 +125,7 @@ _020003E4:
 _020003EA:
 	ldr r0, =gUnknown_02022EC4
 	ldr r0, [r0]
-	ldr r1, =gUnknown_02022ECC
+	ldr r1, =gSaveBlock1Ptr
 	ldr r1, [r1]
 	ldr r2, =gAgbPmRomParams
 	ldr r2, [r2]
@@ -137,7 +137,7 @@ _020003EA:
 	movs r0, #0
 	strh r0, [r7]
 	movs r5, #0
-	ldr r6, =gUnknown_02022EF4
+	ldr r6, =gPlayerPartyPtr
 	movs r4, #0
 _0200040C:
 	ldr r0, [r6]
@@ -505,7 +505,7 @@ sub_0200068C: @ 0x0200068C
 	mov r0, sb
 	mov r2, r8
 	bl SetBgTilemapBufferTileAt
-	ldr r5, =gUnknown_02022EF4
+	ldr r5, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov sl, r0
 	mov r3, sl
@@ -992,7 +992,7 @@ sub_02000A74: @ 0x02000A74
 	adds r7, r0, #0
 	movs r1, #0
 	bl sub_020090B0
-	ldr r5, =gUnknown_02022EF4
+	ldr r5, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r4, r6, #0
 	muls r4, r0, r4
@@ -1261,7 +1261,7 @@ sub_02000CA4: @ 0x02000CA4
 	adds r4, r1, #0
 	adds r7, r2, #0
 	mov r8, r3
-	ldr r0, =gUnknown_02022EF4
+	ldr r0, =gPlayerPartyPtr
 	mov sb, r0
 	movs r0, #0x64
 	adds r5, r4, #0
@@ -1397,7 +1397,7 @@ sub_02000D74: @ 0x02000D74
 	.align 2, 0
 	.pool
 _02000DE0:
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -1487,7 +1487,7 @@ _02000E7E:
 	bl sub_020009DC
 	mov r3, sb
 	str r0, [r3, #0x14]
-	ldr r4, =gUnknown_02022EF4
+	ldr r4, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -1590,7 +1590,7 @@ _02000F6A:
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	ldr r0, [r2]
 	adds r0, r0, r1
 	movs r1, #3
@@ -1639,7 +1639,7 @@ _02000FBE:
 	movs r3, #3
 	bl sub_020009DC
 	adds r6, r0, #0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -1728,7 +1728,7 @@ _0200107A:
 	adds r4, #9
 	ldrb r5, [r2, #1]
 	adds r5, #3
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -1770,7 +1770,7 @@ _020010CE:
 	adds r4, #9
 	ldrb r5, [r3, #1]
 	adds r5, #3
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -1897,7 +1897,7 @@ _020011D0:
 	adds r0, r4, #0
 	bl RenderText
 _020011F2:
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -1996,7 +1996,7 @@ sub_02001258: @ 0x02001258
 	.align 2, 0
 	.pool
 _020012C8:
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -2085,7 +2085,7 @@ _02001366:
 	bl sub_020009DC
 	mov r3, sb
 	str r0, [r3, #0x14]
-	ldr r4, =gUnknown_02022EF4
+	ldr r4, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -2188,7 +2188,7 @@ _02001452:
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	ldr r0, [r2]
 	adds r0, r0, r1
 	movs r1, #3
@@ -2237,7 +2237,7 @@ _020014A6:
 	movs r3, #3
 	bl sub_020009DC
 	adds r6, r0, #0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -2323,7 +2323,7 @@ _0200155C:
 	adds r4, #9
 	ldrb r5, [r2, #1]
 	adds r5, #2
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -2365,7 +2365,7 @@ _020015AA:
 	adds r4, #9
 	ldrb r5, [r3, #1]
 	adds r5, #2
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -2491,7 +2491,7 @@ _020016A8:
 	adds r0, r4, #0
 	bl RenderText
 _020016CA:
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sl
 	muls r1, r0, r1
@@ -2843,7 +2843,7 @@ _020019D6:
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r7, #0
 	muls r1, r0, r1
@@ -2934,7 +2934,7 @@ _02001AC8:
 	movs r2, #0xa
 	movs r3, #8
 	bl sub_02000838
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, r8
 	muls r1, r0, r1
@@ -3440,7 +3440,7 @@ _02001F50:
 	movs r2, #0xa
 	movs r3, #8
 	bl sub_02000838
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	ldr r3, [sp, #0x1c]
 	adds r1, r3, #0
@@ -4176,7 +4176,7 @@ _020025D4:
 	lsls r1, r3, #2
 	ldr r0, =gUnknown_0201F9B0
 	adds r5, r1, r0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r7, #0
 	muls r1, r0, r1
@@ -4231,7 +4231,7 @@ _02002644:
 	lsls r1, r0, #2
 	ldr r0, =gUnknown_0201F9B0
 	adds r5, r1, r0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r3, #0
 	muls r1, r0, r1
@@ -4631,7 +4631,7 @@ _0200297C:
 	lsls r1, r3, #2
 	ldr r0, =gUnknown_0201F9B0
 	adds r5, r1, r0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r6, #0
 	muls r1, r0, r1
@@ -4687,7 +4687,7 @@ _020029EE:
 	lsls r1, r2, #2
 	ldr r0, =gUnknown_0201F9B0
 	adds r5, r1, r0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r3, #0
 	muls r1, r0, r1
@@ -4842,7 +4842,7 @@ _02002B38:
 	strb r0, [r4]
 	lsls r0, r0, #0x18
 	lsrs r1, r0, #0x18
-	ldr r2, =gUnknown_02022EF0
+	ldr r2, =gPlayerPartyCountPtr
 	cmp r1, #0
 	beq _02002B5E
 	ldr r0, [r2]
@@ -4866,7 +4866,7 @@ _02002B64:
 	mov r0, sp
 	adds r0, #2
 	mov sl, r6
-	ldr r7, =gUnknown_02022EF4
+	ldr r7, =gPlayerPartyPtr
 	mov sb, r0
 _02002B80:
 	movs r0, #0x2c
@@ -5120,7 +5120,7 @@ sub_02002D60: @ 0x02002D60
 	movs r3, #3
 	bl sub_020009DC
 	adds r6, r0, #0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r5, #0
 	muls r1, r0, r1
@@ -5183,7 +5183,7 @@ sub_02002DF8: @ 0x02002DF8
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	adds r5, r1, #0
-	ldr r3, =gUnknown_02022EF4
+	ldr r3, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r2, #0
 	muls r1, r0, r1
@@ -5542,7 +5542,7 @@ sub_020030E4: @ 0x020030E4
 	ldr r0, [r0]
 	adds r0, #0xbc
 	ldr r7, [r0]
-	ldr r5, =gUnknown_02022EF4
+	ldr r5, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r4, sb
 	muls r4, r0, r4
@@ -5595,7 +5595,7 @@ _02003140:
 	adds r2, r7, #0
 	bl sub_0200B89C
 	mov r0, sb
-	bl sub_0200B4E0
+	bl GetBoxMonPalettePtr
 	movs r1, #0x80
 	lsls r1, r1, #6
 	adds r4, r7, r1
@@ -5710,7 +5710,7 @@ sub_020031F8: @ 0x020031F8
 	ldr r0, [r7, #0x24]
 	ldr r1, =gUnknown_0201FFE3
 	bl RenderText
-	ldr r5, =gUnknown_02022EF4
+	ldr r5, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r4, sb
 	muls r4, r0, r4
@@ -5773,7 +5773,7 @@ _0200331C:
 	movs r1, #1
 	bl SetSpriteInvisible
 _02003326:
-	ldr r0, =gUnknown_02022EF4
+	ldr r0, =gPlayerPartyPtr
 	mov sl, r0
 	movs r0, #0x64
 	mov r1, sb
@@ -5945,7 +5945,7 @@ _0200348E:
 	bl sub_020090E4
 	ldr r7, [r5, #0x24]
 	movs r6, #0x2d
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sb
 	muls r1, r0, r1
@@ -6002,7 +6002,7 @@ _020034D8:
 _02003524:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sb
 	muls r1, r0, r1
@@ -6050,7 +6050,7 @@ _02003554:
 _0200358C:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sb
 	muls r1, r0, r1
@@ -6098,7 +6098,7 @@ _020035BC:
 _020035F4:
 	ldr r7, [r5, #0x24]
 	movs r6, #0x80
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sb
 	muls r1, r0, r1
@@ -6145,7 +6145,7 @@ _02003624:
 	movs r1, #0
 	movs r2, #0x78
 	bl sub_02009164
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sb
 	muls r1, r0, r1
@@ -6256,7 +6256,7 @@ sub_0200378C: @ 0x0200378C
 	mov r5, r8
 	push {r5, r6, r7}
 	sub sp, #0x40
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r1, #0x64
 	muls r1, r0, r1
 	ldr r0, [r2]
@@ -6566,7 +6566,7 @@ sub_02003A70: @ 0x02003A70
 	push {r7}
 	sub sp, #0x10
 	adds r6, r1, #0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r1, #0x64
 	muls r1, r0, r1
 	ldr r0, [r2]
@@ -6906,7 +6906,7 @@ sub_02003D80: @ 0x02003D80
 	push {r7}
 	sub sp, #0x2c
 	adds r5, r0, #0
-	ldr r3, =gUnknown_02022EF4
+	ldr r3, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r2, r5, #0
 	muls r2, r0, r2
@@ -7231,7 +7231,7 @@ _02004060:
 	beq _0200409C
 	cmp r5, #5
 	beq _0200409C
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r5, #0
 	muls r1, r0, r1
@@ -7346,7 +7346,7 @@ _02004158:
 	mov r1, r8
 	cmp r1, #5
 	beq _02004198
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, r8
 	muls r1, r0, r1
@@ -8658,7 +8658,7 @@ sub_02004D68: @ 0x02004D68
 	push {r7}
 	sub sp, #0x20
 	adds r6, r0, #0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r1, r6, #0
 	muls r1, r0, r1
@@ -9150,7 +9150,7 @@ sub_02005168: @ 0x02005168
 	push {r5, r6, r7}
 	sub sp, #0x18
 	mov sl, r0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	ldr r0, =gUnknown_02020A48
 	ldr r1, [r0]
 	movs r0, #0x64
@@ -9706,7 +9706,7 @@ _02005650:
 	add r1, sp, #0x24
 	bl BufferString
 _02005658:
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, r8
 	muls r1, r0, r1
@@ -10304,7 +10304,7 @@ sub_02005BB8: @ 0x02005BB8
 	mov r1, sp
 	movs r0, #0
 	strh r0, [r1]
-	ldr r0, =gUnknown_02022EF4
+	ldr r0, =gPlayerPartyPtr
 	ldr r1, [r0]
 	ldr r2, =0x0100012C
 	mov r0, sp
@@ -10331,7 +10331,7 @@ _02005BF4:
 	muls r1, r2, r1
 	ldr r0, [r0]
 	adds r0, r0, r1
-	ldr r3, =gUnknown_02022EF4
+	ldr r3, =gPlayerPartyPtr
 	mov r8, r3
 	mov r6, sl
 	muls r6, r2, r6
@@ -10582,7 +10582,7 @@ sub_02005DCC: @ 0x02005DCC
 	ldr r0, [r4, #0x18]
 	movs r1, #0
 	bl sub_020090B0
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, r8
 	muls r1, r0, r1
@@ -10937,7 +10937,7 @@ _020060E6:
 	movs r0, #0xa
 	bl sub_02004A34
 _02006108:
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	ldr r0, =gUnknown_02024960
 	ldr r1, =0x0000084C
 	adds r0, r0, r1
@@ -10974,7 +10974,7 @@ _02006144:
 	ldr r0, [r1]
 	lsls r0, r0, #8
 	lsrs r0, r0, #0x10
-	ldr r6, =gUnknown_02022EF4
+	ldr r6, =gPlayerPartyPtr
 	ldr r1, [r1]
 	lsls r1, r1, #8
 	lsrs r1, r1, #0x10
@@ -11013,7 +11013,7 @@ _0200619E:
 	ldr r1, =0x0000085C
 	adds r5, r5, r1
 _020061A4:
-	ldr r0, =gUnknown_02022EDC
+	ldr r0, =gGiftRibbonsPtr
 	ldr r0, [r0]
 	adds r2, r0, r4
 	ldrb r0, [r2]
@@ -11101,7 +11101,7 @@ sub_02006264: @ 0x02006264
 	ldrb r0, [r4]
 	cmp r0, #0
 	beq _020062CA
-	ldr r0, =gUnknown_02022EF0
+	ldr r0, =gPlayerPartyCountPtr
 	ldr r1, [r0]
 	ldrb r0, [r1]
 	adds r0, #1
@@ -11122,7 +11122,7 @@ _0200629E:
 	ldr r0, =0x0000085C
 	adds r5, r5, r0
 _020062A4:
-	ldr r0, =gUnknown_02022EDC
+	ldr r0, =gGiftRibbonsPtr
 	ldr r0, [r0]
 	adds r2, r0, r4
 	ldrb r0, [r2]
@@ -11207,7 +11207,7 @@ sub_02006344: @ 0x02006344
 	ldrb r0, [r1]
 	movs r0, #2
 	strb r0, [r1]
-	ldr r4, =gUnknown_02022EF4
+	ldr r4, =gPlayerPartyPtr
 	ldr r0, [r4]
 	movs r1, #0
 	movs r2, #0
@@ -11345,7 +11345,7 @@ sub_0200645C: @ 0x0200645C
 	thumb_func_start sub_0200646C
 sub_0200646C: @ 0x0200646C
 	push {lr}
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r1, #0x64
 	muls r1, r0, r1
 	ldr r0, [r2]

@@ -6,7 +6,7 @@
 	thumb_func_start sub_0200C5DC
 sub_0200C5DC: @ 0x0200C5DC
 	push {r4, r5, r6, r7, lr}
-	ldr r3, =gUnknown_02022EE8
+	ldr r3, =gEnigmaBerryPtr
 	ldr r1, [r3]
 	ldr r6, [r1, #0xc]
 	ldr r7, [r1, #0x10]
@@ -44,7 +44,7 @@ _0200C60E:
 
 	thumb_func_start sub_0200C624
 sub_0200C624: @ 0x0200C624
-	ldr r0, =gUnknown_02022EE8
+	ldr r0, =gEnigmaBerryPtr
 	ldr r1, [r0]
 	ldrb r0, [r1, #0x14]
 	cmp r0, #0
@@ -67,7 +67,7 @@ sub_0200C640: @ 0x0200C640
 	lsrs r2, r0, #0x18
 	cmp r2, #0x2b
 	bne _0200C664
-	ldr r0, =gUnknown_02022EE8
+	ldr r0, =gEnigmaBerryPtr
 	ldr r1, [r0]
 	ldrb r0, [r1, #0x14]
 	cmp r0, #0
@@ -130,7 +130,7 @@ sub_0200C6A4: @ 0x0200C6A4
 	cmp r1, #0xaf
 	bne _0200C6F8
 	movs r2, #0x2b
-	ldr r0, =gUnknown_02022EE8
+	ldr r0, =gEnigmaBerryPtr
 	ldr r1, [r0]
 	ldrb r0, [r1, #0x14]
 	cmp r0, #0
@@ -292,7 +292,7 @@ _0200C7D8:
 _0200C7E2:
 	b _0200C914
 _0200C7E4:
-	ldr r1, =gUnknown_02022EC8
+	ldr r1, =gPokedexPtr
 	ldr r0, [r1]
 	adds r0, #0x44
 	adds r0, r0, r3
@@ -304,14 +304,14 @@ _0200C7E4:
 	bne _0200C7FA
 	b _0200C914
 _0200C7FA:
-	ldr r0, =gUnknown_02022EF8
+	ldr r0, =gDexSeen2Ptr
 	ldr r1, [r0]
 	adds r1, r1, r3
 	adds r2, r5, #0
 	ldrb r1, [r1]
 	ands r2, r1
 	adds r6, r0, #0
-	ldr r0, =gUnknown_02022EE0
+	ldr r0, =gDexSeen3Ptr
 	mov ip, r0
 	cmp r4, r2
 	bne _0200C81E
@@ -331,7 +331,7 @@ _0200C81E:
 	.align 2, 0
 	.pool
 _0200C834:
-	ldr r1, =gUnknown_02022EC8
+	ldr r1, =gPokedexPtr
 	ldr r4, [r1]
 	adds r0, r4, #0
 	adds r0, #0x10
@@ -348,8 +348,8 @@ _0200C834:
 	adds r1, r5, #0
 	ldrb r0, [r0]
 	ands r1, r0
-	ldr r6, =gUnknown_02022EF8
-	ldr r0, =gUnknown_02022EE0
+	ldr r6, =gDexSeen2Ptr
+	ldr r0, =gDexSeen3Ptr
 	mov ip, r0
 	cmp r2, r1
 	bne _0200C890
@@ -405,7 +405,7 @@ _0200C8A6:
 	movs r6, #0
 	b _0200C914
 _0200C8CA:
-	ldr r0, =gUnknown_02022EC8
+	ldr r0, =gPokedexPtr
 	ldr r1, [r0]
 	adds r1, #0x44
 	adds r1, r1, r3
@@ -413,14 +413,14 @@ _0200C8CA:
 	ldrb r2, [r1]
 	orrs r0, r2
 	strb r0, [r1]
-	ldr r0, =gUnknown_02022EF8
+	ldr r0, =gDexSeen2Ptr
 	ldr r1, [r0]
 	adds r1, r1, r3
 	adds r0, r5, #0
 	ldrb r4, [r1]
 	orrs r0, r4
 	strb r0, [r1]
-	ldr r0, =gUnknown_02022EE0
+	ldr r0, =gDexSeen3Ptr
 	ldr r1, [r0]
 	adds r1, r1, r3
 	adds r0, r5, #0
@@ -430,7 +430,7 @@ _0200C8CA:
 	.align 2, 0
 	.pool
 _0200C904:
-	ldr r0, =gUnknown_02022EC8
+	ldr r0, =gPokedexPtr
 	ldr r1, [r0]
 	adds r1, #0x10
 	adds r1, r1, r3
@@ -509,7 +509,7 @@ _0200C97A:
 	bne _0200C9A2
 	cmp r4, #0xc9
 	bne _0200C992
-	ldr r0, =gUnknown_02022EC8
+	ldr r0, =gPokedexPtr
 	ldr r1, [r0]
 	ldr r0, [r6]
 	str r0, [r1, #4]
@@ -518,7 +518,7 @@ _0200C992:
 	lsls r0, r0, #1
 	cmp r4, r0
 	bne _0200C9A2
-	ldr r0, =gUnknown_02022EC8
+	ldr r0, =gPokedexPtr
 	ldr r1, [r0]
 	ldr r0, [r6]
 	str r0, [r1, #8]
@@ -646,7 +646,7 @@ _0200CA8E:
 	cmp r4, #3
 	ble _0200CA8E
 	movs r4, #0
-	ldr r0, =gUnknown_02022EF4
+	ldr r0, =gPlayerPartyPtr
 	mov r8, r0
 	adds r5, r7, #0
 	adds r5, #0x14
@@ -667,7 +667,7 @@ _0200CAA8:
 	movs r0, #0x9b
 	lsls r0, r0, #2
 	adds r2, r7, r0
-	ldr r3, =gUnknown_02022EDC
+	ldr r3, =gGiftRibbonsPtr
 _0200CACA:
 	adds r0, r2, r4
 	ldr r1, [r3]
@@ -756,7 +756,7 @@ sub_0200CB60: @ 0x0200CB60
 	adds r2, r0, #0
 	cmp r2, #0
 	beq _0200CB88
-	ldr r0, =gUnknown_02022ED4
+	ldr r0, =gFlagsPtr
 	adds r1, r2, #0
 	cmp r2, #0
 	bge _0200CB70
@@ -785,7 +785,7 @@ sub_0200CB90: @ 0x0200CB90
 	adds r1, r0, #0
 	cmp r1, #0
 	beq _0200CBB8
-	ldr r2, =gUnknown_02022ED4
+	ldr r2, =gFlagsPtr
 	adds r0, r1, #0
 	cmp r1, #0
 	bge _0200CBA0
@@ -814,7 +814,7 @@ sub_0200CBC0: @ 0x0200CBC0
 	adds r1, r0, #0
 	cmp r1, #0
 	beq _0200CBF4
-	ldr r2, =gUnknown_02022ED4
+	ldr r2, =gFlagsPtr
 	adds r0, r1, #0
 	cmp r1, #0
 	bge _0200CBD0
@@ -1002,7 +1002,7 @@ sub_0200CD38: @ 0x0200CD38
 	.align 2, 0
 	.pool
 _0200CD60:
-	ldr r0, =gUnknown_02022ECC
+	ldr r0, =gSaveBlock1Ptr
 	ldr r0, [r0]
 	bl sub_0200CED8
 	lsls r0, r0, #0x18
@@ -1081,7 +1081,7 @@ _0200CDE6:
 
 	thumb_func_start sub_0200CDE8
 sub_0200CDE8: @ 0x0200CDE8
-	ldr r1, =gUnknown_02022ECC
+	ldr r1, =gSaveBlock1Ptr
 	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r2, [r1]
@@ -1360,7 +1360,7 @@ _0200CF98:
 	strb r0, [r1]
 	ldr r0, =0x00000854
 	adds r3, r3, r0
-	ldr r4, =gUnknown_02022EF4
+	ldr r4, =gPlayerPartyPtr
 	ldrb r0, [r5]
 	lsrs r0, r0, #4
 	movs r2, #0x64
@@ -1584,7 +1584,7 @@ _0200D19C:
 sub_0200D1AC: @ 0x0200D1AC
 	push {r4, r5, r6, lr}
 	adds r3, r0, #0
-	ldr r1, =gUnknown_02022ECC
+	ldr r1, =gSaveBlock1Ptr
 	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	adds r0, #0xb4
@@ -1711,7 +1711,7 @@ _0200D2A6:
 	ands r0, r3
 	str r0, [r4, #4]
 	str r2, [r4, #0x1c]
-	ldr r0, =gUnknown_02022EBC
+	ldr r0, =gPcItemsPtr
 	ldr r0, [r0]
 	b _0200D346
 	.align 2, 0
@@ -2135,7 +2135,7 @@ _0200D61C:
 	thumb_func_start sub_0200D624
 sub_0200D624: @ 0x0200D624
 	push {r4, r5, r6, lr}
-	ldr r1, =gUnknown_02022ECC
+	ldr r1, =gSaveBlock1Ptr
 	ldr r2, =gAgbPmRomParams
 	ldr r0, [r2]
 	adds r0, #0xb4
@@ -2225,7 +2225,7 @@ _0200D6E0:
 	str r0, [r4, #4]
 	movs r0, #0
 	str r0, [r4, #0x1c]
-	ldr r0, =gUnknown_02022EF0
+	ldr r0, =gPlayerPartyCountPtr
 	ldr r0, [r0]
 	ldrb r0, [r0]
 	lsls r1, r0, #0x10
@@ -2233,7 +2233,7 @@ _0200D6E0:
 	orrs r1, r0
 	ldr r0, =0x04000154
 	str r1, [r0]
-	ldr r0, =gUnknown_02022EBC
+	ldr r0, =gPcItemsPtr
 	ldr r0, [r0]
 	str r0, [r4]
 _0200D702:

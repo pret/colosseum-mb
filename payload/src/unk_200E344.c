@@ -640,7 +640,7 @@ u16 * sub_0200F350(u16 a0)
     if (a0 < VARS_START)
         return NULL;
     if (a0 < VAR_SPECIAL_0)
-        return &gUnknown_02022EE4[a0 - VARS_START];
+        return &gVarsPtr[a0 - VARS_START];
     return NULL;
 }
 

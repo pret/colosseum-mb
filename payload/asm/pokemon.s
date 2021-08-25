@@ -1694,15 +1694,15 @@ _0200B4CE:
 	pop {r1}
 	bx r1
 
-	thumb_func_start sub_0200B4E0
-sub_0200B4E0: @ 0x0200B4E0
+	thumb_func_start GetBoxMonPalettePtr
+GetBoxMonPalettePtr: @ 0x0200B4E0
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
 	movs r1, #0x64
 	adds r4, r0, #0
 	muls r4, r1, r4
-	ldr r5, =gUnknown_02022EF4
+	ldr r5, =gPlayerPartyPtr
 	ldr r0, [r5]
 	adds r0, r4, r0
 	movs r1, #0x41
@@ -3347,12 +3347,12 @@ sub_0200C130: @ 0x0200C130
 	bhi _0200C19E
 	cmp r4, #6
 	bhi _0200C19E
-	ldr r0, =gUnknown_02022EDC
+	ldr r0, =gGiftRibbonsPtr
 	ldr r0, [r0]
 	adds r0, r0, r4
 	strb r5, [r0]
 	movs r5, #0
-	ldr r6, =gUnknown_02022EF4
+	ldr r6, =gPlayerPartyPtr
 _0200C160:
 	movs r0, #0x64
 	adds r4, r5, #0
@@ -3868,12 +3868,12 @@ _0200C510:
 
 	thumb_func_start sub_0200C520
 sub_0200C520: @ 0x0200C520
-	ldr r0, =gUnknown_02022EF0
+	ldr r0, =gPlayerPartyCountPtr
 	ldr r1, [r0]
 	ldrb r0, [r1]
 	cmp r0, #6
 	beq _0200C540
-	ldr r2, =gUnknown_02022EF4
+	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	ldrb r1, [r1]
 	muls r1, r0, r1

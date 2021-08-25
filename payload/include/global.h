@@ -730,7 +730,7 @@ struct SaveBlock1 /* 0x02025734 */
     /*0x3A8C*/ u8 dexSeen3[DEX_FLAGS_NO];
 };
 
-extern struct SaveBlock1 gSaveBlock1;
+extern struct SaveBlock1 gUnknown_02022EFC;
 
 struct Time
 {
@@ -862,7 +862,7 @@ struct HallOfFame
     u8 filler[0x1F00];
 };
 
-extern u16 * gUnknown_02022EE4;
+extern u16 * gVarsPtr;
 extern struct SaveBlock2 * gSaveBlock2Ptr;
 
 #define RomHeaderGameTitle       ((const char *)0x080000A0)
