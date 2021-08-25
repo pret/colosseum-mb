@@ -111,7 +111,8 @@ ifeq ($(COMPARE),1)
 endif
 
 mostlyclean:
-	rm -f $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS) $(MID_ASM_SRCS) $(AIF_BINS)
+	$(RM) $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS) $(MID_ASM_SRCS) $(AIF_BINS)
+	find . \( -name "*.rl" -or -name "*.lz" -or -name "*.[48]bpp" -or -name "*.gbapal" \) -exec $(RM) {} +
 
 clean: mostlyclean
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) clean -C $(tool);)
@@ -186,6 +187,9 @@ sound/%.bin: sound/%.aif
 	$(GFX) $(GFXFLAGS) $< $@
 
 %.gbapal: %.pal
+	$(GFX) $(GFXFLAGS) $< $@
+
+%.rl: %
 	$(GFX) $(GFXFLAGS) $< $@
 
 ### Debug Print ###

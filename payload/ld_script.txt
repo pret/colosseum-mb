@@ -45,6 +45,7 @@ SECTIONS {
     ALIGN(4)
     {
         data/all.o(.rodata);
+        data/graphics.o(.rodata);
     } =0
 
     m4a_rodata :

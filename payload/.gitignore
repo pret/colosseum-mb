@@ -4,3 +4,5 @@ sound/direct_sound_samples/*.bin
 *.8bpp
 *.lz
 *.gbapal
+*.rl
+*.huff
