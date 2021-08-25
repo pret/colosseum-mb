@@ -32,6 +32,7 @@ RAMSCRGEN := ../tools/ramscrgen/ramscrgen
 MID := ../tools/mid2agb/mid2agb
 AIF := ../tools/aif2pcm/aif2pcm
 GFX := ../tools/gbagfx/gbagfx
+RSFONT := ../tools/rsfont/rsfont
 
 NAME := payload
 ROM := $(NAME).gba
@@ -112,7 +113,7 @@ endif
 
 mostlyclean:
 	$(RM) $(ROM) $(ROM:%.gba=%.elf) $(ALL_OBJS) $(MID_ASM_SRCS) $(AIF_BINS)
-	find . \( -name "*.rl" -or -name "*.lz" -or -name "*.[48]bpp" -or -name "*.gbapal" \) -exec $(RM) {} +
+	find . \( -name "*.rl" -or -name "*.lz" -or -name "*.[148]bpp" -or -name "*.gbapal" \) -exec $(RM) {} +
 
 clean: mostlyclean
 	@$(foreach tool,$(TOOLDIRS),$(MAKE) clean -C $(tool);)
