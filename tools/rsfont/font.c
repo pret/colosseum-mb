@@ -162,15 +162,20 @@ void ConvertToTiles1Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, 
     }
 }
 
-void ConvertFromTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, int layout __attribute__((unused)))
+void ConvertFromTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, int layout)
 {
-    // layout type 1
     for (int glyph = 0; glyph < numGlyphs; glyph++)
     {
         int tile1Offset = glyph * 32;
         int tile2Offset = tile1Offset + 8;
         int tile1bOffset = tile1Offset + 16;
         int tile2bOffset = tile1bOffset + 8;
+        if (layout == 2)
+        {
+            int tmp = tile1bOffset;
+            tile1bOffset = tile2Offset;
+            tile2Offset = tmp;
+        }
         for (int i = 0; i < 8; i++)
         {
             uint8_t srcRow = src[tile1Offset + i];
@@ -179,6 +184,11 @@ void ConvertFromTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs
             {
                 int x = ((glyph % 16) * 8) + j;
                 int y = ((glyph / 16) * 16) + i;
+                if (layout == 2)
+                {
+                    x = ((glyph % 8) * 16) + j;
+                    y = ((glyph / 8) * 8) + i;
+                }
                 dest[(y * 128) + x] = ((srcRow >> (7 - j)) & 1) | (((srcbRow >> (7 - j)) & 1) << 1);
             }
         }
@@ -190,6 +200,11 @@ void ConvertFromTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs
             {
                 int x = ((glyph % 16) * 8) + j;
                 int y = ((glyph / 16) * 16) + 8 + i;
+                if (layout == 2)
+                {
+                    x = ((glyph % 8) * 16) + 8 + j;
+                    y = ((glyph / 8) * 8) + i;
+                }
                 dest[(y * 128) + x] = ((srcRow >> (7 - j)) & 1) | (((srcbRow >> (7 - j)) & 1) << 1);
             }
         }
@@ -204,6 +219,12 @@ void ConvertToTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, 
         int tile2Offset = tile1Offset + 8;
         int tile1bOffset = tile1Offset + 16;
         int tile2bOffset = tile1Offset + 24;
+        if (layout == 2)
+        {
+            int tmp = tile1bOffset;
+            tile1bOffset = tile2Offset;
+            tile2Offset = tmp;
+        }
         for (int i = 0; i < 8; i++)
         {
             uint8_t destRow = 0;
@@ -212,6 +233,11 @@ void ConvertToTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, 
             {
                 int x = ((glyph % 16) * 8) + j;
                 int y = ((glyph / 16) * 16) + i;
+                if (layout == 2)
+                {
+                    x = ((glyph % 8) * 16) + j;
+                    y = ((glyph / 8) * 8) + i;
+                }
                 unsigned char color = src[(y * 128) + x];
                 if (color > 3)
                     FATAL_ERROR("More than 4 colors in 2 BPP format.\n");
@@ -231,6 +257,11 @@ void ConvertToTiles2Bpp(unsigned char *src, unsigned char *dest, int numGlyphs, 
             {
                 int x = ((glyph % 16) * 8) + j;
                 int y = ((glyph / 16) * 16) + 8 + i;
+                if (layout == 2)
+                {
+                    x = ((glyph % 8) * 16) + 8 + j;
+                    y = ((glyph / 8) * 8) + i;
+                }
                 unsigned char color = src[(y * 128) + x];
                 if (color > 3)
                     FATAL_ERROR("More than 4 colors in 2 BPP format.\n");
@@ -456,7 +487,7 @@ static void SetFontPalette(struct Image *image)
 
 int CalcFileSize(int numGlyphs, int bpp, int layout)
 {
-    if (layout == 2)
+    if (layout == 2 && bpp == 4)
     {
         // assume 4 BPP
         int numFullRows = numGlyphs / 16;

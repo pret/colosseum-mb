@@ -79,8 +79,8 @@ int main(int argc, char **argv)
     if (bpp == 1 && layout == 2)
         FATAL_ERROR("Layout type 2 is not supported with 1 BPP fonts.\n");
 
-    if (bpp == 2 && layout != 1)
-        FATAL_ERROR("Only layout type 1 is supported with 2 BPP fonts.\n");
+    if (bpp == 2 && layout == 0)
+        FATAL_ERROR("Layout type 0 is not supported with 2 BPP fonts.\n");
 
     struct Image image;
 
