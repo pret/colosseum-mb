@@ -751,8 +751,8 @@ sub_0200CB54: @ 0x0200CB54
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200CB60
-sub_0200CB60: @ 0x0200CB60
+	thumb_func_start SetFlag
+SetFlag: @ 0x0200CB60
 	adds r2, r0, #0
 	cmp r2, #0
 	beq _0200CB88
@@ -1750,7 +1750,7 @@ _0200D314:
 	str r0, [r4, #4]
 	movs r0, #0
 	str r0, [r4, #0x1c]
-	bl sub_0200C520
+	bl GetPtrToEmptyPartySlot
 	b _0200D346
 _0200D322:
 	ldr r0, [r4, #0x1c]

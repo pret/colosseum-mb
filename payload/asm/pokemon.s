@@ -2037,8 +2037,8 @@ _0200B75E:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start GetBoxMonPokerus
-GetBoxMonPokerus: @ 0x0200B764
+	thumb_func_start CheckPartyPokerus
+CheckPartyPokerus: @ 0x0200B764
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
@@ -2096,8 +2096,8 @@ _0200B7C2:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_0200B7D0
-sub_0200B7D0: @ 0x0200B7D0
+	thumb_func_start GetMonStatus
+GetMonStatus: @ 0x0200B7D0
 	push {lr}
 	adds r2, r0, #0
 	adds r0, #0x56
@@ -2147,7 +2147,7 @@ _0200B81E:
 	bne _0200B834
 	adds r0, r2, #0
 	movs r1, #0
-	bl GetBoxMonPokerus
+	bl CheckPartyPokerus
 	cmp r0, #0
 	bne _0200B832
 	movs r0, #0
@@ -2158,8 +2158,8 @@ _0200B834:
 	pop {r1}
 	bx r1
 
-	thumb_func_start sub_0200B838
-sub_0200B838: @ 0x0200B838
+	thumb_func_start CheckPartyHasHadPokerus
+CheckPartyHasHadPokerus: @ 0x0200B838
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
@@ -3328,8 +3328,8 @@ _0200C12A:
 	pop {r0}
 	bx r0
 
-	thumb_func_start sub_0200C130
-sub_0200C130: @ 0x0200C130
+	thumb_func_start GiveGiftRibbonToParty
+GiveGiftRibbonToParty: @ 0x0200C130
 	push {r4, r5, r6, r7, lr}
 	sub sp, #8
 	lsls r0, r0, #0x18
@@ -3382,7 +3382,7 @@ _0200C188:
 	ldr r0, [r0]
 	adds r0, #0xf0
 	ldr r0, [r0]
-	bl sub_0200CB60
+	bl SetFlag
 _0200C19E:
 	add sp, #8
 	pop {r4, r5, r6, r7}
@@ -3473,8 +3473,8 @@ _0200C24E:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_0200C254
-sub_0200C254: @ 0x0200C254
+	thumb_func_start GetMonGender
+GetMonGender: @ 0x0200C254
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
 	ldr r0, =gAgbPmRomParams
@@ -3528,8 +3528,8 @@ _0200C2B2:
 	pop {r1}
 	bx r1
 
-	thumb_func_start sub_0200C2BC
-sub_0200C2BC: @ 0x0200C2BC
+	thumb_func_start GetMonPalettePtrBySpeciesIdPersonality
+GetMonPalettePtrBySpeciesIdPersonality: @ 0x0200C2BC
 	push {r4, r5, lr}
 	adds r3, r2, #0
 	lsls r0, r0, #0x10
@@ -3741,8 +3741,8 @@ _0200C43A:
 	pop {r1}
 	bx r1
 
-	thumb_func_start sub_0200C440
-sub_0200C440: @ 0x0200C440
+	thumb_func_start GetMonSpritePaletteNumByBaseBlock
+GetMonSpritePaletteNumByBaseBlock: @ 0x0200C440
 	ldr r1, =gUnknown_0201ED40
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -3750,8 +3750,8 @@ sub_0200C440: @ 0x0200C440
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C44C
-sub_0200C44C: @ 0x0200C44C
+	thumb_func_start GetAbilityName
+GetAbilityName: @ 0x0200C44C
 	adds r2, r0, #0
 	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
@@ -3764,8 +3764,8 @@ sub_0200C44C: @ 0x0200C44C
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C464
-sub_0200C464: @ 0x0200C464
+	thumb_func_start GetAbilityDescription
+GetAbilityDescription: @ 0x0200C464
 	ldr r1, =gAgbPmRomParams
 	ldr r1, [r1]
 	adds r1, #0xc4
@@ -3777,8 +3777,8 @@ sub_0200C464: @ 0x0200C464
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C478
-sub_0200C478: @ 0x0200C478
+	thumb_func_start CalculatePPWithBonus
+CalculatePPWithBonus: @ 0x0200C478
 	push {r4, lr}
 	ldr r3, =gAgbPmRomParams
 	ldr r3, [r3]
@@ -3789,7 +3789,7 @@ sub_0200C478: @ 0x0200C478
 	lsls r3, r3, #2
 	adds r3, r3, r4
 	ldrb r4, [r3, #4]
-	ldr r0, =gUnknown_0201ED57
+	ldr r0, =gPPUpReadMasks
 	adds r0, r2, r0
 	ldrb r0, [r0]
 	ands r1, r0
@@ -3809,8 +3809,8 @@ sub_0200C478: @ 0x0200C478
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C4B8
-sub_0200C4B8: @ 0x0200C4B8
+	thumb_func_start CopyMoveName
+CopyMoveName: @ 0x0200C4B8
 	push {r4, r5, r6, r7, lr}
 	adds r3, r0, #0
 	mov ip, r1
@@ -3866,8 +3866,8 @@ _0200C510:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C520
-sub_0200C520: @ 0x0200C520
+	thumb_func_start GetPtrToEmptyPartySlot
+GetPtrToEmptyPartySlot: @ 0x0200C520
 	ldr r0, =gPlayerPartyCountPtr
 	ldr r1, [r0]
 	ldrb r0, [r1]
@@ -3887,8 +3887,8 @@ _0200C540:
 _0200C542:
 	bx lr
 
-	thumb_func_start sub_0200C544
-sub_0200C544: @ 0x0200C544
+	thumb_func_start GetMonGender2
+GetMonGender2: @ 0x0200C544
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
 	ldr r0, =gAgbPmRomParams

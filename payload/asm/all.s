@@ -1403,7 +1403,7 @@ _02000DE0:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200B7D0
+	bl GetMonStatus
 	mov r3, sb
 	strb r0, [r3, #3]
 	mov r4, r8
@@ -1734,7 +1734,7 @@ _0200107A:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200C254
+	bl GetMonGender
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #0
@@ -1776,7 +1776,7 @@ _020010CE:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200C254
+	bl GetMonGender
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #0
@@ -2002,7 +2002,7 @@ _020012C8:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200B7D0
+	bl GetMonStatus
 	mov r3, sb
 	strb r0, [r3, #3]
 	mov r4, r8
@@ -2329,7 +2329,7 @@ _0200155C:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200C254
+	bl GetMonGender
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #0
@@ -2371,7 +2371,7 @@ _020015AA:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200C254
+	bl GetMonGender
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #0
@@ -4182,7 +4182,7 @@ _020025D4:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200B7D0
+	bl GetMonStatus
 	cmp r0, #7
 	beq _0200261C
 	ldrb r1, [r4]
@@ -4237,7 +4237,7 @@ _02002644:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200B7D0
+	bl GetMonStatus
 	cmp r0, #7
 	beq _02002694
 	ldrb r1, [r4]
@@ -4637,7 +4637,7 @@ _0200297C:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200B7D0
+	bl GetMonStatus
 	cmp r0, #7
 	beq _020029C4
 	ldrb r1, [r4]
@@ -4693,7 +4693,7 @@ _020029EE:
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200B7D0
+	bl GetMonStatus
 	cmp r0, #7
 	beq _02002A3C
 	ldrb r1, [r4]
@@ -4917,7 +4917,7 @@ _02002BC6:
 	adds r1, r0, #0
 	adds r0, r4, #0
 	adds r2, r5, #0
-	bl sub_0200C478
+	bl CalculatePPWithBonus
 	mov r1, sb
 	strh r0, [r1]
 	ldr r0, [r7]
@@ -5189,7 +5189,7 @@ sub_02002DF8: @ 0x02002DF8
 	muls r1, r0, r1
 	ldr r0, [r3]
 	adds r0, r0, r1
-	bl sub_0200C254
+	bl GetMonGender
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #0
@@ -5744,7 +5744,7 @@ _020032C8:
 	bl SetSpriteTileOffset
 	ldr r4, [r7, #4]
 	adds r0, r6, #0
-	bl sub_0200C440
+	bl GetMonSpritePaletteNumByBaseBlock
 	adds r1, r0, #0
 	adds r0, r4, #0
 	bl SetSpritePaletteNum
@@ -5757,7 +5757,7 @@ _020032C8:
 	bl SetSpriteTileOffset
 	ldr r4, [r7, #8]
 	adds r0, r5, #0
-	bl sub_0200C440
+	bl GetMonSpritePaletteNumByBaseBlock
 	adds r1, r0, #0
 	adds r0, r4, #0
 	bl SetSpritePaletteNum
@@ -5800,7 +5800,7 @@ _02003326:
 	bl sub_02009164
 	ldr r4, [r6, #0x24]
 	adds r0, r5, #0
-	bl sub_0200C44C
+	bl GetAbilityName
 	adds r1, r0, #0
 	adds r0, r4, #0
 	bl RenderText
@@ -5810,7 +5810,7 @@ _02003326:
 	bl sub_02009164
 	ldr r4, [r6, #0x24]
 	adds r0, r5, #0
-	bl sub_0200C464
+	bl GetAbilityDescription
 	adds r1, r0, #0
 	adds r0, r4, #0
 	bl RenderText
@@ -6318,7 +6318,7 @@ _020037F4:
 	adds r1, r0, #0
 	adds r0, r6, #0
 	mov r2, sb
-	bl sub_0200C478
+	bl CalculatePPWithBonus
 	str r0, [sp, #0x20]
 	lsls r0, r6, #1
 	adds r0, r0, r6
@@ -6353,7 +6353,7 @@ _02003856:
 	bl SetSpriteTileOffset
 	ldr r4, [r5]
 	adds r0, r7, #0
-	bl sub_0200C440
+	bl GetMonSpritePaletteNumByBaseBlock
 	adds r1, r0, #0
 	adds r0, r4, #0
 	bl SetSpritePaletteNum
@@ -6380,7 +6380,7 @@ _02003898:
 	bl sub_020090E4
 	add r0, sp, #0xc
 	adds r1, r6, #0
-	bl sub_0200C4B8
+	bl CopyMoveName
 	ldr r0, [r4, #0x24]
 	movs r1, #0x20
 	mov r2, sl
@@ -7040,7 +7040,7 @@ _02003E54:
 	cmp r5, #0x1d
 	beq _02003F0C
 	adds r0, r6, #0
-	bl sub_0200C254
+	bl GetMonGender
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #0
@@ -7102,7 +7102,7 @@ _02003F20:
 	ldr r1, =0x05000260
 	bl LZ77UnCompVram
 	adds r0, r6, #0
-	bl sub_0200B7D0
+	bl GetMonStatus
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _02003FB0
@@ -7158,11 +7158,11 @@ _02003FB0:
 _02003FCE:
 	adds r0, r6, #0
 	movs r1, #0
-	bl sub_0200B838
+	bl CheckPartyHasHadPokerus
 	adds r4, r0, #0
 	adds r0, r6, #0
 	movs r1, #0
-	bl GetBoxMonPokerus
+	bl CheckPartyPokerus
 	cmp r0, #0
 	bne _02003FFC
 	cmp r4, #0
@@ -8559,7 +8559,7 @@ _02004C7A:
 	mov r2, r8
 	ldr r1, [r2, #0xc]
 	adds r2, r7, #0
-	bl sub_0200C2BC
+	bl GetMonPalettePtrBySpeciesIdPersonality
 	ldr r0, [r0]
 	adds r1, r5, #0
 	bl LZ77UnCompWram
@@ -8590,7 +8590,7 @@ _02004CBC:
 sub_02004CE4: @ 0x02004CE4
 	push {r4, r5, lr}
 	sub sp, #0x18
-	bl sub_0200C254
+	bl GetMonGender
 	lsls r0, r0, #0x18
 	lsrs r4, r0, #0x18
 	cmp r4, #0
@@ -8758,7 +8758,7 @@ _02004E38:
 	mov r1, sp
 	bl RenderText
 	adds r0, r7, #0
-	bl sub_0200B7D0
+	bl GetMonStatus
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _02004E84
@@ -9214,7 +9214,7 @@ sub_02005168: @ 0x02005168
 	adds r1, r0, #0
 	adds r0, r5, #0
 	mov r2, sl
-	bl sub_0200C478
+	bl CalculatePPWithBonus
 	adds r5, r0, #0
 	add r0, sp, #8
 	adds r1, r4, #0
@@ -9296,7 +9296,7 @@ _020052B6:
 	cmp r1, #0
 	beq _020052D4
 	add r0, sp, #0xc
-	bl sub_0200C4B8
+	bl CopyMoveName
 	adds r6, #1
 	b _020052DC
 	.align 2, 0
@@ -9693,7 +9693,7 @@ sub_020055D4: @ 0x020055D4
 	cmp r1, #0
 	beq _02005648
 	add r0, sp, #0x24
-	bl sub_0200C4B8
+	bl CopyMoveName
 	b _02005650
 	.align 2, 0
 	.pool
@@ -10695,7 +10695,7 @@ sub_02005F08: @ 0x02005F08
 	cmp r1, #0
 	beq _02005F28
 	mov r0, sp
-	bl sub_0200C4B8
+	bl CopyMoveName
 	b _02005F30
 	.align 2, 0
 	.pool
@@ -11027,7 +11027,7 @@ _020061A4:
 	strb r0, [r2]
 	ldrb r1, [r1]
 	adds r0, r4, #0
-	bl sub_0200C130
+	bl GiveGiftRibbonToParty
 _020061C4:
 	adds r4, #1
 	cmp r4, #0xa
@@ -11136,7 +11136,7 @@ _020062A4:
 	strb r0, [r2]
 	ldrb r1, [r1]
 	adds r0, r4, #0
-	bl sub_0200C130
+	bl GiveGiftRibbonToParty
 _020062C4:
 	adds r4, #1
 	cmp r4, #0xa
@@ -11350,7 +11350,7 @@ sub_0200646C: @ 0x0200646C
 	muls r1, r0, r1
 	ldr r0, [r2]
 	adds r0, r0, r1
-	bl sub_0200B7D0
+	bl GetMonStatus
 	movs r1, #0
 	cmp r0, #7
 	bne _02006484
