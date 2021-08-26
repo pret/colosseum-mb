@@ -45,11 +45,13 @@ gUnknown_02021A20:
 	.include "gflib/init.o"
 	.include "gflib/bg.o"
 
+	@ gflib/text.o
 gWindows:
-	.space 0x280
+	.space 0x280 @ 20 * 32
 
 	.include "gflib/keys.o"
 
+	@ gflib/agb_rom.o
 gPcItemsPtr:
 	.space 0x4
 
@@ -101,16 +103,17 @@ gDexSeen2Ptr:
 gUnknown_02022EFC:
 	.space 0x4
 
+	@ gflib/save.o
 gFirstSaveSector:
 	.space 0x4
 
-gUnknown_02022F04:
+gPrevSaveCounter:
 	.space 0xc
 
 gUnknown_02022F10:
 	.space 0x14
 
-gUnknown_02022F24:
+gLastKnownGoodSector:
 	.space 0x4
 
 gDamagedSaveSectors:
@@ -128,11 +131,23 @@ gSaveReadBuffer:
 gUnknown_02023F40:
 	.space 0x10
 
+	@ gflib/trade.o
+/*
+struct {
+	u32 flags;
+	u8 name[8];
+	u32 gender;
+	u8 trainerId[4];
+	struct Pokemon party[6];
+	u8 giftRibbons[11];
+};
+*/
 gUnknown_02023F50:
-	.space 0x280
+	.space 0x278
 
+	.align 4
 gUnknown_020241D0:
-	.space 0x780
+	.space 0x780 @ 6 * 320
 
 gUnknown_02024950:
 	.space 0x10

@@ -10983,7 +10983,7 @@ _02006144:
 	muls r2, r4, r2
 	ldr r1, [r6]
 	adds r1, r1, r2
-	bl sub_0200C94C
+	bl SetSpeciesCaughtFlag
 	ldr r1, =0x0000084F
 	adds r2, r5, r1
 	ldrb r1, [r2]
@@ -11007,7 +11007,7 @@ _02006144:
 	muls r2, r4, r2
 	ldr r1, [r6]
 	adds r1, r1, r2
-	bl sub_0200C94C
+	bl SetSpeciesCaughtFlag
 _0200619E:
 	movs r4, #0
 	ldr r1, =0x0000085C

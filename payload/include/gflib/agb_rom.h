@@ -32,9 +32,9 @@ struct RomInfo
     /*0x90*/ ptrdiff_t playerPartyCountOffs;
     /*0x94*/ ptrdiff_t playerPartyOffs;
     /*0x98*/ ptrdiff_t unk98;
-    /*0x9C*/ ptrdiff_t unk9C;
-    /*0xA0*/ ptrdiff_t unkA0;
-    /*0xA4*/ ptrdiff_t unkA4;
+    /*0x9C*/ ptrdiff_t sb2PlayerIdOffs;
+    /*0xA0*/ ptrdiff_t sb2PlayerNameOffs;
+    /*0xA4*/ ptrdiff_t sb2PlayerGenderOffs;
     /*0xA8*/ ptrdiff_t unkA8;
     /*0xAC*/ ptrdiff_t unkAC;
     /*0xB0*/ ptrdiff_t unkB0;

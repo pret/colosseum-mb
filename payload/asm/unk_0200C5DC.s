@@ -474,8 +474,8 @@ _0200C944:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C94C
-sub_0200C94C: @ 0x0200C94C
+	thumb_func_start SetSpeciesCaughtFlag
+SetSpeciesCaughtFlag: @ 0x0200C94C
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
 	adds r6, r1, #0
@@ -507,6 +507,7 @@ _0200C97A:
 	bl DexFlagAction
 	cmp r0, #0
 	bne _0200C9A2
+	@ Unown
 	cmp r4, #0xc9
 	bne _0200C992
 	ldr r0, =gPokedexPtr
@@ -514,6 +515,7 @@ _0200C97A:
 	ldr r0, [r6]
 	str r0, [r1, #4]
 _0200C992:
+	@ Spinda
 	movs r0, #0x9a
 	lsls r0, r0, #1
 	cmp r4, r0

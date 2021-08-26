@@ -1183,11 +1183,11 @@ sub_02009EC8: @ 0x02009EC8
 	ldr r1, =gFastSaveSection
 	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
-	ldr r0, =gUnknown_02022F24
+	ldr r0, =gLastKnownGoodSector
 	ldr r4, =gFirstSaveSector
 	ldrh r1, [r4]
 	strh r1, [r0]
-	ldr r2, =gUnknown_02022F04
+	ldr r2, =gPrevSaveCounter
 	ldr r5, =gSaveCounter
 	ldr r0, [r5]
 	str r0, [r2]
@@ -1216,11 +1216,11 @@ _02009EFA:
 	beq _02009F24
 	movs r5, #0xff
 	ldr r1, =gFirstSaveSector
-	ldr r0, =gUnknown_02022F24
+	ldr r0, =gLastKnownGoodSector
 	ldrh r0, [r0]
 	strh r0, [r1]
 	ldr r1, =gSaveCounter
-	ldr r0, =gUnknown_02022F04
+	ldr r0, =gPrevSaveCounter
 	ldr r0, [r0]
 	str r0, [r1]
 _02009F24:
@@ -1726,11 +1726,11 @@ _0200A354:
 	ldr r1, =gFastSaveSection
 	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
-	ldr r0, =gUnknown_02022F24
+	ldr r0, =gLastKnownGoodSector
 	ldr r4, =gFirstSaveSector
 	ldrh r1, [r4]
 	strh r1, [r0]
-	ldr r2, =gUnknown_02022F04
+	ldr r2, =gPrevSaveCounter
 	ldr r5, =gSaveCounter
 	ldr r0, [r5]
 	str r0, [r2]
@@ -2159,11 +2159,11 @@ sub_0200A6E4: @ 0x0200A6E4
 	.align 2, 0
 	.pool
 _0200A710:
-	ldr r1, =gUnknown_02022F24
+	ldr r1, =gLastKnownGoodSector
 	ldr r5, =gFirstSaveSector
 	ldrh r0, [r5]
 	strh r0, [r1]
-	ldr r1, =gUnknown_02022F04
+	ldr r1, =gPrevSaveCounter
 	ldr r6, =gSaveCounter
 	ldr r4, [r6]
 	str r4, [r1]
@@ -2191,11 +2191,11 @@ _0200A736:
 	beq _0200A760
 	movs r5, #0xff
 	ldr r1, =gFirstSaveSector
-	ldr r0, =gUnknown_02022F24
+	ldr r0, =gLastKnownGoodSector
 	ldrh r0, [r0]
 	strh r0, [r1]
 	ldr r1, =gSaveCounter
-	ldr r0, =gUnknown_02022F04
+	ldr r0, =gPrevSaveCounter
 	ldr r0, [r0]
 	str r0, [r1]
 _0200A760:
@@ -2212,11 +2212,11 @@ sub_0200A77C: @ 0x0200A77C
 	ldr r1, =gFastSaveSection
 	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
-	ldr r1, =gUnknown_02022F24
+	ldr r1, =gLastKnownGoodSector
 	ldr r5, =gFirstSaveSector
 	ldrh r0, [r5]
 	strh r0, [r1]
-	ldr r1, =gUnknown_02022F04
+	ldr r1, =gPrevSaveCounter
 	ldr r6, =gSaveCounter
 	ldr r4, [r6]
 	str r4, [r1]
@@ -2245,11 +2245,11 @@ sub_0200A7D8: @ 0x0200A7D8
 	ldr r1, =gFastSaveSection
 	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
-	ldr r1, =gUnknown_02022F24
+	ldr r1, =gLastKnownGoodSector
 	ldr r0, =gFirstSaveSector
 	ldrh r0, [r0]
 	strh r0, [r1]
-	ldr r1, =gUnknown_02022F04
+	ldr r1, =gPrevSaveCounter
 	ldr r0, =gSaveCounter
 	ldr r0, [r0]
 	str r0, [r1]
@@ -2266,11 +2266,11 @@ sub_0200A7D8: @ 0x0200A7D8
 	thumb_func_start sub_0200A81C
 sub_0200A81C: @ 0x0200A81C
 	ldr r1, =gFirstSaveSector
-	ldr r0, =gUnknown_02022F24
+	ldr r0, =gLastKnownGoodSector
 	ldrh r0, [r0]
 	strh r0, [r1]
 	ldr r1, =gSaveCounter
-	ldr r0, =gUnknown_02022F04
+	ldr r0, =gPrevSaveCounter
 	ldr r0, [r0]
 	str r0, [r1]
 	bx lr
