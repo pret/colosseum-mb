@@ -16,7 +16,7 @@ GF_Main: @ 0x020002B4
 	bl SaveBlocksInit
 	bl SetSaveSectorPtrs
 	ldr r4, =gUnknown_020217B4
-	bl sub_02009CD8
+	bl ReadSaveBlockChunks
 	strb r0, [r4]
 	ldr r5, =gUnknown_020217B8
 	movs r0, #0

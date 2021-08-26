@@ -244,22 +244,6 @@ gRSSpecialAreaMaps::
 
 	.data
 	.align 2
-gUnknown_020205BC::
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-	.4byte gSaveReadBuffer, 0x00000f80
-
 gUnknown_0202062C::
 	.string "Bad EGG$"
 

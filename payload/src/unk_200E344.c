@@ -17,7 +17,7 @@ static struct SiiRtcInfo sRtcInfoBuffer;
 static u8 sRtcProbeCode;
 static u16 sImeBak;
 
-bool32 sub_02009EC8(void);
+bool32 WriteSaveBlockChunks(void);
 
 bool32 rtc_maincb_is_rtc_working(void);
 bool32 rtc_maincb_is_time_since_last_berry_update_positive(u8 *);
@@ -666,7 +666,7 @@ bool32 sub_0200F3E4(void)
         return FALSE;
     varAddr = sub_0200F350(VAR_PACIFIDLOG_TM_RECEIVED_DAY);
     *varAddr = 1;
-    if (sub_02009EC8() != TRUE)
+    if (WriteSaveBlockChunks() != TRUE)
         return FALSE;
     return TRUE;
 }

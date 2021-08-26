@@ -4,7 +4,7 @@
 	.include "asm/gflib/text.o"
 	.include "src/gflib/keys.o"
 	.include "src/gflib/sound.o"
-	.include "asm/mb_020094A8.o"
+	.include "asm/gflib/save.o"
 	.include "src/agb_flash.o"
 	.include "src/unk_200E344.o"
 	.include "src/siirtc.o"
