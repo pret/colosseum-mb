@@ -334,8 +334,8 @@ _02000564:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start sub_02000584
-sub_02000584: @ 0x02000584
+	thumb_func_start RenderText_NoPlaceholders
+RenderText_NoPlaceholders: @ 0x02000584
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
@@ -481,8 +481,8 @@ _02000682:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_0200068C
-sub_0200068C: @ 0x0200068C
+	thumb_func_start DrawPartyMonHealthBar
+DrawPartyMonHealthBar: @ 0x0200068C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -604,16 +604,16 @@ _02000782:
 	pop {r0}
 	bx r0
 
-	thumb_func_start sub_02000794
-sub_02000794: @ 0x02000794
+	thumb_func_start IsScreenFadedOut
+IsScreenFadedOut: @ 0x02000794
 	ldr r0, =gScreenIsFadedOut
 	ldrb r0, [r0]
 	bx lr
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_020007A0
-sub_020007A0: @ 0x020007A0
+	thumb_func_start OverrideScreenFadeState
+OverrideScreenFadeState: @ 0x020007A0
 	ldr r1, =gScreenIsFadedOut
 	strb r0, [r1]
 	bx lr
@@ -893,8 +893,8 @@ _020009BA:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_020009C4
-sub_020009C4: @ 0x020009C4
+	thumb_func_start RenderTextAt
+RenderTextAt: @ 0x020009C4
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	adds r5, r3, #0
@@ -906,8 +906,9 @@ sub_020009C4: @ 0x020009C4
 	pop {r0}
 	bx r0
 
-	thumb_func_start sub_020009DC
-sub_020009DC: @ 0x020009DC
+	thumb_func_start CreateSomeWindowParameterized
+CreateSomeWindowParameterized: @ 0x020009DC
+	@ struct Window * CreateSomeWindowParameterized(u32 windowId, u32 left, u32 top, u32 width, u32 height, u8 glyphSize);
 	push {r4, r5, r6, r7, lr}
 	sub sp, #0x20
 	adds r6, r0, #0
@@ -923,7 +924,7 @@ sub_020009DC: @ 0x020009DC
 	strb r5, [r0, #3]
 	strb r7, [r0, #4]
 	mov r1, sp
-	ldr r0, =gUnknown_02020A44
+	ldr r0, =sSomeWindowBaseBlock
 	ldrh r0, [r0]
 	strh r0, [r1, #6]
 	movs r0, #0xf
@@ -959,7 +960,7 @@ _02000A36:
 	adds r0, r4, #0
 	movs r1, #0
 	bl ClearWindowCharBuffer
-	ldr r1, =gUnknown_02020A44
+	ldr r1, =sSomeWindowBaseBlock
 	adds r0, r5, #0
 	muls r0, r7, r0
 	ldrh r2, [r1]
@@ -973,8 +974,8 @@ _02000A36:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02000A74
-sub_02000A74: @ 0x02000A74
+	thumb_func_start CreatePartyMonHPWindow
+CreatePartyMonHPWindow: @ 0x02000A74
 	push {r4, r5, r6, r7, lr}
 	sub sp, #0x10
 	adds r3, r0, #0
@@ -988,7 +989,7 @@ sub_02000A74: @ 0x02000A74
 	adds r1, r3, #0
 	adds r2, r4, #0
 	movs r3, #7
-	bl sub_020009DC
+	bl CreateSomeWindowParameterized
 	adds r7, r0, #0
 	movs r1, #0
 	bl ClearWindowCharBuffer
@@ -1062,7 +1063,7 @@ _02000B16:
 	bl TextWindowSetXY
 	adds r0, r7, #0
 	add r1, sp, #8
-	bl sub_02000584
+	bl RenderText_NoPlaceholders
 	adds r0, r7, #0
 	add sp, #0x10
 	pop {r4, r5, r6, r7}
@@ -1071,8 +1072,8 @@ _02000B16:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02000B38
-sub_02000B38: @ 0x02000B38
+	thumb_func_start CreateMonIcon
+CreateMonIcon: @ 0x02000B38
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	ldr r0, [r4, #0x18]
@@ -1209,7 +1210,7 @@ _02000C1A:
 	movs r1, #0
 	movs r2, #2
 	ldr r3, =gUnknown_0202004D
-	bl sub_020009C4
+	bl RenderTextAt
 	b _02000C7E
 	.align 2, 0
 	.pool
@@ -1299,7 +1300,7 @@ sub_02000CA4: @ 0x02000CA4
 	bl AddSprite
 	adds r4, r0, #0
 	str r6, [r4, #0x14]
-	ldr r0, =sub_02000B38
+	ldr r0, =CreateMonIcon
 	str r0, [r4, #0x10]
 	ldr r5, =gAgbPmRomParams
 	ldr r0, [r5]
@@ -1484,7 +1485,7 @@ _02000E7E:
 	movs r0, #8
 	str r0, [sp, #4]
 	movs r0, #1
-	bl sub_020009DC
+	bl CreateSomeWindowParameterized
 	mov r3, sb
 	str r0, [r3, #0x14]
 	ldr r4, =gPlayerPartyPtr
@@ -1618,7 +1619,7 @@ _02000F9A:
 	mov r2, sb
 	ldr r0, [r2, #0x14]
 	add r1, sp, #0x20
-	bl sub_02000584
+	bl RenderText_NoPlaceholders
 	mov r3, sb
 	ldrb r0, [r3, #3]
 	cmp r0, #0
@@ -1637,7 +1638,7 @@ _02000FBE:
 	str r0, [sp, #4]
 	movs r0, #1
 	movs r3, #3
-	bl sub_020009DC
+	bl CreateSomeWindowParameterized
 	adds r6, r0, #0
 	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
@@ -1685,7 +1686,7 @@ _0200102A:
 _02001034:
 	adds r1, r4, r1
 	adds r0, r6, #0
-	bl sub_02000584
+	bl RenderText_NoPlaceholders
 	mov r1, sb
 	str r6, [r1, #0x18]
 	b _0200107A
@@ -1811,7 +1812,7 @@ _02001120:
 	ldrb r1, [r2, #1]
 	adds r1, #5
 	mov r2, sl
-	bl sub_02000A74
+	bl CreatePartyMonHPWindow
 	mov r3, sb
 	str r0, [r3, #0x1c]
 	mov r0, r8
@@ -1821,7 +1822,7 @@ _02001120:
 	adds r2, #4
 	movs r0, #0
 	mov r3, sl
-	bl sub_0200068C
+	bl DrawPartyMonHealthBar
 	movs r0, #0x2c
 	mov r1, sl
 	muls r1, r0, r1
@@ -1861,7 +1862,7 @@ _02001178:
 	movs r3, #0x10
 	str r3, [sp, #4]
 	movs r3, #6
-	bl sub_020009DC
+	bl CreateSomeWindowParameterized
 	adds r4, r0, #0
 	mov r0, sb
 	str r4, [r0, #0x24]
@@ -1877,7 +1878,7 @@ _02001178:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_020009C4
+	bl RenderTextAt
 	b _020011F2
 	.align 2, 0
 	.pool
@@ -2082,7 +2083,7 @@ _02001366:
 	movs r0, #8
 	str r0, [sp, #4]
 	movs r0, #1
-	bl sub_020009DC
+	bl CreateSomeWindowParameterized
 	mov r3, sb
 	str r0, [r3, #0x14]
 	ldr r4, =gPlayerPartyPtr
@@ -2216,7 +2217,7 @@ _02001482:
 	mov r2, sb
 	ldr r0, [r2, #0x14]
 	add r1, sp, #0x20
-	bl sub_02000584
+	bl RenderText_NoPlaceholders
 	mov r3, sb
 	ldrb r0, [r3, #3]
 	cmp r0, #0
@@ -2235,7 +2236,7 @@ _020014A6:
 	str r0, [sp, #4]
 	movs r0, #1
 	movs r3, #3
-	bl sub_020009DC
+	bl CreateSomeWindowParameterized
 	adds r6, r0, #0
 	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
@@ -2283,7 +2284,7 @@ _02001512:
 _0200151C:
 	adds r1, r4, r1
 	adds r0, r6, #0
-	bl sub_02000584
+	bl RenderText_NoPlaceholders
 	mov r1, sb
 	str r6, [r1, #0x18]
 	b _0200155C
@@ -2406,7 +2407,7 @@ _020015FC:
 	ldrb r1, [r2, #1]
 	adds r1, #2
 	mov r2, sl
-	bl sub_02000A74
+	bl CreatePartyMonHPWindow
 	mov r3, sb
 	str r0, [r3, #0x1c]
 	mov r0, r8
@@ -2416,7 +2417,7 @@ _020015FC:
 	adds r2, #1
 	movs r0, #0
 	mov r3, sl
-	bl sub_0200068C
+	bl DrawPartyMonHealthBar
 	movs r0, #0x2c
 	mov r1, sl
 	muls r1, r0, r1
@@ -2455,7 +2456,7 @@ _02001654:
 	movs r3, #0x10
 	str r3, [sp, #4]
 	movs r3, #6
-	bl sub_020009DC
+	bl CreateSomeWindowParameterized
 	adds r4, r0, #0
 	mov r0, sb
 	str r4, [r0, #0x24]
@@ -2471,7 +2472,7 @@ _02001654:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_020009C4
+	bl RenderTextAt
 	b _020016CA
 	.align 2, 0
 	.pool
@@ -2617,7 +2618,7 @@ sub_020017E8: @ 0x020017E8
 	push {r4, r5, r6, lr}
 	sub sp, #0xc
 	adds r6, r0, #0
-	ldr r1, =gUnknown_02020A44
+	ldr r1, =sSomeWindowBaseBlock
 	movs r0, #0x80
 	strh r0, [r1]
 	bl ClearVram
@@ -2977,7 +2978,7 @@ _02001AC8:
 	ldr r3, =gUnknown_0201FF98
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	b _02001B98
 	.align 2, 0
 	.pool
@@ -2986,7 +2987,7 @@ _02001B8C:
 	ldr r3, =gUnknown_0201FF9F
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 _02001B98:
 	ldr r5, =gUnknown_02021860
 	movs r0, #0x86
@@ -2996,12 +2997,12 @@ _02001B98:
 	ldr r3, =gUnknown_0201FFA8
 	movs r1, #0
 	movs r2, #0x10
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r4]
 	ldr r3, =gUnknown_0201FFB0
 	movs r1, #0
 	movs r2, #0x20
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r2, =gUnknown_0201F910
 	movs r0, #0
 	movs r1, #0
@@ -3023,7 +3024,7 @@ _02001B98:
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
-	bl sub_02000794
+	bl IsScreenFadedOut
 	cmp r0, #0
 	beq _02001BF4
 	bl FadeIn
@@ -3484,7 +3485,7 @@ _02001F50:
 	ldr r3, =gUnknown_0201FFB7
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	b _0200201C
 	.align 2, 0
 	.pool
@@ -3493,7 +3494,7 @@ _02002010:
 	ldr r3, =gUnknown_0201FFBE
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 _0200201C:
 	ldr r5, =gUnknown_02021860
 	movs r2, #0x86
@@ -3503,12 +3504,12 @@ _0200201C:
 	ldr r3, =gUnknown_0201FFA8
 	movs r1, #0
 	movs r2, #0x10
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r4]
 	ldr r3, =gUnknown_0201FFB0
 	movs r1, #0
 	movs r2, #0x20
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r2, =gUnknown_0201F910
 	movs r0, #0
 	movs r1, #0
@@ -3530,7 +3531,7 @@ _0200201C:
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
-	bl sub_02000794
+	bl IsScreenFadedOut
 	cmp r0, #0
 	beq _02002098
 	bl FadeIn
@@ -3704,7 +3705,7 @@ _020021D4:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_020009C4
+	bl RenderTextAt
 	b _0200222C
 	.align 2, 0
 	.pool
@@ -3784,7 +3785,7 @@ _02002278:
 	movs r1, #0
 	movs r2, #2
 	ldr r3, =gUnknown_0202004D
-	bl sub_020009C4
+	bl RenderTextAt
 	b _020022DE
 	.align 2, 0
 	.pool
@@ -3823,7 +3824,7 @@ _020022DE:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_020009C4
+	bl RenderTextAt
 	b _02002336
 	.align 2, 0
 	.pool
@@ -5118,7 +5119,7 @@ sub_02002D60: @ 0x02002D60
 	adds r1, r3, #0
 	adds r2, r4, #0
 	movs r3, #3
-	bl sub_020009DC
+	bl CreateSomeWindowParameterized
 	adds r6, r0, #0
 	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
@@ -5171,7 +5172,7 @@ _02002DE4:
 	add r1, sp
 	adds r1, #8
 	adds r0, r6, #0
-	bl sub_02000584
+	bl RenderText_NoPlaceholders
 	adds r0, r6, #0
 	add sp, #0x10
 	pop {r4, r5, r6}
@@ -5319,7 +5320,7 @@ sub_02002EE0: @ 0x02002EE0
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_020009C4
+	bl RenderTextAt
 	b _02002F2A
 	.align 2, 0
 	.pool
@@ -7121,7 +7122,7 @@ _02003F20:
 	ldr r3, =gUnknown_02020046
 	movs r1, #0
 	movs r2, #0x30
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r5, #0x10]
 	cmp r0, #0
 	bne _02003F82
@@ -7995,7 +7996,7 @@ sub_0200465C: @ 0x0200465C
 	ldr r1, =gUnknown_0201FB90
 	movs r0, #0
 	bl AddWindow
-	ldr r1, =gUnknown_020219E4
+	ldr r1, =gMessageWindowPtr
 	str r0, [r1]
 	movs r1, #1
 	movs r2, #8
@@ -8030,34 +8031,34 @@ _02004744:
 	beq _02004768
 	b _020047AC
 _0200474A:
-	ldr r0, =gUnknown_020219E4
+	ldr r0, =gMessageWindowPtr
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
 	bl ClearWindowCharBuffer
-	ldr r0, =gUnknown_0201FBB0
+	ldr r0, =gErrorMessagePtrs
 	ldr r1, [r0, #0x18]
 	b _02004798
 	.align 2, 0
 	.pool
 _02004768:
-	ldr r0, =gUnknown_020219E4
+	ldr r0, =gMessageWindowPtr
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
 	bl ClearWindowCharBuffer
-	ldr r0, =gUnknown_0201FBB0
+	ldr r0, =gErrorMessagePtrs
 	ldr r1, [r0, #0x1c]
 	b _02004798
 	.align 2, 0
 	.pool
 _02004788:
-	ldr r0, =gUnknown_020219E4
+	ldr r0, =gMessageWindowPtr
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
 	bl ClearWindowCharBuffer
-	ldr r0, =gUnknown_0201FBB0
+	ldr r0, =gErrorMessagePtrs
 	ldr r1, [r0, #0x20]
 _02004798:
 	adds r0, r4, #0
@@ -8066,12 +8067,12 @@ _02004798:
 	.align 2, 0
 	.pool
 _020047AC:
-	ldr r0, =gUnknown_020219E4
+	ldr r0, =gMessageWindowPtr
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
 	bl ClearWindowCharBuffer
-	ldr r0, =gUnknown_0201FBB0
+	ldr r0, =gErrorMessagePtrs
 	ldr r1, [r0, #4]
 	adds r0, r4, #0
 	bl RenderText
@@ -8100,13 +8101,13 @@ sub_020047D4: @ 0x020047D4
 	lsls r0, r0, #0x1e
 	cmp r0, #0
 	blt _020047FE
-	ldr r0, =gRomDetection_IsRS
+	ldr r0, =gRomDetection_IsEnglishROM
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _02004898
 _020047FE:
 	movs r0, #1
-	bl sub_020007A0
+	bl OverrideScreenFadeState
 	add r1, sp, #0x10
 	ldr r0, =gFont0LatinInfo
 	ldm r0!, {r2, r3, r5}
@@ -8143,12 +8144,12 @@ _020047FE:
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
-	bl sub_02000794
+	bl IsScreenFadedOut
 	cmp r0, #1
 	bne _02004862
 	bl FadeIn
 _02004862:
-	ldr r0, =gUnknown_0201FBB0
+	ldr r0, =gErrorMessagePtrs
 	ldr r1, [r0, #0x24]
 	adds r0, r4, #0
 	bl RenderText
@@ -8168,7 +8169,7 @@ _02004898:
 	.align 2, 0
 	.pool
 _020048AC:
-	ldr r0, =gUnknown_020219E4
+	ldr r0, =gMessageWindowPtr
 	ldr r0, [r0]
 	ldr r1, =0x0000FFFF
 	bl ClearWindowCharBuffer
@@ -8215,7 +8216,7 @@ _0200491C:
 	ldrb r0, [r0]
 	cmp r0, #1
 	bne _02004932
-	ldr r0, =gUnknown_020219E4
+	ldr r0, =gMessageWindowPtr
 	ldr r0, [r0]
 	ldr r1, =gUnknown_02020508
 	bl RenderText
@@ -8283,12 +8284,12 @@ _02004998:
 	movs r0, #0
 	strb r0, [r1]
 	bl sub_02006264
-	ldr r0, =gUnknown_020219E4
+	ldr r0, =gMessageWindowPtr
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
 	bl ClearWindowCharBuffer
-	ldr r0, =gUnknown_0201FBB0
+	ldr r0, =gErrorMessagePtrs
 	ldr r1, [r0, #4]
 	adds r0, r4, #0
 	bl RenderText
@@ -8304,16 +8305,16 @@ _020049C2:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_02004A04
-sub_02004A04: @ 0x02004A04
+	thumb_func_start WarningPrint
+WarningPrint: @ 0x02004A04
 	push {r4, r5, lr}
 	adds r4, r0, #0
-	ldr r0, =gUnknown_020219E4
+	ldr r0, =gMessageWindowPtr
 	ldr r5, [r0]
 	ldr r1, =0x0000FFFF
 	adds r0, r5, #0
 	bl ClearWindowCharBuffer
-	ldr r0, =gUnknown_0201FBB0
+	ldr r0, =gErrorMessagePtrs
 	lsls r4, r4, #2
 	adds r4, r4, r0
 	ldr r1, [r4]
@@ -8367,12 +8368,12 @@ ErrorPrint: @ 0x02004A34
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
-	bl sub_02000794
+	bl IsScreenFadedOut
 	cmp r0, #1
 	bne _02004A9A
 	bl FadeIn
 _02004A9A:
-	ldr r0, =gUnknown_0201FBB0
+	ldr r0, =gErrorMessagePtrs
 	lsls r1, r5, #2
 	adds r1, r1, r0
 	ldr r1, [r1]
@@ -8783,7 +8784,7 @@ _02004E84:
 	movs r1, #0xc
 	movs r2, #0xa
 	adds r3, r6, #0
-	bl sub_0200068C
+	bl DrawPartyMonHealthBar
 	movs r2, #4
 	rsbs r2, r2, #0
 	movs r0, #1
@@ -8852,7 +8853,7 @@ _02004F12:
 	subs r2, r0, r2
 	ldr r3, [r4, #4]
 	adds r0, r6, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	subs r5, #1
 	adds r4, #0xc
 	cmp r5, #0
@@ -9193,7 +9194,7 @@ sub_02005168: @ 0x02005168
 	ldr r3, [r1]
 	movs r1, #0xb0
 	movs r2, #0x10
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r1, =gUnknown_02021A20
 	ldr r0, [r1, #0x18]
 	mov r2, r8
@@ -9240,7 +9241,7 @@ sub_02005168: @ 0x02005168
 	movs r1, #0xbf
 	movs r2, #0
 	add r3, sp, #8
-	bl sub_020009C4
+	bl RenderTextAt
 	add sp, #0x18
 	pop {r3, r4, r5}
 	mov r8, r3
@@ -9282,7 +9283,7 @@ sub_02005264: @ 0x02005264
 	ldr r3, =gUnknown_02020098
 	movs r1, #0xb0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	movs r0, #0
 	bl sub_02005168
 	movs r6, #0
@@ -9617,7 +9618,7 @@ sub_02005548: @ 0x02005548
 	ldr r3, =gUnknown_0202010F
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r5, #0x18]
 	ldr r4, =gUnknown_0201FE24
 	adds r1, r4, #0
@@ -9757,7 +9758,7 @@ _02005658:
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r4, #0x18]
 	ldr r1, =gUnknown_0201FD94
 	movs r2, #4
@@ -9814,7 +9815,7 @@ sub_02005704: @ 0x02005704
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r4, #0x18]
 	ldr r1, =gUnknown_0201FD94
 	movs r2, #4
@@ -9869,7 +9870,7 @@ _020057B8:
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r4, #0x18]
 	ldr r4, =gUnknown_0201FD94
 	adds r1, r4, #0
@@ -10120,7 +10121,7 @@ _02005A00:
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r4, #0x18]
 	ldr r1, =gUnknown_0201FD94
 	movs r2, #4
@@ -10276,7 +10277,7 @@ _02005B74:
 	ldrb r0, [r1]
 	movs r0, #1
 	strb r0, [r1]
-	bl sub_02000794
+	bl IsScreenFadedOut
 	cmp r0, #0
 	bne _02005B9A
 	bl FadeOut
@@ -10639,7 +10640,7 @@ sub_02005E68: @ 0x02005E68
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
 	movs r2, #0
-	bl sub_020009C4
+	bl RenderTextAt
 	ldr r0, [r4, #0x18]
 	ldr r1, =gUnknown_0201FD94
 	movs r2, #4
@@ -10859,7 +10860,7 @@ _0200604E:
 sub_02006058: @ 0x02006058
 	push {r4, r5, r6, lr}
 	movs r0, #2
-	bl sub_02004A04
+	bl WarningPrint
 	ldr r0, =gUnknown_02024960
 	ldr r1, =0x0000084C
 	adds r2, r0, r1
@@ -10880,11 +10881,11 @@ _02006074:
 	cmp r0, #0
 	beq _02006074
 _02006084:
-	ldr r0, =gRomDetection_IsEnglish
+	ldr r0, =gRomDetection_IsRubySapphire
 	ldrb r0, [r0]
 	cmp r0, #0
 	beq _020060C0
-	bl sub_0200CD38
+	bl GetPlayerMapType
 	movs r1, #2
 	ands r1, r0
 	cmp r1, #0
@@ -10894,7 +10895,7 @@ _02006084:
 	rsbs r0, r0, #0
 	str r0, [r1]
 	movs r0, #5
-	bl sub_02004A04
+	bl WarningPrint
 _020060A6:
 	movs r0, #2
 	b _02006256
@@ -10967,7 +10968,7 @@ _02006108:
 	bl ErrorPrint
 _02006144:
 	movs r0, #3
-	bl sub_02004A04
+	bl WarningPrint
 	ldr r5, =gUnknown_02024960
 	ldr r0, =0x0000084C
 	adds r1, r5, r0
@@ -11054,15 +11055,15 @@ _02006214:
 	b _02006230
 _0200621A:
 	movs r0, #1
-	bl sub_02004A04
+	bl WarningPrint
 	b _02006230
 _02006222:
 	movs r0, #4
-	bl sub_02004A04
+	bl WarningPrint
 	b _02006230
 _0200622A:
 	movs r0, #5
-	bl sub_02004A04
+	bl WarningPrint
 _02006230:
 	ldr r1, =gUnknown_02024960
 	ldr r0, =0x0000084C
@@ -11094,7 +11095,7 @@ _02006256:
 sub_02006264: @ 0x02006264
 	push {r4, r5, lr}
 	movs r0, #3
-	bl sub_02004A04
+	bl WarningPrint
 	ldr r5, =gUnknown_02024960
 	ldr r0, =0x0000085B
 	adds r4, r5, r0
@@ -11159,15 +11160,15 @@ _020062F4:
 	b _02006310
 _020062FA:
 	movs r0, #1
-	bl sub_02004A04
+	bl WarningPrint
 	b _02006310
 _02006302:
 	movs r0, #4
-	bl sub_02004A04
+	bl WarningPrint
 	b _02006310
 _0200630A:
 	movs r0, #5
-	bl sub_02004A04
+	bl WarningPrint
 _02006310:
 	ldr r1, =gUnknown_02024960
 	ldr r0, =0x0000084C
@@ -11432,6 +11433,6 @@ _020064E8:
 	.lcomm gUnknown_02020A38, 8
 	.lcomm gScreenIsFadedOut, 1
 	.lcomm _padding_02020A41, 2
-	.lcomm gUnknown_02020A44, 2
+	.lcomm sSomeWindowBaseBlock, 2
 	.lcomm _padding_02020A46, 2
 	.lcomm gUnknown_02020A48, 4

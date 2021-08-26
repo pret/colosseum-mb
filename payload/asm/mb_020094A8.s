@@ -3,73 +3,10 @@
 	.text
 	.syntax unified
 
-	thumb_func_start GetPicUncompPtr
-GetPicUncompPtr: @ 0x020098D0
-	ldr r0, =0x03004400
-	bx lr
-	.align 2, 0
-	.pool
-
-	thumb_func_start sub_020098D8
-sub_020098D8: @ 0x020098D8
-	push {r4, r5, r6, lr}
-	adds r5, r0, #0
-	adds r6, r1, #0
-	ldr r4, =gSaveSectors
-	ldr r0, =gAgbPmRomParams
-	ldr r0, [r0]
-	adds r1, r0, #0
-	adds r1, #0x88
-	ldr r1, [r1]
-	strh r1, [r4, #4]
-	adds r0, #0x8c
-	ldr r0, [r0]
-	movs r1, #0xf8
-	lsls r1, r1, #4
-	bl __umodsi3
-	strh r0, [r4, #0x24]
-	adds r4, #0x6c
-	movs r0, #0xfa
-	lsls r0, r0, #3
-	strh r0, [r4]
-	bl IdentifyFlash
-	lsls r0, r0, #0x10
-	cmp r0, #0
-	bne _0200994C
-	lsls r0, r5, #0x18
-	lsrs r0, r0, #0x18
-	adds r1, r6, #0
-	bl SetFlashTimerIntr
-	lsls r0, r0, #0x10
-	lsrs r1, r0, #0x10
-	cmp r1, #0
-	bne _0200994C
-	ldr r0, =gSaveCounter
-	str r1, [r0]
-	ldr r0, =gFirstSaveSector
-	strh r1, [r0]
-	ldr r0, =gDamagedSaveSectors
-	str r1, [r0]
-	ldr r1, =gSaveValidStatus
-	movs r0, #0x80
-	str r0, [r1]
-	movs r0, #0
-	b _02009950
-	.align 2, 0
-	.pool
-_0200994C:
-	movs r0, #1
-	rsbs r0, r0, #0
-_02009950:
-	pop {r4, r5, r6}
-	pop {r1}
-	bx r1
-	.align 2, 0
-
 	thumb_func_start SetSaveSectorPtrs
 SetSaveSectorPtrs: @ 0x02009958
 	push {r4, r5, lr}
-	ldr r2, =gSaveSectors
+	ldr r2, =sSaveBlockChunks
 	ldr r0, =gSaveBlock2Ptr
 	ldr r0, [r0]
 	str r0, [r2]
@@ -511,7 +448,7 @@ _02009CC6:
 	thumb_func_start sub_02009CD8
 sub_02009CD8: @ 0x02009CD8
 	push {r4, r5, r6, lr}
-	ldr r6, =gSaveSectors
+	ldr r6, =sSaveBlockChunks
 	ldr r1, =gFastSaveSection
 	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
@@ -728,7 +665,7 @@ _02009EB6:
 	thumb_func_start sub_02009EC8
 sub_02009EC8: @ 0x02009EC8
 	push {r4, r5, r6, lr}
-	ldr r6, =gSaveSectors
+	ldr r6, =sSaveBlockChunks
 	ldr r1, =gFastSaveSection
 	ldr r0, =gSaveReadBuffer
 	str r0, [r1]
@@ -1144,7 +1081,7 @@ _0200A256:
 sub_0200A260: @ 0x0200A260
 	push {r4, lr}
 _0200A262:
-	ldr r1, =gSaveSectors
+	ldr r1, =sSaveBlockChunks
 	ldr r4, =gUnknown_02023F40
 	ldrh r0, [r4]
 	cmp r0, #0xd
@@ -1323,7 +1260,7 @@ _0200A3DE:
 	movs r0, #0
 	strb r0, [r1]
 _0200A3EC:
-	ldr r4, =gSaveSectors
+	ldr r4, =sSaveBlockChunks
 	bl SoundVSyncOff
 	movs r0, #0xd
 	adds r1, r4, #0
@@ -1347,7 +1284,7 @@ _0200A3EC:
 _0200A42C:
 	movs r4, #0
 _0200A42E:
-	ldr r1, =gSaveSectors
+	ldr r1, =sSaveBlockChunks
 	movs r0, #0xe
 	bl sub_0200A118
 	ldr r1, =gDamagedSaveSectors
@@ -1386,7 +1323,7 @@ _0200A46E:
 _0200A478:
 	movs r4, #0
 _0200A47A:
-	ldr r1, =gSaveSectors
+	ldr r1, =sSaveBlockChunks
 	movs r0, #0xe
 	bl sub_0200A1B8
 	ldr r1, =gDamagedSaveSectors
@@ -1890,3 +1827,6 @@ _0200A8AC:
 
 	.lcomm sWipeTries, 4
     .lcomm gSaveValidStatus, 4
+
+	.global sWipeTries
+	.global gSaveValidStatus

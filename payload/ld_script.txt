@@ -27,6 +27,8 @@ SECTIONS {
         src/gflib/gfxload.o(.text);
         src/gflib/sound.o(.text);
         asm/gflib/agb_rom.o(.text);
+        src/gflib/pic_uncomp.o(.text);
+        src/gflib/save.o(.text);
         asm/mb_020094A8.o(.text);
         asm/pokemon.o(.text);
         asm/unk_0200C5DC.o(.text);
@@ -81,6 +83,7 @@ SECTIONS {
 	lib_data :
 	ALIGN(4)
 	{
+		src/gflib/save.o(.data);
         data/mb_020094A8.o(.data);
     } =0
     bss_start = .;
@@ -99,18 +102,6 @@ SECTIONS {
     }
     . = 0x02040000; /* Limit EWRAM size */
 
-    . = 0x03000000;
-    gpu_buffer (NOLOAD) :
-    ALIGN(4)
-    {
-    gBgTilemapBuffers = .;
-    . += 0x4000;
-    gFontHalfrowLookupTable = .;
-    . += 0x400;
-    gPicUncompBuffer = .;
-    . += 0x800;
-    }
-    . = 0x03008000; /* Limit IWRAM size */
     /DISCARD/ :
     {
         *(*);

@@ -9,7 +9,7 @@ static u16 sSavedIme;
 u8 gFlashTimeoutFlag;
 u8 (*PollFlashStatus)(u8 *);
 u16 (*WaitForFlashWrite)(u8 phase, u8 *addr, u8 lastData);
-u16 (*ProgramFlashSector)(u16 sectorNum, u8 *src);
+u16 (*ProgramFlashSector)(u16 sectorNum, void *src);
 const struct FlashType *gFlash;
 u16 (*ProgramFlashByte)(u16 sectorNum, u32 offset, u8 data);
 u16 gFlashNumRemainingBytes;
@@ -136,7 +136,7 @@ void ReadFlash_Core(vu8 *src, u8 *dest, u32 size)
     }
 }
 
-void ReadFlash(u16 sectorNum, u32 offset, u8 *dest, u32 size)
+void ReadFlash(u16 sectorNum, u32 offset, void *dest, u32 size)
 {
     u8 *src;
     u16 i;
@@ -276,7 +276,7 @@ u32 ProgramFlashSectorAndVerify(u16 sectorNum, u8 *src)
     return result;
 }
 
-u32 ProgramFlashSectorAndVerifyNBytes(u16 sectorNum, u8 *src, u32 n)
+u32 ProgramFlashSectorAndVerifyNBytes(u16 sectorNum, void *src, u32 n)
 {
     u8 i;
     u32 result;

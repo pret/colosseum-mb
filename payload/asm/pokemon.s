@@ -2228,7 +2228,7 @@ DrawSpindasSpots: @ 0x0200B89C
 	lsls r1, r1, #0x11
 	cmp r0, r1
 	bne _0200B9AE
-	ldr r0, =gRomDetection_IsEnglish
+	ldr r0, =gRomDetection_IsRubySapphire
 	ldrb r0, [r0]
 	movs r1, #7
 	str r1, [sp, #4]

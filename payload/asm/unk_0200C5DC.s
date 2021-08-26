@@ -576,7 +576,7 @@ _0200C9E2:
 	ands r1, r2
 	orrs r1, r0
 	strb r1, [r7]
-	bl sub_0200CD38
+	bl GetPlayerMapType
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x19
 	ands r0, r5
@@ -588,7 +588,7 @@ _0200C9E2:
 	ands r1, r2
 	orrs r1, r0
 	strb r1, [r7]
-	bl sub_0200CDD0
+	bl IsFRLG
 	ands r0, r4
 	lsls r0, r0, #2
 	movs r1, #5
@@ -597,7 +597,7 @@ _0200C9E2:
 	ands r1, r2
 	orrs r1, r0
 	strb r1, [r7]
-	bl sub_0200CD38
+	bl GetPlayerMapType
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x1f
 	ands r0, r4
@@ -848,10 +848,10 @@ _0200CBF6:
 	thumb_func_start DetectROM
 DetectROM: @ 0x0200CBF8
 	push {r4, r5, lr}
-	ldr r2, =gRomDetection_IsEnglish
+	ldr r2, =gRomDetection_IsRubySapphire
 	movs r0, #0
 	strb r0, [r2]
-	ldr r1, =gRomDetection_IsRS
+	ldr r1, =gRomDetection_IsEnglishROM
 	strb r0, [r1]
 	movs r4, #0
 	ldr r0, =0x080000AC
@@ -985,10 +985,10 @@ _0200CD30:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start sub_0200CD38
-sub_0200CD38: @ 0x0200CD38
+	thumb_func_start GetPlayerMapType
+GetPlayerMapType: @ 0x0200CD38
 	push {lr}
-	ldr r0, =gRomDetection_IsEnglish
+	ldr r0, =gRomDetection_IsRubySapphire
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _0200CD60
@@ -1006,7 +1006,7 @@ sub_0200CD38: @ 0x0200CD38
 _0200CD60:
 	ldr r0, =gSaveBlock1Ptr
 	ldr r0, [r0]
-	bl sub_0200CED8
+	bl USRom_GetPlayerMapType
 	lsls r0, r0, #0x18
 	lsrs r1, r0, #0x18
 	movs r0, #1
@@ -1030,7 +1030,7 @@ sub_0200CD84: @ 0x0200CD84
 	thumb_func_start sub_0200CD88
 sub_0200CD88: @ 0x0200CD88
 	push {lr}
-	ldr r0, =gRomDetection_IsEnglish
+	ldr r0, =gRomDetection_IsRubySapphire
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _0200CDB4
@@ -1064,8 +1064,8 @@ _0200CDCA:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start sub_0200CDD0
-sub_0200CDD0: @ 0x0200CDD0
+	thumb_func_start IsFRLG
+IsFRLG: @ 0x0200CDD0
 	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
 	ldr r0, [r0]
@@ -1081,8 +1081,8 @@ _0200CDE4:
 _0200CDE6:
 	bx lr
 
-	thumb_func_start sub_0200CDE8
-sub_0200CDE8: @ 0x0200CDE8
+	thumb_func_start CheckGameClear
+CheckGameClear: @ 0x0200CDE8
 	ldr r1, =gSaveBlock1Ptr
 	ldr r0, =gAgbPmRomParams
 	ldr r0, [r0]
@@ -1230,8 +1230,8 @@ _0200CED0:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200CED8
-sub_0200CED8: @ 0x0200CED8
+	thumb_func_start USRom_GetPlayerMapType
+USRom_GetPlayerMapType: @ 0x0200CED8
 	push {r4, lr}
 	movs r1, #4
 	ldrsb r1, [r0, r1]
@@ -2195,7 +2195,7 @@ _0200D698:
 	.align 2, 0
 	.pool
 _0200D6A8:
-	bl sub_0200CDE8
+	bl CheckGameClear
 	ldrb r3, [r5, #0xb]
 	lsls r2, r3, #0x1f
 	lsrs r2, r2, #0x1f

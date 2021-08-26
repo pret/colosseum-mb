@@ -29,7 +29,7 @@ gUnknown_020219DF:
 gUnknown_020219E0:
 	.space 0x4
 
-gUnknown_020219E4:
+gMessageWindowPtr:
 	.space 0xc
 
 gUnknown_020219F0:
@@ -155,13 +155,13 @@ gUnknown_02024950:
 gUnknown_02024960:
 	.space 0x884
 
-gRomDetection_IsRS:
+gRomDetection_IsEnglishROM:
 	.space 0x4
 
 gAgbPmRomParams:
 	.space 0x4
 
-gRomDetection_IsEnglish:
+gRomDetection_IsRubySapphire:
 	.space 0x4
 
 gUnknown_020251F0:

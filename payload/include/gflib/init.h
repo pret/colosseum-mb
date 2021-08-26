@@ -1,9 +1,9 @@
 #ifndef GFLIB_INIT_H
 #define GFLIB_INIT_H
 
-#define TEST_BUTTON(arr, flags) ({(arr) & (flags);})
+#include "gflib/types.h"
 
-typedef void (*IntrFunc)(void);
+#define TEST_BUTTON(arr, flags) ({(arr) & (flags);})
 
 // Expose to crt0.s
 void AgbMain(void);

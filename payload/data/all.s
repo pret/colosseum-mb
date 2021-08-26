@@ -15,17 +15,28 @@
 	.section .rodata
 	.align 2, 0
 gFont0LatinInfo::
-	.byte 0x02, 0x04, 0x0F, 0x16
-	.byte 0x04, 0x00
+	.byte 2 @ bg
+	.byte 4 @ left
+	.byte 15 @ top
+	.byte 22 @ width
+	.byte 4 @ height
 	.align 1
-	.2byte 0x0020
-	.byte 0x0F, 0x10, 0x00, 0x00
+	.2byte 0x0020 @ base block
+	.byte 0x0F @ bg color
+	.byte 0x10 @ glyph size
 	.align 2
-	.4byte 0x06008400
-	.4byte gFont0LatinGfx
-	.4byte gFont0LatinWidths
-	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	.4byte 0x06008400 @ char addr
+	.4byte gFont0LatinGfx @ gfx
+	.4byte gFont0LatinWidths @ glyph widths
+	.byte 0 @ fg color
+	.byte 0 @ shadow color
+	.byte 0 @ current X
+	.byte 0 @ current Y
+	.byte 0 @ glyph fixed width
+	.byte 0 @ start X
+	.byte 0 @ start Y
 
+	.align 2, 0
 gFont0LatinGfx::
 	.incbin "graphics/fonts/font0_lat.2bpp"
 
@@ -285,28 +296,123 @@ gUnknown_0201FAF8::
 	.byte 0x00, 0x40, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00
 	.byte 0xA0, 0x04, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
+	.align 2, 0
 gUnknown_0201FB10::
-	.byte 0x00, 0x00, 0x00, 0x0B, 0x02, 0x00, 0x20, 0x00, 0x0D, 0x10, 0x00, 0x00, 0x00, 0x04, 0x00, 0x06
-	.byte 0x4C, 0x00, 0x01, 0x02, 0xCC, 0x3F, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-
-gUnknown_0201FB30::
-	.byte 0x00, 0x01, 0x0C, 0x09, 0x08, 0x00, 0x36, 0x00, 0x0D, 0x10, 0x00, 0x00, 0xC0, 0x06, 0x00, 0x06
-	.byte 0x4C, 0x00, 0x01, 0x02, 0xCC, 0x3F, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-
-gUnknown_0201FB50::
-	.byte 0x00, 0x0B, 0x03, 0x13, 0x11, 0x00, 0x7E, 0x00, 0x0D, 0x10, 0x00, 0x00, 0xC0, 0x0F, 0x00, 0x06
-	.byte 0x4C, 0x00, 0x01, 0x02, 0xCC, 0x3F, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-
-gUnknown_0201FB70::
-	.byte 0x00, 0x19, 0x00, 0x05, 0x02, 0x00, 0xC1, 0x01, 0x0D, 0x10, 0x00, 0x00, 0x20, 0x38, 0x00, 0x06
-	.byte 0x4C, 0x00, 0x01, 0x02, 0xCC, 0x3F, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-
-gUnknown_0201FB90::
-	.byte 0x02, 0x01, 0x11, 0x1C, 0x02, 0x00, 0x20, 0x00, 0x0F, 0x10, 0x00, 0x00, 0x00, 0x84, 0x00, 0x06
-	.byte 0x4C, 0x00, 0x01, 0x02, 0xCC, 0x3F, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	.byte 0 @ bg
+	.byte 0 @ left
+	.byte 0 @ top
+	.byte 11 @ width
+	.byte 2 @ height
+	.align 1
+	.2byte 0x0020 @ base block
+	.byte 0x0D @ bg color
+	.byte 0x10 @ glyph size
+	.align 2
+	.4byte 0x06000400 @ char addr
+	.4byte gFont0LatinGfx @ gfx
+	.4byte gFont0LatinWidths @ glyph widths
+	.byte 0 @ fg color
+	.byte 0 @ shadow color
+	.byte 0 @ current X
+	.byte 0 @ current Y
+	.byte 0 @ glyph fixed width
+	.byte 0 @ start X
+	.byte 0 @ start Y
 
 	.align 2, 0
-gUnknown_0201FBB0::
+gUnknown_0201FB30::
+	.byte 0 @ bg
+	.byte 1 @ left
+	.byte 12 @ top
+	.byte 9 @ width
+	.byte 8 @ height
+	.align 1
+	.2byte 0x0036 @ base block
+	.byte 0x0D @ bg color
+	.byte 0x10 @ glyph size
+	.align 2
+	.4byte 0x060006C0 @ char addr
+	.4byte gFont0LatinGfx @ gfx
+	.4byte gFont0LatinWidths @ glyph widths
+	.byte 0 @ fg color
+	.byte 0 @ shadow color
+	.byte 0 @ current X
+	.byte 0 @ current Y
+	.byte 0 @ glyph fixed width
+	.byte 0 @ start X
+	.byte 0 @ start Y
+
+	.align 2, 0
+gUnknown_0201FB50::
+	.byte 0 @ bg
+	.byte 11 @ left
+	.byte 3 @ top
+	.byte 19 @ width
+	.byte 17 @ height
+	.align 1
+	.2byte 0x007E @ base block
+	.byte 0x0D @ bg color
+	.byte 0x10 @ glyph size
+	.align 2
+	.4byte 0x06000FC0 @ char addr
+	.4byte gFont0LatinGfx @ gfx
+	.4byte gFont0LatinWidths @ glyph widths
+	.byte 0 @ fg color
+	.byte 0 @ shadow color
+	.byte 0 @ current X
+	.byte 0 @ current Y
+	.byte 0 @ glyph fixed width
+	.byte 0 @ start X
+	.byte 0 @ start Y
+
+	.align 2, 0
+gUnknown_0201FB70::
+	.byte 0 @ bg
+	.byte 25 @ left
+	.byte 0 @ top
+	.byte 5 @ width
+	.byte 2 @ height
+	.align 1
+	.2byte 0x01C1 @ base block
+	.byte 0x0D @ bg color
+	.byte 0x10 @ glyph size
+	.align 2
+	.4byte 0x06003820 @ char addr
+	.4byte gFont0LatinGfx @ gfx
+	.4byte gFont0LatinWidths @ glyph widths
+	.byte 0 @ fg color
+	.byte 0 @ shadow color
+	.byte 0 @ current X
+	.byte 0 @ current Y
+	.byte 0 @ glyph fixed width
+	.byte 0 @ start X
+	.byte 0 @ start Y
+
+	.align 2, 0
+gUnknown_0201FB90::
+	.byte 2 @ bg
+	.byte 1 @ left
+	.byte 17 @ top
+	.byte 28 @ width
+	.byte 2 @ height
+	.align 1
+	.2byte 0x0020 @ base block
+	.byte 0x0F @ bg color
+	.byte 0x10 @ glyph size
+	.align 2
+	.4byte 0x06008400 @ char addr
+	.4byte gFont0LatinGfx @ gfx
+	.4byte gFont0LatinWidths @ glyph widths
+	.byte 0 @ fg color
+	.byte 0 @ shadow color
+	.byte 0 @ current X
+	.byte 0 @ current Y
+	.byte 0 @ glyph fixed width
+	.byte 0 @ start X
+	.byte 0 @ start Y
+
+	.align 2, 0
+gErrorMessagePtrs::
 	.4byte 0
 	.4byte gUnknown_02020378
 	.4byte gUnknown_02020388
