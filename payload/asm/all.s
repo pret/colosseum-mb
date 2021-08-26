@@ -6167,7 +6167,7 @@ _020036A8:
 	ldr r2, =gUnknown_02020015
 	adds r0, r1, #0
 	add r1, sp, #0xc
-	bl sub_0200C6A4
+	bl CopyItemName
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
 	bl RenderText

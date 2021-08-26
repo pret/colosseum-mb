@@ -44,7 +44,7 @@ struct RomInfo
     /*0xC0*/ const u8 *abilityNames;
     /*0xC4*/ const u8 *abilityDescriptions;
     /*0xC8*/ const struct Item *items;
-    /*0xCC*/ const struct BattleMove *unkCC;
+    /*0xCC*/ const struct BattleMove *battleMoves;
     /*0xD0*/ const struct CompressedSpriteSheet *ballSpriteSheets;
     /*0xD4*/ const struct CompressedSpritePalette *ballSpritePalettes;
     /*0xD8*/ ptrdiff_t unkD8;
@@ -55,7 +55,7 @@ struct RomInfo
     /*0xEC*/ ptrdiff_t pcItemsOffs;
     /*0xF0*/ ptrdiff_t giftRibbonsOffs;
     /*0xF4*/ ptrdiff_t enigmaBerryOffs;
-    /*0xF8*/ ptrdiff_t unkF8;
+    /*0xF8*/ ptrdiff_t enigmaBerrySize;
     /*0xFC*/ const u8 *moveDescriptions;
 };
 

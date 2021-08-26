@@ -3,13 +3,13 @@
 	.text
 	.syntax unified
 
-	thumb_func_start sub_0200C5DC
-sub_0200C5DC: @ 0x0200C5DC
+	thumb_func_start CalcEnigmaBerryChecksum
+CalcEnigmaBerryChecksum: @ 0x0200C5DC
 	push {r4, r5, r6, r7, lr}
 	ldr r3, =gEnigmaBerryPtr
 	ldr r1, [r3]
-	ldr r6, [r1, #0xc]
-	ldr r7, [r1, #0x10]
+	ldr r6, [r1, #0xc] @ description1
+	ldr r7, [r1, #0x10] @ description2
 	movs r2, #0
 	str r2, [r1, #0xc]
 	str r2, [r1, #0x10]
@@ -42,8 +42,8 @@ _0200C60E:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C624
-sub_0200C624: @ 0x0200C624
+	thumb_func_start IsEnigmaBerryValid
+IsEnigmaBerryValid: @ 0x0200C624
 	ldr r0, =gEnigmaBerryPtr
 	ldr r1, [r0]
 	ldrb r0, [r1, #0x14]
@@ -61,8 +61,8 @@ _0200C63C:
 _0200C63E:
 	bx lr
 
-	thumb_func_start sub_0200C640
-sub_0200C640: @ 0x0200C640
+	thumb_func_start GetJpnBerry
+GetJpnBerry: @ 0x0200C640
 	lsls r0, r0, #0x18
 	lsrs r2, r0, #0x18
 	cmp r2, #0x2b
@@ -98,8 +98,8 @@ _0200C67A:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C680
-sub_0200C680: @ 0x0200C680
+	thumb_func_start GetItemById
+GetItemById: @ 0x0200C680
 	lsls r0, r0, #0x10
 	lsrs r1, r0, #0x10
 	ldr r0, =gAgbPmRomParams
@@ -119,8 +119,8 @@ _0200C696:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200C6A4
-sub_0200C6A4: @ 0x0200C6A4
+	thumb_func_start CopyItemName
+CopyItemName: @ 0x0200C6A4
 	push {r4, r5, lr}
 	adds r4, r1, #0
 	adds r5, r2, #0
@@ -189,8 +189,8 @@ _0200C722:
 	pop {r0}
 	bx r0
 
-	thumb_func_start sub_0200C728
-sub_0200C728: @ 0x0200C728
+	thumb_func_start ball_number_to_ball_processing_index
+ball_number_to_ball_processing_index: @ 0x0200C728
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
 	subs r0, #1
