@@ -3,91 +3,6 @@
 	.text
 	.syntax unified
 
-	thumb_func_start ReadFlashSectorI
-ReadFlashSectorI: @ 0x02009C2C
-	push {r4, r5, r6, r7, lr}
-	adds r5, r1, #0
-	adds r6, r2, #0
-	lsls r0, r0, #0x18
-	lsrs r0, r0, #0x18
-	ldr r4, =gFastSaveSection
-	ldr r2, [r4]
-	movs r1, #0
-	movs r3, #0x80
-	lsls r3, r3, #5
-	bl ReadFlash
-	ldr r0, [r4]
-	ldr r1, =0x00000FF4
-	adds r0, r0, r1
-	ldrh r1, [r0]
-	cmp r1, #0
-	bne _02009C54
-	ldr r0, =gFirstSaveSector
-	strh r5, [r0]
-_02009C54:
-	@ checksum = CalculateChecksum(gFastSaveSection->data, chunks[id].size);
-	lsls r0, r1, #3
-	adds r1, r0, r6
-	ldr r5, [r4]
-	ldrh r2, [r1, #4]
-	movs r3, #0
-	movs r1, #0
-	adds r7, r4, #0
-	mov ip, r0
-	b _02009C7A
-	.align 2, 0
-	.pool
-_02009C74:
-	ldm r5!, {r0}
-	adds r3, r3, r0
-	adds r1, #1
-_02009C7A:
-	adds r0, r2, #0
-	asrs r0, r0, #2
-	cmp r1, r0
-	blt _02009C74
-	lsrs r0, r3, #0x10
-	adds r0, r0, r3
-	lsls r0, r0, #0x10
-	lsrs r4, r0, #0x10
-	ldr r3, [r7]
-	ldr r1, =0x00000FF8
-	adds r0, r3, r1
-	ldr r1, [r0]
-	ldr r0, =0x08012025
-	cmp r1, r0
-	bne _02009CC6
-	ldr r1, =0x00000FF6
-	adds r0, r3, r1
-	ldrh r0, [r0]
-	cmp r0, r4
-	bne _02009CC6
-	movs r4, #0
-	mov r3, ip
-	adds r0, r3, r6
-	ldrh r0, [r0, #4]
-	cmp r4, r0
-	bge _02009CC6
-	adds r5, r7, #0
-_02009CB0:
-	adds r2, r3, r6
-	ldr r1, [r2]
-	adds r1, r1, r4
-	ldr r0, [r5]
-	adds r0, r0, r4
-	ldrb r0, [r0]
-	strb r0, [r1]
-	adds r4, #1
-	ldrh r2, [r2, #4]
-	cmp r4, r2
-	blt _02009CB0
-_02009CC6:
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-	.pool
-
 	thumb_func_start sub_02009CD8
 sub_02009CD8: @ 0x02009CD8
 	push {r4, r5, r6, lr}
@@ -107,7 +22,7 @@ _02009CF2:
 	adds r0, r4, r5
 	adds r1, r4, #0
 	adds r2, r6, #0
-	bl ReadFlashSectorI
+	bl ReadSaveChunkI
 	adds r4, #1
 	cmp r4, #0xd
 	ble _02009CF2
@@ -153,7 +68,7 @@ ReadFirstSaveSector: @ 0x02009D48
 	lsls r0, r0, #1
 	movs r1, #0
 	adds r2, r5, #0
-	bl ReadFlashSectorI
+	bl ReadSaveChunkI
 	adds r0, r6, #0
 	pop {r4, r5, r6}
 	pop {r1}
@@ -1196,7 +1111,7 @@ _0200A648:
 	adds r0, r4, r5
 	adds r1, r4, #0
 	adds r2, r6, #0
-	bl ReadFlashSectorI
+	bl ReadSaveChunkI
 	adds r4, #1
 	cmp r4, #0xd
 	ble _0200A648
@@ -1238,7 +1153,7 @@ _0200A684:
 	lsls r0, r0, #1
 	movs r1, #0
 	adds r2, r6, #0
-	bl ReadFlashSectorI
+	bl ReadSaveChunkI
 	ldr r0, [r4]
 	b _0200A6D6
 	.align 2, 0
@@ -1255,7 +1170,7 @@ _0200A6C2:
 	adds r0, r4, r5
 	adds r1, r4, #0
 	adds r2, r6, #0
-	bl ReadFlashSectorI
+	bl ReadSaveChunkI
 	adds r4, #1
 	cmp r4, #0xd
 	ble _0200A6C2

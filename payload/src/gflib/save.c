@@ -247,3 +247,22 @@ u8 GetSaveValidStatus(const struct SaveBlockChunk *chunks)
     gFirstSaveSector = 0;
     return 2;
 }
+
+void ReadSaveChunkI(u8 sector, u32 chunk, const struct SaveBlockChunk * chunks)
+{
+    s32 i;
+    u32 checksum;
+    u16 sectorId;
+    DoReadFlashWholeSection(sector, gFastSaveSection);
+    sectorId = gFastSaveSection->id;
+    if (sectorId == 0)
+    {
+        gFirstSaveSector = chunk;
+    }
+    checksum = CalculateChecksum(gFastSaveSection->data, chunks[sectorId].size);
+    if (gFastSaveSection->signature == FILE_SIGNATURE && gFastSaveSection->checksum == checksum)
+    {
+        for (i = 0; i < chunks[sectorId].size; i++)
+            chunks[sectorId].data[i] = gFastSaveSection->data[i];
+    }
+}
