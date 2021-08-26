@@ -13,7 +13,7 @@ GF_Main: @ 0x020002B4
 	ldr r1, [r0]
 	movs r0, #2
 	bl sub_020098D8
-	bl sub_020094A8
+	bl SaveBlocksInit
 	bl SetSaveSectorPtrs
 	ldr r4, =gUnknown_020217B4
 	bl sub_02009CD8

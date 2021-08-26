@@ -22,10 +22,11 @@ SECTIONS {
         src/gflib/init.o(.text);
         src/gflib/bg.o(.text);
         src/gflib/sprite.o(.text);
-        asm/gflib.o(.text);
+        asm/gflib/text.o(.text);
         src/gflib/keys.o(.text);
         src/gflib/gfxload.o(.text);
         src/gflib/sound.o(.text);
+        asm/gflib/agb_rom.o(.text);
         asm/mb_020094A8.o(.text);
         asm/pokemon.o(.text);
         asm/unk_0200C5DC.o(.text);

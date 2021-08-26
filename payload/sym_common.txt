@@ -67,7 +67,7 @@ gPokedexPtr:
 gSaveBlock1Ptr:
 	.space 0x4
 
-gUnknown_02022ED0:
+gSaveRngValue:
 	.space 0x4
 
 gFlagsPtr:
@@ -100,7 +100,7 @@ gPlayerPartyPtr:
 gDexSeen2Ptr:
 	.space 0x4
 
-gUnknown_02022EFC:
+gLastSaveBlockPtr:
 	.space 0x4
 
 	@ gflib/save.o

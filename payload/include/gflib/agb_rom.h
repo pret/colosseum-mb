@@ -27,7 +27,7 @@ struct RomInfo
     /*0x70*/ ptrdiff_t unk70;
     /*0x74*/ u8 unk74[16];
     /*0x84*/ ptrdiff_t unk84;
-    /*0x88*/ ptrdiff_t unk88;
+    /*0x88*/ ptrdiff_t saveBlock2Size;
     /*0x8C*/ ptrdiff_t saveBlock1Size;
     /*0x90*/ ptrdiff_t playerPartyCountOffs;
     /*0x94*/ ptrdiff_t playerPartyOffs;
@@ -58,5 +58,24 @@ struct RomInfo
     /*0xF8*/ ptrdiff_t enigmaBerrySize;
     /*0xFC*/ const u8 *moveDescriptions;
 };
+
+const struct RomInfo * gAgbPmRomParams;
+
+extern void * gSaveBlock1Ptr;
+extern void * gSaveBlock1BakPtr;
+extern void * gSaveBlock2Ptr;
+extern struct PokemonStorage * gPokemonStoragePtr;
+
+extern struct Pokemon * gPlayerPartyPtr;
+extern struct Pokemon * gPlayerPartyBakPtr;
+extern u8 * gPlayerPartyCountPtr;
+extern struct Pokedex * gPokedexPtr;
+extern u8 * gDexSeen2Ptr;
+extern u8 * gDexSeen3Ptr;
+extern struct ItemSlot * gPcItemsPtr;
+extern u8 * gFlagsPtr;
+extern u16 * gVarsPtr;
+extern u8 * gGiftRibbonsPtr;
+extern struct EnigmaBerry * gEnigmaBerryPtr;
 
 #endif //GFLIB_AGB_ROM_H

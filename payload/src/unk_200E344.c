@@ -260,8 +260,8 @@ bool32 rtc_maincb_is_time_since_last_berry_update_positive(u8 * a0)
     s32 sp04;
     rtc_get_status_and_datetime(&sRtcInfoWork);
     *a0 = bcd_to_hex(sRtcInfoWork.year);
-    rtc_sub_time_from_datetime(&sRtcInfoWork, &gRtcUTCTime, &gSaveBlock2Ptr->localTimeOffset);
-    rtc_sub_time_from_time(&gTimeSinceBerryUpdate, &gSaveBlock2Ptr->lastBerryTreeUpdate, &gRtcUTCTime);
+    rtc_sub_time_from_datetime(&sRtcInfoWork, &gRtcUTCTime, &((struct SaveBlock2 *)gSaveBlock2Ptr)->localTimeOffset);
+    rtc_sub_time_from_time(&gTimeSinceBerryUpdate, &((struct SaveBlock2 *)gSaveBlock2Ptr)->lastBerryTreeUpdate, &gRtcUTCTime);
     sp04 = gTimeSinceBerryUpdate.days * 1440 + gTimeSinceBerryUpdate.hours * 60 + gTimeSinceBerryUpdate.minutes;
     if (sp04 >= 0)
         return TRUE;
