@@ -228,7 +228,7 @@ _020004AA:
 	cmp r1, #0xfe
 	bne _02000548
 	adds r0, r4, #0
-	bl sub_02009154
+	bl TextWindowNextLine
 	b _02000562
 _020004BA:
 	adds r5, #1
@@ -297,7 +297,7 @@ _02000528:
 _0200053C:
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 _02000544:
 	adds r5, r6, #0
 	b _02000562
@@ -307,13 +307,13 @@ _02000548:
 	bne _02000558
 	ldrb r2, [r4, #0x18]
 	adds r0, r4, #0
-	bl sub_02008D6C
+	bl DrawGlyphOnWindow
 	b _02000562
 _02000558:
 	ldrb r2, [r4, #0x18]
 	ldrb r3, [r4, #0x19]
 	adds r0, r4, #0
-	bl sub_02008E4C
+	bl DrawGlyphOnWindow2
 _02000562:
 	adds r5, #1
 _02000564:
@@ -358,7 +358,7 @@ _020005A6:
 	cmp r1, #0xfe
 	bne _0200062C
 	adds r0, r4, #0
-	bl sub_02009154
+	bl TextWindowNextLine
 	b _02000636
 _020005B2:
 	ldr r1, [r4, #0x14]
@@ -375,7 +375,7 @@ _020005C4:
 	movs r1, #8
 _020005C8:
 	movs r2, #0
-	bl sub_0200916C
+	bl TextWindowShiftXY
 	b _02000636
 _020005D0:
 	adds r5, #1
@@ -419,7 +419,7 @@ _0200060C:
 _02000620:
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 _02000628:
 	adds r5, r6, #0
 	b _02000636
@@ -427,7 +427,7 @@ _0200062C:
 	ldrb r2, [r4, #0x18]
 	ldrb r3, [r4, #0x19]
 	adds r0, r4, #0
-	bl sub_02008E4C
+	bl DrawGlyphOnWindow2
 _02000636:
 	adds r5, #1
 _02000638:
@@ -898,7 +898,7 @@ sub_020009C4: @ 0x020009C4
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	adds r5, r3, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	adds r0, r4, #0
 	adds r1, r5, #0
 	bl RenderText
@@ -951,14 +951,14 @@ _02000A36:
 	str r0, [sp, #0x14]
 	adds r0, r6, #0
 	mov r1, sp
-	bl InitTextWindow
+	bl AddWindow
 	adds r4, r0, #0
 	movs r1, #0xf
 	movs r2, #1
-	bl sub_0200914C
+	bl SetTextColor
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r1, =gUnknown_02020A44
 	adds r0, r5, #0
 	muls r0, r7, r0
@@ -991,7 +991,7 @@ sub_02000A74: @ 0x02000A74
 	bl sub_020009DC
 	adds r7, r0, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r5, =gPlayerPartyPtr
 	movs r0, #0x64
 	adds r4, r6, #0
@@ -1059,7 +1059,7 @@ _02000B16:
 	adds r0, r7, #0
 	movs r1, #4
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	adds r0, r7, #0
 	add r1, sp, #8
 	bl sub_02000584
@@ -1201,7 +1201,7 @@ _02000C1A:
 	ldr r5, [r1, #0x24]
 	adds r0, r5, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldrb r0, [r4]
 	cmp r0, #0
 	bne _02000C5C
@@ -1224,7 +1224,7 @@ _02000C5C:
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_02009164
+	bl TextWindowSetXY
 	adds r0, r5, #0
 	ldr r1, =gUnknown_0202004F
 	bl RenderText
@@ -1614,7 +1614,7 @@ _02000F9A:
 	ldr r0, [r1, #0x14]
 	ldrb r1, [r0, #0x1d]
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r2, sb
 	ldr r0, [r2, #0x14]
 	add r1, sp, #0x20
@@ -1657,7 +1657,7 @@ _02000FBE:
 	adds r0, r6, #0
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	adds r0, r6, #0
 	adds r1, r4, #0
 	bl RenderText
@@ -1867,7 +1867,7 @@ _02001178:
 	str r4, [r0, #0x24]
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	mov r0, sb
 	adds r0, #0x22
 	ldrb r0, [r0]
@@ -1892,7 +1892,7 @@ _020011D0:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
 	bl RenderText
@@ -2212,7 +2212,7 @@ _02001482:
 	ldr r0, [r1, #0x14]
 	ldrb r1, [r0, #0x1d]
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r2, sb
 	ldr r0, [r2, #0x14]
 	add r1, sp, #0x20
@@ -2255,7 +2255,7 @@ _020014A6:
 	adds r0, r6, #0
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	adds r0, r6, #0
 	adds r1, r4, #0
 	bl RenderText
@@ -2461,7 +2461,7 @@ _02001654:
 	str r4, [r0, #0x24]
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	mov r0, sb
 	adds r0, #0x22
 	ldrb r0, [r0]
@@ -2486,7 +2486,7 @@ _020016A8:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
 	bl RenderText
@@ -2555,7 +2555,7 @@ sub_02001738: @ 0x02001738
 	strb r0, [r1, #2]
 	ldr r1, =gUnknown_0201F8B0
 	movs r0, #0
-	bl InitTextWindow
+	bl AddWindow
 	ldr r4, =gUnknown_02021860
 	movs r1, #0x84
 	lsls r1, r1, #1
@@ -2563,10 +2563,10 @@ sub_02001738: @ 0x02001738
 	str r0, [r5]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r0, [r5]
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r1, =0x00000123
 	adds r0, r4, r1
 	ldrb r0, [r0]
@@ -2829,17 +2829,17 @@ _020019D6:
 	bl DrawTextWindowBorder
 	ldr r1, =gUnknown_0201F8F0
 	movs r0, #0
-	bl InitTextWindow
+	bl AddWindow
 	movs r1, #0x88
 	lsls r1, r1, #1
 	adds r4, r6, r1
 	str r0, [r4]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r0, [r4]
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
@@ -2918,9 +2918,9 @@ _02001AC8:
 	ldr r0, [r5]
 	ldr r6, =0x0000FFFF
 	adds r1, r6, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [r5]
-	bl sub_020091B0
+	bl TextWindowFillTileBufferForText
 	ldr r4, =0x0000E001
 	str r4, [sp]
 	movs r0, #0
@@ -2949,25 +2949,25 @@ _02001AC8:
 	ldr r0, [r5]
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF87
 	bl RenderText
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
-	bl InitTextWindow
+	bl AddWindow
 	movs r2, #0x86
 	lsls r2, r2, #1
 	adds r4, r7, r2
 	str r0, [r4]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r0, [r4]
-	bl sub_020091B0
+	bl TextWindowFillTileBufferForText
 	ldr r0, [r4]
 	adds r1, r6, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r3, =0x00000125
 	adds r0, r7, r3
 	ldrb r0, [r0]
@@ -3424,9 +3424,9 @@ _02001F50:
 	ldr r0, [r5]
 	ldr r6, =0x0000FFFF
 	adds r1, r6, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [r5]
-	bl sub_020091B0
+	bl TextWindowFillTileBufferForText
 	ldr r4, =0x0000E001
 	str r4, [sp]
 	movs r0, #0
@@ -3456,25 +3456,25 @@ _02001F50:
 	ldr r0, [r5]
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5]
 	ldr r1, =gUnknown_0201FF87
 	bl RenderText
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
-	bl InitTextWindow
+	bl AddWindow
 	movs r1, #0x86
 	lsls r1, r1, #1
 	adds r5, r7, r1
 	str r0, [r5]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r0, [r5]
-	bl sub_020091B0
+	bl TextWindowFillTileBufferForText
 	ldr r0, [r5]
 	adds r1, r6, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [sp, #0x20]
 	adds r0, #0x22
 	ldrb r0, [r0]
@@ -3696,7 +3696,7 @@ _020021D4:
 	ldr r4, [r0, #0x24]
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldrb r0, [r7]
 	cmp r0, #0
 	bne _02002208
@@ -3720,7 +3720,7 @@ _02002208:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
 	bl RenderText
@@ -3776,7 +3776,7 @@ _02002278:
 	ldr r5, [r0]
 	adds r0, r5, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldrb r0, [r4]
 	cmp r0, #0
 	bne _020022BC
@@ -3799,7 +3799,7 @@ _020022BC:
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_02009164
+	bl TextWindowSetXY
 	adds r0, r5, #0
 	ldr r1, =gUnknown_0202004F
 	bl RenderText
@@ -3815,7 +3815,7 @@ _020022DE:
 	ldr r4, [r1, #0x24]
 	adds r0, r4, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldrb r0, [r7]
 	cmp r0, #0
 	bne _02002314
@@ -3838,7 +3838,7 @@ _02002314:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, =gUnknown_0202004F
 	adds r0, r4, #0
 	bl RenderText
@@ -5138,7 +5138,7 @@ sub_02002D60: @ 0x02002D60
 	adds r0, r6, #0
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	adds r0, r6, #0
 	add r1, sp, #8
 	bl RenderText
@@ -5310,7 +5310,7 @@ sub_02002EE0: @ 0x02002EE0
 	adds r5, r0, #0
 	adds r4, r1, #0
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	adds r4, #0x22
 	ldrb r0, [r4]
 	cmp r0, #0
@@ -5334,7 +5334,7 @@ _02002F08:
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, =gUnknown_0202004F
 	adds r0, r5, #0
 	bl RenderText
@@ -5512,11 +5512,11 @@ sub_02002FEC: @ 0x02002FEC
 	bl CpuSet
 	ldr r1, =gUnknown_0201FB50
 	movs r0, #0
-	bl InitTextWindow
+	bl AddWindow
 	str r0, [r4, #0x24]
 	ldr r1, =gUnknown_0201FB30
 	movs r0, #3
-	bl InitTextWindow
+	bl AddWindow
 	str r0, [r4, #0x20]
 	add sp, #4
 	pop {r4}
@@ -5663,11 +5663,11 @@ sub_020031F8: @ 0x020031F8
 	ldr r0, [r7, #0x24]
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r7, #0x24]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	movs r5, #2
 	str r5, [sp]
 	movs r4, #0xf
@@ -5793,11 +5793,11 @@ _02003326:
 	movs r1, #0
 	movs r2, #3
 	movs r3, #0x12
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r6, #0x24]
 	movs r1, #0
 	movs r2, #0x18
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r4, [r6, #0x24]
 	adds r0, r5, #0
 	bl GetAbilityName
@@ -5807,7 +5807,7 @@ _02003326:
 	ldr r0, [r6, #0x24]
 	movs r1, #0
 	movs r2, #0x28
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r4, [r6, #0x24]
 	adds r0, r5, #0
 	bl GetAbilityDescription
@@ -5820,7 +5820,7 @@ _02003326:
 	ldr r0, [r6, #0x24]
 	movs r1, #0xf
 	movs r2, #0x40
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r6, #0x24]
 	ldr r1, =gUnknown_0201FFE8
 	bl RenderText
@@ -5849,7 +5849,7 @@ _020033A0:
 	ldr r0, [r6, #0x24]
 	movs r1, #0x2d
 	movs r2, #0x40
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r6, #0x24]
 	movs r5, #6
 	strb r5, [r0, #0x1c]
@@ -5860,7 +5860,7 @@ _020033A0:
 	movs r1, #5
 	movs r2, #8
 	movs r3, #6
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r6, #0x24]
 	add r1, sp, #0xc
 	bl RenderText
@@ -5870,7 +5870,7 @@ _020033A0:
 	ldr r0, [r6, #0x24]
 	movs r1, #2
 	movs r2, #0x50
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r6, #0x24]
 	ldr r1, =gUnknown_0201FFEB
 	bl RenderText
@@ -5883,7 +5883,7 @@ _02003414:
 	movs r1, #5
 	movs r2, #0xa
 	movs r3, #6
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r7, [r6, #0x24]
 	movs r6, #0x2d
 	mov r1, sl
@@ -5912,7 +5912,7 @@ _02003452:
 	adds r0, r7, #0
 	adds r1, r6, #0
 	movs r2, #0x50
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r4, sp
 	adds r4, #0x1f
 	subs r1, r4, r5
@@ -5926,7 +5926,7 @@ _02003452:
 	ldr r0, [r5, #0x24]
 	movs r1, #0
 	movs r2, #0x60
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0201FFF2
 	bl RenderText
@@ -5942,7 +5942,7 @@ _0200348E:
 	movs r1, #6
 	movs r2, #0xc
 	movs r3, #5
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r7, [r5, #0x24]
 	movs r6, #0x2d
 	ldr r2, =gPlayerPartyPtr
@@ -5974,7 +5974,7 @@ _020034D8:
 	adds r0, r7, #0
 	adds r1, r6, #0
 	movs r2, #0x60
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
@@ -5988,14 +5988,14 @@ _020034D8:
 	movs r1, #0x10
 	movs r2, #8
 	movs r3, #3
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldrb r0, [r5, #0x18]
 	cmp r0, #0
 	bne _02003524
 	ldr r0, [r5, #0x24]
 	movs r1, #0x58
 	movs r2, #0x40
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0201FFFA
 	bl RenderText
@@ -6031,7 +6031,7 @@ _02003554:
 	adds r0, r7, #0
 	adds r1, r6, #0
 	movs r2, #0x40
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
@@ -6043,7 +6043,7 @@ _02003554:
 	ldr r0, [r5, #0x24]
 	movs r1, #0x58
 	movs r2, #0x50
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_02020002
 	bl RenderText
@@ -6079,7 +6079,7 @@ _020035BC:
 	adds r0, r7, #0
 	adds r1, r6, #0
 	movs r2, #0x50
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
@@ -6091,7 +6091,7 @@ _020035BC:
 	ldr r0, [r5, #0x24]
 	movs r1, #0x58
 	movs r2, #0x60
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5, #0x24]
 	ldr r1, =gUnknown_0202000A
 	bl RenderText
@@ -6127,7 +6127,7 @@ _02003624:
 	adds r0, r7, #0
 	adds r1, r6, #0
 	movs r2, #0x60
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r0, r8
 	subs r1, r0, r4
 	adds r0, r7, #0
@@ -6140,11 +6140,11 @@ _02003624:
 	str r1, [sp, #4]
 	movs r2, #0xf
 	movs r3, #0x12
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x24]
 	movs r1, #0
 	movs r2, #0x78
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, sb
@@ -6178,12 +6178,12 @@ _020036BA:
 	bne _020036CC
 	ldr r1, =gUnknown_0201FB70
 	movs r0, #1
-	bl InitTextWindow
+	bl AddWindow
 	str r0, [r4, #0x28]
 _020036CC:
 	ldr r0, [r4, #0x28]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r3, =0x0000F00B
 	movs r0, #0
 	movs r1, #0x17
@@ -6207,11 +6207,11 @@ _020036CC:
 	ldr r0, [r4, #0x28]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r0, [r4, #0x24]
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x28]
 	ldr r1, =gUnknown_0202001B
 	bl RenderText
@@ -6228,7 +6228,7 @@ _020036CC:
 	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r4, #0x1c]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [r4, #0x1c]
 	ldr r1, =gUnknown_0201FFC7
 	bl RenderText
@@ -6271,7 +6271,7 @@ sub_0200378C: @ 0x0200378C
 	ldr r0, [r4, #0x24]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	movs r0, #8
 	str r0, [sp]
 	movs r0, #0xf
@@ -6377,14 +6377,14 @@ _02003898:
 	movs r1, #4
 	ldr r2, [sp, #0x38]
 	movs r3, #9
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	add r0, sp, #0xc
 	adds r1, r6, #0
 	bl CopyMoveName
 	ldr r0, [r4, #0x24]
 	movs r1, #0x20
 	mov r2, sl
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
 	bl RenderText
@@ -6396,7 +6396,7 @@ _02003898:
 	movs r1, #0xd
 	ldr r2, [sp, #0x38]
 	movs r3, #5
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	cmp r6, #0
 	beq _02003944
 	add r0, sp, #0xc
@@ -6421,7 +6421,7 @@ _02003898:
 	ldr r0, [r4, #0x24]
 	movs r1, #0x6c
 	mov r2, sl
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x24]
 	add r1, sp, #0xc
 	bl RenderText
@@ -6442,7 +6442,7 @@ _02003944:
 	ldr r0, [r4, #0x24]
 	movs r1, #0x78
 	mov r2, sl
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x24]
 	ldr r1, =gUnknown_02020029
 	bl RenderText
@@ -6489,12 +6489,12 @@ _020039A0:
 	bne _020039B2
 	ldr r1, =gUnknown_0201FB70
 	movs r0, #1
-	bl InitTextWindow
+	bl AddWindow
 	str r0, [r4, #0x28]
 _020039B2:
 	ldr r0, [r4, #0x28]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r3, =0x0000F00B
 	movs r0, #0
 	movs r1, #0x17
@@ -6518,11 +6518,11 @@ _020039B2:
 	ldr r0, [r4, #0x28]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r0, [r4, #0x28]
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x28]
 	ldr r1, =gUnknown_02020022
 	bl RenderText
@@ -6539,7 +6539,7 @@ _020039B2:
 	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r4, #0x1c]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [r4, #0x1c]
 	ldr r1, =gUnknown_0201FFD6
 	bl RenderText
@@ -6585,7 +6585,7 @@ sub_02003A70: @ 0x02003A70
 	movs r1, #6
 	movs r2, #3
 	movs r3, #3
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	str r4, [sp]
 	movs r0, #0xf
 	str r0, [sp, #4]
@@ -6599,7 +6599,7 @@ sub_02003A70: @ 0x02003A70
 	ldr r0, [r5, #0x20]
 	movs r1, #0x30
 	movs r2, #0x18
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5, #0x20]
 	ldr r4, =gUnknown_0202002C
 	adds r1, r4, #0
@@ -6607,7 +6607,7 @@ sub_02003A70: @ 0x02003A70
 	ldr r0, [r5, #0x20]
 	movs r1, #0x30
 	movs r2, #0x28
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5, #0x20]
 	adds r1, r4, #0
 	bl RenderText
@@ -6625,7 +6625,7 @@ _02003AF4:
 	ldr r0, [r5, #0x20]
 	movs r1, #0x34
 	movs r2, #0x18
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, [r5, #0x20]
 	movs r0, #6
 	strb r0, [r1, #0x1c]
@@ -6655,7 +6655,7 @@ _02003B48:
 	ldr r0, [r4, #0x20]
 	movs r1, #0x34
 	movs r2, #0x28
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, [r4, #0x20]
 	movs r0, #6
 	strb r0, [r1, #0x1c]
@@ -6715,7 +6715,7 @@ sub_02003BA4: @ 0x02003BA4
 	movs r1, #0
 	movs r2, #2
 	movs r3, #9
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r7, #0x10]
 	cmp r0, #0
 	beq _02003BDC
@@ -6723,7 +6723,7 @@ sub_02003BA4: @ 0x02003BA4
 	bl SetSpriteInvisible
 _02003BDC:
 	ldr r0, [r7, #0x20]
-	bl sub_020091B0
+	bl TextWindowFillTileBufferForText
 	movs r0, #2
 	str r0, [sp]
 	movs r0, #0xf0
@@ -6785,14 +6785,14 @@ _02003BDC:
 	ldr r0, [r7, #0x20]
 	movs r1, #0
 	movs r2, #0x18
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r7, #0x20]
 	ldr r1, =gUnknown_02020030
 	bl RenderText
 	ldr r0, [r7, #0x20]
 	movs r1, #0
 	movs r2, #0x28
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r7, #0x20]
 	ldr r1, =gUnknown_02020036
 	bl RenderText
@@ -6816,7 +6816,7 @@ _02003CB4:
 	str r1, [sp, #4]
 	movs r2, #2
 	movs r3, #9
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	movs r5, #7
 	str r5, [sp]
 	mov r0, sb
@@ -6925,19 +6925,19 @@ sub_02003D80: @ 0x02003D80
 	bne _02003DC0
 	ldr r1, =gUnknown_0201FB10
 	movs r0, #2
-	bl InitTextWindow
+	bl AddWindow
 	str r0, [r4, #0x1c]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 _02003DC0:
 	ldr r0, [r4, #0x20]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [r4, #0x20]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	adds r0, r6, #0
 	movs r1, #2
 	add r2, sp, #0xc
@@ -6945,7 +6945,7 @@ _02003DC0:
 	ldr r0, [r4, #0x20]
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
 	bl RenderText
@@ -6959,7 +6959,7 @@ _02003DEE:
 	ldr r0, [r4, #0x20]
 	movs r1, #0x10
 	movs r2, #0x20
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x20]
 	add r1, sp, #0xc
 	bl RenderText
@@ -7000,7 +7000,7 @@ _02003E54:
 	ldr r0, [r4, #0x20]
 	movs r1, #0x19
 	movs r2, #0x20
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, [r4, #0x20]
 	movs r0, #6
 	strb r0, [r1, #0x1c]
@@ -7031,7 +7031,7 @@ _02003E54:
 	ldr r0, [r4, #0x20]
 	movs r1, #0
 	movs r2, #0x10
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x20]
 	adds r1, r7, #0
 	bl RenderText
@@ -7067,7 +7067,7 @@ _02003EE0:
 	ldr r0, [r4, #0x20]
 	movs r1, #0x30
 	movs r2, #0x20
-	bl sub_02009164
+	bl TextWindowSetXY
 	movs r0, #2
 	str r0, [sp]
 	str r5, [sp, #4]
@@ -7455,7 +7455,7 @@ _0200420E:
 	ldr r0, [r1, #0x24]
 	movs r1, #0x20
 	movs r2, #0x48
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	ldr r4, =gUnknown_0202003F
@@ -7464,7 +7464,7 @@ _0200420E:
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	adds r1, r4, #0
@@ -7496,12 +7496,12 @@ _0200420E:
 	movs r1, #0
 	movs r2, #0xc
 	movs r3, #0x12
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	movs r1, #0
 	movs r2, #0x60
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	adds r1, r4, #0
@@ -7611,13 +7611,13 @@ _02004356:
 	str r1, [sp, #4]
 	movs r2, #0xc
 	movs r3, #0x12
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	cmp r4, #4
 	beq _020043BC
 	ldr r0, [r6, #0x24]
 	movs r1, #0
 	movs r2, #0x60
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r6, #0x24]
 	lsls r1, r4, #2
 	adds r1, r1, r4
@@ -7684,12 +7684,12 @@ _0200441C:
 	movs r1, #4
 	movs r2, #9
 	movs r3, #5
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	movs r1, #0x20
 	movs r2, #0x48
-	bl sub_02009164
+	bl TextWindowSetXY
 	mov r1, sb
 	ldr r0, [r1, #0x24]
 	movs r1, #4
@@ -7698,11 +7698,11 @@ _0200441C:
 	movs r1, #0
 	movs r2, #0xc
 	movs r3, #0x12
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	mov r1, sb
 	ldr r0, [r1, #0x28]
 	ldr r1, =gUnknown_02020022
@@ -7787,10 +7787,10 @@ _0200451C:
 	mov r1, r8
 	ldr r0, [r1, #0x24]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	mov r1, r8
 	ldr r0, [r1, #0x24]
-	bl sub_020091B0
+	bl TextWindowFillTileBufferForText
 	movs r4, #4
 	adds r7, r5, #0
 	movs r5, #0x80
@@ -7816,10 +7816,10 @@ _02004536:
 	mov r1, r8
 	ldr r0, [r1, #0x24]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	mov r1, r8
 	ldr r0, [r1, #0x24]
-	bl sub_020091B0
+	bl TextWindowFillTileBufferForText
 	movs r5, #0x20
 	rsbs r5, r5, #0
 	movs r4, #4
@@ -7878,13 +7878,13 @@ sub_020045B8: @ 0x020045B8
 	str r1, [sp, #4]
 	movs r2, #0xc
 	movs r3, #0x12
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	cmp r5, #4
 	beq _0200460C
 	ldr r0, [r6, #0x24]
 	movs r1, #0
 	movs r2, #0x60
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r6, #0x24]
 	lsls r1, r5, #2
 	adds r1, r1, r5
@@ -7994,12 +7994,12 @@ sub_0200465C: @ 0x0200465C
 	bl DrawTextWindowBorder
 	ldr r1, =gUnknown_0201FB90
 	movs r0, #0
-	bl InitTextWindow
+	bl AddWindow
 	ldr r1, =gUnknown_020219E4
 	str r0, [r1]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1]
@@ -8034,7 +8034,7 @@ _0200474A:
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #0x18]
 	b _02004798
@@ -8045,7 +8045,7 @@ _02004768:
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #0x1c]
 	b _02004798
@@ -8056,7 +8056,7 @@ _02004788:
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #0x20]
 _02004798:
@@ -8070,7 +8070,7 @@ _020047AC:
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #4]
 	adds r0, r4, #0
@@ -8132,14 +8132,14 @@ _020047FE:
 	bl DrawTextWindowBorder
 	movs r0, #0
 	add r1, sp, #0x10
-	bl InitTextWindow
+	bl AddWindow
 	adds r4, r0, #0
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
@@ -8171,7 +8171,7 @@ _020048AC:
 	ldr r0, =gUnknown_020219E4
 	ldr r0, [r0]
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 _020048B6:
 	ldr r1, =gUnknown_02024960
 	ldr r4, =0x00000859
@@ -8287,7 +8287,7 @@ _02004998:
 	ldr r4, [r0]
 	adds r0, r4, #0
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, =gUnknown_0201FBB0
 	ldr r1, [r0, #4]
 	adds r0, r4, #0
@@ -8312,7 +8312,7 @@ sub_02004A04: @ 0x02004A04
 	ldr r5, [r0]
 	ldr r1, =0x0000FFFF
 	adds r0, r5, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, =gUnknown_0201FBB0
 	lsls r4, r4, #2
 	adds r4, r4, r0
@@ -8356,14 +8356,14 @@ ErrorPrint: @ 0x02004A34
 	bl DrawTextWindowBorder
 	movs r0, #0
 	add r1, sp, #8
-	bl InitTextWindow
+	bl AddWindow
 	adds r4, r0, #0
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r1, =0x0000FFFF
 	adds r0, r4, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #2]
@@ -8456,20 +8456,20 @@ sub_02004AC4: @ 0x02004AC4
 	bl CpuSet
 	ldr r1, =gUnknown_0201FE3C
 	movs r0, #0
-	bl InitTextWindow
+	bl AddWindow
 	str r0, [r4, #0x14]
 	ldr r1, =gUnknown_0201FE5C
 	movs r0, #1
-	bl InitTextWindow
+	bl AddWindow
 	str r0, [r4, #0x18]
 	ldr r0, [r4, #0x14]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	ldr r0, [r4, #0x18]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 	add sp, #4
 	pop {r4, r5}
 	pop {r0}
@@ -8605,7 +8605,7 @@ _02004CF8:
 	ldr r0, [r5, #0x14]
 	movs r1, #0x48
 	movs r2, #0x10
-	bl sub_02009164
+	bl TextWindowSetXY
 	cmp r4, #0
 	bne _02004D24
 	add r0, sp, #8
@@ -8614,7 +8614,7 @@ _02004CF8:
 	ldr r0, [r5, #0x14]
 	movs r1, #4
 	movs r2, #5
-	bl sub_0200914C
+	bl SetTextColor
 	b _02004D34
 	.align 2, 0
 	.pool
@@ -8625,7 +8625,7 @@ _02004D24:
 	ldr r0, [r5, #0x14]
 	movs r1, #7
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 _02004D34:
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x14]
@@ -8642,7 +8642,7 @@ _02004D34:
 	ldr r0, [r4, #0x14]
 	movs r1, #1
 	movs r2, #8
-	bl sub_0200914C
+	bl SetTextColor
 _02004D5A:
 	add sp, #0x18
 	pop {r4, r5}
@@ -8678,7 +8678,7 @@ sub_02004D68: @ 0x02004D68
 	ldr r0, [r4, #0x14]
 	movs r1, #8
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x14]
 	mov r1, sp
 	bl RenderText
@@ -8715,7 +8715,7 @@ _02004DE4:
 	ldr r0, [r4, #0x14]
 	movs r1, #0x11
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x14]
 	mov r2, sp
 	adds r1, r2, r5
@@ -8730,7 +8730,7 @@ _02004DE4:
 	ldr r0, [r4, #0x14]
 	movs r1, #0x2c
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r4, #0x14]
 	mov r1, sp
 	bl RenderText
@@ -8753,7 +8753,7 @@ _02004E38:
 	ldr r0, [r5, #0x14]
 	movs r1, #8
 	movs r2, #0x10
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r0, [r5, #0x14]
 	mov r1, sp
 	bl RenderText
@@ -8815,7 +8815,7 @@ _02004E84:
 	ldr r0, [r4, #0x14]
 	movs r1, #0x50
 	movs r2, #0x20
-	bl sub_02009164
+	bl TextWindowSetXY
 	ldr r1, [r4, #0x14]
 	movs r0, #6
 	strb r0, [r1, #0x1c]
@@ -9179,7 +9179,7 @@ sub_02005168: @ 0x02005168
 	movs r1, #0x16
 	movs r2, #2
 	movs r3, #6
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	lsls r1, r5, #1
 	adds r1, r1, r5
 	lsls r1, r1, #2
@@ -9203,7 +9203,7 @@ sub_02005168: @ 0x02005168
 	movs r1, #0x18
 	movs r2, #0
 	movs r3, #4
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	adds r4, #0x1c
 	add r4, sl
 	ldrb r4, [r4]
@@ -9277,7 +9277,7 @@ sub_02005264: @ 0x02005264
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [r4, #0x18]
 	ldr r3, =gUnknown_02020098
 	movs r1, #0xb0
@@ -9526,7 +9526,7 @@ sub_02005468: @ 0x02005468
 	ldr r0, =gUnknown_02021A20
 	ldr r0, [r0, #0x18]
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r5, =gStringBuffers
 	movs r0, #0
 	bl sub_0200531C
@@ -9612,7 +9612,7 @@ sub_02005548: @ 0x02005548
 	ldr r5, =gUnknown_02021A20
 	ldr r0, [r5, #0x18]
 	ldr r1, =0x0000FFFF
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [r5, #0x18]
 	ldr r3, =gUnknown_0202010F
 	movs r1, #0
@@ -9635,7 +9635,7 @@ sub_02005548: @ 0x02005548
 	beq _020055B4
 	ldr r0, [r5, #0x18]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 _020055B4:
 	adds r0, r4, #0
 	add sp, #0xc
@@ -9677,7 +9677,7 @@ sub_020055D4: @ 0x020055D4
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r0, [r4, #8]
 	bl MoveSpriteToHead
 	str r5, [r4, #8]
@@ -9734,7 +9734,7 @@ _02005658:
 	bne _020056DA
 	ldr r0, [r4, #0x18]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	movs r0, #6
 	str r0, [sp]
 	str r7, [sp, #4]
@@ -9752,7 +9752,7 @@ _02005658:
 	movs r1, #0x12
 	movs r2, #0
 	movs r3, #0xa
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
@@ -9809,7 +9809,7 @@ sub_02005704: @ 0x02005704
 	movs r1, #0x12
 	movs r2, #0
 	movs r3, #0xa
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
@@ -9864,7 +9864,7 @@ _020057B8:
 	movs r1, #0x12
 	movs r2, #0
 	movs r3, #0xa
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
@@ -9973,7 +9973,7 @@ _020058B8:
 	ldr r0, =gUnknown_02021A20
 	ldr r0, [r0, #0x18]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #3]
@@ -10115,7 +10115,7 @@ _02005A00:
 	movs r1, #0x12
 	movs r2, #0
 	movs r3, #0xa
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
@@ -10581,7 +10581,7 @@ sub_02005DCC: @ 0x02005DCC
 	ldr r4, =gUnknown_02021A20
 	ldr r0, [r4, #0x18]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r2, =gPlayerPartyPtr
 	movs r0, #0x64
 	mov r1, r8
@@ -10634,7 +10634,7 @@ sub_02005E68: @ 0x02005E68
 	movs r1, #0x12
 	movs r2, #0
 	movs r3, #0xa
-	bl sub_020090E4
+	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
 	ldr r3, =gUnknown_02020087
 	movs r1, #0
@@ -10672,7 +10672,7 @@ sub_02005ECC: @ 0x02005ECC
 	ldr r0, =gUnknown_02021A20
 	ldr r0, [r0, #0x18]
 	movs r1, #0
-	bl sub_020090B0
+	bl ClearWindowCharBuffer
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
 	strb r0, [r1, #3]

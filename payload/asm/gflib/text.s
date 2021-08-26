@@ -3,8 +3,8 @@
 	.text
 	.syntax unified
 
-	thumb_func_start sub_02008D6C
-sub_02008D6C: @ 0x02008D6C
+	thumb_func_start DrawGlyphOnWindow
+DrawGlyphOnWindow: @ 0x02008D6C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -125,8 +125,8 @@ _02008E3C:
 	pop {r0}
 	bx r0
 
-	thumb_func_start sub_02008E4C
-sub_02008E4C: @ 0x02008E4C
+	thumb_func_start DrawGlyphOnWindow2
+DrawGlyphOnWindow2: @ 0x02008E4C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -277,8 +277,8 @@ _02008F58:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start InitTextWindow
-InitTextWindow: @ 0x02008F6C
+	thumb_func_start AddWindow
+AddWindow: @ 0x02008F6C
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
@@ -455,8 +455,8 @@ _0200909E:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_020090B0
-sub_020090B0: @ 0x020090B0
+	thumb_func_start ClearWindowCharBuffer
+ClearWindowCharBuffer: @ 0x020090B0
 	push {r4, lr}
 	sub sp, #4
 	adds r4, r0, #0
@@ -476,14 +476,14 @@ sub_020090B0: @ 0x020090B0
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #0
-	bl sub_02009164
+	bl TextWindowSetXY
 	add sp, #4
 	pop {r4}
 	pop {r0}
 	bx r0
 
-	thumb_func_start sub_020090E4
-sub_020090E4: @ 0x020090E4
+	thumb_func_start FillWindowCharBufferRect
+FillWindowCharBufferRect: @ 0x020090E4
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -537,15 +537,15 @@ _02009136:
 	.align 2, 0
 	.pool
 
-	thumb_func_start sub_0200914C
-sub_0200914C: @ 0x0200914C
+	thumb_func_start SetTextColor
+SetTextColor: @ 0x0200914C
 	strb r1, [r0, #0x18]
 	strb r2, [r0, #0x19]
 	bx lr
 	.align 2, 0
 
-	thumb_func_start sub_02009154
-sub_02009154: @ 0x02009154
+	thumb_func_start TextWindowNextLine
+TextWindowNextLine: @ 0x02009154
 	ldrb r1, [r0, #0x1d]
 	strb r1, [r0, #0x1a]
 	ldrb r2, [r0, #0x1b]
@@ -555,15 +555,15 @@ sub_02009154: @ 0x02009154
 	bx lr
 	.align 2, 0
 
-	thumb_func_start sub_02009164
-sub_02009164: @ 0x02009164
+	thumb_func_start TextWindowSetXY
+TextWindowSetXY: @ 0x02009164
 	strb r1, [r0, #0x1a]
 	strb r2, [r0, #0x1b]
 	bx lr
 	.align 2, 0
 
-	thumb_func_start sub_0200916C
-sub_0200916C: @ 0x0200916C
+	thumb_func_start TextWindowShiftXY
+TextWindowShiftXY: @ 0x0200916C
 	ldrb r3, [r0, #0x1a]
 	adds r1, r3, r1
 	strb r1, [r0, #0x1a]
@@ -573,8 +573,8 @@ sub_0200916C: @ 0x0200916C
 	bx lr
 	.align 2, 0
 
-	thumb_func_start sub_0200917C
-sub_0200917C: @ 0x0200917C
+	thumb_func_start TextWindowPrintSimpleString
+TextWindowPrintSimpleString: @ 0x0200917C
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	adds r5, r1, #0
@@ -586,14 +586,14 @@ _02009184:
 	ldrb r1, [r5]
 	ldrb r2, [r4, #0x18]
 	adds r0, r4, #0
-	bl sub_02008D6C
+	bl DrawGlyphOnWindow
 	b _020091A2
 _02009196:
 	ldrb r1, [r5]
 	ldrb r2, [r4, #0x18]
 	ldrb r3, [r4, #0x19]
 	adds r0, r4, #0
-	bl sub_02008E4C
+	bl DrawGlyphOnWindow2
 _020091A2:
 	adds r5, #1
 _020091A4:
@@ -604,8 +604,8 @@ _020091A4:
 	pop {r0}
 	bx r0
 
-	thumb_func_start sub_020091B0
-sub_020091B0: @ 0x020091B0
+	thumb_func_start TextWindowFillTileBufferForText
+TextWindowFillTileBufferForText: @ 0x020091B0
 	push {r4, r5, r6, r7, lr}
 	mov r7, sb
 	mov r6, r8
