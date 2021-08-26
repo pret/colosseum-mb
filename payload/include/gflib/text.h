@@ -9,10 +9,10 @@ extern "C" {
 struct Window
 {
     u8 bg; // 0x0
-    u8 top; // 0x1
-    u8 left; // 0x2
-    u8 height; // 0x3
-    u8 width; // 0x4
+    u8 left; // 0x1
+    u8 top; // 0x2
+    u8 width; // 0x3
+    u8 height; // 0x4
     u16 baseBlock; // 0x6
     u8 fillValue; // 0x8
     u8 glyphSize; // 0x9
@@ -28,8 +28,8 @@ struct Window
     u8 startY; // 0x1E
 };
 
-void DrawGlyphOnWindow(struct Window *window, u32 glyphId, u32 fgColor);
-void DrawGlyphOnWindow2(struct Window *window, u32 glyphId, u32 fgColor, u32 shadowColor);
+void DrawGlyphOnWindow_NoShadow(struct Window *window, u32 glyphId, u32 fgColor);
+void DrawGlyphOnWindow_WithShadow(struct Window *window, u32 glyphId, u32 fgColor, u32 shadowColor);
 struct Window *AddWindow(u32 windowId, const struct Window *template);
 void GenerateFontHalfrowLookupTable(u32 * buffer);
 void ClearWindowCharBuffer(struct Window * window);

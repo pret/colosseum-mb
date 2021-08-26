@@ -307,13 +307,13 @@ _02000548:
 	bne _02000558
 	ldrb r2, [r4, #0x18]
 	adds r0, r4, #0
-	bl DrawGlyphOnWindow
+	bl DrawGlyphOnWindow_NoShadow
 	b _02000562
 _02000558:
 	ldrb r2, [r4, #0x18]
 	ldrb r3, [r4, #0x19]
 	adds r0, r4, #0
-	bl DrawGlyphOnWindow2
+	bl DrawGlyphOnWindow_WithShadow
 _02000562:
 	adds r5, #1
 _02000564:
@@ -427,7 +427,7 @@ _0200062C:
 	ldrb r2, [r4, #0x18]
 	ldrb r3, [r4, #0x19]
 	adds r0, r4, #0
-	bl DrawGlyphOnWindow2
+	bl DrawGlyphOnWindow_WithShadow
 _02000636:
 	adds r5, #1
 _02000638:

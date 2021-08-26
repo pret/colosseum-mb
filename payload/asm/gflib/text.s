@@ -3,8 +3,8 @@
 	.text
 	.syntax unified
 
-	thumb_func_start DrawGlyphOnWindow
-DrawGlyphOnWindow: @ 0x02008D6C
+	thumb_func_start DrawGlyphOnWindow_NoShadow
+DrawGlyphOnWindow_NoShadow: @ 0x02008D6C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -125,8 +125,8 @@ _02008E3C:
 	pop {r0}
 	bx r0
 
-	thumb_func_start DrawGlyphOnWindow2
-DrawGlyphOnWindow2: @ 0x02008E4C
+	thumb_func_start DrawGlyphOnWindow_WithShadow
+DrawGlyphOnWindow_WithShadow: @ 0x02008E4C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -586,14 +586,14 @@ _02009184:
 	ldrb r1, [r5]
 	ldrb r2, [r4, #0x18]
 	adds r0, r4, #0
-	bl DrawGlyphOnWindow
+	bl DrawGlyphOnWindow_NoShadow
 	b _020091A2
 _02009196:
 	ldrb r1, [r5]
 	ldrb r2, [r4, #0x18]
 	ldrb r3, [r4, #0x19]
 	adds r0, r4, #0
-	bl DrawGlyphOnWindow2
+	bl DrawGlyphOnWindow_WithShadow
 _020091A2:
 	adds r5, #1
 _020091A4:
