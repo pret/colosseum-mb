@@ -53,8 +53,17 @@ EWRAM_DATA struct SaveSector gSaveReadBuffer = {0};
 u16 gUnknown_03005EB4;
 u16 gSaveFileStatus;
 u32 gGameContinueCallback;
+u16 gUnknown_02023F40;
+struct {
+    u8 unk_0;
+    u8 unk_1;
+    u32 unk_4;
+    u32 unk_8;
+} gUnknown_02022F10;
 extern u32 gSaveValidStatus;
 extern u8 sWipeTries;
+
+bool8 WipeFailedSectors(void);
 
 struct SaveBlockChunk sSaveBlockChunks[] = {
     {(u8 *)&gSaveBlock2Ptr, 0x00000004},
@@ -491,5 +500,47 @@ u8 sub_02009F4C(u16 chunk, const struct SaveBlockChunk * chunks)
             SetSectorDamagedStatus(SECTOR_OK, sectorId);
             return SAVE_STATUS_OK;
         }
+    }
+}
+
+u8 sub_0200A118(u16 sectorNum)
+{
+    u16 r4 = sectorNum + gFirstSaveSector - 1;
+    r4 %= NUM_SECTORS_PER_SAVE_SLOT;
+    r4 += (gSaveCounter % 2) * NUM_SECTORS_PER_SAVE_SLOT;
+
+    SoundVSyncOff();
+    if (ProgramFlashByte(r4, 0xFF8, ((u8 *)gFastSaveSection)[0xFF8]))
+    {
+        SetSectorDamagedStatus(SECTOR_DAMAGED, r4);
+        SoundVSyncOn();
+        return SAVE_STATUS_ERROR;
+    }
+    else
+    {
+        SetSectorDamagedStatus(SECTOR_OK, r4);
+        SoundVSyncOn();
+        return SAVE_STATUS_OK;
+    }
+}
+
+u8 sub_0200A1B8(u16 sectorNum)
+{
+    u16 r4 = sectorNum + gFirstSaveSector - 1;
+    r4 %= NUM_SECTORS_PER_SAVE_SLOT;
+    r4 += (gSaveCounter % 2) * NUM_SECTORS_PER_SAVE_SLOT;
+
+    SoundVSyncOff();
+    if (ProgramFlashByte(r4, 0xFF8, ~((u8 *)gFastSaveSection)[0xFF8]))
+    {
+        SetSectorDamagedStatus(SECTOR_DAMAGED, r4);
+        SoundVSyncOn();
+        return SAVE_STATUS_ERROR;
+    }
+    else
+    {
+        SetSectorDamagedStatus(SECTOR_OK, r4);
+        SoundVSyncOn();
+        return SAVE_STATUS_OK;
     }
 }

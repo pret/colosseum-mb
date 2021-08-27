@@ -128,12 +128,10 @@ ifeq ($(NODEP),1)
 $(OBJ_DIR)/asm/%.o: asm_dep :=
 $(OBJ_DIR)/src/%.o: c_dep :=
 $(OBJ_DIR)/data/%.o: data_dep :=
-$(OBJ_DIR)/$(MID_SUBDIR)/%.o: midi_dep :=
 else
 $(OBJ_DIR)/asm/%.o: asm_dep = $(shell $(SCANINC) -I "include" -I "" $*.s)
 $(OBJ_DIR)/src/%.o: c_dep = $(shell $(SCANINC) -I "include" -I "" $*.c)
 $(OBJ_DIR)/data/%.o: data_dep = $(shell $(SCANINC) -I "include" -I "" $*.s)
-$(OBJ_DIR)/$(MID_SUBDIR)/%.o: midi_dep = $(shell $(SCANINC) -I "include" -I "" $*.s)
 endif
 
 $(ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(asm_dep)
@@ -149,7 +147,7 @@ $(C_OBJS): $(OBJ_DIR)/%.o: %.c $$(c_dep)
 $(DATA_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(data_dep)
 	$(PREPROC) $< charmap.txt | $(CPP) $(CPPFLAGS) | $(AS) $(ASFLAGS) -o $@
 
-$(MID_ASM_OBJS): $(OBJ_DIR)/%.o: %.s $$(midi_dep)
+$(MID_ASM_OBJS): $(OBJ_DIR)/%.o: %.s include/MPlayDef.s
 	$(AS) $(ASFLAGS) -I sound -o $@ $<
 
 $(OBJ_DIR)/sym_bss.ld: sym_bss.txt
