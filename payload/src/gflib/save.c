@@ -57,7 +57,9 @@ u16 gUnknown_02023F40;
 struct {
     u8 unk_0;
     u8 unk_1;
-    u32 unk_4;
+    u8 unk_2;
+    u8 unk_3;
+    u8 unk_4;
     u32 unk_8;
 } gUnknown_02022F10;
 extern u32 gSaveValidStatus;
@@ -543,4 +545,46 @@ u8 sub_0200A1B8(u16 sectorNum)
         SoundVSyncOn();
         return SAVE_STATUS_OK;
     }
+}
+
+static inline u8 sub_0200A260_sub(u16 limit, const struct SaveBlockChunk * chunks)
+{
+    u8 ret;
+
+    if (gUnknown_02023F40 < limit - 1)
+    {
+        WriteSingleChunk(gUnknown_02023F40, chunks);
+        if (gDamagedSaveSectors)
+            ret = SAVE_STATUS_ERROR;
+        else
+        {
+            ret = SAVE_STATUS_OK;
+            gUnknown_02023F40++;
+        }
+    }
+    else
+    {
+        ret = SAVE_STATUS_ERROR;
+    }
+    return ret;
+}
+
+bool8 sub_0200A260(void)
+{
+    u8 status;
+
+retry:
+    status = sub_0200A260_sub(NUM_SECTORS_PER_SAVE_SLOT, sSaveBlockChunks);
+    if (gDamagedSaveSectors != 0)
+    {
+        if (!WipeFailedSectors())
+        {
+            goto retry;
+        }
+        gUnknown_02022F10.unk_4 |= 1;
+    }
+    if (status == SAVE_STATUS_ERROR)
+        return TRUE;
+    else
+        return FALSE;
 }

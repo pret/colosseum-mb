@@ -3,59 +3,6 @@
 	.text
 	.syntax unified
 
-	thumb_func_start sub_0200A260
-sub_0200A260: @ 0x0200A260
-	push {r4, lr}
-_0200A262:
-	ldr r1, =sSaveBlockChunks
-	ldr r4, =gUnknown_02023F40
-	ldrh r0, [r4]
-	cmp r0, #0xd
-	bge _0200A290
-	bl WriteSingleChunk
-	ldr r0, =gDamagedSaveSectors
-	ldr r0, [r0]
-	movs r1, #0xff
-	cmp r0, #0
-	bne _0200A292
-	movs r1, #1
-	ldrh r0, [r4]
-	adds r0, #1
-	strh r0, [r4]
-	b _0200A292
-	.align 2, 0
-	.pool
-_0200A290:
-	movs r1, #0xff
-_0200A292:
-	adds r4, r1, #0
-	ldr r0, =gDamagedSaveSectors
-	ldr r0, [r0]
-	cmp r0, #0
-	beq _0200A2B0
-	bl WipeFailedSectors
-	lsls r0, r0, #0x18
-	cmp r0, #0
-	beq _0200A262
-	ldr r0, =gUnknown_02022F10
-	movs r1, #1
-	ldrb r2, [r0, #4]
-	orrs r1, r2
-	strb r1, [r0, #4]
-_0200A2B0:
-	cmp r4, #0xff
-	beq _0200A2C0
-	movs r0, #0
-	b _0200A2C2
-	.align 2, 0
-	.pool
-_0200A2C0:
-	movs r0, #1
-_0200A2C2:
-	pop {r4}
-	pop {r1}
-	bx r1
-
 	thumb_func_start sub_0200A2C8
 sub_0200A2C8: @ 0x0200A2C8
 	push {r4, r5, lr}
