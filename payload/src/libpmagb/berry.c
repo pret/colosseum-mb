@@ -3,6 +3,27 @@
 #include "constants/berry.h"
 #include "constants/items.h"
 
+typedef void (*ItemUseFunc)(u8);
+
+struct Item
+{
+    u8 name[14];
+    u16 itemId;
+    u16 price;
+    u8 holdEffect;
+    u8 holdEffectParam;
+    const u8 *description;
+    u8 importance;
+    u8 exitsBagOnUse; // unused, but items which have this field set to 1 all
+    // exit the Bag when they are used.
+    u8 pocket;
+    u8 type;
+    ItemUseFunc fieldUseFunc;
+    u8 battleUsage;
+    ItemUseFunc battleUseFunc;
+    u8 secondaryId;
+};
+
 u32 GetEnigmaBerryChecksum(struct EnigmaBerry * enigmaBerry)
 {
     u32 i, csum;
@@ -62,5 +83,33 @@ const struct Berry *GetBerryInfo(u8 berry)
         if (berry == BERRY_NONE || berry > ITEM_TO_BERRY(LAST_BERRY_INDEX))
             berry = ITEM_TO_BERRY(FIRST_BERRY_INDEX);
         return &gBerries[berry - 1];
+    }
+}
+
+static u16 SanitizeItemId(u16 itemId)
+{
+    if (itemId >= ITEMS_COUNT)
+        return 0;
+    else
+        return itemId;
+}
+
+const u8 *ItemId_GetName(u16 itemId)
+{
+    const struct Item * items = gAgbPmRomParams->items;
+
+    return items[SanitizeItemId(itemId)].name;
+}
+
+void CopyItemName(u16 itemId, u8 *string, const u8 * berry_str)
+{
+    if (itemId == ITEM_ENIGMA_BERRY)
+    {
+        StringCopy(string, GetBerryInfo(ITEM_TO_BERRY(ITEM_ENIGMA_BERRY))->name);
+        StringAppend(string, berry_str);
+    }
+    else
+    {
+        StringCopy(string, ItemId_GetName(itemId));
     }
 }
