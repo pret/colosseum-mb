@@ -1,7 +1,7 @@
 #include "global.h"
 #include "gflib/types.h"
-#include "gflib/save.h"
-#include "gflib/agb_rom.h"
+#include "libpmagb/save.h"
+#include "libpmagb/agb_rom.h"
 #include "gba/flash_internal.h"
 #include "gflib/sound.h"
 

@@ -1,6 +1,6 @@
 #include "global.h"
-#include "gflib/agb_rom.h"
-#include "gflib/save.h"
+#include "libpmagb/agb_rom.h"
+#include "libpmagb/save.h"
 
 u16 gSaveRngValue;
 void * gSaveBlock1Ptr;

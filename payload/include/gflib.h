@@ -1,7 +1,6 @@
 #ifndef GUARD_GFLIB_H
 #define GUARD_GFLIB_H
 
-#include "gflib/agb_rom.h"
 #include "gflib/init.h"
 #include "gflib/bg.h"
 #include "gflib/keys.h"

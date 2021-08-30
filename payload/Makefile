@@ -42,9 +42,12 @@ OBJ_DIR := build/$(NAME)
 
 SHELL := /bin/bash -o pipefail
 
-ASM_SRCS := $(wildcard asm/*.s asm/gflib/*.s)
+C_SUBDIRS := src src/gflib src/libpmagb
+ASM_SUBDIRS := asm asm/gflib asm/libpmagb
+
+ASM_SRCS := $(foreach subdir,$(ASM_SUBDIRS),$(wildcard $(subdir)/*.s))
 ASM_OBJS := $(ASM_SRCS:%.s=$(OBJ_DIR)/%.o)
-C_SRCS := $(wildcard src/*.c src/gflib/*.c)
+C_SRCS := $(foreach subdir,$(C_SUBDIRS),$(wildcard $(subdir)/*.c))
 C_OBJS := $(C_SRCS:%.c=$(OBJ_DIR)/%.o)
 DATA_ASM_SRCS := $(wildcard data/*.s sound/*.s sound/*/*.s)
 DATA_ASM_OBJS := $(DATA_ASM_SRCS:%.s=$(OBJ_DIR)/%.o)
@@ -63,7 +66,7 @@ CFLAGS := -O2 -g -mthumb-interwork -fhex-asm -Wimplicit -Werror
 ASFLAGS := -mcpu=arm7tdmi -I include
 LIBS := -L../../../tools/agbcc/lib -lgcc -lc
 
-SUBDIRS := asm asm/gflib src src/gflib data sound sound/songs $(MID_SUBDIR)
+SUBDIRS := $(ASM_SUBDIRS) $(SRC_SUBDIRS) data sound sound/songs $(MID_SUBDIR)
 
 ALL_OBJS := $(ASM_OBJS) $(C_OBJS) $(DATA_ASM_OBJS) $(MID_ASM_OBJS)
 

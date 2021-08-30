@@ -26,10 +26,10 @@ SECTIONS {
         src/gflib/keys.o(.text);
         src/gflib/gfxload.o(.text);
         src/gflib/sound.o(.text);
-        asm/gflib/agb_rom.o(.text);
-        src/gflib/pic_uncomp.o(.text);
-        src/gflib/save.o(.text);
-        asm/gflib/save.o(.text);
+        asm/libpmagb/agb_rom.o(.text);
+        src/libpmagb/pic_uncomp.o(.text);
+        src/libpmagb/save.o(.text);
+        asm/libpmagb/save.o(.text);
         asm/pokemon.o(.text);
         asm/unk_0200C5DC.o(.text);
         src/agb_flash.o(.text);
@@ -83,7 +83,7 @@ SECTIONS {
 	lib_data :
 	ALIGN(4)
 	{
-		src/gflib/save.o(.data);
+		src/libpmagb/save.o(.data);
         data/mb_020094A8.o(.data);
     } =0
     bss_start = .;
