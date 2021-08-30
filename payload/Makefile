@@ -88,6 +88,9 @@ $(OBJ_DIR)/src/agb_flash_mx.o: CC1    := ../tools/agbcc/bin/agbcc
 $(OBJ_DIR)/src/agb_flash_le.o: CFLAGS := -O -mthumb-interwork -g
 $(OBJ_DIR)/src/agb_flash_le.o: CC1    := ../tools/agbcc/bin/agbcc
 
+$(OBJ_DIR)/src/libpmagb/%.o:   CFLAGS := -O3 -mthumb-interwork -g -fhex-asm -Wimplicit -Werror
+# Temporary
+$(OBJ_DIR)/src/libpmagb/save.o:   CFLAGS := -O2 -mthumb-interwork -g -fhex-asm -Wimplicit -Werror
 
 # Build tools when building the rom
 # Disable dependency scanning for clean/tidy/tools

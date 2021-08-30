@@ -1,5 +1,5 @@
-#ifndef GFLIB_AGB_ROM_H
-#define GFLIB_AGB_ROM_H
+#ifndef PMAGB_AGB_ROM_H
+#define PMAGB_AGB_ROM_H
 
 struct RomInfo
 {
@@ -93,4 +93,4 @@ extern u16 * gVarsPtr;
 extern u8 * gGiftRibbonsPtr;
 extern struct EnigmaBerry * gEnigmaBerryPtr;
 
-#endif //GFLIB_AGB_ROM_H
+#endif //PMAGB_AGB_ROM_H

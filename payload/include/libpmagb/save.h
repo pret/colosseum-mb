@@ -1,5 +1,5 @@
-#ifndef GFLIB_SAVE_H
-#define GFLIB_SAVE_H
+#ifndef PMAGB_SAVE_H
+#define PMAGB_SAVE_H
 
 #define NUM_SECTORS 32 // defined in agb_flash but not in a header
 
@@ -10,4 +10,4 @@
 
 u8* ReadFirstSaveSector(void);
 
-#endif //GFLIB_SAVE_H
+#endif //PMAGB_SAVE_H
