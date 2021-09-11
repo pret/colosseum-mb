@@ -25,10 +25,10 @@ struct RomInfo
     /*0x68*/ size_t unk68;
     /*0x6C*/ size_t unk6C;
     /*0x70*/ size_t unk70;
-    /*0x74*/ u8 unk74;
+    /*0x74*/ u8 otNameLength;
     /*0x75*/ u8 unk75;
-    /*0x76*/ u8 unk76;
-    /*0x77*/ u8 pokemonNameLength;
+    /*0x76*/ u8 pokemonNameLength_1;
+    /*0x77*/ u8 pokemonNameLength_2;
     /*0x78*/ u8 unk78;
     /*0x79*/ u8 unk79;
     /*0x7A*/ u8 unk7A;
@@ -54,7 +54,8 @@ struct RomInfo
     /*0xAC*/ size_t unkAC;
     /*0xB0*/ size_t externalEventFlagsOffs;
     /*0xB4*/ size_t externalEventDataOffs;
-    /*0xB8*/ u8 unkB8; // some sort of flag array?
+    /*0xB8*/ u8 unkB8_0:1;
+    /*0xB8*/ u8 unkB8_1:1;
     /*0xBC*/ const struct BaseStats *baseStats;
     /*0xC0*/ const u8 *abilityNames;
     /*0xC4*/ const u8 *abilityDescriptions;
@@ -62,9 +63,9 @@ struct RomInfo
     /*0xCC*/ const struct BattleMove *battleMoves;
     /*0xD0*/ const struct CompressedSpriteSheet *ballSpriteSheets;
     /*0xD4*/ const struct CompressedSpritePalette *ballSpritePalettes;
-    /*0xD8*/ size_t unkD8;
+    /*0xD8*/ size_t gcnLinkFlagsOffs;
     /*0xDC*/ size_t sysGameClearFlagIdx;
-    /*0xE0*/ size_t unkE0;
+    /*0xE0*/ size_t sysRibbonGetFlagIdx;
     /*0xE4*/ size_t unkE4;
     /*0xE8*/ size_t unkE8;
     /*0xEC*/ size_t pcItemsOffs;

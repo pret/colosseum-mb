@@ -66,7 +66,7 @@ CFLAGS := -O2 -g -mthumb-interwork -fhex-asm -Wimplicit -Werror
 ASFLAGS := -mcpu=arm7tdmi -I include
 LIBS := -L../../../tools/agbcc/lib -lgcc -lc
 
-SUBDIRS := $(ASM_SUBDIRS) $(SRC_SUBDIRS) data sound sound/songs $(MID_SUBDIR)
+SUBDIRS := $(ASM_SUBDIRS) $(C_SUBDIRS) data sound sound/songs $(MID_SUBDIR)
 
 ALL_OBJS := $(ASM_OBJS) $(C_OBJS) $(DATA_ASM_OBJS) $(MID_ASM_OBJS)
 
