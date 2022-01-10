@@ -26,13 +26,15 @@
 
 #define asm_unified(x) asm(".syntax unified\n" x "\n.syntax divided\n")
 
+#include "constants/vars.h"
+#include "constants/flags.h"
 
 #define NELEMS(arr) (sizeof(arr)/sizeof(*(arr)))
 
-
+#define NATIONAL_DEX_COUNT 386
 #define POKEMON_SLOTS_NUMBER 412
 #define POKEMON_NAME_LENGTH 10
-#define OT_NAME_LENGTH 7
+#define PLAYER_NAME_LENGTH 7
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
@@ -168,7 +170,7 @@ struct SecretBaseRecord
     /*0x1A09*/ u8 gender:1;
     /*0x1A09*/ u8 sbr_field_1_5:1;
     /*0x1A09*/ u8 sbr_field_1_6:2;
-    /*0x1A0A*/ u8 playerName[OT_NAME_LENGTH];
+    /*0x1A0A*/ u8 playerName[PLAYER_NAME_LENGTH];
     /*0x1A11*/ u8 trainerId[4]; // byte 0 is used for determining trainer class
     /*0x1A16*/ u16 sbr_field_e;
     /*0x1A18*/ u8 sbr_field_10;
@@ -276,7 +278,7 @@ struct TVShowFanClubLetter
     /*0x01*/ bool8 active;
     /*0x02*/ u16 species;
     /*0x04*/ u16 pad04[6];
-    /*0x10*/ u8 playerName[8];
+    /*0x10*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
     /*0x18*/ u8 language;
 };
 
@@ -286,7 +288,7 @@ struct TVShowRecentHappenings
     /*0x01*/ bool8 active;
     /*0x02*/ u16 var02;
     /*0x04*/ u16 var04[6];
-    /*0x10*/ u8 playerName[8];
+    /*0x10*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
     /*0x18*/ u8 language;
     /*0x19*/ u8 pad19[10];
 };
@@ -298,7 +300,7 @@ struct TVShowFanclubOpinions
     /*0x02*/ u16 var02;
     /*0x04*/ u8 var04A:4;
     /*0x04*/ u8 var04B:4;
-    /*0x05*/ u8 playerName[8];
+    /*0x05*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
     /*0x0D*/ u8 language;
     /*0x0E*/ u8 var0E;
     /*0x0F*/ u8 var0F;
@@ -341,7 +343,7 @@ struct TVShowBravoTrainerPokemonProfiles
     /*0x13*/ u8 contestResult:2;
     /*0x13*/ u8 var13_7:1;
     /*0x14*/ u16 var14;
-    /*0x16*/ u8 playerName[8];
+    /*0x16*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
     /*0x1E*/ u8 language;
     /*0x1F*/ u8 var1f;
 };
@@ -372,7 +374,7 @@ struct TVShowPokemonToday
     /*0x0F*/ u8 ball;
     /*0x10*/ u16 species;
     /*0x12*/ u8 var12;
-    /*0x13*/ u8 playerName[8];
+    /*0x13*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
 };
 
 struct TVShowSmartShopper
@@ -385,7 +387,7 @@ struct TVShowSmartShopper
     /*0x06*/ u16 itemIds[3];
     /*0x0C*/ u16 itemAmounts[3];
     /*0x12*/ u8 shopLocation;
-    /*0x13*/ u8 playerName[8];
+    /*0x13*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
 };
 
 struct TVShowPokemonTodayFailed
@@ -399,7 +401,7 @@ struct TVShowPokemonTodayFailed
     /*0x10*/ u8 var10;
     /*0x11*/ u8 var11;
     /*0x12*/ u8 var12;
-    /*0x13*/ u8 playerName[8];
+    /*0x13*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
 };
 
 struct TVShowPokemonAngler
@@ -411,7 +413,7 @@ struct TVShowPokemonAngler
     /*0x04*/ u16 var04;
     /*0x06*/ u8 language;
     u8 pad07[12];
-    /*0x13*/ u8 playerName[8];
+    /*0x13*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
 };
 
 struct TVShowWorldOfMasters
@@ -425,7 +427,7 @@ struct TVShowWorldOfMasters
     /*0x0a*/ u8 var0a;
     /*0x0b*/ u8 language;
     u8 pad0c[7];
-    /*0x13*/ u8 playerName[8];
+    /*0x13*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
 };
 
 struct TVShowMassOutbreak
@@ -469,7 +471,7 @@ typedef union TVShow
 struct MailStruct
 {
     /*0x00*/ u16 words[9];
-    /*0x12*/ u8 playerName[8];
+    /*0x12*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
     /*0x1A*/ u8 trainerId[4];
     /*0x1E*/ u16 species;
     /*0x20*/ u16 itemId;
@@ -488,7 +490,7 @@ struct MauvilleManBard
     /*0x00*/ u8 id;
     /*0x02*/ u16 songLyrics[6];
     /*0x0E*/ u16 temporaryLyrics[6];
-    /*0x1A*/ u8 playerName[8];
+    /*0x1A*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
     /*0x22*/ u8 filler_2DB6[0x3];
     /*0x25*/ u8 playerTrainerId[4];
     /*0x29*/ bool8 hasChangedSong;
@@ -854,7 +856,7 @@ struct BattleTowerData
 
 struct SaveBlock2 /* 0x02024EA4 */
 {
-    /*0x00*/ u8 playerName[8];
+    /*0x00*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
     /*0x08*/ u8 playerGender; // MALE, FEMALE
     /*0x09*/ u8 specialSaveWarp;
     /*0x0A*/ u8 playerTrainerId[4];
