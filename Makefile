@@ -26,6 +26,7 @@ export CPP := $(PREFIX)cpp
 export LD := $(PREFIX)ld
 export OBJCOPY := $(PREFIX)objcopy
 
+SHA1 := $(shell { command -v sha1sum || command -v shasum; } 2>/dev/null) -c
 PREPROC := tools/preproc/preproc
 SCANINC := tools/scaninc/scaninc
 RAMSCRGEN := tools/ramscrgen/ramscrgen
@@ -105,7 +106,7 @@ all: rom
 
 rom: $(ROM)
 ifeq ($(COMPARE),1)
-	sha1sum -c $(NAME).sha1
+	@$(SHA1) $(NAME).sha1
 endif
 
 mostlyclean:
