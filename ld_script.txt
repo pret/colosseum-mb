@@ -1,37 +1,37 @@
 SECTIONS {
-	. = 0x02000000;
+    . = 0x02000000;
     .text :
     ALIGN(4)
     {
-		asm/crt0.o(.text);
+        asm/crt0.o(.text);
         src/main.o(.text);
-		asm/libagbsyscall.o(.text);
-		*libgcc.a:_call_via_rX.o(.text);
-    	. += 0x100;
+        asm/libagbsyscall.o(.text);
+        *libgcc.a:_call_via_rX.o(.text);
+        . += 0x100;
     } =0
 
     .rodata :
     ALIGN(4)
     {
-		data/payload.o(.rodata);
-		. = ALIGN(16);
-		src/main.o(.rodata);
+        data/payload.o(.rodata);
+        . = ALIGN(16);
+        src/main.o(.rodata);
     } =0
     bootstrap :
     ALIGN(4)
     {
-    	asm/iwram.o(.text);
+        asm/iwram.o(.text);
     } =0
 
     . = 0x3000000;
     iwram (NOLOAD) :
     ALIGN(4)
     {
-		arm_LZ77UnCompWRAM_Buffer = .;
-		. += 0x130;
-		arm_LZ77UnCompWRAM_FuncStart = .;
-		. += 0x94;
-		arm_LZ77UnCompWRAM_BufferEnd = .;
+        arm_LZ77UnCompWRAM_Buffer = .;
+        . += 0x130;
+        arm_LZ77UnCompWRAM_FuncStart = .;
+        . += 0x94;
+        arm_LZ77UnCompWRAM_BufferEnd = .;
     }
     /DISCARD/ :
     {

@@ -73,18 +73,18 @@ SECTIONS {
         src/agb_flash_le.o(.rodata);
         src/unk_200E344.o(.rodata);
         src/siirtc.o(.rodata);
-	} =0
+    } =0
 
-	.data :
-	ALIGN(4)
-	{
+    .data :
+    ALIGN(4)
+    {
         data/all.o(.data);
-	} =0
+    } =0
 
-	lib_data :
-	ALIGN(4)
-	{
-		src/libpmagb/save.o(.data);
+    lib_data :
+    ALIGN(4)
+    {
+        src/libpmagb/save.o(.data);
         data/mb_020094A8.o(.data);
     } =0
     bss_start = .;
