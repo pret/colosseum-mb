@@ -11109,15 +11109,15 @@ sub_02006264: @ 0x02006264
 	strb r0, [r1]
 	ldrb r0, [r4]
 	movs r1, #1
-	bl DexFlagAction
+	bl GetSetPokedexFlag
 	cmp r0, #0
 	bne _0200629E
 	ldrb r0, [r4]
 	movs r1, #2
-	bl DexFlagAction
+	bl GetSetPokedexFlag
 	ldrb r0, [r4]
 	movs r1, #3
-	bl DexFlagAction
+	bl GetSetPokedexFlag
 _0200629E:
 	movs r4, #0
 	ldr r0, =0x0000085C

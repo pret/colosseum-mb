@@ -32,6 +32,7 @@ SECTIONS {
         asm/libpmagb/save.o(.text);
         asm/pokemon.o(.text);
         src/libpmagb/berry.o(.text);
+        src/unk_200C5DC.o(.text);
         asm/unk_0200C5DC.o(.text);
         src/agb_flash.o(.text);
         src/agb_flash_1m.o(.text);
