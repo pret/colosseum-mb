@@ -21,7 +21,7 @@ _0200C92E:
 	adds r0, r2, #0
 	b _0200C944
 _0200C93C:
-	ldr r0, =gSpeciesToNationalDexNumLUT
+	ldr r0, =gSpeciesToNationalPokedexNum
 	lsls r1, r1, #1
 	adds r1, r1, r0
 	ldrh r0, [r1]
@@ -48,7 +48,7 @@ _0200C960:
 	lsls r0, r0, #1
 	cmp r2, r0
 	bhi _0200C978
-	ldr r1, =gSpeciesToNationalDexNumLUT
+	ldr r1, =gSpeciesToNationalPokedexNum
 	lsls r0, r2, #1
 	adds r0, r0, r1
 	ldrh r0, [r0]

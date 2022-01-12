@@ -1057,7 +1057,7 @@ _0200B084:
 	ands r0, r1
 	cmp r0, #0
 	beq _0200B0A0
-	ldr r1, =gUnknown_0202062C
+	ldr r1, =gText_BadEgg
 _0200B092:
 	adds r0, r6, #0
 	bl StringCopy
@@ -1069,7 +1069,7 @@ _0200B0A0:
 	ands r0, r1
 	cmp r0, #0
 	beq _0200B0B0
-	ldr r1, =gUnknown_0201E808
+	ldr r1, =gText_Egg
 	b _0200B092
 	.align 2, 0
 	.pool
@@ -3337,7 +3337,7 @@ GiveGiftRibbonToParty: @ 0x0200C130
 	lsls r1, r1, #0x18
 	lsrs r5, r1, #0x18
 	movs r7, #0
-	ldr r1, =gUnknown_0201ED5B
+	ldr r1, =gGiftRibbonMonDataIds
 	mov r0, sp
 	movs r2, #7
 	bl memcpy
@@ -3743,7 +3743,7 @@ _0200C43A:
 
 	thumb_func_start GetMonSpritePaletteNumByBaseBlock
 GetMonSpritePaletteNumByBaseBlock: @ 0x0200C440
-	ldr r1, =gUnknown_0201ED40
+	ldr r1, =gTypeToPaletteNumber
 	adds r0, r0, r1
 	ldrb r0, [r0]
 	bx lr

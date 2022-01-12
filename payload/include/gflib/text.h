@@ -6,6 +6,8 @@
 extern "C" {
 #endif
 
+#include "gflib/characters.h"
+
 struct Window
 {
     u8 bg; // 0x0

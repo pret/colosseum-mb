@@ -67,7 +67,7 @@ SECTIONS {
     lib_rodata :
     ALIGN(4)
     {
-        data/mb_020094A8.o(.rodata);
+	src/mb_20094A8.o(.rodata);
         src/rom_info.o(.rodata);
         src/agb_flash.o(.rodata);
         src/agb_flash_1m.o(.rodata);
@@ -87,7 +87,7 @@ SECTIONS {
     ALIGN(4)
     {
         src/libpmagb/save.o(.data);
-        data/mb_020094A8.o(.data);
+        src/mb_20094A8.o(.data);
         src/rom_info.o(.data);
     } =0
     bss_start = .;

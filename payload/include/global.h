@@ -26,15 +26,22 @@
 
 #define asm_unified(x) asm(".syntax unified\n" x "\n.syntax divided\n")
 
+#include "constants/species.h"
+#include "constants/pokedex.h"
 #include "constants/vars.h"
 #include "constants/flags.h"
 
 #define NELEMS(arr) (sizeof(arr)/sizeof(*(arr)))
 
-#define NATIONAL_DEX_COUNT 386
-#define POKEMON_SLOTS_NUMBER 412
 #define POKEMON_NAME_LENGTH 10
 #define PLAYER_NAME_LENGTH 7
+
+#define CONTEST_CATEGORY_COOL     0
+#define CONTEST_CATEGORY_BEAUTY   1
+#define CONTEST_CATEGORY_CUTE     2
+#define CONTEST_CATEGORY_SMART    3
+#define CONTEST_CATEGORY_TOUGH    4
+#define CONTEST_CATEGORIES_COUNT  5
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
@@ -679,7 +686,7 @@ struct ExternalEventFlags
 // there should be enough flags for all 412 slots
 // each slot takes up 8 flags
 // if the value is not divisible by 8, we need to account for the reminder as well
-#define DEX_FLAGS_NO ((POKEMON_SLOTS_NUMBER / 8) + ((POKEMON_SLOTS_NUMBER % 8) ? 1 : 0))
+#define DEX_FLAGS_NO ((NUM_SPECIES / 8) + ((NUM_SPECIES % 8) ? 1 : 0))
 
 struct SaveBlock1 /* 0x02025734 */
 {
