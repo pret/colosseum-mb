@@ -496,29 +496,29 @@ gUnknown_0201FB90::
 	.align 2, 0
 gErrorMessagePtrs::
 	.4byte 0
-	.4byte gUnknown_02020378
-	.4byte gUnknown_02020388
-	.4byte gUnknown_02020393
-	.4byte gUnknown_020203B4
-	.4byte gUnknown_020203C1
-	.4byte gUnknown_0201FF00
-	.4byte gUnknown_0201FF21
-	.4byte gUnknown_0201FF3D
-	.4byte gUnknown_020203DB
-	.4byte gUnknown_02020411
-	.4byte gUnknown_02020445
-	.4byte gUnknown_0202045C
-	.4byte gUnknown_02020474
-	.4byte gUnknown_02020495
-	.4byte gUnknown_020204AE
-	.4byte gUnknown_020204C3
-	.4byte gUnknown_020204D6
-	.4byte gUnknown_020204EE
+	.4byte gText_LinkStandby
+	.4byte gText_Linking
+	.4byte gText_DontTurnOffPower
+	.4byte gText_SaveFailed
+	.4byte gText_LinkInterrupted
+	.4byte gText_SaveFileDeleted
+	.4byte gText_SaveFileCorrupted
+	.4byte gText_NoSaveFile
+	.4byte gText_CannotBeLinked
+	.4byte gText_CannotTrade
+	.4byte gText_ReceivingMoveData
+	.4byte gText_ReceivingPokemonData
+	.4byte gText_ReceivingBattlePokemonData
+	.4byte gText_ReceivingBattleData
+	.4byte gText_StartTrade
+	.4byte gText_EndTrade
+	.4byte gText_SendingCoupons
+	.4byte gText_ReceivingCoupons
 
-gUnknown_0201FBFC::
+gSpText_Leer::
 	.string "MALICIOSO$"
 
-gUnknown_0201FC06::
+gSpText_FireSpin::
 	.string "GIRO FUEGO$"
 
 	.align 2, 0
@@ -568,23 +568,23 @@ gUnknown_0201FD60::
 	.byte 0x08, 0x00, 0x00, 0x00, 0x94, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x18, 0x00, 0x00, 0x00
 	.byte 0x90, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-gUnknown_0201FD90:
+gText_Empty:
 	.string "$"
 
 	.align 2
-gUnknown_0201FD94::
+gText_BattleOptions::
 	.byte 0x88, 0x78, 0x01
 	.align 2
-	.4byte gUnknown_02020071, 0
+	.4byte gText_Fight, 0
 	.byte 0xB8, 0x78, 0x02
 	.align 2
-	.4byte gUnknown_02020077, 0
+	.4byte gText_GiveIn, 0
 	.byte 0x88, 0x88, 0x03
 	.align 2
-	.4byte gUnknown_0202007F, 0
+	.4byte gText_Pokemon, 0
 	.byte 0xB8, 0x88, 0x04
 	.align 2
-	.4byte gUnknown_0201FD90, 0
+	.4byte gText_Empty, 0
 
 gUnknown_0201FDC4::
 	.byte 0x08, 0x78, 0x01
@@ -617,10 +617,10 @@ gUnknown_0201FDF4::
 gUnknown_0201FE24::
 	.byte 0x08, 0x88, 0x02
 	.align 2
-	.4byte gUnknown_02020125, 0
+	.4byte gText_No, 0
 	.byte 0x30, 0x88, 0x01
 	.align 2
-	.4byte gUnknown_02020121, 0
+	.4byte gText_Yes, 0
 
 	.align 2
 gUnknown_0201FE3C::
@@ -667,334 +667,3 @@ gUnknown_0201FE5C::
 	.byte 0 @ glyph fixed width
 	.byte 0 @ start X
 	.byte 0 @ start Y
-
-	.align 2
-gTypeNames::
-	.4byte gUnknown_020200A5
-	.4byte gUnknown_020200AC
-	.4byte gUnknown_020200B2
-	.4byte gUnknown_020200B9
-	.4byte gUnknown_020200C0
-	.4byte gUnknown_020200C7
-	.4byte gUnknown_020200CC
-	.4byte gUnknown_020200D0
-	.4byte gUnknown_020200D6
-	.4byte gUnknown_020200DC
-	.4byte gUnknown_020200E0
-	.4byte gUnknown_020200E5
-	.4byte gUnknown_020200EB
-	.4byte gUnknown_020200F1
-	.4byte gUnknown_020200F8
-	.4byte gUnknown_020200FF
-	.4byte gUnknown_02020103
-	.4byte gUnknown_0202010A
-
-gBattleStringsTable::
-	.4byte gUnknown_02020128
-	.4byte gUnknown_02020143
-	.4byte gUnknown_02020175
-	.4byte gUnknown_020201A7
-	.4byte gUnknown_020201DA
-	.4byte gUnknown_020201F0
-	.4byte gUnknown_02020229
-	.4byte gUnknown_0202024B
-	.4byte gUnknown_02020268
-	.4byte gUnknown_02020290
-	.4byte gUnknown_020202B3
-	.4byte gUnknown_020202D5
-	.4byte gUnknown_020202EF
-	.4byte gUnknown_0202030E
-	.4byte gUnknown_02020340
-
-gUnknown_0201FF00::
-	.string "The save filehas been deleted...$"
-
-gUnknown_0201FF21::
-	.string "The save file is corrupted.$"
-
-gUnknown_0201FF3D::
-	.string "There is no save file.$"
-
-gUnknown_0201FF54::
-	.string "Please select {UNKNOWN_STR} POKéMON.$"
-
-gUnknown_0201FF6E::
-	.string "Please select a POKéMON.$"
-
-gUnknown_0201FF87::
-	.string "Do what with {STR_VAR_3}?$"
-
-gUnknown_0201FF98::
-	.string "SWITCH$"
-
-gUnknown_0201FF9F::
-	.string "SEND OUT$"
-
-gUnknown_0201FFA8::
-	.string "SUMMARY$"
-
-gUnknown_0201FFB0::
-	.string "CANCEL$"
-
-gUnknown_0201FFB7::
-	.string "SELECT$"
-
-gUnknown_0201FFBE::
-	.string "DESELECT$"
-
-gUnknown_0201FFC7::
-	.string "POKéMON SKILLS$"
-
-gUnknown_0201FFD6::
-	.string "BATTLE MOVES$"
-
-gUnknown_0201FFE3::
-	.string "TYPE$"
-
-gUnknown_0201FFE8::
-	.string "HP$"
-
-gUnknown_0201FFEB::
-	.string "ATTACK$"
-
-gUnknown_0201FFF2::
-	.string "DEFENSE$"
-
-gUnknown_0201FFFA::
-	.string "SP. ATK$"
-
-gUnknown_02020002::
-	.string "SP. DEF$"
-
-gUnknown_0202000A::
-	.string "SPEED$"
-
-gUnknown_02020010::
-	.string "NONE$"
-
-gUnknown_02020015::
-	.string "BERRY$"
-
-gUnknown_0202001B::
-	.string "CANCEL$"
-
-gUnknown_02020022::
-	.string "INFO$"
-
-gUnknown_02020027::
-	.string "-$"
-
-gUnknown_02020029::
-	.string "--$"
-
-gUnknown_0202002C::
-	.string "---$"
-
-gUnknown_02020030::
-	.string "POWER$"
-
-gUnknown_02020036::
-	.string "ACCURACY$"
-
-gUnknown_0202003F::
-	.string "CANCEL$"
-
-gUnknown_02020046::
-	.string "STATUS$"
-
-gUnknown_0202004D::
-	.string " $"
-
-gUnknown_0202004F::
-	.string "No. {UNKNOWN_STR}$"
-
-gUnknown_02020056::
-	.string "Select additional POKéMON!$"
-
-gUnknown_02020071::
-	.string "FIGHT$"
-
-gUnknown_02020077::
-	.string "GIVE IN$"
-
-gUnknown_0202007F::
-	.string "POKéMON$"
-
-gUnknown_02020087::
-	.string "What will\n{STR_VAR_3} do?$"
-
-gUnknown_02020098::
-	.string "PP$"
-
-gUnknown_0202009B::
-	.string "MOVE TYPE$"
-
-gUnknown_020200A5::
-	.string "NORMAL$"
-
-gUnknown_020200AC::
-	.string "FIGHT$"
-
-gUnknown_020200B2::
-	.string "FLYING$"
-
-gUnknown_020200B9::
-	.string "POISON$"
-
-gUnknown_020200C0::
-	.string "GROUND$"
-
-gUnknown_020200C7::
-	.string "ROCK$"
-
-gUnknown_020200CC::
-	.string "BUG$"
-
-gUnknown_020200D0::
-	.string "GHOST$"
-
-gUnknown_020200D6::
-	.string "STEEL$"
-
-gUnknown_020200DC::
-	.string "???$"
-
-gUnknown_020200E0::
-	.string "FIRE$"
-
-gUnknown_020200E5::
-	.string "WATER$"
-
-gUnknown_020200EB::
-	.string "GRASS$"
-
-gUnknown_020200F1::
-	.string "ELECTR$"
-
-gUnknown_020200F8::
-	.string "PSYCHC$"
-
-gUnknown_020200FF::
-	.string "ICE$"
-
-gUnknown_02020103::
-	.string "DRAGON$"
-
-gUnknown_0202010A::
-	.string "DARK$"
-
-gUnknown_0202010F::
-	.string "Will you give in?$"
-
-gUnknown_02020121::
-	.string "Yes$"
-
-gUnknown_02020125::
-	.string "No$"
-
-gUnknown_02020128::
-	.string "{STR_VAR_3} can't be\nswitched out!\p$"
-
-gUnknown_02020143::
-	.string "FOE {UNKNOWN_STR}'s SHADOW TAG stops\n{STR_VAR_3} from switching out!\p$"
-
-gUnknown_02020175::
-	.string "FOE {UNKNOWN_STR}'s ARENA TRAP stops\n{STR_VAR_3} from switching out!\p$"
-
-gUnknown_020201A7::
-	.string "FOE {UNKNOWN_STR}'s MAGNET PULL stops\n{STR_VAR_3} from switching out!\p$"
-
-gUnknown_020201DA::
-	.string "{STR_VAR_3}'s {UNKNOWN_STR} is disabled!\p$"
-
-gUnknown_020201F0::
-	.string "{STR_VAR_3} can't use the same\nmove in a row due to the TORMENT!\p$"
-
-gUnknown_02020229::
-	.string "{STR_VAR_3} can't use\n{UNKNOWN_STR} after the TAUNT!\p$"
-
-gUnknown_0202024B::
-	.string "{STR_VAR_3} can't use the\nsealed {UNKNOWN_STR}!\p$"
-
-gUnknown_02020268::
-	.string "CHOICE BAND allows the\nuse of only {UNKNOWN_STR}!\p$"
-
-gUnknown_02020290::
-	.string "There's no PP left for\nthis move!\p$"
-
-gUnknown_020202B3::
-	.string "{STR_VAR_3} has no energy\nleft to battle!\p$"
-
-gUnknown_020202D5::
-	.string "{STR_VAR_3} is already\nin battle!\p$"
-
-gUnknown_020202EF::
-	.string "{STR_VAR_3} has already been\nselected.\p$"
-
-gUnknown_0202030E::
-	.string "You can't switch {STR_VAR_3}'s\nPOKéMON with one of yours!\p$"
-
-gUnknown_02020340::
-	.string "{STR_VAR_3} has no\nmoves left!\p$"
-
-gUnknown_02020357::
-	.string "CHARMANDER$"
-
-gUnknown_02020362::
-	.string "KANGASKHAN$"
-
-gUnknown_0202036D::
-	.string "TYPHLOSION$"
-
-gUnknown_02020378::
-	.string "Link standby...$"
-
-gUnknown_02020388::
-	.string "Linking...$"
-
-gUnknown_02020393::
-	.string "Please don't turn off the power.$"
-
-gUnknown_020203B4::
-	.string "Save failed.$"
-
-gUnknown_020203C1::
-	.string "The link was interrupted.$"
-
-gUnknown_020203DB::
-	.string "This Game Pak cannot be linked to\nPOKéMON COLOSSEUM.\p$"
-
-gUnknown_02020411::
-	.string "This Game Pak cannot trade with\nPOKéMON COLOSSEUM.\p$"
-
-gUnknown_02020445::
-	.string "Receiving move data...$"
-
-gUnknown_0202045C::
-	.string "Sending POKéMON data...$"
-
-gUnknown_02020474::
-	.string "Receiving battle POKéMON data...$"
-
-gUnknown_02020495::
-	.string "Receiving battle data...$"
-
-gUnknown_020204AE::
-	.string "Start POKéMON trade.$"
-
-gUnknown_020204C3::
-	.string "End POKéMON trade.$"
-
-gUnknown_020204D6::
-	.string "Sending POKé COUPONS...$"
-
-gUnknown_020204EE::
-	.string "Receiving POKé COUPONS...$"
-
-gUnknown_02020508::
-	.string "Your Berry Program was updated.\p$"
-
-gUnknown_02020529::
-	.string "Unable to update Berry Program.\p$"
-
-	.align 2, 0

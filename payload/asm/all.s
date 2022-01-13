@@ -1209,7 +1209,7 @@ _02000C1A:
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
-	ldr r3, =gUnknown_0202004D
+	ldr r3, =gText_Space
 	bl RenderTextAt
 	b _02000C7E
 	.align 2, 0
@@ -1227,7 +1227,7 @@ _02000C5C:
 	movs r2, #2
 	bl TextWindowSetXY
 	adds r0, r5, #0
-	ldr r1, =gUnknown_0202004F
+	ldr r1, =gText_Number
 	bl RenderText
 _02000C7E:
 	mov r5, r8
@@ -1874,7 +1874,7 @@ _02001178:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _020011D0
-	ldr r3, =gUnknown_0202004D
+	ldr r3, =gText_Space
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
@@ -1894,7 +1894,7 @@ _020011D0:
 	movs r1, #0
 	movs r2, #2
 	bl TextWindowSetXY
-	ldr r1, =gUnknown_0202004F
+	ldr r1, =gText_Number
 	adds r0, r4, #0
 	bl RenderText
 _020011F2:
@@ -2468,7 +2468,7 @@ _02001654:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _020016A8
-	ldr r3, =gUnknown_0202004D
+	ldr r3, =gText_Space
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
@@ -2488,7 +2488,7 @@ _020016A8:
 	movs r1, #0
 	movs r2, #2
 	bl TextWindowSetXY
-	ldr r1, =gUnknown_0202004F
+	ldr r1, =gText_Number
 	adds r0, r4, #0
 	bl RenderText
 _020016CA:
@@ -2589,21 +2589,21 @@ _020017A4:
 	movs r0, #0
 	bl BufferString
 	ldr r0, [r5]
-	ldr r1, =gUnknown_0201FF54
+	ldr r1, =gText_SelectNumberPokemon
 	bl RenderText
 	b _020017DC
 	.align 2, 0
 	.pool
 _020017C4:
 	ldr r0, [r5]
-	ldr r1, =gUnknown_02020056
+	ldr r1, =gText_SelectAdditionalPokemon
 	bl RenderText
 	b _020017DC
 	.align 2, 0
 	.pool
 _020017D4:
 	ldr r0, [r5]
-	ldr r1, =gUnknown_0201FF6E
+	ldr r1, =gText_SelectPokemon
 	bl RenderText
 _020017DC:
 	add sp, #0xc
@@ -2952,7 +2952,7 @@ _02001AC8:
 	movs r2, #0
 	bl TextWindowSetXY
 	ldr r0, [r5]
-	ldr r1, =gUnknown_0201FF87
+	ldr r1, =gText_DoWhatWithMon
 	bl RenderText
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
@@ -2975,7 +2975,7 @@ _02001AC8:
 	cmp r0, #0
 	bne _02001B8C
 	ldr r0, [r4]
-	ldr r3, =gUnknown_0201FF98
+	ldr r3, =gText_Switch
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
@@ -2984,7 +2984,7 @@ _02001AC8:
 	.pool
 _02001B8C:
 	ldr r0, [r4]
-	ldr r3, =gUnknown_0201FF9F
+	ldr r3, =gText_SendOut
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
@@ -2994,12 +2994,12 @@ _02001B98:
 	lsls r0, r0, #1
 	adds r4, r5, r0
 	ldr r0, [r4]
-	ldr r3, =gUnknown_0201FFA8
+	ldr r3, =gText_Summary
 	movs r1, #0
 	movs r2, #0x10
 	bl RenderTextAt
 	ldr r0, [r4]
-	ldr r3, =gUnknown_0201FFB0
+	ldr r3, =gText_Cancel
 	movs r1, #0
 	movs r2, #0x20
 	bl RenderTextAt
@@ -3459,7 +3459,7 @@ _02001F50:
 	movs r2, #0
 	bl TextWindowSetXY
 	ldr r0, [r5]
-	ldr r1, =gUnknown_0201FF87
+	ldr r1, =gText_DoWhatWithMon
 	bl RenderText
 	ldr r1, =gUnknown_0201F8D0
 	movs r0, #2
@@ -3482,7 +3482,7 @@ _02001F50:
 	cmp r0, #0
 	bne _02002010
 	ldr r0, [r5]
-	ldr r3, =gUnknown_0201FFB7
+	ldr r3, =gText_Select
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
@@ -3491,7 +3491,7 @@ _02001F50:
 	.pool
 _02002010:
 	ldr r0, [r5]
-	ldr r3, =gUnknown_0201FFBE
+	ldr r3, =gText_Deselect
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
@@ -3501,12 +3501,12 @@ _0200201C:
 	lsls r2, r2, #1
 	adds r4, r5, r2
 	ldr r0, [r4]
-	ldr r3, =gUnknown_0201FFA8
+	ldr r3, =gText_Summary
 	movs r1, #0
 	movs r2, #0x10
 	bl RenderTextAt
 	ldr r0, [r4]
-	ldr r3, =gUnknown_0201FFB0
+	ldr r3, =gText_Cancel
 	movs r1, #0
 	movs r2, #0x20
 	bl RenderTextAt
@@ -3701,7 +3701,7 @@ _020021D4:
 	ldrb r0, [r7]
 	cmp r0, #0
 	bne _02002208
-	ldr r3, =gUnknown_0202004D
+	ldr r3, =gText_Space
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
@@ -3722,7 +3722,7 @@ _02002208:
 	movs r1, #0
 	movs r2, #2
 	bl TextWindowSetXY
-	ldr r1, =gUnknown_0202004F
+	ldr r1, =gText_Number
 	adds r0, r4, #0
 	bl RenderText
 _0200222C:
@@ -3784,7 +3784,7 @@ _02002278:
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
-	ldr r3, =gUnknown_0202004D
+	ldr r3, =gText_Space
 	bl RenderTextAt
 	b _020022DE
 	.align 2, 0
@@ -3802,7 +3802,7 @@ _020022BC:
 	movs r2, #2
 	bl TextWindowSetXY
 	adds r0, r5, #0
-	ldr r1, =gUnknown_0202004F
+	ldr r1, =gText_Number
 	bl RenderText
 _020022DE:
 	movs r3, #1
@@ -3820,7 +3820,7 @@ _020022DE:
 	ldrb r0, [r7]
 	cmp r0, #0
 	bne _02002314
-	ldr r3, =gUnknown_0202004D
+	ldr r3, =gText_Space
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #2
@@ -3840,7 +3840,7 @@ _02002314:
 	movs r1, #0
 	movs r2, #2
 	bl TextWindowSetXY
-	ldr r1, =gUnknown_0202004F
+	ldr r1, =gText_Number
 	adds r0, r4, #0
 	bl RenderText
 _02002336:
@@ -5316,7 +5316,7 @@ sub_02002EE0: @ 0x02002EE0
 	ldrb r0, [r4]
 	cmp r0, #0
 	bne _02002F08
-	ldr r3, =gUnknown_0202004D
+	ldr r3, =gText_Space
 	adds r0, r5, #0
 	movs r1, #0
 	movs r2, #2
@@ -5336,7 +5336,7 @@ _02002F08:
 	movs r1, #0
 	movs r2, #2
 	bl TextWindowSetXY
-	ldr r1, =gUnknown_0202004F
+	ldr r1, =gText_Number
 	adds r0, r5, #0
 	bl RenderText
 _02002F2A:
@@ -5709,7 +5709,7 @@ sub_020031F8: @ 0x020031F8
 	movs r3, #0x12
 	bl SetBgTilemapBufferPaletteRect
 	ldr r0, [r7, #0x24]
-	ldr r1, =gUnknown_0201FFE3
+	ldr r1, =gText_Type
 	bl RenderText
 	ldr r5, =gPlayerPartyPtr
 	movs r0, #0x64
@@ -5823,7 +5823,7 @@ _02003326:
 	movs r2, #0x40
 	bl TextWindowSetXY
 	ldr r0, [r6, #0x24]
-	ldr r1, =gUnknown_0201FFE8
+	ldr r1, =gText_HP
 	bl RenderText
 _020033A0:
 	mov r1, sl
@@ -5873,7 +5873,7 @@ _020033A0:
 	movs r2, #0x50
 	bl TextWindowSetXY
 	ldr r0, [r6, #0x24]
-	ldr r1, =gUnknown_0201FFEB
+	ldr r1, =gText_Attack
 	bl RenderText
 _02003414:
 	ldr r0, [r6, #0x24]
@@ -5929,7 +5929,7 @@ _02003452:
 	movs r2, #0x60
 	bl TextWindowSetXY
 	ldr r0, [r5, #0x24]
-	ldr r1, =gUnknown_0201FFF2
+	ldr r1, =gText_Defense
 	bl RenderText
 _0200348E:
 	ldr r1, [r5, #0x24]
@@ -5998,7 +5998,7 @@ _020034D8:
 	movs r2, #0x40
 	bl TextWindowSetXY
 	ldr r0, [r5, #0x24]
-	ldr r1, =gUnknown_0201FFFA
+	ldr r1, =gText_SpAtk
 	bl RenderText
 _02003524:
 	ldr r7, [r5, #0x24]
@@ -6046,7 +6046,7 @@ _02003554:
 	movs r2, #0x50
 	bl TextWindowSetXY
 	ldr r0, [r5, #0x24]
-	ldr r1, =gUnknown_02020002
+	ldr r1, =gText_SpDef
 	bl RenderText
 _0200358C:
 	ldr r7, [r5, #0x24]
@@ -6094,7 +6094,7 @@ _020035BC:
 	movs r2, #0x60
 	bl TextWindowSetXY
 	ldr r0, [r5, #0x24]
-	ldr r1, =gUnknown_0202000A
+	ldr r1, =gText_Speed
 	bl RenderText
 _020035F4:
 	ldr r7, [r5, #0x24]
@@ -6159,13 +6159,13 @@ _02003624:
 	cmp r1, #0
 	bne _020036A8
 	ldr r0, [r4, #0x24]
-	ldr r1, =gUnknown_02020010
+	ldr r1, =gText_None
 	bl RenderText
 	b _020036BA
 	.align 2, 0
 	.pool
 _020036A8:
-	ldr r2, =gUnknown_02020015
+	ldr r2, =gText_Berry
 	adds r0, r1, #0
 	add r1, sp, #0xc
 	bl CopyItemName
@@ -6214,7 +6214,7 @@ _020036CC:
 	movs r2, #0
 	bl TextWindowSetXY
 	ldr r0, [r4, #0x28]
-	ldr r1, =gUnknown_0202001B
+	ldr r1, =gText_Cancel2
 	bl RenderText
 	movs r0, #2
 	str r0, [sp]
@@ -6231,7 +6231,7 @@ _020036CC:
 	movs r1, #0
 	bl ClearWindowCharBuffer
 	ldr r0, [r4, #0x1c]
-	ldr r1, =gUnknown_0201FFC7
+	ldr r1, =gText_PokemonSkills
 	bl RenderText
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
@@ -6445,7 +6445,7 @@ _02003944:
 	mov r2, sl
 	bl TextWindowSetXY
 	ldr r0, [r4, #0x24]
-	ldr r1, =gUnknown_02020029
+	ldr r1, =gText_2Dashes
 	bl RenderText
 	movs r4, #0xf0
 	lsls r4, r4, #8
@@ -6525,7 +6525,7 @@ _020039B2:
 	movs r2, #0
 	bl TextWindowSetXY
 	ldr r0, [r4, #0x28]
-	ldr r1, =gUnknown_02020022
+	ldr r1, =gText_Info
 	bl RenderText
 	movs r0, #2
 	str r0, [sp]
@@ -6542,7 +6542,7 @@ _020039B2:
 	movs r1, #0
 	bl ClearWindowCharBuffer
 	ldr r0, [r4, #0x1c]
-	ldr r1, =gUnknown_0201FFD6
+	ldr r1, =gText_BattleMoves
 	bl RenderText
 	ldr r1, =gBgTilemapBufferTransferScheduled
 	movs r0, #1
@@ -6602,7 +6602,7 @@ sub_02003A70: @ 0x02003A70
 	movs r2, #0x18
 	bl TextWindowSetXY
 	ldr r0, [r5, #0x20]
-	ldr r4, =gUnknown_0202002C
+	ldr r4, =gText_3Dashes
 	adds r1, r4, #0
 	bl RenderText
 	ldr r0, [r5, #0x20]
@@ -6639,7 +6639,7 @@ _02003AF4:
 	cmp r1, #1
 	bhi _02003B38
 	ldr r0, [r5, #0x20]
-	ldr r1, =gUnknown_0202002C
+	ldr r1, =gText_3Dashes
 	bl RenderText
 	b _02003B48
 	.align 2, 0
@@ -6668,7 +6668,7 @@ _02003B48:
 	cmp r0, #0
 	bne _02003B7C
 	ldr r0, [r4, #0x20]
-	ldr r1, =gUnknown_0202002C
+	ldr r1, =gText_3Dashes
 	bl RenderText
 	b _02003B8C
 	.align 2, 0
@@ -6788,14 +6788,14 @@ _02003BDC:
 	movs r2, #0x18
 	bl TextWindowSetXY
 	ldr r0, [r7, #0x20]
-	ldr r1, =gUnknown_02020030
+	ldr r1, =gText_Power
 	bl RenderText
 	ldr r0, [r7, #0x20]
 	movs r1, #0
 	movs r2, #0x28
 	bl TextWindowSetXY
 	ldr r0, [r7, #0x20]
-	ldr r1, =gUnknown_02020036
+	ldr r1, =gText_Accuracy
 	bl RenderText
 	ldr r0, [sp, #0xc]
 	mov r1, sb
@@ -7119,7 +7119,7 @@ _02003F20:
 	movs r3, #0xa
 	bl CopyRectWithinBgTilemapBuffer
 	ldr r0, [r5, #0x20]
-	ldr r3, =gUnknown_02020046
+	ldr r3, =gText_Status
 	movs r1, #0
 	movs r2, #0x30
 	bl RenderTextAt
@@ -7459,7 +7459,7 @@ _0200420E:
 	bl TextWindowSetXY
 	mov r1, sb
 	ldr r0, [r1, #0x24]
-	ldr r4, =gUnknown_0202003F
+	ldr r4, =gText_Cancel3
 	adds r1, r4, #0
 	bl RenderText
 	mov r1, sb
@@ -7706,7 +7706,7 @@ _0200441C:
 	bl ClearWindowCharBuffer
 	mov r1, sb
 	ldr r0, [r1, #0x28]
-	ldr r1, =gUnknown_02020022
+	ldr r1, =gText_Info
 	bl RenderText
 	movs r0, #1
 	ldr r1, =gBgTilemapBufferTransferScheduled
@@ -8218,7 +8218,7 @@ _0200491C:
 	bne _02004932
 	ldr r0, =gMessageWindowPtr
 	ldr r0, [r0]
-	ldr r1, =gUnknown_02020508
+	ldr r1, =gText_BerryProgramUpdated
 	bl RenderText
 	bl sub_0200472C
 _02004932:
@@ -8867,7 +8867,7 @@ _02004F32:
 	movs r0, #0
 	str r0, [r4, #8]
 _02004F42:
-	ldr r0, =gUnknown_0201FD94
+	ldr r0, =gText_BattleOptions
 	cmp r7, r0
 	bne _02004F58
 	ldr r2, =gUnknown_0201FC64
@@ -9280,7 +9280,7 @@ sub_02005264: @ 0x02005264
 	movs r1, #0
 	bl ClearWindowCharBuffer
 	ldr r0, [r4, #0x18]
-	ldr r3, =gUnknown_02020098
+	ldr r3, =gText_PP
 	movs r1, #0xb0
 	movs r2, #0
 	bl RenderTextAt
@@ -9304,7 +9304,7 @@ _020052B6:
 	.pool
 _020052D4:
 	add r0, sp, #0xc
-	ldr r1, =gUnknown_02020027
+	ldr r1, =gText_1Dash
 	bl StringCopy
 _020052DC:
 	adds r0, r4, #0
@@ -9615,7 +9615,7 @@ sub_02005548: @ 0x02005548
 	ldr r1, =0x0000FFFF
 	bl ClearWindowCharBuffer
 	ldr r0, [r5, #0x18]
-	ldr r3, =gUnknown_0202010F
+	ldr r3, =gText_WillYouGiveIn
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
@@ -9699,7 +9699,7 @@ sub_020055D4: @ 0x020055D4
 	.align 2, 0
 	.pool
 _02005648:
-	ldr r1, =gUnknown_02020027
+	ldr r1, =gText_1Dash
 	add r0, sp, #0x24
 	bl StringCopy
 _02005650:
@@ -9755,12 +9755,12 @@ _02005658:
 	movs r3, #0xa
 	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
-	ldr r3, =gUnknown_02020087
+	ldr r3, =gText_WhatWillMonDo
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
 	ldr r0, [r4, #0x18]
-	ldr r1, =gUnknown_0201FD94
+	ldr r1, =gText_BattleOptions
 	movs r2, #4
 	bl sub_02004F04
 	strb r5, [r6, #2]
@@ -9812,12 +9812,12 @@ sub_02005704: @ 0x02005704
 	movs r3, #0xa
 	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
-	ldr r3, =gUnknown_02020087
+	ldr r3, =gText_WhatWillMonDo
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
 	ldr r0, [r4, #0x18]
-	ldr r1, =gUnknown_0201FD94
+	ldr r1, =gText_BattleOptions
 	movs r2, #4
 	bl sub_02004F04
 	ldr r1, =gBgTilemapBufferTransferScheduled
@@ -9867,12 +9867,12 @@ _020057B8:
 	movs r3, #0xa
 	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
-	ldr r3, =gUnknown_02020087
+	ldr r3, =gText_WhatWillMonDo
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
 	ldr r0, [r4, #0x18]
-	ldr r4, =gUnknown_0201FD94
+	ldr r4, =gText_BattleOptions
 	adds r1, r4, #0
 	movs r2, #4
 	bl sub_02004F04
@@ -10118,12 +10118,12 @@ _02005A00:
 	movs r3, #0xa
 	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
-	ldr r3, =gUnknown_02020087
+	ldr r3, =gText_WhatWillMonDo
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
 	ldr r0, [r4, #0x18]
-	ldr r1, =gUnknown_0201FD94
+	ldr r1, =gText_BattleOptions
 	movs r2, #4
 	bl sub_02004F04
 	ldr r1, =gBgTilemapBufferTransferScheduled
@@ -10637,12 +10637,12 @@ sub_02005E68: @ 0x02005E68
 	movs r3, #0xa
 	bl FillWindowCharBufferRect
 	ldr r0, [r4, #0x18]
-	ldr r3, =gUnknown_02020087
+	ldr r3, =gText_WhatWillMonDo
 	movs r1, #0
 	movs r2, #0
 	bl RenderTextAt
 	ldr r0, [r4, #0x18]
-	ldr r1, =gUnknown_0201FD94
+	ldr r1, =gText_BattleOptions
 	movs r2, #4
 	bl sub_02004F04
 	ldr r1, =gBgTilemapBufferTransferScheduled
@@ -10701,7 +10701,7 @@ sub_02005F08: @ 0x02005F08
 	.align 2, 0
 	.pool
 _02005F28:
-	ldr r1, =gUnknown_02020027
+	ldr r1, =gText_1Dash
 	mov r0, sp
 	bl StringCopy
 _02005F30:

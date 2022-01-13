@@ -11,6 +11,7 @@ SECTIONS {
         asm/crt0.o(.text);
         src/all.o(.text);
         asm/all.o(.text);
+
     } =0
 
     lib_text :
@@ -52,6 +53,7 @@ SECTIONS {
     ALIGN(4)
     {
         data/all.o(.rodata);
+        src/strings.o(.rodata);
         src/graphics.o(.rodata);
     } =0
 
@@ -81,6 +83,7 @@ SECTIONS {
     ALIGN(4)
     {
         data/all.o(.data);
+        src/strings.o(.data);
     } =0
 
     lib_data :
