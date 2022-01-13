@@ -2666,10 +2666,10 @@ sub_020017E8: @ 0x020017E8
 	ldr r0, =gUnknown_0201B2F8
 	ldr r1, =0x03001000
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201D05C
+	ldr r0, =gTypeStatusIcons_Pal
 	ldr r1, =0x05000200
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201C5A4
+	ldr r0, =gTypeStatusIcons_Gfx
 	ldr r1, =0x06010000
 	bl AutoUnCompVram
 	ldr r0, =gUnknown_02021860
@@ -5481,17 +5481,17 @@ sub_02002FEC: @ 0x02002FEC
 	movs r1, #0xa0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201B4AC
+	ldr r0, =gSummaryScreen_Gfx
 	ldr r1, =0x06008000
 	bl AutoUnCompVram
 	ldr r0, =gUnknown_0201BFF8
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201C428
+	ldr r0, =gSummaryScreen_Moves_Tilemap
 	ldr r1, =0x03002000
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201C228
+	ldr r0, =gSummaryScreen_Skills_Tilemap
 	ldr r1, =0x03003000
 	bl AutoUnCompVram
 	ldr r1, =gBgTilemapBufferTransferScheduled
@@ -5499,10 +5499,10 @@ sub_02002FEC: @ 0x02002FEC
 	movs r0, #1
 	strb r0, [r1, #2]
 	strb r0, [r1, #3]
-	ldr r0, =gUnknown_0201D05C
+	ldr r0, =gTypeStatusIcons_Pal
 	ldr r1, =0x05000200
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201C5A4
+	ldr r0, =gTypeStatusIcons_Gfx
 	ldr r1, =0x06010000
 	bl AutoUnCompVram
 	mov r0, sp
@@ -7978,11 +7978,11 @@ sub_0200465C: @ 0x0200465C
 	ldr r0, =gUnknown_0201A450
 	adds r1, r4, #0
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_02017F0C
+	ldr r0, =gTitle_Gfx
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201A618
+	ldr r0, =gTitle_Tilemap
 	movs r1, #0xc0
 	lsls r1, r1, #0x12
 	bl AutoUnCompVram
@@ -8423,16 +8423,16 @@ sub_02004AC4: @ 0x02004AC4
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201D180
+	ldr r0, =gBattleScreen_Gfx
 	ldr r1, =0x06008000
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201D3F0
+	ldr r0, =gBattleScreen_Pal
 	ldr r1, =0x05000140
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201D420
+	ldr r0, =gBattleScreen_Tilemap
 	ldr r1, =0x03003000
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201D5A4
+	ldr r0, =gBattleWindows_Tilemap
 	ldr r1, =0x03002800
 	bl AutoUnCompVram
 	ldr r1, =gBgTilemapBufferTransferScheduled
@@ -8440,10 +8440,10 @@ sub_02004AC4: @ 0x02004AC4
 	movs r0, #1
 	strb r0, [r1, #2]
 	strb r0, [r1, #3]
-	ldr r0, =gUnknown_0201D05C
+	ldr r0, =gTypeStatusIcons_Pal
 	ldr r1, =0x05000200
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201C5A4
+	ldr r0, =gTypeStatusIcons_Gfx
 	ldr r1, =0x06010000
 	bl AutoUnCompVram
 	ldr r1, =0x00005108
