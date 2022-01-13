@@ -2653,17 +2653,17 @@ sub_020017E8: @ 0x020017E8
 	movs r1, #0xa0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201A8B4
+	ldr r0, =gMonInfoIcons_Gfx
 	ldr r1, =0x06004000
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201AD0C
+	ldr r0, =gPartyMenu_Gfx
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201B0FC
+	ldr r0, =gMessageBox_Gfx
 	ldr r1, =0x06008000
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201B2F8
+	ldr r0, =gPartyMenu_Tilemap
 	ldr r1, =0x03001000
 	bl AutoUnCompVram
 	ldr r0, =gTypeStatusIcons_Pal
@@ -2746,7 +2746,7 @@ _0200191C:
 	ldr r0, =0x80000030
 	str r0, [r1, #8]
 	ldr r0, [r1, #8]
-	ldr r0, =gUnknown_0201B430
+	ldr r0, =gPartySlots_Tilemap
 	ldr r1, =0x06014000
 	bl AutoUnCompVram
 	movs r2, #0x8d
@@ -5477,14 +5477,14 @@ sub_02002FEC: @ 0x02002FEC
 	ldr r2, =0x00001D0B
 	adds r0, r2, #0
 	strh r0, [r1]
-	ldr r0, =gUnknown_0201C10C
+	ldr r0, =gSummaryScreen_Pal
 	movs r1, #0xa0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
 	ldr r0, =gSummaryScreen_Gfx
 	ldr r1, =0x06008000
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201BFF8
+	ldr r0, =gSummaryIcons_Gfx
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
@@ -7972,10 +7972,10 @@ sub_0200465C: @ 0x0200465C
 	ldr r0, =gUnknown_0201A894
 	ldr r1, =0x050001C0
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201B0FC
+	ldr r0, =gMessageBox_Gfx
 	ldr r1, =0x06008000
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201A450
+	ldr r0, =gTitle_Pal
 	adds r1, r4, #0
 	bl AutoUnCompVram
 	ldr r0, =gTitle_Gfx
@@ -8419,7 +8419,7 @@ sub_02004AC4: @ 0x02004AC4
 	lsls r5, r5, #0x13
 	adds r1, r5, #0
 	bl AutoUnCompVram
-	ldr r0, =gUnknown_0201A8B4
+	ldr r0, =gMonInfoIcons_Gfx
 	movs r1, #0xc0
 	lsls r1, r1, #0x13
 	bl AutoUnCompVram
