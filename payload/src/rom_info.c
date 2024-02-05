@@ -1,5 +1,6 @@
 #include "global.h"
 #include "libpmagb/agb_rom.h"
+#include "rom_info.h"
 
 // Ruby rev0
 struct RomInfo gAgbPmRomParams_AXVE_rev0 = {

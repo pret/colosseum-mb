@@ -9,6 +9,6 @@ enum
     FLAG_SET_CAUGHT
 };
 
-bool8 GetSetPokedexFlag(u16 nationalDexNo, u8 caseID);
+bool32 GetSetPokedexFlag(u16 nationalDexNo, u8 caseID);
 
 #endif // GUARD_POKEDEX_H

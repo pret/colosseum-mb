@@ -54,8 +54,8 @@ struct RomInfo
     /*0xAC*/ u32 unkAC;
     /*0xB0*/ u32 externalEventFlagsOffs;
     /*0xB4*/ u32 externalEventDataOffs;
-    /*0xB8*/ u8 unkB8_0:1;
-    /*0xB8*/ u8 unkB8_1:1;
+    /*0xB8*/ u32 unkB8_0:1;
+    /*0xB8*/ u32 unkB8_1:1;
     /*0xBC*/ const struct BaseStats *baseStats;
     /*0xC0*/ const u8 *abilityNames;
     /*0xC4*/ const u8 *abilityDescriptions;
