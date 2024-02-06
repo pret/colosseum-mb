@@ -56,7 +56,7 @@ struct RomInfo
     /*0xB4*/ u32 externalEventDataOffs;
     /*0xB8*/ u32 unkB8_0:1;
     /*0xB8*/ u32 unkB8_1:1;
-    /*0xBC*/ const struct BaseStats *baseStats;
+    /*0xBC*/ const struct SpeciesInfo *baseStats;
     /*0xC0*/ const u8 *abilityNames;
     /*0xC4*/ const u8 *abilityDescriptions;
     /*0xC8*/ const struct Item *items;

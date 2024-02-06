@@ -1,11 +1,14 @@
 #include "global.h"
 #include "gflib.h"
+#include "pokeball.h"
 #include "all.h"
 #include "libpmagb/agb_rom.h"
 #include "mb_20094A8.h"
 #include "unk_200C5DC.h"
+#include "constants/battle.h"
 #include "constants/pokemon.h"
 #include "constants/moves.h"
+#include "constants/items.h"
 #include "gflib/characters.h"
 
 #define SUBSTRUCT_CASE(n, v1, v2, v3, v4)  \
@@ -114,7 +117,7 @@ u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
 static inline void EncryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
-    for (i = 0; i < 12; i++)
+    for (i = 0; i < NELEMS(boxMon->secure.raw); i++)
     {
         boxMon->secure.raw[i] ^= boxMon->personality;
         boxMon->secure.raw[i] ^= boxMon->otId;
@@ -124,7 +127,7 @@ static inline void EncryptBoxMon(struct BoxPokemon *boxMon)
 static inline void DecryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
-    for (i = 0; i < 12; i++)
+    for (i = 0; i < NELEMS(boxMon->secure.raw); i++)
     {
         boxMon->secure.raw[i] ^= boxMon->otId;
         boxMon->secure.raw[i] ^= boxMon->personality;
@@ -477,6 +480,11 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     return retVal;
 }
 
+static inline u32 GetMonData(struct Pokemon *mon, s32 attr, u8 *strbuf)
+{
+    return GetBoxMonData(&mon->box, attr, strbuf);
+}
+
 //Extracts the upper 16 bits of a 32-bit number
 #define HIHALF(n) (((n) & 0xFFFF0000) >> 16)
 
@@ -485,20 +493,572 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
 
 const struct CompressedSpritePalette *GetBoxMonPalettePtr(u32 partyId)
 {
-    u16 species;
-    u32 otId, personality;
     u32 shinyValue = 0;
 
-    species = GetBoxMonData(&gPlayerPartyPtr[partyId].box, MON_DATA_SPECIES2, NULL);
-    otId = GetBoxMonData(&gPlayerPartyPtr[partyId].box, MON_DATA_OT_ID, NULL);
-    personality = GetBoxMonData(&gPlayerPartyPtr[partyId].box, MON_DATA_PERSONALITY, NULL);
+    u16 species = GetMonData(&gPlayerPartyPtr[partyId], MON_DATA_SPECIES2, NULL);
+    u32 otId = GetMonData(&gPlayerPartyPtr[partyId], MON_DATA_OT_ID, NULL);
+    u32 personality = GetMonData(&gPlayerPartyPtr[partyId], MON_DATA_PERSONALITY, NULL);
 
     if (species > NUM_SPECIES)
-        return &gAgbPmRomParams->monPaletteTable[0];
+        return &gAgbPmRomParams->monPaletteTable[SPECIES_NONE];
 
     shinyValue = HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality);
     if (shinyValue > 7)
         return &gAgbPmRomParams->monPaletteTable[species];
     else
         return &gAgbPmRomParams->monShinyPaletteTable[species];
+}
+
+u32 GetBoxMonAbility(struct BoxPokemon *boxMon)
+{
+    u32 ability;
+    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
+    u32 species = GetBoxMonData(boxMon, MON_DATA_SPECIES, NULL);
+    u32 abilityNum = GetBoxMonData(boxMon, MON_DATA_ALT_ABILITY, NULL);
+
+    if (abilityNum == 0)
+        ability = speciesInfo[species].abilities[0];
+    else
+        ability = speciesInfo[species].abilities[1];
+
+    return ability;
+}
+
+const u8 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon)
+{
+    u32 id;
+    u16 ball = GetBoxMonData(boxMon, MON_DATA_POKEBALL, NULL);
+
+    switch (ball)
+    {
+    case 1:     id = 4;     break;
+    case 2:     id = 3;     break;
+    case 3:     id = 1;     break;
+    case 4:     id = 0;     break;
+    case 5:     id = 2;     break;
+    case 6:     id = 5;     break;
+    case 7:     id = 6;     break;
+    case 8:     id = 7;     break;
+    case 9:     id = 8;     break;
+    case 10:    id = 9;     break;
+    case 11:    id = 10;    break;
+    case 12:    id = 11;    break;
+    default:    id = 0;     break;
+    }
+
+    return gAgbPmRomParams->ballSpriteSheets[id].data;
+}
+
+const u8 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
+{
+    u32 id;
+    u16 ball = GetBoxMonData(boxMon, MON_DATA_POKEBALL, NULL);
+
+    switch (ball)
+    {
+    case 1:     id = 4;     break;
+    case 2:     id = 3;     break;
+    case 3:     id = 1;     break;
+    case 4:     id = 0;     break;
+    case 5:     id = 2;     break;
+    case 6:     id = 5;     break;
+    case 7:     id = 6;     break;
+    case 8:     id = 7;     break;
+    case 9:     id = 8;     break;
+    case 10:    id = 9;     break;
+    case 11:    id = 10;    break;
+    case 12:    id = 11;    break;
+    default:    id = 0;     break;
+    }
+
+    return gAgbPmRomParams->ballSpritePalettes[id].data;
+}
+
+u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot)
+{
+    u32 move;
+    switch (slot)
+    {
+    case 0: move = GetBoxMonData(boxMon, MON_DATA_MOVE1, NULL); break;
+    case 1: move = GetBoxMonData(boxMon, MON_DATA_MOVE2, NULL); break;
+    case 2: move = GetBoxMonData(boxMon, MON_DATA_MOVE3, NULL); break;
+    default:
+    case 3: move = GetBoxMonData(boxMon, MON_DATA_MOVE4, NULL); break;
+    }
+    return move;
+}
+
+u32 GetBoxMonPPByMoveSlot(struct BoxPokemon *boxMon, u8 slot)
+{
+    u32 pp;
+    switch (slot)
+    {
+    case 0: pp = GetBoxMonData(boxMon, MON_DATA_PP1, NULL); break;
+    case 1: pp = GetBoxMonData(boxMon, MON_DATA_PP2, NULL); break;
+    case 2: pp = GetBoxMonData(boxMon, MON_DATA_PP3, NULL); break;
+    default:
+    case 3: pp = GetBoxMonData(boxMon, MON_DATA_PP4, NULL); break;
+    }
+    return pp;
+}
+
+u32 CheckPartyPokerus(struct Pokemon *party, u8 selection)
+{
+    u32 retVal;
+
+    int partyIndex = 0;
+    unsigned curBit = 1;
+    retVal = 0;
+
+    if (selection)
+    {
+        do
+        {
+            if ((selection & 1) && (GetMonData(&party[partyIndex], MON_DATA_POKERUS, 0) & 0xF))
+                retVal |= curBit;
+            partyIndex++;
+            curBit <<= 1;
+            selection >>= 1;
+        }
+        while (selection);
+    }
+    else if (GetMonData(&party[0], MON_DATA_POKERUS, 0) & 0xF)
+    {
+        retVal = 1;
+    }
+
+    return retVal;
+}
+
+static inline u32 GetPrimaryStatus(u32 status)
+{
+    if (status & (STATUS1_POISON | STATUS1_TOXIC_POISON))
+        return STATUS_PRIMARY_POISON;
+    if (status & STATUS1_PARALYSIS)
+        return STATUS_PRIMARY_PARALYSIS;
+    if (status & STATUS1_SLEEP)
+        return STATUS_PRIMARY_SLEEP;
+    if (status & STATUS1_FREEZE)
+        return STATUS_PRIMARY_FREEZE;
+    if (status & STATUS1_BURN)
+        return STATUS_PRIMARY_BURN;
+
+    return STATUS_PRIMARY_NONE;
+}
+
+u32 GetMonStatus(struct Pokemon *mon)
+{
+    u32 statusAilment;
+
+    if (mon->hp == 0)
+        return STATUS_PRIMARY_FAINTED;
+
+    statusAilment = GetPrimaryStatus(mon->status);
+    if (statusAilment == STATUS_PRIMARY_NONE)
+    {
+        if (!CheckPartyPokerus(mon, 0))
+            return STATUS_PRIMARY_NONE;
+        else
+            return STATUS_PRIMARY_POKERUS;
+    }
+
+    return statusAilment;
+}
+
+u32 CheckPartyHasHadPokerus(struct Pokemon *party, u8 selection)
+{
+    u32 retVal;
+
+    int partyIndex = 0;
+    unsigned curBit = 1;
+    retVal = 0;
+
+    if (selection)
+    {
+        do
+        {
+            if ((selection & 1) && GetMonData(&party[partyIndex], MON_DATA_POKERUS, 0))
+                retVal |= curBit;
+            partyIndex++;
+            curBit <<= 1;
+            selection >>= 1;
+        }
+        while (selection);
+    }
+    else if (GetMonData(&party[0], MON_DATA_POKERUS, 0))
+    {
+        retVal = 1;
+    }
+
+    return retVal;
+}
+
+extern bool8 gRomDetection_IsRubySapphire;
+
+void DrawSpindasSpots(u16 species, u32 personality, u8 *dest)
+{
+    if (species == SPECIES_SPINDA)
+    {
+        int i, j, k, var;
+
+        if (gRomDetection_IsRubySapphire != FALSE)
+            var = 0;
+        else
+            var = 7;
+
+        for (i = 0; i < 4; i++)
+        {
+            u8 x = gSpindaSpotGraphics[i].x + ((personality & 0x0F) - 8);
+            u8 y = gSpindaSpotGraphics[i].y + (((personality & 0xF0) >> 4) - 8) - var;
+
+            for (j = 0; j < 16; j++)
+            {
+                s32 row = gSpindaSpotGraphics[i].image[j];
+
+                for (k = x; k < x + 16; k++)
+                {
+                    u8 *val = dest + ((k / 8) * 32) + ((k % 8) / 2) + ((y >> 3) << 8) + ((y & 7) << 2);
+
+                    if (row & 1)
+                    {
+                        if (k & 1)
+                        {
+                            if ((u8)((*val & 0xF0) - 0x10) <= 0x20)
+                                *val += 0x40;
+                        }
+                        else
+                        {
+                            if ((u8)((*val & 0xF) - 0x01) <= 0x02)
+                                *val += 0x04;
+                        }
+                    }
+
+                    row >>= 1;
+                }
+
+                y++;
+            }
+
+            personality >>= 8;
+        }
+    }
+}
+
+#define SET8(lhs) (lhs) = *data
+#define SET16(lhs) (lhs) = data[0] + (data[1] << 8)
+#define SET32(lhs) (lhs) = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24)
+
+void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
+{
+    const u8 *data = dataArg;
+
+    struct PokemonSubstruct0 *substruct0 = NULL;
+    struct PokemonSubstruct1 *substruct1 = NULL;
+    struct PokemonSubstruct2 *substruct2 = NULL;
+    struct PokemonSubstruct3 *substruct3 = NULL;
+
+    if (field > MON_DATA_10)
+    {
+        substruct0 = &(GetSubstruct(boxMon, boxMon->personality, 0)->type0);
+        substruct1 = &(GetSubstruct(boxMon, boxMon->personality, 1)->type1);
+        substruct2 = &(GetSubstruct(boxMon, boxMon->personality, 2)->type2);
+        substruct3 = &(GetSubstruct(boxMon, boxMon->personality, 3)->type3);
+
+        DecryptBoxMon(boxMon);
+
+        if (CalculateBoxMonChecksum(boxMon) != boxMon->checksum)
+        {
+            boxMon->isBadEgg = 1;
+            boxMon->isEgg = 1;
+            substruct3->isEgg = 1;
+            EncryptBoxMon(boxMon);
+            return;
+        }
+    }
+
+    switch (field)
+    {
+    case MON_DATA_PERSONALITY:
+        SET32(boxMon->personality);
+        break;
+    case MON_DATA_OT_ID:
+        SET32(boxMon->otId);
+        break;
+    case MON_DATA_NICKNAME:
+    {
+        s32 i;
+        for (i = 0; i < gAgbPmRomParams->pokemonNameLength_1; i++)
+            boxMon->nickname[i] = data[i];
+        break;
+    }
+    case MON_DATA_LANGUAGE:
+        SET8(boxMon->language);
+        break;
+    case MON_DATA_SANITY_BIT1:
+        SET8(boxMon->isBadEgg);
+        break;
+    case MON_DATA_SANITY_BIT2:
+        SET8(boxMon->hasSpecies);
+        break;
+    case MON_DATA_SANITY_BIT3:
+        SET8(boxMon->isEgg);
+        break;
+    case MON_DATA_OT_NAME:
+    {
+        s32 i;
+        for (i = 0; i < gAgbPmRomParams->playerNameLength; i++)
+            boxMon->otName[i] = data[i];
+        break;
+    }
+    case MON_DATA_MARKINGS:
+        SET8(boxMon->markings);
+        break;
+    case MON_DATA_CHECKSUM:
+        SET16(boxMon->checksum);
+        break;
+    case MON_DATA_10:
+        SET16(boxMon->unknown);
+        break;
+    case MON_DATA_SPECIES:
+    {
+        SET16(substruct0->species);
+        if (substruct0->species)
+            boxMon->hasSpecies = 1;
+        else
+            boxMon->hasSpecies = 0;
+        break;
+    }
+    case MON_DATA_HELD_ITEM:
+        SET16(substruct0->heldItem);
+        break;
+    case MON_DATA_EXP:
+        SET32(substruct0->experience);
+        break;
+    case MON_DATA_PP_BONUSES:
+        SET8(substruct0->ppBonuses);
+        break;
+    case MON_DATA_FRIENDSHIP:
+        SET8(substruct0->friendship);
+        break;
+    case MON_DATA_MOVE1:
+    case MON_DATA_MOVE2:
+    case MON_DATA_MOVE3:
+    case MON_DATA_MOVE4:
+        SET16(substruct1->moves[field - MON_DATA_MOVE1]);
+        break;
+    case MON_DATA_PP1:
+    case MON_DATA_PP2:
+    case MON_DATA_PP3:
+    case MON_DATA_PP4:
+        SET8(substruct1->pp[field - MON_DATA_PP1]);
+        break;
+    case MON_DATA_HP_EV:
+        SET8(substruct2->hpEV);
+        break;
+    case MON_DATA_ATK_EV:
+        SET8(substruct2->attackEV);
+        break;
+    case MON_DATA_DEF_EV:
+        SET8(substruct2->defenseEV);
+        break;
+    case MON_DATA_SPEED_EV:
+        SET8(substruct2->speedEV);
+        break;
+    case MON_DATA_SPATK_EV:
+        SET8(substruct2->spAttackEV);
+        break;
+    case MON_DATA_SPDEF_EV:
+        SET8(substruct2->spDefenseEV);
+        break;
+    case MON_DATA_COOL:
+        SET8(substruct2->cool);
+        break;
+    case MON_DATA_BEAUTY:
+        SET8(substruct2->beauty);
+        break;
+    case MON_DATA_CUTE:
+        SET8(substruct2->cute);
+        break;
+    case MON_DATA_SMART:
+        SET8(substruct2->smart);
+        break;
+    case MON_DATA_TOUGH:
+        SET8(substruct2->tough);
+        break;
+    case MON_DATA_SHEEN:
+        SET8(substruct2->sheen);
+        break;
+    case MON_DATA_POKERUS:
+        SET8(substruct3->pokerus);
+        break;
+    case MON_DATA_MET_LOCATION:
+        SET8(substruct3->metLocation);
+        break;
+    case MON_DATA_MET_LEVEL:
+    {
+        u8 metLevel = *data;
+        substruct3->metLevel = metLevel;
+        break;
+    }
+    case MON_DATA_MET_GAME:
+        SET8(substruct3->metGame);
+        break;
+    case MON_DATA_POKEBALL:
+    {
+        u8 pokeball = *data;
+        substruct3->pokeball = pokeball;
+        break;
+    }
+    case MON_DATA_OT_GENDER:
+        SET8(substruct3->otGender);
+        break;
+    case MON_DATA_HP_IV:
+        SET8(substruct3->hpIV);
+        break;
+    case MON_DATA_ATK_IV:
+        SET8(substruct3->attackIV);
+        break;
+    case MON_DATA_DEF_IV:
+        SET8(substruct3->defenseIV);
+        break;
+    case MON_DATA_SPEED_IV:
+        SET8(substruct3->speedIV);
+        break;
+    case MON_DATA_SPATK_IV:
+        SET8(substruct3->spAttackIV);
+        break;
+    case MON_DATA_SPDEF_IV:
+        SET8(substruct3->spDefenseIV);
+        break;
+    case MON_DATA_IS_EGG:
+        SET8(substruct3->isEgg);
+        if (substruct3->isEgg)
+            boxMon->isEgg = 1;
+        else
+            boxMon->isEgg = 0;
+        break;
+    case MON_DATA_ALT_ABILITY:
+        SET8(substruct3->altAbility);
+        break;
+    case MON_DATA_COOL_RIBBON:
+        SET8(substruct3->coolRibbon);
+        break;
+    case MON_DATA_BEAUTY_RIBBON:
+        SET8(substruct3->beautyRibbon);
+        break;
+    case MON_DATA_CUTE_RIBBON:
+        SET8(substruct3->cuteRibbon);
+        break;
+    case MON_DATA_SMART_RIBBON:
+        SET8(substruct3->smartRibbon);
+        break;
+    case MON_DATA_TOUGH_RIBBON:
+        SET8(substruct3->toughRibbon);
+        break;
+    case MON_DATA_CHAMPION_RIBBON:
+        SET8(substruct3->championRibbon);
+        break;
+    case MON_DATA_WINNING_RIBBON:
+        SET8(substruct3->winningRibbon);
+        break;
+    case MON_DATA_VICTORY_RIBBON:
+        SET8(substruct3->victoryRibbon);
+        break;
+    case MON_DATA_ARTIST_RIBBON:
+        SET8(substruct3->artistRibbon);
+        break;
+    case MON_DATA_EFFORT_RIBBON:
+        SET8(substruct3->effortRibbon);
+        break;
+    case MON_DATA_MARINE_RIBBON:
+        SET8(substruct3->marineRibbon);
+        break;
+    case MON_DATA_LAND_RIBBON:
+        SET8(substruct3->landRibbon);
+        break;
+    case MON_DATA_SKY_RIBBON:
+        SET8(substruct3->skyRibbon);
+        break;
+    case MON_DATA_COUNTRY_RIBBON:
+        SET8(substruct3->countryRibbon);
+        break;
+    case MON_DATA_NATIONAL_RIBBON:
+        SET8(substruct3->nationalRibbon);
+        break;
+    case MON_DATA_EARTH_RIBBON:
+        SET8(substruct3->earthRibbon);
+        break;
+    case MON_DATA_WORLD_RIBBON:
+        SET8(substruct3->worldRibbon);
+        break;
+    case MON_DATA_EVENT_LEGAL:
+        SET8(substruct3->eventLegal);
+        break;
+    case MON_DATA_IVS:
+    {
+#ifdef BUGFIX_SETMONIVS
+        u32 ivs = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+#else
+        u32 ivs = *data; // Bug: Only the HP IV and the lower 3 bits of the Attack IV are read. The rest become 0.
+#endif
+        substruct3->hpIV = ivs & 0x1F;
+        substruct3->attackIV = (ivs >> 5) & 0x1F;
+        substruct3->defenseIV = (ivs >> 10) & 0x1F;
+        substruct3->speedIV = (ivs >> 15) & 0x1F;
+        substruct3->spAttackIV = (ivs >> 20) & 0x1F;
+        substruct3->spDefenseIV = (ivs >> 25) & 0x1F;
+        break;
+    }
+    default:
+        break;
+    }
+
+    if (field > MON_DATA_10)
+    {
+        boxMon->checksum = CalculateBoxMonChecksum(boxMon);
+        EncryptBoxMon(boxMon);
+    }
+}
+
+void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg)
+{
+    const u8 *data = dataArg;
+    switch (field)
+    {
+    case MON_DATA_STATUS:
+        SET32(mon->status);
+        break;
+    case MON_DATA_LEVEL:
+        SET8(mon->level);
+        break;
+    case MON_DATA_HP:
+        SET16(mon->hp);
+        break;
+    case MON_DATA_MAX_HP:
+        SET16(mon->maxHP);
+        break;
+    case MON_DATA_ATK:
+        SET16(mon->attack);
+        break;
+    case MON_DATA_DEF:
+        SET16(mon->defense);
+        break;
+    case MON_DATA_SPEED:
+        SET16(mon->speed);
+        break;
+    case MON_DATA_SPATK:
+        SET16(mon->spAttack);
+        break;
+    case MON_DATA_SPDEF:
+        SET16(mon->spDefense);
+        break;
+    case MON_DATA_MAIL:
+        SET8(mon->mail);
+        break;
+    case MON_DATA_SPECIES2:
+        break;
+    default:
+        SetBoxMonData(&mon->box, field, data);
+        break;
+    }
 }
