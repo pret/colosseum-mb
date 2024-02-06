@@ -1,20 +1,6 @@
 #include "global.h"
 #include "gflib.h"
-
-struct UnkStruct_02024960
-{
-    u32 unk_00:24;
-    u32 unk_03_0:7;
-    u32 unk_03_7:1;
-    u8 filler_04[0x854];
-    vu8 unk_858;
-    u8 filler_859[0x22];
-    u8 unk_87B;
-    u8 filler_87C[2];
-    u8 unk_87E;
-    u8 unk_87F;
-    u32 unk_880;
-};
+#include "all.h"
 
 EWRAM_DATA volatile struct UnkStruct_02024960 gUnknown_02024960 = {0};
 

@@ -31,6 +31,7 @@ SECTIONS {
         src/libpmagb/pic_uncomp.o(.text);
         src/libpmagb/save.o(.text);
         asm/libpmagb/save.o(.text);
+        src/pokemon.o(.text);
         asm/pokemon.o(.text);
         src/libpmagb/berry.o(.text);
         src/unk_200C5DC.o(.text);

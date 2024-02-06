@@ -34,6 +34,7 @@
 #define NELEMS(arr) (sizeof(arr)/sizeof(*(arr)))
 
 #define POKEMON_NAME_LENGTH 10
+#define OT_NAME_LENGTH 7
 #define PLAYER_NAME_LENGTH 7
 
 #define CONTEST_CATEGORY_COOL     0
@@ -89,6 +90,8 @@ enum
     VERSION_SAPPHIRE = 1,
     VERSION_RUBY = 2,
     VERSION_EMERALD = 3,
+    VERSION_FIRE_RED = 4,
+    VERSION_LEAF_GREEN = 5,
 };
 
 enum LanguageId

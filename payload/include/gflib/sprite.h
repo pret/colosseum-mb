@@ -24,6 +24,12 @@ struct Sprite
     void * unk14[4];
 };
 
+struct CompressedSpritePalette
+{
+    const u8 *data;  // LZ77 compressed palette data
+    u16 tag;
+};
+
 void ResetSprites(void);
 void UpdateSprites(void);
 void DoOamBufferTransfer(void);

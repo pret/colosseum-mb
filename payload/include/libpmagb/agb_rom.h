@@ -7,7 +7,7 @@ struct RomInfo
     /*0x04*/ int gameLanguage;
     /*0x08*/ char gameTitle[32];
     /*0x28*/ const struct CompressedSpriteSheet *monFrontPicTable;
-    /*0x2C*/ const struct CompressedSpriteSheet * monBackPicTable;
+    /*0x2C*/ const struct CompressedSpriteSheet *monBackPicTable;
     /*0x30*/ const struct CompressedSpritePalette *monPaletteTable;
     /*0x34*/ const struct CompressedSpritePalette *monShinyPaletteTable;
     /*0x38*/ const u8 *const *monIconTable;
@@ -64,7 +64,7 @@ struct RomInfo
     /*0xD0*/ const struct CompressedSpriteSheet *ballSpriteSheets;
     /*0xD4*/ const struct CompressedSpritePalette *ballSpritePalettes;
     /*0xD8*/ u32 gcnLinkFlagsOffs;
-    /*0xDC*/ u32 sysGameClearFlagIdx;
+    /*0xDC*/ s32 sysGameClearFlagIdx;
     /*0xE0*/ u32 sysRibbonGetFlagIdx;
     /*0xE4*/ u8 bagCountItems;
     /*0xE5*/ u8 bagCountKeyItems;
