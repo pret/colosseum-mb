@@ -13,8 +13,8 @@ struct RomInfo
     /*0x38*/ const u8 *const *monIconTable;
     /*0x3C*/ const u8 *gMonIconPaletteIndices;
     /*0x40*/ const struct SpritePalette *monIconPaletteTable;
-    /*0x44*/ const u8 *speciesNames;
-    /*0x48*/ const u8 *moveNames;
+    /*0x44*/ const u8 (*speciesNames)[][POKEMON_NAME_LENGTH + 1];
+    /*0x48*/ const u8 (*moveNames)[][MOVE_NAME_LENGTH + 1];
     /*0x4C*/ const struct Decoration *decorations;
     /*0x50*/ u32 flagsOffs;
     /*0x54*/ u32 varsOffs;
@@ -57,8 +57,8 @@ struct RomInfo
     /*0xB8*/ u32 unkB8_0:1;
     /*0xB8*/ u32 unkB8_1:1;
     /*0xBC*/ const struct SpeciesInfo *baseStats;
-    /*0xC0*/ const u8 *abilityNames;
-    /*0xC4*/ const u8 *abilityDescriptions;
+    /*0xC0*/ const u8 (*abilityNames)[][ABILITY_NAME_LENGTH + 1];
+    /*0xC4*/ const u8 **abilityDescriptions;
     /*0xC8*/ const struct Item *items;
     /*0xCC*/ const struct BattleMove *battleMoves;
     /*0xD0*/ const struct CompressedSpriteSheet *ballSpriteSheets;

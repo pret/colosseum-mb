@@ -33,9 +33,11 @@
 
 #define NELEMS(arr) (sizeof(arr)/sizeof(*(arr)))
 
+#define MOVE_NAME_LENGTH 12
 #define POKEMON_NAME_LENGTH 10
 #define OT_NAME_LENGTH 7
 #define PLAYER_NAME_LENGTH 7
+#define ABILITY_NAME_LENGTH 12
 
 #define CONTEST_CATEGORY_COOL     0
 #define CONTEST_CATEGORY_BEAUTY   1

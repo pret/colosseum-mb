@@ -181,6 +181,19 @@ struct PokemonStorage
     /*0x83c2*/ u8 wallpaper[14];
 };
 
+struct BattleMove
+{
+    u8 effect;
+    u8 power;
+    u8 type;
+    u8 accuracy;
+    u8 pp;
+    u8 secondaryEffectChance;
+    u8 target;
+    s8 priority;
+    u8 flags;
+};
+
 struct SpindaSpot
 {
     u8 x, y;
