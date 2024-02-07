@@ -98,4 +98,6 @@ extern u16 * gVarsPtr;
 extern u8 * gGiftRibbonsPtr;
 extern struct EnigmaBerry * gEnigmaBerryPtr;
 
+void SaveBlocksInit(void);
+
 #endif //PMAGB_AGB_ROM_H

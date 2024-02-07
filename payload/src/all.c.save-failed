@@ -55,8 +55,7 @@ struct RomHeader
 
 extern const struct RomHeader gRomHeader;
 
-/*
-static inline u32 Setunk20217B8(u32 a)
+static inline u32 Setunk20217B8(void)
 {
     u8 buffer[64];
     u32 var18 = 0;
@@ -67,7 +66,7 @@ static inline u32 Setunk20217B8(u32 a)
 
     while (1)
     {
-        main_callback(&var18, buffer, a);
+        main_callback(&var18, buffer, 0);
         if (var18 == 5)
             r4 = 1;
         if (var18 == 11)
@@ -91,7 +90,7 @@ void GF_Main(void)
     SetSaveSectorPtrs();
     gUnknown_020217B4 = ReadSaveBlockChunks();
 
-    gUnknown_020217B8 = Setunk20217B8(0);
+    gUnknown_020217B8 = Setunk20217B8();
 
     InitSound();
     sub_02002C44();
@@ -101,9 +100,7 @@ void GF_Main(void)
     REG_DISPCNT &= (0xFF7F);
     REG_IME = 1;
     sub_0200C9C0(gSaveBlock2Ptr, gSaveBlock1Ptr, gUnknown_020217B4);
-
     sub_0200D924(gRomHeader.unkA8);
-
     SetVBlankCallback(sub_0200D9EC);
     PauseSoundVSync();
     GenerateFontHalfrowLookupTable((u32 *) 0x03004000);
@@ -135,4 +132,3 @@ void GF_Main(void)
         }
     }
 }
-*/

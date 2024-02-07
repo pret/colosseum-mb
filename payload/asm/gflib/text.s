@@ -669,5 +669,3 @@ _0200920E:
 	bx r0
 	.align 2, 0
 	.pool
-
-	.lcomm sFontHalfrowLookupTablePtr, 4

@@ -1,8 +1,9 @@
 #include "global.h"
 #include "gflib/text.h"
 
-static u32 * sFontHalfrowLookupTablePtr;
+IWRAM_DATA u32 *sFontHalfrowLookupTablePtr;
 
+/*
 void DrawGlyphOnWindow_NoShadow(struct Window * window, u32 glyphId, u32 fgColor)
 {
     u32 * vaddr;
@@ -45,3 +46,4 @@ void DrawGlyphOnWindow_NoShadow(struct Window * window, u32 glyphId, u32 fgColor
         window->currentX += window->glyphWidth;
     }
 }
+*/

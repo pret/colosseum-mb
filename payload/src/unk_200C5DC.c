@@ -486,46 +486,63 @@ u8 USRom_GetPlayerMapType(struct SaveBlock1 *sav1)
 
 struct UnkStruct_020251F0
 {
-    u8 unk0[4];
+    volatile u32 *field0;
     u32 field4;
     u8 field8[2];
     vu8 field10;
-    u8 unk11[15];
+    u8 unk11[6];
+    u8 field17;
+    u8 unk18[7];
     u32 field28;
 };
 
 extern volatile struct UnkStruct_020251F0 gUnknown_020251F0;
-/*
+
 void sub_0200CF50(u32 val)
 {
+    u32 a, b, c;
     switch (gUnknown_020251F0.field10)
     {
     case 0:
-        gUnknown_02024960.unk84C_1 = val & 7;
+        gUnknown_02024960.unk84C_1 = (u8)(val & 0x7);
         gUnknown_020251F0.field10++;
         break;
     case 1:
         gUnknown_02024960.unk84C_2 = val & 0x0000FFFF;
-        gUnknown_02024960.unk84C_3 = ((val >> 16) & 0xFFFF);
-        gUnknown_02024960.unk850_1 = ((val >> 24) & 0xFFFF);
-        gUnknown_02024960.field854 = &gPlayerPartyPtr[gUnknown_02024960.unk84C_1];
+
+        // Weird bitwise operations needed to match.
+        a = (val >> 16) & 0xFFFF;
+        b = a & 0xFF;
+        gUnknown_02024960.unk84C_3 = b;
+
+        c = (((val >> 16) & 0xFFFF) >> 8) & 0xFF;
+        gUnknown_02024960.unk850_1 = c;
+
+        gUnknown_02024960.field854 = (void*) &gPlayerPartyPtr[gUnknown_02024960.unk84C_1];
         gUnknown_020251F0.field4 = 100;
         gUnknown_020251F0.field28 = 0;
         gUnknown_020251F0.field10++;
         break;
     case 2:
-        gUnknown_02024960.field854
-        gUnknown_020251F0.field4 += 4;
+        gUnknown_02024960.field854[gUnknown_020251F0.field28 / 4] = val;
+        gUnknown_020251F0.field28 += 4;
         if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
         {
-            gUnknown_020251F0.field4 = 0;
+            gUnknown_020251F0.field0 = gUnknown_02024960.field85C;
+            gUnknown_020251F0.field4 = 12;
             gUnknown_020251F0.field28 = 0;
             gUnknown_020251F0.field10++;
         }
         break;
     case 3:
-        gUnknown_020251F0.field10++;
+        gUnknown_020251F0.field0[gUnknown_020251F0.field28 / 4] = val;
+        gUnknown_020251F0.field28 += 4;
+        if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
+        {
+            gUnknown_02024960.unk84C_01 = 1;
+            gUnknown_020251F0.field17 = 0;
+        }
         break;
     }
 }
-*/
+

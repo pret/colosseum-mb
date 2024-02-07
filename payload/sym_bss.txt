@@ -1,7 +1,7 @@
 	.include "asm/all.o"
 	.include "asm/m4a_1.o"
 	.include "src/gflib/sprite.o"
-	.include "asm/gflib/text.o"
+	.include "src/gflib/text.o"
 	.include "src/gflib/keys.o"
 	.include "src/gflib/sound.o"
 	.include "asm/libpmagb/save.o"
