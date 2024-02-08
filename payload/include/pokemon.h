@@ -200,6 +200,7 @@ struct SpindaSpot
     u16 image[16];
 };
 
+struct Pokemon *GetPtrToEmptyPartySlot(void);
 void SetMonData(struct Pokemon * pokemon, s32 attr, const void * data);
 void SetBoxMonData(struct BoxPokemon * boxmon, s32 attr, const void * data);
 u32 GetBoxMonData(struct BoxPokemon * boxmon, s32 attr, u8 * strbuf);

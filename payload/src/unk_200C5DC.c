@@ -1,6 +1,7 @@
 #include "global.h"
 #include "libpmagb/agb_rom.h"
 #include "gflib/characters.h"
+#include "gflib/keys.h"
 #include "pokeball.h"
 #include "all.h"
 #include "pokedex.h"
@@ -287,6 +288,9 @@ bool32 CheckFlag(s32 flag)
 extern bool8 gRomDetection_IsRubySapphire;
 extern bool8 gRomDetection_IsEnglishROM;
 
+extern void SoftResetRom(u32);
+extern void SoftReset(u32);
+
 void DetectROM(void)
 {
     u32 val, r4, r3;
@@ -490,10 +494,32 @@ struct UnkStruct_020251F0
     u32 field4;
     u8 field8[2];
     vu8 field10;
-    u8 unk11[6];
+    u8 field11;
+    u8 field12;
+    u8 field13;
+    u8 fill14;
+    u8 field15;
+    u8 field16;
     u8 field17;
-    u8 unk18[7];
+    u8 field18;
+    u8 fill19;
+    u8 field20;
+    u8 fill21;
+    u8 fill22;
+    u8 fill23;
+    u8 fill24;
+    u8 fill25;
+    u8 fill26;
+    u8 fill27;
     u32 field28;
+    u32 field32;
+    u32 field36;
+    u32 field40;
+    u32 field44;
+    u8 fill48;
+    u8 fill49;
+    u8 fill50;
+    u8 fill51;
 };
 
 extern volatile struct UnkStruct_020251F0 gUnknown_020251F0;
@@ -529,7 +555,7 @@ void sub_0200CF50(u32 val)
         if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
         {
             gUnknown_020251F0.field0 = gUnknown_02024960.field85C;
-            gUnknown_020251F0.field4 = 12;
+            gUnknown_020251F0.field4 = sizeof(gUnknown_02024960.field85C);
             gUnknown_020251F0.field28 = 0;
             gUnknown_020251F0.field10++;
         }
@@ -590,5 +616,413 @@ void sub_0200D08C(u32 val)
             gUnknown_02024960.unk_87A = 1;
         }
         break;
+    }
+}
+
+static inline void CopyN(s32 n, u8 *dst, const u8 *src)
+{
+    while (n != 0)
+    {
+        *dst = *src;
+        src++, dst++;
+        n--;
+    }
+}
+
+void sub_0200D1AC(u32 val)
+{
+    u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffs;
+    // Note: cast is needed here to make the code match. The whole struct is declared as volatile, but unkStruct isn't treated as volatile in this function.
+    // It's possible only certain members of gUnknown_02024960 were volatile.
+    struct UnkStruct868 *unkStruct = (struct UnkStruct868 *) &gUnknown_02024960.unk868;
+
+    switch (gUnknown_020251F0.field10)
+    {
+    case 0:
+        unkStruct->a8_0 = val;
+        gUnknown_020251F0.field10++;
+        break;
+    case 1:
+        unkStruct->a12 = val;
+        gUnknown_020251F0.field10++;
+        break;
+    case 2:
+        unkStruct->a11_3 = 0;
+        unkStruct->a11_2 = 0;
+        unkStruct->a11_1 = 0;
+        unkStruct->a11_0 = 0;
+        if (val & 1)
+            unkStruct->a11_0 = 1;
+        if (val & 2)
+            unkStruct->a11_1 = 1;
+        if (val & 4)
+            unkStruct->a11_2 = 1;
+        if (val & 8)
+            unkStruct->a11_3 = 1;
+
+        CopyN(sizeof(*unkStruct), ptr, (void*) unkStruct);
+        gUnknown_020251F0.field10++;
+        break;
+    case 3:
+        gUnknown_02024960.unk_85B = val >> 16;
+        gUnknown_020251F0.field4 = val & 0xFFFF;
+        gUnknown_020251F0.field28 = 0;
+        gUnknown_020251F0.field0 = (void *) gPcItemsPtr;
+        gUnknown_020251F0.field10++;
+        break;
+    case 4:
+        gUnknown_020251F0.field0[gUnknown_020251F0.field28++] = val;
+        if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
+        {
+            if (gUnknown_02024960.unk_85B == 0)
+            {
+                gUnknown_020251F0.field17 = 0;
+                gUnknown_02024960.unk_85A = 1;
+            }
+            else
+            {
+                gUnknown_020251F0.field4 = 100;
+                gUnknown_020251F0.field28 = 0;
+                gUnknown_020251F0.field0 = (void *) GetPtrToEmptyPartySlot();
+                gUnknown_020251F0.field10++;
+            }
+        }
+        break;
+    case 5:
+        gUnknown_020251F0.field0[gUnknown_020251F0.field28 / 4] = val;
+        gUnknown_020251F0.field28 += 4;
+        if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
+        {
+            gUnknown_020251F0.field4 = sizeof(gUnknown_02024960.field85C);
+            gUnknown_020251F0.field28 = 0;
+            gUnknown_020251F0.field0 = gUnknown_02024960.field85C;
+            gUnknown_020251F0.field10++;
+        }
+        break;
+    case 6:
+        gUnknown_020251F0.field0[gUnknown_020251F0.field28 / 4] = val;
+        gUnknown_020251F0.field28 += 4;
+        if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
+        {
+            gUnknown_02024960.unk_85A = 1;
+            gUnknown_020251F0.field17 = 0;
+        }
+        break;
+    }
+}
+
+bool32 sub_0200D394(u32 val)
+{
+    u32 r3 = gUnknown_020251F0.field12;
+    if (r3 == 0)
+    {
+        if (gUnknown_020251F0.field13 != 2)
+        {
+            RET_FALSE:
+                return FALSE;
+        }
+
+        if (val == gUnknown_020251F0.field40)
+        {
+            REG_JOYSTAT = 0x10;
+            gUnknown_020251F0.field36 = val;
+            gUnknown_020251F0.field12 = 1;
+            gUnknown_020251F0.field17 = 1;
+        }
+        else if (val == gUnknown_020251F0.field44)
+        {
+            REG_JOYSTAT = r3;
+            gUnknown_020251F0.field36 = val;
+            gUnknown_020251F0.field12 = 1;
+            gUnknown_020251F0.field17 = 0;
+        }
+        else
+        {
+            return FALSE;
+        }
+
+        gUnknown_020251F0.field13 = 0;
+        gUnknown_020251F0.field16 = 0;
+        return TRUE;
+    }
+    else
+    {
+        s32 r6 = gUnknown_020251F0.field17;
+        switch (r6)
+        {
+        case 0:
+            val >>= 24;
+            if (val == 0xAA)
+            {
+                REG_JOY_TRANS = (gHeldKeys << 0x10) | val;
+            }
+            else if (val == 0x99)
+            {
+                gUnknown_020251F0.field0 = (void *)sub_0200CB2C();
+                REG_JOY_TRANS = val;
+                gUnknown_020251F0.field4 = 0x278;
+                gUnknown_020251F0.field28 = r6;
+                gUnknown_020251F0.field17 = 4;
+            }
+            else if (val == 0x88)
+            {
+                gUnknown_020251F0.field0 = sub_0200CB34(0);
+                sub_0200CB48(0);
+                REG_JOY_TRANS = val;
+                gUnknown_020251F0.field4 = 0x780;
+                gUnknown_020251F0.field28 = r6;
+                gUnknown_020251F0.field17 = val;
+            }
+            else if (val == 0x77)
+            {
+                REG_JOY_TRANS = val;
+                gUnknown_020251F0.field17 = val;
+            }
+            else if (val == 0x66)
+            {
+                REG_JOY_TRANS = val;
+                gUnknown_020251F0.field17 = val;
+                gUnknown_020251F0.field0 = (void*) &gUnknown_02024960;
+                gUnknown_020251F0.field4 = 0x24;
+                gUnknown_020251F0.field28 = r6;
+                gUnknown_020251F0.field10 = r6;
+                gUnknown_02024960.unk_87A = r6;
+            }
+            else if (val == 0x55)
+            {
+                gUnknown_02024960.unk84C_00 = 1;
+                gUnknown_02024960.unk84C_01 = 0;
+                REG_JOY_TRANS = val;
+                gUnknown_020251F0.field17 = val;
+                gUnknown_020251F0.field10 = r6;
+            }
+            else if (val == 0x44)
+            {
+                REG_JOY_TRANS = val;
+                gUnknown_020251F0.field17 = val;
+                gUnknown_02024960.unk84C_02 = 1;
+                gUnknown_02024960.unk84C_03 = 1;
+            }
+            else if (val == 0x33 || val == 0x22)
+            {
+                REG_JOY_TRANS = val;
+                gUnknown_020251F0.field17 = val;
+                gUnknown_020251F0.field10 = 0;
+            }
+            else if (val == 0x60)
+            {
+                REG_JOY_TRANS = val;
+                REG_IME = 0;
+                SoftResetRom(0);
+            }
+            else if (val == 0x61)
+            {
+                REG_JOY_TRANS = val;
+                REG_IME = 0;
+                SoftReset(0);
+            }
+            break;
+        case 136:
+            gUnknown_020251F0.field0[gUnknown_020251F0.field28 / 4] = val;
+            gUnknown_020251F0.field28 += 4;
+            if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
+            {
+                REG_JOYSTAT = 0;
+                gUnknown_020251F0.field17 = 0;
+                gUnknown_020251F0.field12 = 0;
+                sub_0200CB48(1);
+            }
+            break;
+        case 119:
+            gUnknown_02024960.unk_858 = val >> 24;
+            gUnknown_02024960.unk_859 = val;
+            gUnknown_02024960.unk_878 = 1;
+            gUnknown_020251F0.field17 = 0;
+            break;
+        case 102:
+            sub_0200D08C(val);
+            break;
+        case 85:
+            sub_0200CF50(val);
+            break;
+        case 34:
+            sub_0200D1AC(val);
+            break;
+        default:
+            goto RET_FALSE; // return FALSE doesn't match
+        }
+    }
+    return TRUE;
+}
+
+void sub_0200D624(void)
+{
+    bool32 gameClear;
+    u32 joyTransVal;
+    u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffs;
+    struct UnkStruct868 *unkStruct = (struct UnkStruct868 *) &gUnknown_02024960.unk868;
+
+    switch (gUnknown_020251F0.field10)
+    {
+    case 0:
+        CopyN(sizeof(*unkStruct), (void*) unkStruct, ptr);
+        REG_JOY_TRANS = unkStruct->a8_0;
+        gUnknown_020251F0.field10++;
+        break;
+    case 1:
+        REG_JOY_TRANS = unkStruct->a12;
+        gUnknown_020251F0.field10++;
+        break;
+    case 2:
+        gameClear = CheckGameClear();
+        joyTransVal = (unkStruct->a11_0 << 0) | (unkStruct->a11_1 << 1) | (unkStruct->a11_2 << 2) | (unkStruct->a11_3 << 3) | (gameClear << 4);
+        REG_JOY_TRANS = joyTransVal;
+        gUnknown_020251F0.field10++;
+        break;
+    case 3:
+        gUnknown_020251F0.field4 = gAgbPmRomParams->pcItemsCount;
+        gUnknown_020251F0.field28 = 0;
+        joyTransVal = (*gPlayerPartyCountPtr << 16);
+        joyTransVal |= gUnknown_020251F0.field4;
+        REG_JOY_TRANS = joyTransVal;
+        gUnknown_020251F0.field0 = (void *) gPcItemsPtr;
+        gUnknown_020251F0.field10++;
+        break;
+    case 4:
+        REG_JOY_TRANS = gUnknown_020251F0.field0[gUnknown_020251F0.field28++];
+        if (gUnknown_020251F0.field28 == gUnknown_020251F0.field4)
+        {
+            gUnknown_020251F0.field17 = 0;
+            gUnknown_020251F0.field12 = 0;
+        }
+        break;
+    }
+}
+
+bool32 sub_0200D748(void)
+{
+    if (gUnknown_020251F0.field12 == 0)
+    {
+        if (gUnknown_020251F0.field13 == 1)
+        {
+            gUnknown_020251F0.field13 = 2;
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+    else
+    {
+        switch (gUnknown_020251F0.field17)
+        {
+        case 4:
+            if (gUnknown_020251F0.field28 < gUnknown_020251F0.field4)
+            {
+                REG_JOY_TRANS = gUnknown_020251F0.field0[gUnknown_020251F0.field28 / 4];
+                gUnknown_020251F0.field28 += 4;
+            }
+            else
+            {
+                REG_JOYSTAT = 0;
+                gUnknown_020251F0.field17 = 0;
+                gUnknown_020251F0.field12 = 0;
+            }
+            break;
+        case 0x33:
+            sub_0200D624();
+            break;
+        case 0x44:
+            gUnknown_02024960.unk84C_03 = 0;
+            gUnknown_020251F0.field17 = 0;
+            break;
+        case 0x55:
+        case 0x66:
+        case 0x60:
+        case 0x77:
+        case 0x88:
+        case 0x22:
+            break;
+        default:
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+void sub_0200D80C(void)
+{
+    u32 joyCnt = REG_JOYCNT;
+    if (!(joyCnt & 4) || sub_0200D748() != 0)
+    {
+        if (!(joyCnt & 2))
+            goto loc_200D850;
+        gUnknown_020251F0.field11 = 1;
+        if (sub_0200D394(REG_JOY_RECV) != 0)
+            goto loc_200D850;
+    }
+
+    REG_JOYSTAT = 0;
+    gUnknown_020251F0.field12 = 0;
+    gUnknown_020251F0.field13 = 0;
+
+loc_200D850:
+    if (joyCnt & 1)
+    {
+        u16 UNUSED joyRcv = REG_JOY_RECV;
+        REG_JOY_TRANS = gUnknown_020251F0.field32;
+        REG_JOYSTAT = 0;
+        gUnknown_020251F0.field12 = 0;
+        gUnknown_020251F0.field13 = 1;
+        gUnknown_020251F0.field20 = REG_VCOUNT;
+    }
+
+    REG_JOYCNT = joyCnt;
+    gUnknown_020251F0.field15 = 0;
+}
+
+void sub_0200D8A4(void)
+{
+    u16 UNUSED joyRcv;
+    u16 ime = REG_IME;
+
+    REG_IME = 0;
+    if (gUnknown_020251F0.field18 == 0)
+        REG_RCNT = 0x8000;
+    REG_RCNT = 0xC000;
+    REG_JOYSTAT = 0;
+    joyRcv = REG_JOY_RECV;
+    REG_JOY_TRANS = 0;
+    REG_JOYCNT = 0x47;
+    REG_IF = 0x80;
+    REG_IE |= 0x80;
+
+    gUnknown_020251F0.field15 = 0;
+    gUnknown_020251F0.field12 = 0;
+    gUnknown_020251F0.field13 = 0;
+    gUnknown_020251F0.field18 = 0;
+    gUnknown_020251F0.field17 = 0;
+    gUnknown_020251F0.field11 = 0;
+
+    REG_IME = ime;
+}
+
+void sub_0200D924(const u8 *headerSth)
+{
+    s32 i;
+    u16 ime = REG_IME;
+
+    REG_IME = 0;
+    for (i = 0; i < sizeof(gUnknown_020251F0); i++)
+    {
+        *((u8 *)(&gUnknown_020251F0) + i) = 0;
+    }
+    gUnknown_020251F0.field18 = 1;
+    sub_0200D8A4();
+    REG_IE |= 0x80;
+    if (headerSth[0] == 0x54 && headerSth[0] == 0x45 && headerSth[0] == 0x53 && headerSth[0] == 0x54)
+    {
+
     }
 }

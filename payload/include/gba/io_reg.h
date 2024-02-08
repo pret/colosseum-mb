@@ -498,6 +498,11 @@
 
 #define REG_WAITCNT     (*(vu16 *)REG_ADDR_WAITCNT)
 
+#define REG_JOY_TRANS     (*(vu32 *)REG_ADDR_JOY_TRANS)
+#define REG_JOYSTAT     (*(vu16 *)REG_ADDR_JOYSTAT)
+#define REG_JOYCNT     (*(vu16 *)REG_ADDR_JOYCNT)
+#define REG_JOY_RECV     (*(vu32 *)REG_ADDR_JOY_RECV)
+
 // I/O register fields
 
 // DISPCNT

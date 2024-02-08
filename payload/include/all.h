@@ -1,6 +1,20 @@
 #ifndef GUARD_ALL_H
 #define GUARD_ALL_H
 
+struct UnkStruct868
+{
+    u32 a0;
+    u32 a4;
+    u32 a8_0:24;
+    u32 a11_0:1;
+    u32 a11_1:1;
+    u32 a11_2:1;
+    u32 a11_3:1;
+    u32 a11_4:4;
+    u32 a12:24;
+    u32 a15:8;
+};
+
 struct UnkStruct_02024960
 {
     u32 unk_00:24;
@@ -26,10 +40,13 @@ struct UnkStruct_02024960
     u32 unk850_1:8;
     u32 unk850_2:24;
     u32 *field854;
-    vu8 unk_858;
-    u8 filler_859;
-    u32 field85C[7];
-    u8 unk_86E;
+    u8 unk_858;
+    u8 unk_859;
+    u8 unk_85A;
+    u8 unk_85B;
+    u32 field85C[3];
+    struct UnkStruct868 unk868;
+    u8 unk_878;
     u8 unk_879;
     u8 unk_87A;
     u8 unk_87B;
