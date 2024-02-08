@@ -2,6 +2,7 @@
 #include "libpmagb/agb_rom.h"
 #include "gflib/characters.h"
 #include "gflib/keys.h"
+#include "gflib/init.h"
 #include "pokeball.h"
 #include "all.h"
 #include "pokedex.h"
@@ -497,7 +498,7 @@ struct UnkStruct_020251F0
     u8 field11;
     u8 field12;
     u8 field13;
-    u8 fill14;
+    u8 field14;
     u8 field15;
     u8 field16;
     u8 field17;
@@ -516,10 +517,7 @@ struct UnkStruct_020251F0
     u32 field36;
     u32 field40;
     u32 field44;
-    u8 fill48;
-    u8 fill49;
-    u8 fill50;
-    u8 fill51;
+    u32 field48;
 };
 
 extern volatile struct UnkStruct_020251F0 gUnknown_020251F0;
@@ -1021,8 +1019,37 @@ void sub_0200D924(const u8 *headerSth)
     gUnknown_020251F0.field18 = 1;
     sub_0200D8A4();
     REG_IE |= 0x80;
-    if (headerSth[0] == 0x54 && headerSth[0] == 0x45 && headerSth[0] == 0x53 && headerSth[0] == 0x54)
-    {
+    if (headerSth[0] == 0x54 && headerSth[1] == 0x45 && headerSth[2] == 0x53 && headerSth[3] == 0x54)
+        gUnknown_020251F0.field14 = 0xFE;
+    else
+        gUnknown_020251F0.field14 = 0x28;
+    gUnknown_020251F0.field32 = (headerSth[3] << 24) | (headerSth[2] << 16) | (headerSth[1] << 8) | (headerSth[0]);
+    gUnknown_020251F0.field44 = gUnknown_020251F0.field32;
+    gUnknown_020251F0.field40 = gUnknown_020251F0.field32 | 0x20202020;
+    gUnknown_020251F0.field48 = (headerSth[4] << 24) | (headerSth[5] << 16) | (headerSth[6] << 8) | (headerSth[7]);
+    SetIntrFunc(0, sub_0200D80C);
 
+    REG_IME = ime;
+}
+
+bool32 sub_0200D9EC(void)
+{
+    if (*(u8*)(0x80000B2) != 0x96)
+        SoftReset(0);
+
+    if (gUnknown_020251F0.field15 <= gUnknown_020251F0.field14)
+    {
+        REG_IME = 0;
+        gUnknown_020251F0.field15++;
+        REG_IME = 1;
+        return FALSE;
     }
+
+    gUnknown_020251F0.field16 = 1;
+    SoftReset(0);
+}
+
+void UNUSED sub_0200DA38(u8 *dst, const u8 *src, s32 n)
+{
+    CopyN(n, dst, src);
 }
