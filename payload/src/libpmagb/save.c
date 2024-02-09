@@ -4,6 +4,7 @@
 #include "libpmagb/agb_rom.h"
 #include "gba/flash_internal.h"
 #include "gflib/sound.h"
+#include "gflib/init.h"
 
 #define FILE_SIGNATURE 0x08012025  // signature value to determine if a sector is in use
 
@@ -60,7 +61,15 @@ struct {
     u8 unk_2;
     u8 unk_3;
     u8 unk_4;
+    u8 unk_5;
+    u8 unk_6;
+    u8 unk_7;
     u32 unk_8;
+    u8 fill12;
+    u8 fill13;
+    u8 fill14;
+    u8 fill15;
+    u16 unk16;
 } gUnknown_02022F10;
 extern u32 gSaveValidStatus;
 extern u8 sWipeTries;
@@ -505,7 +514,7 @@ u8 sub_02009F4C(u16 chunk, const struct SaveBlockChunk * chunks)
     }
 }
 
-u8 sub_0200A118(u16 sectorNum)
+u8 sub_0200A118(u16 sectorNum, const struct SaveBlockChunk * chunks)
 {
     u16 r4 = sectorNum + gFirstSaveSector - 1;
     r4 %= NUM_SECTORS_PER_SAVE_SLOT;
@@ -569,7 +578,7 @@ static inline u8 sub_0200A260_sub(u16 limit, const struct SaveBlockChunk * chunk
     return ret;
 }
 
-bool8 sub_0200A260(void)
+bool32 sub_0200A260(void)
 {
     u8 status;
 
@@ -588,3 +597,104 @@ retry:
     else
         return FALSE;
 }
+/*
+static inline void Hmm(const struct SaveBlockChunk *a)
+{
+    u8 i = 0;
+    while (1)
+    {
+        sub_0200A118(14, sSaveBlockChunks);
+        if (gDamagedSaveSectors == 0)
+            return;
+        if (++i > 3)
+            break;
+        gDamagedSaveSectors = 0;
+    }
+    gUnknown_02022F10.unk_4 |= 1;
+}
+
+bool32 sub_0200A2C8(s32 a)
+{
+    switch (a)
+    {
+    case 0:
+    {
+        u32 i;
+        s32 j;
+        u8 *sav2;
+
+        gUnknown_02022F10.unk_8 |= 1;
+        gUnknown_02022F10.unk_4 &= ~(1);
+        gUnknown_02022F10.unk_8 &= ~(2 | 4);
+        sav2 = gSaveBlock2Ptr;
+        for (i = 0; i < gAgbPmRomParams->saveBlock2Size; i++)
+        {
+            if (sav2[i] != 0)
+                goto _0200A354;
+        }
+        for (j = 0; j < NUM_SECTORS; j++)
+        {
+            EraseFlashSector(j);
+        }
+        gSaveCounter = 0;
+        gFirstSaveSector = 0;
+        gDamagedSaveSectors = 0;
+        gSaveValidStatus = 0x80;
+        gUnknown_02022F10.unk_8 |= 8;
+        gUnknown_02022F10.unk_1 = 4;
+        gUnknown_02022F10.unk16 = 0;
+    _0200A354:
+        gFastSaveSection = &gSaveReadBuffer;
+        gLastKnownGoodSector = gFirstSaveSector;
+        gPrevSaveCounter = gSaveCounter;
+        gFirstSaveSector++;
+        gFirstSaveSector %= NUM_SECTORS_PER_SAVE_SLOT;
+        gSaveCounter++;
+        gUnknown_02023F40 = 0;
+        gDamagedSaveSectors = 0;
+        gUnknown_02022F10.unk_1++;
+        gUnknown_02022F10.unk16 = 0;
+        DelayFrames(5);
+        while (1)
+        {
+            if (sub_0200A260() != 0)
+                break;
+            if (gUnknown_02022F10.unk_4 & 1)
+                return TRUE;
+        }
+        sWipeTries = 0;
+        for (;;)
+        {
+            SoundVSyncOff();
+            sub_02009F4C(13, sSaveBlockChunks);
+            SoundVSyncOn();
+            if (gDamagedSaveSectors == 0)
+                break;
+            if (WipeFailedSectors())
+            {
+                gUnknown_02022F10.unk_4 |= 1;
+                break;
+            }
+        }
+        return (gUnknown_02022F10.unk_4 & 1) != 0;
+    }
+    break;
+    case 1:
+    {
+        Hmm(sSaveBlockChunks);
+        if (gUnknown_02022F10.unk_4 & 1)
+            return TRUE;
+        else
+            return FALSE;
+    }
+    break;
+    case 2:
+    {
+        Hmm(sSaveBlockChunks);
+        return FALSE;
+    }
+    break;
+    }
+    return FALSE;
+}
+*/

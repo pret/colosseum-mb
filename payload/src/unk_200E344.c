@@ -124,17 +124,17 @@ s32 validate_rom_header(void)
 {
     if (*(u8 *)0x080000B0 != '0')
         return 6;
-    
+
     if (*(u8 *)0x080000B1 != '1')
         return 6;
-    
+
     if (*(u8 *)0x080000B2 != 0x96)
         return 6;
-    
+
     return validate_rom_header_internal();
 }
 
-void main_callback(u32 * pstate, u8 * buffer, u32 unk2)
+void main_callback(u32 * pstate, void * buffer, u32 unk2)
 {
     u8 sp0C;
     int sp10;
@@ -373,7 +373,7 @@ char * print_rtc(char * a0)
 {
     if (gUnknown_02025250 != 1 && gUnknown_02025250 != 2)
     {
-        
+
     }
     else
     {

@@ -1,3 +1,4 @@
+	.include "src/all.o"
 	.include "asm/all.o"
 	.include "asm/m4a_1.o"
 	.include "src/gflib/sprite.o"
