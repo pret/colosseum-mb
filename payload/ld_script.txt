@@ -28,7 +28,7 @@ SECTIONS {
         src/gflib/keys.o(.text);
         src/gflib/gfxload.o(.text);
         src/gflib/sound.o(.text);
-        asm/libpmagb/agb_rom.o(.text);
+        src/libpmagb/agb_rom.o(.text);
         src/libpmagb/pic_uncomp.o(.text);
         src/libpmagb/save.o(.text);
         asm/libpmagb/save.o(.text);

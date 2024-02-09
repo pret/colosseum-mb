@@ -19,7 +19,7 @@ u16 * gVarsPtr;
 u8 * gGiftRibbonsPtr;
 struct EnigmaBerry * gEnigmaBerryPtr;
 
-s32 SaveRandom(void);
+u16 SaveRandom(void);
 
 void * gLastSaveBlockPtr;
 u8 gSaveBlockLoadRegions[0xE000];
@@ -47,9 +47,7 @@ static inline void SeedSaveRng(void)
 static inline void * UpdateSaveBlockPtr(u32 size)
 {
     void * ret = gLastSaveBlockPtr;
-    u32 offset = SaveRandom();
-    gLastSaveBlockPtr += size;
-    gLastSaveBlockPtr += (offset & 15) * 4;
+    gLastSaveBlockPtr = (gLastSaveBlockPtr + size) + ((SaveRandom() & 15) * 4);
     return ret;
 }
 
@@ -129,7 +127,7 @@ void SaveBlocksInit(void)
     gPcItemsPtr = gSaveBlock1Ptr + gAgbPmRomParams->pcItemsOffs;
 }
 
-s32 SaveRandom(void)
+u16 SaveRandom(void)
 {
     gSaveRngValue = gSaveRngValue * 2061 + 7;
     return gSaveRngValue;
