@@ -10,6 +10,7 @@
 #include "gflib/characters.h"
 #include "constants/pokemon.h"
 #include "pokemon.h"
+#include "strings.h"
 
 EWRAM_DATA volatile struct UnkStruct_02024960 gUnknown_02024960 = {0};
 
@@ -704,4 +705,161 @@ struct Window *CreatePartyMonHPWindow(u32 left, u32 top, u32 monId)
     TextWindowSetXY(win, 4, 0);
     RenderText_NoPlaceholders(win, text);
     return win;
+}
+
+struct UnkSpriteMonIconStruct
+{
+    u8 monId;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u16 species;
+    u16 speciesIcon; // Support for Unown.
+    u16 unk8;
+    struct Sprite *monSprite;
 };
+
+struct SubStruct02021860
+{
+    u8 fill0[0x22];
+    u8 unk22;
+    struct Window *win; // 0x24
+    u8 fill28[4];
+};
+
+struct Unk02021860Struct
+{
+    struct SubStruct02021860 unk0[6];
+    u8 fill108[0x11b-0x108];
+    u8 unk11B;
+    u8 filler11C;
+    u8 filler11D;
+    u8 filler11E;
+    u8 filler11F;
+    u8 filler120;
+    u8 unk121;
+    u8 filler122;
+    u8 filler123;
+    u8 unk124;
+};
+
+extern struct Unk02021860Struct gUnknown_02021860;
+
+void CreateMonIcon(struct Sprite *sprite)
+{
+    u32 r1;
+    if (sprite->unk14[1] == 7 || sprite->unk14[1] == 20)
+    {
+        struct UnkSpriteMonIconStruct *ptr = (void *)sprite->unk14[0];
+        if (ptr->unk3 != 7)
+        {
+            sprite->unk14[1] = 0;
+            sprite->unk14[2]++;
+        }
+        else if (sprite->unk14[1] == 7)
+        {
+            sprite->unk14[1]++;
+            return;
+        }
+        else
+        {
+            sprite->unk14[1] = 0;
+        }
+
+        r1 = sprite->unk14[2] & 1;
+        CpuCopy16(&gAgbPmRomParams->monIconTable[ptr->speciesIcon][r1 * 512], (void *)VRAM + 0x10000 + (ptr->unk8 * 32), 512);
+        SetSpritePos(sprite, ptr->unk1, ptr->unk2);
+        if (gUnknown_02021860.unk11B == ptr->monId)
+        {
+            if (gUnknown_02021860.unk121 == 4)
+                AddSpritePos(sprite, 0, -gUnknown_02021860.unk121);
+            else
+                SetSpritePos(sprite, ptr->unk1, ptr->unk2);
+            gUnknown_02021860.unk121 ^= 4;
+        }
+    }
+    else
+    {
+        sprite->unk14[1]++;
+    }
+}
+
+void sub_02000BFC(void)
+{
+    u8 text[4];
+    struct Window *win;
+    s32 i;
+
+    for (i = 0; i < 6; i++)
+    {
+        struct SubStruct02021860 *ptr = &gUnknown_02021860.unk0[i];
+        if (ptr->unk22 == gUnknown_02021860.unk124)
+        {
+            ptr->unk22 = 0;
+            win = ptr->win;
+            ClearWindowCharBuffer(win, 0);
+            if (ptr->unk22 == 0)
+            {
+                RenderTextAt(win, 0, 2, gText_Space);
+            }
+            else
+            {
+                text[0] = ptr->unk22 + CHAR_0;
+                text[1] = EOS;
+                BufferString(0, text);
+                TextWindowSetXY(win, 0, 2);
+                RenderText(win, gText_Number);
+            }
+            gUnknown_02021860.unk124--;
+            gUnknown_02021860.unk11B = i;
+            break;
+        }
+    }
+}
+
+extern const struct Subsprites gUnknown_0201F9F4[];
+
+u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
+{
+    u32 personality;
+    struct Sprite *sprite;
+
+    a0->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES2, NULL);
+    if (a0->species == SPECIES_NONE)
+        return SPECIES_NONE;
+
+    a0->unk8 = (monId * 16) + 0xC0;
+    a0->monId = monId;
+    a0->unk1 = x;
+    a0->unk2 = y;
+    personality = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_PERSONALITY, NULL);
+    a0->speciesIcon = FixUnownSpecies(a0->species, personality);
+    sprite = AddSprite(x, y, gUnknown_0201F9F4);
+    sprite->unk14[0] = (uintptr_t)(a0);
+    sprite->callback = CreateMonIcon;
+    SetSpritePaletteNum(sprite, gAgbPmRomParams->gMonIconPaletteIndices[a0->species]);
+    SetSpriteTileOffset(sprite, a0->unk8);
+    CpuCopy16(&gAgbPmRomParams->monIconTable[a0->speciesIcon][512], (void *)VRAM + 0x10000 + (a0->unk8 * 32), 512);
+    a0->monSprite = sprite;
+    return a0->species;
+}
+
+struct Unk02000D74Struct
+{
+    u8 f0;
+    u8 f1;
+    u8 f2;
+};
+
+void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *a1, u32 monId)
+{
+    u32 species = sub_02000CA4(a, monId, a1->f0 * 8, (a1->f1 * 8) + 2);
+    if (species == SPECIES_NONE)
+    {
+        CopyToBgTilemapBufferRect(3, a1->f0, a1->f1, )
+    }
+    else
+    {
+
+    }
+}

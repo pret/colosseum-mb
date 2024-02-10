@@ -33,7 +33,7 @@ struct Sprite * AddSprite(s32 x, s32 y, const struct Subsprites * subsprites)
     r7->tileOffset = 0;
     r7->callback = NULL;
     for (i = 0; i < 4; i++)
-        r7->unk14[i] = NULL;
+        r7->unk14[i] = 0;
     return r7;
 }
 

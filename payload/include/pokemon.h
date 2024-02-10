@@ -201,6 +201,7 @@ struct SpindaSpot
 };
 
 struct Pokemon *GetPtrToEmptyPartySlot(void);
+u16 FixUnownSpecies(u16 species, u32 personality);
 void SetMonData(struct Pokemon * pokemon, s32 attr, const void * data);
 u32 GetMonData(struct Pokemon *mon, s32 field, u8 *data);
 void SetBoxMonData(struct BoxPokemon * boxmon, s32 attr, const void * data);
