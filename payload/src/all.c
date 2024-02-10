@@ -49,8 +49,12 @@ extern u8 gUnknown_020217B8;
 extern u8 gStringBuffers[][32];
 extern const u8 gFont1JapanGfx[];
 extern const u8 gFont0JapanGfx[];
+extern const u8 gFont0LatinGfx[];
+extern const u8 gFont1LatinGfx[];
 extern const u8 gFont1JapanWidths[];
 extern const u8 gFont0JapanWidths[];
+extern const u8 gFont0LatinWidths[];
+extern const u8 gFont1LatinWidths[];
 
 extern void sub_0200D924(const u8*);
 extern void sub_0200D9EC(void);
@@ -531,6 +535,9 @@ void DrawPartyMonHealthBar(int bgNum, int x, int y, u32 monId)
 
 static UNUSED u8 gUnknown_02020A38[8];
 static u8 gScreenIsFadedOut;
+// probably another file
+static u8 sPadding[2];
+static u16 sSomeWindowBaseBlock;
 
 bool32 IsScreenFadedOut(void)
 {
@@ -574,3 +581,127 @@ void FadeOut(void)
     REG_BLDY = 0x1F;
     ResetSprites();
 }
+
+void DrawTextWindowBorder(u32 a0, u32 a1, s32 a2, s32 a3, u32 a4)
+{
+    s32 r1, i;
+    u16 *ptr;
+
+    ptr = ((u16 *)(0x3002000) + a1 * 32 + a0);
+    *ptr = a4;
+
+    for (i = 1; i < a2 - 1; i++)
+        ptr[i] = a4 + 1;
+    ptr[i] = a4 + 2;
+
+    ptr += 0x20;
+    for (r1 = 1; r1 < a3 - 1; r1++, ptr += 0x20)
+    {
+        *ptr = a4 + 3;
+        for (i = 1; i < a2 - 1; i++)
+            ;
+        ptr[i] = a4 + 5;
+    }
+
+    *ptr = a4 + 6;
+    for (i = 1; i < a2 - 1; i++)
+        ptr[i] = a4 + 7;
+    ptr[i] = a4 + 8;
+}
+
+u8 *NumToPmString3CustomZeroChar(s32 num, u8 *str, u32 zeroChar)
+{
+    str[0] = Div(num, 100) + zeroChar;
+    num = Mod(num, 100);
+    str[1] = Div(num, 10) + zeroChar;
+    str[2] = Mod(num, 10) + zeroChar;
+    str[3] = EOS;
+    return str;
+}
+
+void ClearVram(void)
+{
+    CpuFill32(0, (void *)VRAM, VRAM_SIZE);
+    ResetGpuBuffers();
+}
+
+u8 *NumToPmString3RightAlign(u8 *str, s32 num)
+{
+    s32 i;
+
+    str[0] = Div(num, 100) + (unsigned) CHAR_0;
+    num = Mod(num, 100);
+    str[1] = Div(num, 10) + (unsigned) CHAR_0;
+    str[2] = Mod(num, 10) + (unsigned) CHAR_0;
+    str[3] = EOS;
+    for (i = 0; str[i + 1] != EOS && str[i] == CHAR_0; i++)
+        str[i] = CHAR_SPACE;
+    return str;
+}
+
+void RenderTextAt(struct Window *win, u32 x, u32 y, const u8 *str)
+{
+    TextWindowSetXY(win, x, y);
+    RenderText(win, str);
+}
+
+struct Window *CreateSomeWindowParameterized(u32 winId, u32 left, u32 top, u32 width, u32 height, u32 glyphSize)
+{
+    struct Window winTemplate;
+    struct Window *winCreated;
+
+    winTemplate.bg = 0;
+    winTemplate.left = left;
+    winTemplate.top = top;
+    winTemplate.width = width;
+    winTemplate.height = height;
+    winTemplate.baseBlock = sSomeWindowBaseBlock;
+    winTemplate.fillValue = 0xF;
+    winTemplate.glyphSize = glyphSize;
+    winTemplate.vramCharBase = (void *) BG_VRAM + BG_CHAR_SIZE + (winTemplate.baseBlock * 32);
+    if (glyphSize == 8)
+    {
+        winTemplate.glyphGfx = gFont1LatinGfx;
+        winTemplate.glyphWidths = gFont1LatinWidths;
+    }
+    else
+    {
+        winTemplate.glyphGfx = gFont0LatinGfx;
+        winTemplate.glyphWidths = gFont0LatinWidths;
+    }
+
+    winCreated = AddWindow(winId, &winTemplate);
+    SetTextColor(winCreated, 15, 1);
+    ClearWindowCharBuffer(winCreated, 0);
+    sSomeWindowBaseBlock += width * height;
+    return winCreated;
+}
+
+struct Window *CreatePartyMonHPWindow(u32 left, u32 top, u32 monId)
+{
+    s32 i;
+    u8 text[8];
+    s32 hp, maxHp;
+    struct Window *win = CreateSomeWindowParameterized(1, left, top, 7, 1, 8);
+
+    ClearWindowCharBuffer(win, 0);
+    hp = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_HP, NULL);
+    maxHp = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_MAX_HP, NULL);
+
+    NumToPmString3CustomZeroChar(hp, text, 0x76);
+    for (i = 0; text[i] == 0x76; i++)
+        text[i] = CHAR_EXTRA_SYMBOL;
+    text[3] = 0x73;
+    if (hp == 0)
+        text[2] = 0x76;
+
+    NumToPmString3CustomZeroChar(maxHp, text + 4, 0x76);
+    for (i = 0; text[i + 4] == 0x76; i++)
+        text[i + 4] = CHAR_EXTRA_SYMBOL;
+    if (maxHp == 0)
+        text[6] = 0x76;
+
+    TextWindowSetXY(win, 4, 0);
+    RenderText_NoPlaceholders(win, text);
+    return win;
+};

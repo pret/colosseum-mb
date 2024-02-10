@@ -38,7 +38,7 @@ void ClearWindowCharBuffer(struct Window * window, u32 a1);
 void FillWindowCharBufferRect(struct Window * window, u32 x, u32 y, u32 width, u32 height, u16 fillValue);
 void SetTextColor(struct Window * window, u8 fg, u8 shadow);
 void TextWindowNextLine(struct Window * window);
-void TextWindowSetXY(struct Window * window, u8 x, u8 y);
+void TextWindowSetXY(struct Window * window, u32 x, u32 y);
 void TextWindowShiftXY(struct Window * window, s32 dx, s32 dy);
 void TextWindowPrintSimpleString(struct Window * window, const u8 * str);
 void TextWindowFillTileBufferForText(struct Window * window);
