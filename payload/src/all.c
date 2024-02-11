@@ -1069,3 +1069,96 @@ void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *
         gUnknown_02021860.unk120 = monId;
     }
 }
+
+void sub_02001258(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *coords, u32 monId)
+{
+    s32 i;
+    u8 monName[24];
+    u8 sp32[44];
+    const struct Unk201F9B0Struct *r5 = &gUnknown_0201F9B0[coords->f2];
+    struct UnkSpriteMonIconStruct *r9 = &a0->unk0[monId];
+    u32 species = sub_02000CA4(r9, monId, (coords->x * 8) - 1, ((coords->y - 1) * 8) + 2);
+
+    if (species == SPECIES_NONE)
+    {
+        r5 = &gUnknown_0201F9B0[2];
+        CopyToBgTilemapBufferRect(3, coords->x, coords->y, r5->unk0, r5->unk1, (u16 *) (VRAM + 0x14000) + r5->unk2);
+    }
+    else
+    {
+        r9->statusPrimary = GetMonStatus(&gPlayerPartyPtr[monId]);
+        CopyToBgTilemapBufferRect(3, coords->x, coords->y, r5->unk0, r5->unk1, (u16 *) (VRAM + 0x14000) + r5->unk2);
+        if (r9->statusPrimary != STATUS_PRIMARY_FAINTED)
+        {
+            if (a0->unk11B == monId)
+                SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 7);
+        }
+        else
+        {
+            if (a0->unk11B == monId)
+                SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 9);
+            else
+                SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 5);
+        }
+
+        r9->unk14 = CreateSomeWindowParameterized(1, coords->x + 3, coords->y, gAgbPmRomParams->pokemonNameLength_2, 2, 8);
+        GetMonData(&gPlayerPartyPtr[monId], MON_DATA_NICKNAME, monName);
+        SomeMonNameStrMagic(monName, sp32, GetStringSizeHandleExtCtrlCodes(monName));
+        if (GetMonData(&gPlayerPartyPtr[monId], MON_DATA_LANGUAGE, monName) != LANGUAGE_JAPANESE)
+            r9->unk14->startX = 6;
+        else
+            r9->unk14->startX = 8;
+        TextWindowSetXY(r9->unk14, r9->unk14->startX, 0);
+        RenderText_NoPlaceholders(r9->unk14, sp32);
+
+        if (r9->statusPrimary == STATUS_PRIMARY_NONE || r9->statusPrimary == STATUS_PRIMARY_POKERUS)
+        {
+            r9->unk18 = PutMonLvlOnWindow(coords->x + 6, coords->y + 2, monId);
+        }
+        else
+        {
+            for (i = 0; i < 4; i++)
+            {
+                u32 tileNum = i + 0xB05C + (r9->statusPrimary * 4);
+                SetBgTilemapBufferTileAt(0, coords->x + 5 + i, coords->y + 2, tileNum);
+            }
+        }
+
+        if (species != SPECIES_NIDORAN_M && species != SPECIES_NIDORAN_F)
+        {
+            PutMonGenderOnBgTilemap(coords->x + 9, coords->y + 2, monId);
+        }
+        else
+        {
+            GetSpeciesName(sp32, species);
+            if (StringCompare(monName, sp32) != 0)
+            {
+                PutMonGenderOnBgTilemap(coords->x + 9, coords->y + 2, monId);
+            }
+        }
+
+        if (gUnknown_02021860.unk118 == 0)
+        {
+            r9->unk1C = CreatePartyMonHPWindow(coords->x + 13, coords->y + 2, monId);
+            DrawPartyMonHealthBar(0, coords->x + 10, coords->y + 1, monId);
+            gUnknown_02021860.unk0[monId].unk20 = coords->x + 10;
+            gUnknown_02021860.unk0[monId].unk21 = coords->y + 1;
+        }
+        else
+        {
+            r9->unk20 = coords->x + 11;
+            r9->unk21 = coords->y;
+            r9->win = CreateSomeWindowParameterized(monId + 5, r9->unk20, r9->unk21, 6, 2, 0x10);
+            sub_2002EE0Inline(r9->win, r9);
+        }
+
+        if (GetMonData(&gPlayerPartyPtr[monId], MON_DATA_HELD_ITEM, NULL) != ITEM_NONE)
+        {
+            r9->unk28 = AddSprite((coords->x * 8) + 24, (coords->y * 8) + 15, gUnknown_0201F958);
+            SetSpritePaletteNum(r9->unk28, 12);
+        }
+        gUnknown_02021860.unk120 = monId;
+        gBgTilemapBufferTransferScheduled[0] = TRUE;
+    }
+}
+
