@@ -10,6 +10,7 @@
 #include "gflib/characters.h"
 #include "constants/pokemon.h"
 #include "pokemon.h"
+#include "strings.h"
 
 EWRAM_DATA volatile struct UnkStruct_02024960 gUnknown_02024960 = {0};
 
@@ -49,8 +50,12 @@ extern u8 gUnknown_020217B8;
 extern u8 gStringBuffers[][32];
 extern const u8 gFont1JapanGfx[];
 extern const u8 gFont0JapanGfx[];
+extern const u8 gFont0LatinGfx[];
+extern const u8 gFont1LatinGfx[];
 extern const u8 gFont1JapanWidths[];
 extern const u8 gFont0JapanWidths[];
+extern const u8 gFont0LatinWidths[];
+extern const u8 gFont1LatinWidths[];
 
 extern void sub_0200D924(const u8*);
 extern void sub_0200D9EC(void);
@@ -531,6 +536,9 @@ void DrawPartyMonHealthBar(int bgNum, int x, int y, u32 monId)
 
 static UNUSED u8 gUnknown_02020A38[8];
 static u8 gScreenIsFadedOut;
+// probably another file
+static u8 sPadding[2];
+static u16 sSomeWindowBaseBlock;
 
 bool32 IsScreenFadedOut(void)
 {
@@ -602,12 +610,315 @@ void DrawTextWindowBorder(u32 a0, u32 a1, s32 a2, s32 a3, u32 a4)
     ptr[i] = a4 + 8;
 }
 
-u8 *NumToPmString3CustomZeroChar(s32 num, u8 *str, s32 zeroChar)
+u8 *NumToPmString3CustomZeroChar(s32 num, u8 *str, u32 zeroChar)
 {
     str[0] = Div(num, 100) + zeroChar;
-    num = Mod(num, 100) + zeroChar;
+    num = Mod(num, 100);
     str[1] = Div(num, 10) + zeroChar;
     str[2] = Mod(num, 10) + zeroChar;
     str[3] = EOS;
     return str;
+}
+
+void ClearVram(void)
+{
+    CpuFill32(0, (void *)VRAM, VRAM_SIZE);
+    ResetGpuBuffers();
+}
+
+u8 *NumToPmString3RightAlign(u8 *str, s32 num)
+{
+    s32 i;
+
+    str[0] = Div(num, 100) + (unsigned) CHAR_0;
+    num = Mod(num, 100);
+    str[1] = Div(num, 10) + (unsigned) CHAR_0;
+    str[2] = Mod(num, 10) + (unsigned) CHAR_0;
+    str[3] = EOS;
+    for (i = 0; str[i + 1] != EOS && str[i] == CHAR_0; i++)
+        str[i] = CHAR_SPACE;
+    return str;
+}
+
+void RenderTextAt(struct Window *win, u32 x, u32 y, const u8 *str)
+{
+    TextWindowSetXY(win, x, y);
+    RenderText(win, str);
+}
+
+struct Window *CreateSomeWindowParameterized(u32 winId, u32 left, u32 top, u32 width, u32 height, u32 glyphSize)
+{
+    struct Window winTemplate;
+    struct Window *winCreated;
+
+    winTemplate.bg = 0;
+    winTemplate.left = left;
+    winTemplate.top = top;
+    winTemplate.width = width;
+    winTemplate.height = height;
+    winTemplate.baseBlock = sSomeWindowBaseBlock;
+    winTemplate.fillValue = 0xF;
+    winTemplate.glyphSize = glyphSize;
+    winTemplate.vramCharBase = (void *) BG_VRAM + BG_CHAR_SIZE + (winTemplate.baseBlock * 32);
+    if (glyphSize == 8)
+    {
+        winTemplate.glyphGfx = gFont1LatinGfx;
+        winTemplate.glyphWidths = gFont1LatinWidths;
+    }
+    else
+    {
+        winTemplate.glyphGfx = gFont0LatinGfx;
+        winTemplate.glyphWidths = gFont0LatinWidths;
+    }
+
+    winCreated = AddWindow(winId, &winTemplate);
+    SetTextColor(winCreated, 15, 1);
+    ClearWindowCharBuffer(winCreated, 0);
+    sSomeWindowBaseBlock += width * height;
+    return winCreated;
+}
+
+struct Window *CreatePartyMonHPWindow(u32 left, u32 top, u32 monId)
+{
+    s32 i;
+    u8 text[8];
+    s32 hp, maxHp;
+    struct Window *win = CreateSomeWindowParameterized(1, left, top, 7, 1, 8);
+
+    ClearWindowCharBuffer(win, 0);
+    hp = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_HP, NULL);
+    maxHp = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_MAX_HP, NULL);
+
+    NumToPmString3CustomZeroChar(hp, text, 0x76);
+    for (i = 0; text[i] == 0x76; i++)
+        text[i] = CHAR_EXTRA_SYMBOL;
+    text[3] = 0x73;
+    if (hp == 0)
+        text[2] = 0x76;
+
+    NumToPmString3CustomZeroChar(maxHp, text + 4, 0x76);
+    for (i = 0; text[i + 4] == 0x76; i++)
+        text[i + 4] = CHAR_EXTRA_SYMBOL;
+    if (maxHp == 0)
+        text[6] = 0x76;
+
+    TextWindowSetXY(win, 4, 0);
+    RenderText_NoPlaceholders(win, text);
+    return win;
+}
+
+struct UnkSpriteMonIconStruct
+{
+    u8 monId;
+    u8 unk1;
+    u8 unk2;
+    u8 statusPrimary;
+    u16 species;
+    u16 speciesIcon; // Support for Unown.
+    u16 unk8;
+    struct Sprite *monSprite; // 0xC
+    u8 filler10;
+    u8 filler11;
+    u8 filler12;
+    u8 filler13;
+    struct Window *unk14;
+    u8 filler18;
+    u8 filler19;
+    u8 filler1A;
+    u8 filler1B;
+    u8 filler1C;
+    u8 filler1D;
+    u8 filler1E;
+    u8 filler1F;
+    u8 filler20;
+    u8 filler21;
+    u8 unk22;
+    struct Window *win; // 0x24
+    u8 fill28[4];
+};
+
+struct Unk02021860Struct
+{
+    struct UnkSpriteMonIconStruct unk0[6];
+    u8 fill108[0x11b-0x108];
+    u8 unk11B;
+    u8 filler11C;
+    u8 filler11D;
+    u8 filler11E;
+    u8 filler11F;
+    u8 filler120;
+    u8 unk121;
+    u8 filler122;
+    u8 filler123;
+    u8 unk124;
+};
+
+extern struct Unk02021860Struct gUnknown_02021860;
+
+void CreateMonIcon(struct Sprite *sprite)
+{
+    u32 r1;
+    if (sprite->unk14[1] == 7 || sprite->unk14[1] == 20)
+    {
+        struct UnkSpriteMonIconStruct *ptr = (void *)sprite->unk14[0];
+        if (ptr->statusPrimary != STATUS_PRIMARY_FAINTED)
+        {
+            sprite->unk14[1] = 0;
+            sprite->unk14[2]++;
+        }
+        else if (sprite->unk14[1] == 7)
+        {
+            sprite->unk14[1]++;
+            return;
+        }
+        else
+        {
+            sprite->unk14[1] = 0;
+        }
+
+        r1 = sprite->unk14[2] & 1;
+        CpuCopy16(&gAgbPmRomParams->monIconTable[ptr->speciesIcon][r1 * 512], (void *)VRAM + 0x10000 + (ptr->unk8 * 32), 512);
+        SetSpritePos(sprite, ptr->unk1, ptr->unk2);
+        if (gUnknown_02021860.unk11B == ptr->monId)
+        {
+            if (gUnknown_02021860.unk121 == 4)
+                AddSpritePos(sprite, 0, -gUnknown_02021860.unk121);
+            else
+                SetSpritePos(sprite, ptr->unk1, ptr->unk2);
+            gUnknown_02021860.unk121 ^= 4;
+        }
+    }
+    else
+    {
+        sprite->unk14[1]++;
+    }
+}
+
+void sub_02000BFC(void)
+{
+    u8 text[4];
+    struct Window *win;
+    s32 i;
+
+    for (i = 0; i < 6; i++)
+    {
+        struct UnkSpriteMonIconStruct *ptr = &gUnknown_02021860.unk0[i];
+        if (ptr->unk22 == gUnknown_02021860.unk124)
+        {
+            ptr->unk22 = 0;
+            win = ptr->win;
+            ClearWindowCharBuffer(win, 0);
+            if (ptr->unk22 == 0)
+            {
+                RenderTextAt(win, 0, 2, gText_Space);
+            }
+            else
+            {
+                text[0] = ptr->unk22 + CHAR_0;
+                text[1] = EOS;
+                BufferString(0, text);
+                TextWindowSetXY(win, 0, 2);
+                RenderText(win, gText_Number);
+            }
+            gUnknown_02021860.unk124--;
+            gUnknown_02021860.unk11B = i;
+            break;
+        }
+    }
+}
+
+extern const struct Subsprites gUnknown_0201F9F4[];
+
+u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
+{
+    u32 personality;
+    struct Sprite *sprite;
+
+    a0->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES2, NULL);
+    if (a0->species == SPECIES_NONE)
+        return SPECIES_NONE;
+
+    a0->unk8 = (monId * 16) + 0xC0;
+    a0->monId = monId;
+    a0->unk1 = x;
+    a0->unk2 = y;
+    personality = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_PERSONALITY, NULL);
+    a0->speciesIcon = FixUnownSpecies(a0->species, personality);
+    sprite = AddSprite(x, y, gUnknown_0201F9F4);
+    sprite->unk14[0] = (uintptr_t)(a0);
+    sprite->callback = CreateMonIcon;
+    SetSpritePaletteNum(sprite, gAgbPmRomParams->gMonIconPaletteIndices[a0->species]);
+    SetSpriteTileOffset(sprite, a0->unk8);
+    CpuCopy16(&gAgbPmRomParams->monIconTable[a0->speciesIcon][512], (void *)VRAM + 0x10000 + (a0->unk8 * 32), 512);
+    a0->monSprite = sprite;
+    return a0->species;
+}
+
+struct Unk02000D74Struct
+{
+    u8 f0;
+    u8 f1;
+    u8 f2;
+};
+
+struct Unk201F9B0Struct
+{
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+};
+
+extern const struct Unk201F9B0Struct gUnknown_0201F9B0[];
+extern const u16 gUnknown_0201F6B0[];
+
+void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *a1, u32 monId)
+{
+    s32 i;
+    u16 nameLen;
+    u8 monName[24];
+    u8 sp32[24];
+    const struct Unk201F9B0Struct *r5 = &gUnknown_0201F9B0[a1->f2];
+    struct UnkSpriteMonIconStruct *r9 = &a0->unk0[monId];
+    u32 species = sub_02000CA4(r9, monId, a1->f0 * 8, (a1->f1 * 8) + 2);
+
+    if (species == SPECIES_NONE)
+    {
+        r5 = &gUnknown_0201F9B0[2];
+        CopyToBgTilemapBufferRect(3, a1->f0, a1->f1, r5->unk0, r5->unk1, (u16 *) (VRAM + 0x14000) + r5->unk2);
+    }
+    else
+    {
+        r9->statusPrimary = GetMonStatus(&gPlayerPartyPtr[monId]);
+        CopyToBgTilemapBufferRect(3, a1->f0, a1->f1, r5->unk0, r5->unk1, (u16 *) (VRAM + 0x14000) + r5->unk2);
+        if (r9->statusPrimary != STATUS_PRIMARY_FAINTED)
+        {
+            if (a0->unk11B == monId)
+                SetBgTilemapBufferPaletteRect(3, a1->f0, a1->f1, r5->unk0, r5->unk1, 7);
+        }
+        else
+        {
+            if (a0->unk11B == monId)
+                SetBgTilemapBufferPaletteRect(3, a1->f0, a1->f1, r5->unk0, r5->unk1, 9);
+            else
+                SetBgTilemapBufferPaletteRect(3, a1->f0, a1->f1, r5->unk0, r5->unk1, 5);
+        }
+        r9->unk14 = CreateSomeWindowParameterized(1, a1->f0 + 4, a1->f1 + 1, gAgbPmRomParams->pokemonNameLength_2, 2, 8);
+        GetMonData(&gPlayerPartyPtr[monId], MON_DATA_NICKNAME, monName);
+        nameLen = GetStringSizeHandleExtCtrlCodes(monName);
+        if (monName[0] != EXT_CTRL_CODE_BEGIN)
+        {
+            for (i = 0; monName[i] != EOS; i++)
+            {
+                u16 a = gUnknown_0201F6B0[monName[i]];
+                sp32[i] = a >> 8;
+                sp32[nameLen + 1 + i] = a;
+            }
+            sp32[nameLen] = CHAR_NEWLINE;
+            sp32[(nameLen * 2) + 1] = EOS;
+        }
+        else
+        {
+            sp32[i]
+        }
+    }
 }

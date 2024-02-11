@@ -200,6 +200,9 @@ struct SpindaSpot
     u16 image[16];
 };
 
+void GetSpeciesName(u8 *name, s32 species);
+u32 GetMonStatus(struct Pokemon *mon);
+u8 GetMonGender(struct Pokemon *mon);
 struct Pokemon *GetPtrToEmptyPartySlot(void);
 u16 FixUnownSpecies(u16 species, u32 personality);
 void SetMonData(struct Pokemon * pokemon, s32 attr, const void * data);

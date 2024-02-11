@@ -6,9 +6,11 @@
 #include "unk_200C5DC.h"
 #include "libpmagb/save.h"
 #include "gflib/keys.h"
+#include "gflib/bg.h"
 #include "gflib/text.h"
 #include "gflib/characters.h"
 #include "constants/pokemon.h"
+#include "constants/items.h"
 #include "pokemon.h"
 #include "strings.h"
 
@@ -712,31 +714,53 @@ struct UnkSpriteMonIconStruct
     u8 monId;
     u8 unk1;
     u8 unk2;
-    u8 unk3;
+    u8 statusPrimary;
     u16 species;
     u16 speciesIcon; // Support for Unown.
     u16 unk8;
-    struct Sprite *monSprite;
-};
-
-struct SubStruct02021860
-{
-    u8 fill0[0x22];
+    struct Sprite *monSprite; // 0xC
+    u8 filler10;
+    u8 filler11;
+    u8 filler12;
+    u8 filler13;
+    struct Window *unk14;
+    struct Window *unk18;
+    struct Window *unk1C;
+    u8 unk20;
+    u8 unk21;
     u8 unk22;
     struct Window *win; // 0x24
-    u8 fill28[4];
+    struct Sprite *unk28;
 };
 
 struct Unk02021860Struct
 {
-    struct SubStruct02021860 unk0[6];
-    u8 fill108[0x11b-0x108];
+    struct UnkSpriteMonIconStruct unk0[6];
+    u8 fill108;
+    u8 fill109;
+    u8 fill10A;
+    u8 fill10B;
+    u8 fill10C;
+    u8 fill10D;
+    u8 fill10E;
+    u8 fill10F;
+    u8 fill110;
+    u8 fill111;
+    u8 fill112;
+    u8 fill113;
+    u8 fill114;
+    u8 fill115;
+    u8 fill116;
+    u8 fill117;
+    u8 unk118;
+    u8 fill119;
+    u8 fill11A;
     u8 unk11B;
     u8 filler11C;
     u8 filler11D;
     u8 filler11E;
     u8 filler11F;
-    u8 filler120;
+    u8 unk120;
     u8 unk121;
     u8 filler122;
     u8 filler123;
@@ -751,7 +775,7 @@ void CreateMonIcon(struct Sprite *sprite)
     if (sprite->unk14[1] == 7 || sprite->unk14[1] == 20)
     {
         struct UnkSpriteMonIconStruct *ptr = (void *)sprite->unk14[0];
-        if (ptr->unk3 != 7)
+        if (ptr->statusPrimary != STATUS_PRIMARY_FAINTED)
         {
             sprite->unk14[1] = 0;
             sprite->unk14[2]++;
@@ -792,7 +816,7 @@ void sub_02000BFC(void)
 
     for (i = 0; i < 6; i++)
     {
-        struct SubStruct02021860 *ptr = &gUnknown_02021860.unk0[i];
+        struct UnkSpriteMonIconStruct *ptr = &gUnknown_02021860.unk0[i];
         if (ptr->unk22 == gUnknown_02021860.unk124)
         {
             ptr->unk22 = 0;
@@ -818,6 +842,7 @@ void sub_02000BFC(void)
 }
 
 extern const struct Subsprites gUnknown_0201F9F4[];
+extern const struct Subsprites gUnknown_0201F958[];
 
 u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
 {
@@ -846,20 +871,201 @@ u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
 
 struct Unk02000D74Struct
 {
-    u8 f0;
-    u8 f1;
+    u8 x;
+    u8 y;
     u8 f2;
 };
 
-void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *a1, u32 monId)
+struct Unk201F9B0Struct
 {
-    u32 species = sub_02000CA4(a, monId, a1->f0 * 8, (a1->f1 * 8) + 2);
-    if (species == SPECIES_NONE)
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+};
+
+extern const struct Unk201F9B0Struct gUnknown_0201F9B0[];
+extern const u16 gUnknown_0201F6B0[];
+extern const u16 gUnknown_0201F4B0[];
+
+static inline void SomeMonNameStrMagic(u8 *monName, u8 *sp32, u32 nameLen)
+{
+    u16 a;
+    s32 i;
+    if (monName[0] != EXT_CTRL_CODE_BEGIN)
     {
-        CopyToBgTilemapBufferRect(3, a1->f0, a1->f1, )
+        for (i = 0; *monName != EOS; monName++, i++)
+        {
+            a = gUnknown_0201F6B0[*monName];
+            sp32[i] = a >> 8;
+            sp32[nameLen + 1 + i] = a;
+        }
+        sp32[nameLen] = CHAR_NEWLINE;
+        sp32[nameLen * 2 + 1] = EOS;
     }
     else
     {
+        sp32[0] = monName[0];
+        monName++;
+        sp32[1] = monName[0];
+        monName++;
+        nameLen -= 2;
+        for (i = 2; *monName != EOS; monName++, i++)
+        {
+            a = gUnknown_0201F4B0[*monName];
+            sp32[i] = a >> 8;
+            sp32[nameLen + 1 + i] = a;
+        }
+        sp32[nameLen + 2] = CHAR_NEWLINE;
+        sp32[nameLen * 2 + 3] = EOS;
+    }
+}
 
+static inline struct Window *PutMonLvlOnWindow(u32 x, u32 y, u32 monId)
+{
+    s32 i;
+    u8 text[8];
+    struct Window *win = CreateSomeWindowParameterized(1, x, y, 3, 1, 8);
+    u32 lvl = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_LEVEL, NULL);
+
+    text[0] = 0x60;
+    text[1] = EOS;
+    TextWindowSetXY(win, 0, 0);
+    RenderText(win, text);
+    NumToPmString3CustomZeroChar(lvl, text, 0x76);
+    for (i = 0; text[i] == 0x76; i++)
+        ;
+    if (text[i] == EOS)
+        i--;
+    RenderText_NoPlaceholders(win, &text[i]);
+
+    return win;
+}
+
+static inline void PutMonGenderOnBgTilemap(int x, int y, u32 monId)
+{
+    u16 tileNum;
+    switch (GetMonGender(&gPlayerPartyPtr[monId]))
+    {
+    default:
+        tileNum = 0;
+        break;
+    case MON_MALE:
+        tileNum = 0xF;
+        break;
+    case MON_FEMALE:
+        tileNum = 0x11;
+        break;
+    }
+    SetBgTilemapBufferTileAt(0, x, y, tileNum);
+}
+
+static inline void sub_2002EE0Inline(struct Window *win, struct UnkSpriteMonIconStruct *r9)
+{
+    u8 sp76[4];
+
+    ClearWindowCharBuffer(win, 0);
+    if (r9->unk22 == 0)
+    {
+        RenderTextAt(win, 0, 2, gText_Space);
+    }
+    else
+    {
+        sp76[0] = r9->unk22 + CHAR_0;
+        sp76[1] = EOS;
+        BufferString(0, sp76);
+        TextWindowSetXY(win, 0, 2);
+        RenderText(win, gText_Number);
+    }
+}
+
+void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *coords, u32 monId)
+{
+    s32 i;
+    u8 monName[24];
+    u8 sp32[44];
+    const struct Unk201F9B0Struct *r5 = &gUnknown_0201F9B0[coords->f2];
+    struct UnkSpriteMonIconStruct *r9 = &a0->unk0[monId];
+    u32 species = sub_02000CA4(r9, monId, coords->x * 8, (coords->y * 8) + 2);
+
+    if (species == SPECIES_NONE)
+    {
+        r5 = &gUnknown_0201F9B0[2];
+        CopyToBgTilemapBufferRect(3, coords->x, coords->y, r5->unk0, r5->unk1, (u16 *) (VRAM + 0x14000) + r5->unk2);
+    }
+    else
+    {
+        r9->statusPrimary = GetMonStatus(&gPlayerPartyPtr[monId]);
+        CopyToBgTilemapBufferRect(3, coords->x, coords->y, r5->unk0, r5->unk1, (u16 *) (VRAM + 0x14000) + r5->unk2);
+        if (r9->statusPrimary != STATUS_PRIMARY_FAINTED)
+        {
+            if (a0->unk11B == monId)
+                SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 7);
+        }
+        else
+        {
+            if (a0->unk11B == monId)
+                SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 9);
+            else
+                SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 5);
+        }
+
+        r9->unk14 = CreateSomeWindowParameterized(1, coords->x + 4, coords->y + 1, gAgbPmRomParams->pokemonNameLength_2, 2, 8);
+        GetMonData(&gPlayerPartyPtr[monId], MON_DATA_NICKNAME, monName);
+        SomeMonNameStrMagic(monName, sp32, GetStringSizeHandleExtCtrlCodes(monName));
+        if (GetMonData(&gPlayerPartyPtr[monId], MON_DATA_LANGUAGE, monName) != LANGUAGE_JAPANESE)
+            r9->unk14->startX = 1;
+        else
+            r9->unk14->startX = 2;
+        TextWindowSetXY(r9->unk14, r9->unk14->startX, 0);
+        RenderText_NoPlaceholders(r9->unk14, sp32);
+
+        if (r9->statusPrimary == STATUS_PRIMARY_NONE || r9->statusPrimary == STATUS_PRIMARY_POKERUS)
+        {
+            r9->unk18 = PutMonLvlOnWindow(coords->x + 6, coords->y + 3, monId);
+        }
+        else
+        {
+            for (i = 0; i < 4; i++)
+            {
+                u32 tileNum = i + 0xB05C + (r9->statusPrimary * 4);
+                SetBgTilemapBufferTileAt(0, coords->x + 5 + i, coords->y + 3, tileNum);
+            }
+            gBgTilemapBufferTransferScheduled[0] = 1;
+        }
+
+        if (species != SPECIES_NIDORAN_M && species != SPECIES_NIDORAN_F)
+        {
+            PutMonGenderOnBgTilemap(coords->x + 9, coords->y + 3, monId);
+        }
+        else
+        {
+            GetSpeciesName(sp32, species);
+            if (StringCompare(monName, sp32) != 0)
+            {
+                PutMonGenderOnBgTilemap(coords->x + 9, coords->y + 3, monId);
+            }
+        }
+
+        if (gUnknown_02021860.unk118 == 0)
+        {
+            r9->unk1C = CreatePartyMonHPWindow(coords->x + 5, coords->y + 5, monId);
+            DrawPartyMonHealthBar(0, coords->x + 2, coords->y + 4, monId);
+            gUnknown_02021860.unk0[monId].unk20 = coords->x + 2;
+            gUnknown_02021860.unk0[monId].unk21 = coords->y + 4;
+        }
+        else
+        {
+            r9->unk20 = coords->x + 3;
+            r9->unk21 = coords->y + 4;
+            r9->win = CreateSomeWindowParameterized(monId + 5, r9->unk20, r9->unk21, 6, 2, 0x10);
+            sub_2002EE0Inline(r9->win, r9);
+        }
+
+        if (GetMonData(&gPlayerPartyPtr[monId], MON_DATA_HELD_ITEM, NULL) != ITEM_NONE)
+        {
+            r9->unk28 = AddSprite((coords->x * 8) + 24, (coords->y * 8) + 21, gUnknown_0201F958);
+            SetSpritePaletteNum(r9->unk28, 12);
+        }
+        gUnknown_02021860.unk120 = monId;
     }
 }
