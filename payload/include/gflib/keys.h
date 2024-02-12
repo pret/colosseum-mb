@@ -3,6 +3,7 @@
 
 extern u16 gHeldKeys;
 extern u16 gNewKeys;
+extern u16 gNewAndRepeatedKeys;
 
 void ReadKeys(void);
 void SetKeyRepeatTiming(u16 delay, u16 rate);

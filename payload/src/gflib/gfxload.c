@@ -1,7 +1,6 @@
 #include "global.h"
 #include "gflib/gfxload.h"
 
-
 void AutoUnCompVram(const void * src, void * dest)
 {
     switch (*(u8 *)src & 0xF0)

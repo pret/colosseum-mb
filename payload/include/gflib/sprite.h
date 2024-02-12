@@ -38,6 +38,12 @@ struct CompressedSpriteSheet
     u16 tag;
 };
 
+struct SpritePalette
+{
+    const u16 *data;  // Raw uncompressed palette data
+    u16 tag;
+};
+
 struct CompressedSpritePalette
 {
     const u8 *data;  // LZ77 compressed palette data

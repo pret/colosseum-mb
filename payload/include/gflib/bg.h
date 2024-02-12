@@ -15,6 +15,6 @@ void SetBgTilemapBufferPaletteRect(int bgNum, int left, int top, int width, int 
 void SetBgTilemapBufferTileAt(int bgNum, int x, int y, u16 tileNum);
 void FillBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, u16 tileNum);
 void CopyRectWithinBgTilemapBuffer(int bgNum, int srcLeft, int srcTop, int width, int height, int destLeft, int destTop);
-void SetBgPos(int bgNum, u16 x, u16 y);
+void SetBgPos(int bgNum, s32 x, s32 y);
 
 #endif //GFLIB_BG_H

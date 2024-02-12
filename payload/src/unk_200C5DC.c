@@ -600,8 +600,8 @@ void sub_0200D08C(u32 val)
         if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
         {
             gUnknown_020251F0.field28 = 0;
-            gUnknown_020251F0.field0 = &gUnknown_02024960.unk81C;
-            gUnknown_020251F0.field4 = gUnknown_02024960.unk7 * 12;
+            gUnknown_020251F0.field0 = (void*) gUnknown_02024960.unk81C;
+            gUnknown_020251F0.field4 = gUnknown_02024960.unk7 * UNK81C_ARR_SIZE;
             gUnknown_020251F0.field10++;
         }
         break;

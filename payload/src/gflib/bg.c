@@ -139,7 +139,7 @@ void CopyRectWithinBgTilemapBuffer(int bgNum, int srcLeft, int srcTop, int width
     }
 }
 
-void SetBgPos(int bgNum, u16 x, u16 y)
+void SetBgPos(int bgNum, s32 x, s32 y)
 {
     gBgHofsBuffer[bgNum] = x;
     gBgVofsBuffer[bgNum] = y;

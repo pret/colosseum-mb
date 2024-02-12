@@ -15,21 +15,20 @@ struct UnkStruct868
     u32 a15:8;
 };
 
+#define UNK81C_ARR_SIZE 12
+
 struct UnkStruct_02024960
 {
     u32 unk_00:24;
     u32 unk_03_0:7;
     u32 unk_03_7:1;
-    u8 filler_04;
-    u8 filler_05;
-    u8 filler_06;
-    u8 unk7;
+    u32 unk4:24;
+    u32 unk7:8;
     u8 unk8[0x24-8];
     u32 unk24[5];
     u8 unk38[8];
     u8 unk40[0x81c-0x40];
-    u32 unk81C;
-    u8 unk820[0x84c-0x820];
+    u8 unk81C[4][UNK81C_ARR_SIZE];
     u32 unk84C_00:1;
     u32 unk84C_01:1;
     u32 unk84C_02:1;

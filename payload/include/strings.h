@@ -99,4 +99,6 @@ extern u8 gText_ReceivingCoupons[];
 extern u8 gText_BerryProgramUpdated[];
 extern u8 gText_UnableUpdateBerryProgram[];
 
+extern u8 * gBattleStringsTable[];
+
 #endif // GUARD_STRINGS_H
