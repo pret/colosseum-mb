@@ -209,5 +209,7 @@ void SetMonData(struct Pokemon * pokemon, s32 attr, const void * data);
 u32 GetMonData(struct Pokemon *mon, s32 field, u8 *data);
 void SetBoxMonData(struct BoxPokemon * boxmon, s32 attr, const void * data);
 u32 GetBoxMonData(struct BoxPokemon * boxmon, s32 attr, u8 * strbuf);
+u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot);
+s32 CalculatePPWithBonus(u32 move, s32 ppBonuses, u32 moveIndex);
 
 #endif // GUARD_POKEMON_H

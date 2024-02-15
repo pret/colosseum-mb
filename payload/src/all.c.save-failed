@@ -809,119 +809,6 @@ struct Window *CreatePartyMonHPWindow(u32 left, u32 top, u32 monId)
     return win;
 }
 
-inline void SomeMonNameStrMagic(u8 *monName, u8 *sp32, u32 nameLen)
-{
-    u16 a;
-    s32 i;
-    if (monName[0] != EXT_CTRL_CODE_BEGIN)
-    {
-        for (i = 0; *monName != EOS; monName++, i++)
-        {
-            a = gUnknown_0201F6B0[*monName];
-            sp32[i] = a >> 8;
-            sp32[nameLen + 1 + i] = a;
-        }
-        sp32[nameLen] = CHAR_NEWLINE;
-        sp32[nameLen * 2 + 1] = EOS;
-    }
-    else
-    {
-        sp32[0] = monName[0];
-        monName++;
-        sp32[1] = monName[0];
-        monName++;
-        nameLen -= 2;
-        for (i = 2; *monName != EOS; monName++, i++)
-        {
-            a = gUnknown_0201F4B0[*monName];
-            sp32[i] = a >> 8;
-            sp32[nameLen + 1 + i] = a;
-        }
-        sp32[nameLen + 2] = CHAR_NEWLINE;
-        sp32[nameLen * 2 + 3] = EOS;
-    }
-}
-
-inline struct Window *PutMonLvlOnWindow(u32 x, u32 y, u32 monId)
-{
-    s32 i;
-    u8 text[8];
-    struct Window *win = CreateSomeWindowParameterized(1, x, y, 3, 1, 8);
-    u32 lvl = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_LEVEL, NULL);
-
-    text[0] = 0x60;
-    text[1] = EOS;
-    TextWindowSetXY(win, 0, 0);
-    RenderText(win, text);
-    NumToPmString3CustomZeroChar(lvl, text, 0x76);
-    for (i = 0; text[i] == 0x76; i++)
-        ;
-    if (text[i] == EOS)
-        i--;
-    RenderText_NoPlaceholders(win, &text[i]);
-
-    return win;
-}
-
-inline void PutMonGenderOnBgTilemap(int x, int y, u32 monId)
-{
-    u16 tileNum;
-    switch (GetMonGender(&gPlayerPartyPtr[monId]))
-    {
-    default:
-        tileNum = 0;
-        break;
-    case MON_MALE:
-        tileNum = 0xF;
-        break;
-    case MON_FEMALE:
-        tileNum = 0x11;
-        break;
-    }
-    SetBgTilemapBufferTileAt(0, x, y, tileNum);
-}
-
-inline void CopyMonIconToVram(struct UnkSpriteMonIconStruct *ptr, u32 a1)
-{
-    CpuCopy16(&gAgbPmRomParams->monIconTable[ptr->speciesIcon][a1 * 512], (void *)VRAM + 0x10000 + (ptr->unk8 * 32), 512);
-}
-
-inline void sub_2002E70(s32 a0)
-{
-    switch (a0)
-    {
-    case 0:
-        CopyRectWithinBgTilemapBuffer(1, 0,   0x14, 6, 2, 0x18, 0x12);
-        break;
-    case 2:
-        CopyRectWithinBgTilemapBuffer(1, 0xC, 0x14, 6, 2, 0x18, 0x10);
-        CopyRectWithinBgTilemapBuffer(1, 0,   0x14, 6, 2, 0x18, 0x12);
-        break;
-    case 1:
-        CopyRectWithinBgTilemapBuffer(1, 0xC, 0x14, 6, 2, 0x18, 0x12);
-        break;
-    }
-}
-
-inline void sub_02002EE0(struct Window *win, struct UnkSpriteMonIconStruct *r9)
-{
-    u8 sp76[4];
-
-    ClearWindowCharBuffer(win, 0);
-    if (r9->unk22 == 0)
-    {
-        RenderTextAt(win, 0, 2, gText_Space);
-    }
-    else
-    {
-        sp76[0] = r9->unk22 + CHAR_0;
-        sp76[1] = EOS;
-        BufferString(0, sp76);
-        TextWindowSetXY(win, 0, 2);
-        RenderText(win, gText_Number);
-    }
-}
-
 void CreateMonIcon(struct Sprite *sprite)
 {
     u32 r1;
@@ -944,7 +831,7 @@ void CreateMonIcon(struct Sprite *sprite)
         }
 
         r1 = sprite->unk14[2] & 1;
-        CopyMonIconToVram(ptr, r1);
+        CpuCopy16(&gAgbPmRomParams->monIconTable[ptr->speciesIcon][r1 * 512], (void *)VRAM + 0x10000 + (ptr->unk8 * 32), 512);
         SetSpritePos(sprite, ptr->unk1, ptr->unk2);
         if (gUnknown_02021860.unk11B == ptr->monId)
         {
@@ -1014,9 +901,100 @@ u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
     sprite->callback = CreateMonIcon;
     SetSpritePaletteNum(sprite, gAgbPmRomParams->gMonIconPaletteIndices[a0->species]);
     SetSpriteTileOffset(sprite, a0->unk8);
-    CopyMonIconToVram(a0, 1);
+    CpuCopy16(&gAgbPmRomParams->monIconTable[a0->speciesIcon][512], (void *)VRAM + 0x10000 + (a0->unk8 * 32), 512);
     a0->monSprite = sprite;
     return a0->species;
+}
+
+static inline void SomeMonNameStrMagic(u8 *monName, u8 *sp32, u32 nameLen)
+{
+    u16 a;
+    s32 i;
+    if (monName[0] != EXT_CTRL_CODE_BEGIN)
+    {
+        for (i = 0; *monName != EOS; monName++, i++)
+        {
+            a = gUnknown_0201F6B0[*monName];
+            sp32[i] = a >> 8;
+            sp32[nameLen + 1 + i] = a;
+        }
+        sp32[nameLen] = CHAR_NEWLINE;
+        sp32[nameLen * 2 + 1] = EOS;
+    }
+    else
+    {
+        sp32[0] = monName[0];
+        monName++;
+        sp32[1] = monName[0];
+        monName++;
+        nameLen -= 2;
+        for (i = 2; *monName != EOS; monName++, i++)
+        {
+            a = gUnknown_0201F4B0[*monName];
+            sp32[i] = a >> 8;
+            sp32[nameLen + 1 + i] = a;
+        }
+        sp32[nameLen + 2] = CHAR_NEWLINE;
+        sp32[nameLen * 2 + 3] = EOS;
+    }
+}
+
+static inline struct Window *PutMonLvlOnWindow(u32 x, u32 y, u32 monId)
+{
+    s32 i;
+    u8 text[8];
+    struct Window *win = CreateSomeWindowParameterized(1, x, y, 3, 1, 8);
+    u32 lvl = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_LEVEL, NULL);
+
+    text[0] = 0x60;
+    text[1] = EOS;
+    TextWindowSetXY(win, 0, 0);
+    RenderText(win, text);
+    NumToPmString3CustomZeroChar(lvl, text, 0x76);
+    for (i = 0; text[i] == 0x76; i++)
+        ;
+    if (text[i] == EOS)
+        i--;
+    RenderText_NoPlaceholders(win, &text[i]);
+
+    return win;
+}
+
+static inline void PutMonGenderOnBgTilemap(int x, int y, u32 monId)
+{
+    u16 tileNum;
+    switch (GetMonGender(&gPlayerPartyPtr[monId]))
+    {
+    default:
+        tileNum = 0;
+        break;
+    case MON_MALE:
+        tileNum = 0xF;
+        break;
+    case MON_FEMALE:
+        tileNum = 0x11;
+        break;
+    }
+    SetBgTilemapBufferTileAt(0, x, y, tileNum);
+}
+
+static inline void sub_2002EE0Inline(struct Window *win, struct UnkSpriteMonIconStruct *r9)
+{
+    u8 sp76[4];
+
+    ClearWindowCharBuffer(win, 0);
+    if (r9->unk22 == 0)
+    {
+        RenderTextAt(win, 0, 2, gText_Space);
+    }
+    else
+    {
+        sp76[0] = r9->unk22 + CHAR_0;
+        sp76[1] = EOS;
+        BufferString(0, sp76);
+        TextWindowSetXY(win, 0, 2);
+        RenderText(win, gText_Number);
+    }
 }
 
 void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *coords, u32 monId)
@@ -1099,7 +1077,7 @@ void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *
             r9->unk20 = coords->x + 3;
             r9->unk21 = coords->y + 4;
             r9->win = CreateSomeWindowParameterized(monId + 5, r9->unk20, r9->unk21, 6, 2, 0x10);
-            sub_02002EE0(r9->win, r9);
+            sub_2002EE0Inline(r9->win, r9);
         }
 
         if (GetMonData(&gPlayerPartyPtr[monId], MON_DATA_HELD_ITEM, NULL) != ITEM_NONE)
@@ -1190,7 +1168,7 @@ void sub_02001258(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *
             r9->unk20 = coords->x + 11;
             r9->unk21 = coords->y;
             r9->win = CreateSomeWindowParameterized(monId + 5, r9->unk20, r9->unk21, 6, 2, 0x10);
-            sub_02002EE0(r9->win, r9);
+            sub_2002EE0Inline(r9->win, r9);
         }
 
         if (GetMonData(&gPlayerPartyPtr[monId], MON_DATA_HELD_ITEM, NULL) != ITEM_NONE)
@@ -1232,6 +1210,23 @@ void sub_02001738(u32 selectMonsTextId)
     }
 }
 
+static inline void sub_2002E70Inline(s32 a0)
+{
+    switch (a0)
+    {
+    case 0:
+        CopyRectWithinBgTilemapBuffer(1, 0,   0x14, 6, 2, 0x18, 0x12);
+        break;
+    case 2:
+        CopyRectWithinBgTilemapBuffer(1, 0xC, 0x14, 6, 2, 0x18, 0x10);
+        CopyRectWithinBgTilemapBuffer(1, 0,   0x14, 6, 2, 0x18, 0x12);
+        break;
+    case 1:
+        CopyRectWithinBgTilemapBuffer(1, 0xC, 0x14, 6, 2, 0x18, 0x12);
+        break;
+    }
+}
+
 void sub_020017E8(struct Unk02021860Struct *a0)
 {
     s32 i;
@@ -1253,7 +1248,7 @@ void sub_020017E8(struct Unk02021860Struct *a0)
     AutoUnCompVram(gPartyMenu_Tilemap, (void *) IWRAM_START + 0x1000);
     AutoUnCompVram(gTypeStatusIcons_Pal, (void *) PLTT + 0x200);
     AutoUnCompVram(gTypeStatusIcons_Gfx, (void *) VRAM + 0x10000);
-    sub_2002E70(gUnknown_02021860.unk118);
+    sub_2002E70Inline(gUnknown_02021860.unk118);
     gBgTilemapBufferTransferScheduled[1] = TRUE;
     monIconPaletteTable = gAgbPmRomParams->monIconPaletteTable;
     DmaCopy16(3, monIconPaletteTable[0].data, (void *) PLTT + 0x200, 0x60);
@@ -1578,7 +1573,7 @@ s32 sub_02001F04(s32 ret)
                 {
                     PlaySE(SONG_SE_SELECT);
                     var_24->unk22 = ++gUnknown_02021860.unk124;
-                    sub_02002EE0(var_24->win, var_24);
+                    sub_2002EE0Inline(var_24->win, var_24);
                     REG_JOY_TRANS = 0x1000000;
                     if (gUnknown_02021860.unk124 == gUnknown_02021860.unk123)
                         gUnknown_02021860.unk11B = 6;
@@ -1592,11 +1587,11 @@ s32 sub_02001F04(s32 ret)
                     if (gUnknown_02021860.unk0[j].unk22 > var_24->unk22)
                     {
                         gUnknown_02021860.unk0[j].unk22--;
-                        sub_02002EE0(gUnknown_02021860.unk0[j].win, &gUnknown_02021860.unk0[j]);
+                        sub_2002EE0Inline(gUnknown_02021860.unk0[j].win, &gUnknown_02021860.unk0[j]);
                     }
                 }
                 var_24->unk22 = 0;
-                sub_02002EE0(var_24->win, var_24);
+                sub_2002EE0Inline(var_24->win, var_24);
                 REG_JOY_TRANS = 0xFF000000;
                 gUnknown_02021860.unk124--;
                 i = 2;
@@ -2155,7 +2150,7 @@ _020026E4:\t\n\
 }
 #endif
 
-inline s32 sub_02002F38(u32 val)
+static inline s32 sub_2002F38Inline(u32 val)
 {
     s32 i;
     for (i = 0; i < PARTY_SIZE; i++)
@@ -2166,7 +2161,7 @@ inline s32 sub_02002F38(u32 val)
     return -1;
 }
 
-inline void sub_02002F60(void)
+static inline void sub_2002F60Inline(void)
 {
     s32 i;
     u32 bits = 0;
@@ -2174,7 +2169,7 @@ inline void sub_02002F60(void)
 
     for (i = 1; i < gUnknown_02021860.unk124 + 1; i++)
     {
-        s32 ret = sub_02002F38(i);
+        s32 ret = sub_2002F38Inline(i);
         if (ret != -1)
             bits |= (ret << r6);
         r6 += 4;
@@ -2226,7 +2221,7 @@ s32 sub_020026F4(void)
                 }
                 else
                 {
-                    sub_02002F60();
+                    sub_2002F60Inline();
                     return -1;
                 }
             }
@@ -2334,7 +2329,6 @@ s32 sub_020026F4(void)
     return 1;
 }
 
-#ifdef NONMATCHING
 void sub_02002A9C(s32 a0, u32 a1, u32 a2)
 {
     s32 i, j;
@@ -2343,9 +2337,9 @@ void sub_02002A9C(s32 a0, u32 a1, u32 a2)
     u32 status;
 
     gUnknown_02021860.unk122 = a1;
-    gUnknown_02021860.unk11B = 0;
-    gUnknown_02021860.unk125 = a2;
-    gUnknown_02021860.unk11A = 0;
+    *(&gUnknown_02021860.unk11B) = 0;
+    *(&gUnknown_02021860.unk125) = a2;
+    *(&gUnknown_02021860.unk11A) = 0;
 
     if (gUnknown_02024960.unk_858 == 1)
     {
@@ -2395,201 +2389,6 @@ void sub_02002A9C(s32 a0, u32 a1, u32 a2)
         break;
     }
 }
-#else
-void NAKED sub_02002A9C(s32 a0, u32 a1, u32 a2)
-{
-    asm_unified("	push {r4, r5, r6, r7, lr}\t\n\
-	mov r7, sl\t\n\
-	mov r6, sb\t\n\
-	mov r5, r8\t\n\
-	push {r5, r6, r7}\t\n\
-	sub sp, #0xc\t\n\
-	adds r4, r0, #0\t\n\
-	ldr r3, =gUnknown_02021860\t\n\
-	movs r5, #0x91\t\n\
-	lsls r5, r5, #1\t\n\
-	adds r0, r3, r5\t\n\
-	movs r5, #0\t\n\
-	strb r1, [r0]\t\n\
-	ldr r1, =0x0000011B\t\n\
-	adds r0, r3, r1\t\n\
-	strb r5, [r0]\t\n\
-	adds r1, #0xa\t\n\
-	adds r0, r3, r1\t\n\
-	strb r2, [r0]\t\n\
-	movs r0, #0x8d\t\n\
-	lsls r0, r0, #1\t\n\
-	adds r2, r3, r0\t\n\
-	strb r5, [r2]\t\n\
-	ldr r1, =gUnknown_02024960\t\n\
-	ldr r0, =0x00000858\t\n\
-	adds r6, r1, r0\t\n\
-	ldrb r0, [r6]\t\n\
-	adds r7, r1, #0\t\n\
-	cmp r0, #1\t\n\
-	bne _02002AF4\t\n\
-	movs r1, #0x8f\t\n\
-	lsls r1, r1, #1\t\n\
-	adds r2, r3, r1\t\n\
-	strb r0, [r2]\t\n\
-	b _02002B08\t\n\
-	.align 2, 0\t\n\
-	.pool\t\n\
-_02002AF4:\t\n\
-	ldrb r0, [r6]\t\n\
-	adds r1, r0, #0\t\n\
-	cmp r1, #2\t\n\
-	bne _02002B08\t\n\
-	movs r0, #1\t\n\
-	strb r0, [r2]\t\n\
-	movs r2, #0x8f\t\n\
-	lsls r2, r2, #1\t\n\
-	adds r0, r3, r2\t\n\
-	strb r1, [r0]\t\n\
-_02002B08:\t\n\
-	cmp r4, #0\t\n\
-	beq _02002B12\t\n\
-	cmp r4, #1\t\n\
-	beq _02002B38\t\n\
-	b _02002C1E\t\n\
-_02002B12:\t\n\
-	movs r5, #0x8c\t\n\
-	lsls r5, r5, #1\t\n\
-	adds r0, r3, r5\t\n\
-	strb r4, [r0]\t\n\
-	ldr r1, =0x00000123\t\n\
-	adds r0, r3, r1\t\n\
-	strb r4, [r0]\t\n\
-	adds r0, r3, #0\t\n\
-	bl sub_020017E8\t\n\
-	bl FadeIn\t\n\
-	bl sub_020023E8\t\n\
-	bl FadeOut\t\n\
-	b _02002C1E\t\n\
-	.align 2, 0\t\n\
-	.pool\t\n\
-_02002B38:\t\n\
-	movs r2, #0x8c\t\n\
-	lsls r2, r2, #1\t\n\
-	adds r0, r3, r2\t\n\
-	strb r4, [r0]\t\n\
-	ldr r5, =0x00000859\t\n\
-	adds r0, r7, r5\t\n\
-	ldrb r0, [r0]\t\n\
-	ldr r1, =0x00000123\t\n\
-	adds r4, r3, r1\t\n\
-	strb r0, [r4]\t\n\
-	lsls r0, r0, #0x18\t\n\
-	lsrs r1, r0, #0x18\t\n\
-	ldr r2, =gPlayerPartyCountPtr\t\n\
-	cmp r1, #0\t\n\
-	beq _02002B5E\t\n\
-	ldr r0, [r2]\t\n\
-	ldrb r0, [r0]\t\n\
-	cmp r1, r0\t\n\
-	bls _02002B64\t\n\
-_02002B5E:\t\n\
-	ldr r0, [r2]\t\n\
-	ldrb r0, [r0]\t\n\
-	strb r0, [r4]\t\n\
-_02002B64:\t\n\
-	movs r2, #0x92\t\n\
-	lsls r2, r2, #1\t\n\
-	adds r0, r3, r2\t\n\
-	movs r1, #0\t\n\
-	strb r1, [r0]\t\n\
-	movs r6, #0\t\n\
-	mov r5, sp\t\n\
-	adds r5, #4\t\n\
-	str r5, [sp, #8]\t\n\
-	mov r0, sp\t\n\
-	adds r0, #2\t\n\
-	mov sl, r6\t\n\
-	ldr r7, =gPlayerPartyPtr\t\n\
-	mov sb, r0\t\n\
-_02002B80:\t\n\
-	movs r0, #0x2c\t\n\
-	muls r0, r6, r0\t\n\
-	adds r0, r0, r3\t\n\
-	adds r0, #0x22\t\n\
-	mov r1, sl\t\n\
-	strb r1, [r0]\t\n\
-	movs r2, #0x64\t\n\
-	adds r4, r6, #0\t\n\
-	muls r4, r2, r4\t\n\
-	ldr r0, [r7]\t\n\
-	adds r0, r0, r4\t\n\
-	movs r1, #0x3a\t\n\
-	movs r2, #0\t\n\
-	bl GetMonData\t\n\
-	mov r1, sp\t\n\
-	strh r0, [r1]\t\n\
-	ldr r0, [r7]\t\n\
-	adds r0, r0, r4\t\n\
-	movs r1, #0x39\t\n\
-	mov r2, sp\t\n\
-	bl SetMonData\t\n\
-	mov r5, sl\t\n\
-	str r5, [sp, #4]\t\n\
-	ldr r0, [r7]\t\n\
-	adds r0, r0, r4\t\n\
-	movs r1, #0x37\t\n\
-	ldr r2, [sp, #8]\t\n\
-	bl SetMonData\t\n\
-	movs r5, #0\t\n\
-	adds r6, #1\t\n\
-	mov r8, r6\t\n\
-	adds r6, r4, #0\t\n\
-_02002BC6:\t\n\
-	ldr r0, [r7]\t\n\
-	adds r0, r0, r6\t\n\
-	adds r1, r5, #0\t\n\
-	bl GetBoxMonMoveBySlot\t\n\
-	adds r4, r0, #0\t\n\
-	lsls r4, r4, #0x10\t\n\
-	lsrs r4, r4, #0x10\t\n\
-	ldr r0, [r7]\t\n\
-	adds r0, r0, r6\t\n\
-	movs r1, #0x15\t\n\
-	movs r2, #0\t\n\
-	bl GetMonData\t\n\
-	adds r1, r0, #0\t\n\
-	adds r0, r4, #0\t\n\
-	adds r2, r5, #0\t\n\
-	bl CalculatePPWithBonus\t\n\
-	mov r1, sb\t\n\
-	strh r0, [r1]\t\n\
-	ldr r0, [r7]\t\n\
-	adds r0, r0, r6\t\n\
-	adds r1, r5, #0\t\n\
-	adds r1, #0x11\t\n\
-	mov r2, sb\t\n\
-	bl SetMonData\t\n\
-	adds r5, #1\t\n\
-	cmp r5, #3\t\n\
-	ble _02002BC6\t\n\
-	mov r6, r8\t\n\
-	ldr r3, =gUnknown_02021860\t\n\
-	cmp r6, #5\t\n\
-	ble _02002B80\t\n\
-	adds r0, r3, #0\t\n\
-	bl sub_020017E8\t\n\
-	bl FadeIn\t\n\
-	bl sub_020026F4\t\n\
-	bl FadeOut\t\n\
-_02002C1E:\t\n\
-	add sp, #0xc\t\n\
-	pop {r3, r4, r5}\t\n\
-	mov r8, r3\t\n\
-	mov sb, r4\t\n\
-	mov sl, r5\t\n\
-	pop {r4, r5, r6, r7}\t\n\
-	pop {r0}\t\n\
-	bx r0\t\n\
-	.align 2, 0\t\n\
-	.pool");
-}
-#endif
 
 void sub_02002C44(void)
 {
@@ -2597,13 +2396,4 @@ void sub_02002C44(void)
     gUnknown_02021860.unk11A = 0;
     gUnknown_02021860.unk11B = 0;
     gUnknown_02021860.unk11E = 1;
-}
-
-void sub_02002C80(void)
-{
-    gUnknown_02021860.unk11B = 0;
-    if (gUnknown_02021860.unk11A == 0)
-        gUnknown_02021860.unk11E = 1;
-    else
-        gUnknown_02021860.unk11E = 2;
 }
