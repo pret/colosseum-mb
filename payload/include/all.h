@@ -59,7 +59,9 @@ extern volatile struct UnkStruct_02024960 gUnknown_02024960;
 
 #include "gflib/text.h"
 
+u8 *NumToPmString3CustomZeroChar(s32 num, u8 *str, u32 zeroChar);
 void RenderText(struct Window *win, const u8 *str);
+void RenderTextAt(struct Window *win, u32 x, u32 y, const u8 *str);
 u8 *NumToPmString3RightAlign(u8 *str, s32 num);
 void ClearVram(void);
 

@@ -359,4 +359,7 @@
 
 #define NUM_MOVES 355
 
+// Used for checks for moves affected by Disable, Mimic, etc.
+#define MOVE_UNAVAILABLE 0xFFFF
+
 #endif  // GUARD_CONSTANTS_MOVES_H

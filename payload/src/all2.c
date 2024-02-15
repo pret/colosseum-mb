@@ -13,6 +13,8 @@
 #include "constants/moves.h"
 #include "constants/items.h"
 
+extern u8 gUnknown_020219DF;
+
 extern const u32 gSummaryScreen_Pal[];
 extern const u32 gSummaryScreen_Gfx[];
 extern const u32 gSummaryIcons_Gfx[];
@@ -26,7 +28,8 @@ struct UnkStruct02021990
     struct Sprite *unk0;
     struct Sprite *type1Sprite; // 0x4
     struct Sprite *type2Sprite; // 0x8
-    u8 fillC[0x14-0xc];
+    struct Sprite *unkC;
+    struct Sprite *unk10;
     u16 species; // 0x14
     u16 speciesPic; // 0x16 - for Unown
     bool8 statsPrinted;
@@ -37,9 +40,11 @@ struct UnkStruct02021990
     struct Window *unk20;
     struct Window *unk24;
     struct Window *unk28;
-    struct Sprite *unk2C;
-    u16 unk44;
+    struct Sprite *unk2C[MAX_MON_MOVES];
+    u8 unk3C[0x44-0x3C];
+    u16 unk44[MAX_MON_MOVES];
     u16 unk4C;
+    u8 fill[4];
 };
 
 extern struct UnkStruct02021990 gUnknown_02021990;
@@ -47,10 +52,16 @@ extern struct UnkStruct02021990 gUnknown_02021990;
 extern const struct Window gUnknown_0201FB50;
 extern const struct Window gUnknown_0201FB30;
 extern const struct Window gUnknown_0201FB70;
+extern const struct Window gUnknown_0201FB10;
 
 extern const struct Subsprites *const gMonFrontPicSubspriteTable[];
 extern const struct Subsprites gUnknown_0201FA44[];
+extern const struct Subsprites gUnknown_0201FAF8[];
+extern const struct Subsprites gUnknown_0201FA5C[];
 
+void sub_02003D80(u32 monId, bool32 a1);
+
+// This file's functions
 void sub_02002FEC(void)
 {
     ClearVram();
@@ -274,6 +285,8 @@ void sub_0200378C(u32 monId)
 {
     u8 text[16];
     s32 i;
+    u32 move, moveType;
+    s32 ppCurr, ppBonuses, ppMax;
     struct Pokemon *mon = &gPlayerPartyPtr[monId];
     const struct BattleMove *battleMoves = gAgbPmRomParams->battleMoves;
 
@@ -281,30 +294,265 @@ void sub_0200378C(u32 monId)
     SetBgTilemapBufferPaletteRect(0, 24, 4, 5, 8, 15);
     gUnknown_02021990.unk4C = 0xFFFF;
 
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        u32 move = GetBoxMonMoveBySlot(&mon->box, i);
-        s32 pp = GetBoxMonPPByMoveSlot(&mon->box, i);
-        s32 ppBonuses = GetMonData(&mon->box, MON_DATA_PP_BONUSES, NULL);
-        s32 ppWithBonus = CalculatePPWithBonus(move, ppBonuses, i);
-        u32 moveType = battleMoves[move].type;
+        move = GetBoxMonMoveBySlot(&mon->box, i);
+        ppCurr = GetBoxMonPPByMoveSlot(&mon->box, i);
+        ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
+        ppMax = CalculatePPWithBonus(move, ppBonuses, i);
+        moveType = battleMoves[move].type;
 
         gUnknown_02021990.unk44[i] = move;
-        if (gUnknown_02021990.unk2C == NULL)
-            gUnknown_02021990.unk2C = AddSprite(87, (i * 16) + 32, gUnknown_0201FA44);
+        if (gUnknown_02021990.unk2C[i] == NULL)
+            gUnknown_02021990.unk2C[i] = AddSprite(87, (i * 16) + 32, gUnknown_0201FA44);
         if (move != MOVE_NONE)
         {
-            SetSpriteTileOffset(gUnknown_02021990.unk2C, moveType * 8);
-            SetSpritePaletteNum(gUnknown_02021990.unk2C, GetMonSpritePaletteNumByBaseBlock(moveType));
-            SetSpriteInvisible(gUnknown_02021990.unk2C, FALSE);
+            SetSpriteTileOffset(gUnknown_02021990.unk2C[i], moveType * 8);
+            SetSpritePaletteNum(gUnknown_02021990.unk2C[i], GetMonSpritePaletteNumByBaseBlock(moveType));
+            SetSpriteInvisible(gUnknown_02021990.unk2C[i], FALSE);
         }
         else
         {
-            SetSpriteInvisible(gUnknown_02021990.unk2C, TRUE);
+            SetSpriteInvisible(gUnknown_02021990.unk2C[i], TRUE);
         }
-        FillWindowCharBufferRect(gUnknown_02021990.unk2C, 4, 1 + (i * 2), 9, 2, 0);
+        FillWindowCharBufferRect(gUnknown_02021990.unk24, 4, 1 + (i * 2), 9, 2, 0);
         CopyMoveName(text, move);
-        TextWindowSetXY(gUnknown_02021990.unk2C, 0x20, 8 + (i * 16));
-        Renjd
+        TextWindowSetXY(gUnknown_02021990.unk24, 0x20, 8 + (i * 16));
+        RenderText(gUnknown_02021990.unk24, text);
+        FillWindowCharBufferRect(gUnknown_02021990.unk24, 13, 1 + (i * 2), 5, 2, 0);
+        if (move != MOVE_NONE)
+        {
+            NumToPmString3RightAlign(text, ppCurr);
+            text[3] = CHAR_SLASH;
+            NumToPmString3RightAlign(text + 4, ppMax);
+            text[4] = text[5];
+            text[5] = text[6];
+            text[6] = text[7];
+            gUnknown_02021990.unk24->glyphWidth = 6;
+            TextWindowSetXY(gUnknown_02021990.unk24, 108, 8 + (i * 16));
+            RenderText(gUnknown_02021990.unk24, text);
+            SetBgTilemapBufferTileAt(0, 24, 4 + (i * 2), 0xF003);
+            SetBgTilemapBufferTileAt(0, 24, 5 + (i * 2), 0xF004);
+        }
+        else
+        {
+            TextWindowSetXY(gUnknown_02021990.unk24, 120, 8 + (i * 16));
+            RenderText(gUnknown_02021990.unk24, gText_2Dashes);
+            SetBgTilemapBufferTileAt(0, 24, 4 + (i * 2), 0xF000);
+            SetBgTilemapBufferTileAt(0, 24, 5 + (i * 2), 0xF000);
+        }
     }
+
+    if (gUnknown_02021990.unk28 == NULL)
+        gUnknown_02021990.unk28 = AddWindow(1, &gUnknown_0201FB70);
+    ClearWindowCharBuffer(gUnknown_02021990.unk28, 0);
+    SetBgTilemapBufferTileAt(0, 23, 0, 0xF00B);
+    SetBgTilemapBufferTileAt(0, 24, 0, 0xF00D);
+    SetBgTilemapBufferTileAt(0, 23, 1, 0xF00C);
+    SetBgTilemapBufferTileAt(0, 24, 1, 0xF00E);
+    SetTextColor(gUnknown_02021990.unk28, 1, 8);
+    TextWindowSetXY(gUnknown_02021990.unk28, 0, 0);
+    RenderText(gUnknown_02021990.unk28, gText_Info);
+    CopyRectWithinBgTilemapBuffer(3, 4, 20, 4, 2, 11, 0);
+    ClearWindowCharBuffer(gUnknown_02021990.unk1C, 0);
+    RenderText(gUnknown_02021990.unk1C, gText_BattleMoves);
+    gBgTilemapBufferTransferScheduled[0] = TRUE;
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    gBgTilemapBufferTransferScheduled[3] = TRUE;
+}
+
+void sub_02003A70(u32 monId, u32 moveSlot)
+{
+    u8 text[8];
+    struct Pokemon *mon = &gPlayerPartyPtr[monId];
+    const struct BattleMove *battleMoves = gAgbPmRomParams->battleMoves;
+
+    FillWindowCharBufferRect(gUnknown_02021990.unk20, 6, 3, 3, 4, 0);
+    SetBgTilemapBufferPaletteRect(0, 7, 15, 3, 4, 15);
+    if (moveSlot == MAX_MON_MOVES)
+    {
+        TextWindowSetXY(gUnknown_02021990.unk20, 48, 24);
+        RenderText(gUnknown_02021990.unk20, gText_3Dashes);
+        TextWindowSetXY(gUnknown_02021990.unk20, 48, 40);
+        RenderText(gUnknown_02021990.unk20, gText_3Dashes);
+    }
+    else
+    {
+        u32 move = GetBoxMonMoveBySlot(&mon->box, moveSlot);
+        if (move != MOVE_UNAVAILABLE)
+        {
+            TextWindowSetXY(gUnknown_02021990.unk20, 52, 24);
+            gUnknown_02021990.unk20->glyphWidth = 6;
+            if (battleMoves[move].power <= 1)
+            {
+                RenderText(gUnknown_02021990.unk20, gText_3Dashes);
+            }
+            else
+            {
+                NumToPmString3RightAlign(text, battleMoves[move].power);
+                RenderText(gUnknown_02021990.unk20, text);
+            }
+
+            TextWindowSetXY(gUnknown_02021990.unk20, 52, 40);
+            gUnknown_02021990.unk20->glyphWidth = 6;
+            if (battleMoves[move].accuracy == 0)
+            {
+                RenderText(gUnknown_02021990.unk20, gText_3Dashes);
+            }
+            else
+            {
+                NumToPmString3RightAlign(text, battleMoves[move].accuracy);
+                RenderText(gUnknown_02021990.unk20, text);
+            }
+        }
+        gBgTilemapBufferTransferScheduled[0] = TRUE;
+    }
+}
+
+void sub_02003BA4(u32 monId, u32 moveSlot)
+{
+    struct UnkStruct02021990 *strPtr = &gUnknown_02021990;
+    if (gUnknown_020219DF == 0)
+    {
+        FillWindowCharBufferRect(strPtr->unk20, 0, 2, 9, 6, 0);
+        if (strPtr->unk10 != NULL)
+            SetSpriteInvisible(strPtr->unk10, TRUE);
+        TextWindowFillTileBufferForText(strPtr->unk20);
+        FillBgTilemapBufferRect(3, 0, 18, 10, 2, 0xF000);
+        gBgTilemapBufferTransferScheduled[3] = TRUE;
+        CopyRectWithinBgTilemapBuffer(2, 20, 20, 3, 7, 7, 13);
+        gBgTilemapBufferTransferScheduled[2] = TRUE;
+        DelayFrames(1);
+        CopyRectWithinBgTilemapBuffer(2, 20, 20, 6, 7, 4, 13);
+        gBgTilemapBufferTransferScheduled[2] = TRUE;
+        DelayFrames(1);
+        CopyRectWithinBgTilemapBuffer(2, 20, 20, 10, 7, 0, 13);
+        gBgTilemapBufferTransferScheduled[2] = TRUE;
+        SetSpriteInvisible(strPtr->unkC, TRUE);
+        TextWindowSetXY(strPtr->unk20, 0, 24);
+        RenderText(strPtr->unk20, gText_Power);
+        TextWindowSetXY(strPtr->unk20, 0, 40);
+        RenderText(strPtr->unk20, gText_Accuracy);
+        sub_02003A70(monId, moveSlot);
+        DelayFrames(1);
+        gUnknown_020219DF = 1;
+    }
+    else
+    {
+        FillWindowCharBufferRect(strPtr->unk20, 0, 2, 9, 5, 0);
+        CopyRectWithinBgTilemapBuffer(2, 0, 0, 10, 7, 0, 13);
+        CopyRectWithinBgTilemapBuffer(2, 20, 20, 6, 7, 4, 13);
+        SetSpriteInvisible(strPtr->unkC, FALSE);
+        gBgTilemapBufferTransferScheduled[2] = TRUE;
+        DelayFrames(1);
+        CopyRectWithinBgTilemapBuffer(2, 0, 0, 9, 7, 1, 13);
+        CopyRectWithinBgTilemapBuffer(2, 20, 20, 3, 7, 7, 13);
+        gBgTilemapBufferTransferScheduled[2] = TRUE;
+        DelayFrames(1);
+        CopyRectWithinBgTilemapBuffer(2, 0, 0, 9, 7, 1, 13);
+        gBgTilemapBufferTransferScheduled[2] = TRUE;
+        sub_02003D80(monId, TRUE);
+        gUnknown_020219DF = 0;
+    }
+}
+
+void sub_02003D80(u32 monId, bool32 a1)
+{
+    bool32 partyHasHadPokerus;
+    s32 i;
+    u32 lvl, species, primaryStatus;
+    u8 text[16];
+    u8 speciesText[16];
+    struct Pokemon *mon = &gPlayerPartyPtr[monId];
+    if (!a1)
+    {
+        CreatePartyMonFrontPic(&gUnknown_02021990, monId, 8, 0x20);
+        if (gUnknown_02021990.unk1C == NULL)
+        {
+            gUnknown_02021990.unk1C = AddWindow(2, &gUnknown_0201FB10);
+            SetTextColor(gUnknown_02021990.unk1C, 1, 8);
+        }
+        ClearWindowCharBuffer(gUnknown_02021990.unk20, 0);
+        SetTextColor(gUnknown_02021990.unk20, 1, 8);
+        GetMonData(mon, MON_DATA_NICKNAME, text);
+        TextWindowSetXY(gUnknown_02021990.unk20, 0, 0);
+        RenderText(gUnknown_02021990.unk20, text);
+    }
+    text[0] = CHAR_LV;
+    text[1] = EOS;
+    TextWindowSetXY(gUnknown_02021990.unk20, 16, 32);
+    RenderText(gUnknown_02021990.unk20, text);
+    lvl = GetMonData(mon, MON_DATA_LEVEL, NULL);
+    NumToPmString3CustomZeroChar(lvl, text, CHAR_0);
+    for (i = 0; text[i] == CHAR_0; i++)
+        ;
+    if (text[i] == EOS)
+        i--;
+    TextWindowSetXY(gUnknown_02021990.unk20, 25, 32);
+    gUnknown_02021990.unk20->glyphWidth = 6;
+    RenderText(gUnknown_02021990.unk20, &text[i]);
+    SetBgTilemapBufferPaletteRect(0, 1, 14, 9, 2, 13);
+    species = GetMonData(mon, MON_DATA_SPECIES, NULL);
+    GetSpeciesName(speciesText + 1, species);
+    speciesText[0] = CHAR_SLASH;
+    TextWindowSetXY(gUnknown_02021990.unk20, 0, 16);
+    RenderText(gUnknown_02021990.unk20, speciesText);
+    if (species != SPECIES_NIDORAN_M && species != SPECIES_NIDORAN_F)
+    {
+        u32 palNum;
+        u8 gender = GetMonGender(mon);
+
+        if (gender == MON_MALE || gender == MON_FEMALE)
+        {
+            switch (gender)
+            {
+            case MON_FEMALE:
+                text[0] = CHAR_FEMALE;
+                palNum = 12;
+                break;
+            case MON_MALE:
+                text[0] = CHAR_MALE;
+                palNum = 11;
+                break;
+            default:
+                break;
+            }
+
+            text[1] = EOS;
+            TextWindowSetXY(gUnknown_02021990.unk20, 48, 32);
+            SetBgTilemapBufferPaletteRect(0, 7, 16, 1, 2, palNum);
+            RenderText(gUnknown_02021990.unk20, text);
+        }
+
+    }
+    if (gUnknown_02021990.unkC == NULL)
+        gUnknown_02021990.unkC = AddSprite(0, 128, gUnknown_0201FA5C);
+    SetSpritePaletteNum(gUnknown_02021990.unkC, 3);
+    LZ77UnCompVram(BoxMonCaughtBallToItemId(&mon->box), (void *)VRAM + 0x12800);
+    LZ77UnCompVram(BoxMonGetCaughtBallItemPalette(&mon->box), (void *)PLTT + 0x260);
+    primaryStatus = GetMonStatus(mon);
+    if (primaryStatus != STATUS_PRIMARY_NONE)
+    {
+        CopyRectWithinBgTilemapBuffer(3, 8, 20, 10, 2, 0, 18);
+        RenderTextAt(gUnknown_02021990.unk20, 0, 48, gText_Status);
+        if (gUnknown_02021990.unk10 == NULL)
+            gUnknown_02021990.unk10 = AddSprite(47, 148, gUnknown_0201FAF8);
+        SetSpriteInvisible(gUnknown_02021990.unk10, FALSE);
+        SetSpriteTileOffset(gUnknown_02021990.unk10, (primaryStatus - 1) * 4);
+    }
+    else
+    {
+        FillBgTilemapBufferRect(3, 0, 18, 10, 2, 0);
+        if (gUnknown_02021990.unk10 != NULL)
+            SetSpriteInvisible(gUnknown_02021990.unk10, TRUE);
+    }
+
+    partyHasHadPokerus = CheckPartyHasHadPokerus(mon, 0);
+    if (!CheckPartyPokerus(mon, 0) && partyHasHadPokerus)
+        SetBgTilemapBufferTileAt(0, 2, 0x11, 0xF013);
+    else
+        SetBgTilemapBufferTileAt(0, 2, 0x11, 0xF000);
+
+    gBgTilemapBufferTransferScheduled[0] = TRUE;
+    gBgTilemapBufferTransferScheduled[3] = TRUE;
 }
