@@ -57,4 +57,10 @@ struct UnkStruct_02024960
 
 extern volatile struct UnkStruct_02024960 gUnknown_02024960;
 
+#include "gflib/text.h"
+
+void RenderText(struct Window *win, const u8 *str);
+u8 *NumToPmString3RightAlign(u8 *str, s32 num);
+void ClearVram(void);
+
 #endif // GUARD_ALL_H

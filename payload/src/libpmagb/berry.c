@@ -1,5 +1,6 @@
 #include "global.h"
 #include "libpmagb.h"
+#include "libpmagb/berry.h"
 #include "constants/berry.h"
 #include "constants/items.h"
 
@@ -101,15 +102,16 @@ const u8 *ItemId_GetName(u16 itemId)
     return items[SanitizeItemId(itemId)].name;
 }
 
-void CopyItemName(u16 itemId, u8 *string, const u8 * berry_str)
+void CopyItemName(u32 itemId, u8 *string, const u8 * berry_str)
 {
-    if (itemId == ITEM_ENIGMA_BERRY)
+    u16 itemId_ = itemId;
+    if (itemId_ == ITEM_ENIGMA_BERRY)
     {
         StringCopy(string, GetBerryInfo(ITEM_TO_BERRY(ITEM_ENIGMA_BERRY))->name);
         StringAppend(string, berry_str);
     }
     else
     {
-        StringCopy(string, ItemId_GetName(itemId));
+        StringCopy(string, ItemId_GetName(itemId_));
     }
 }

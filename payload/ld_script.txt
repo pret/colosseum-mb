@@ -9,7 +9,9 @@ SECTIONS {
     ALIGN(4)
     {
         asm/crt0.o(.text);
+        src/main.o(.text);
         src/all.o(.text);
+        src/all2.o(.text);
         asm/all.o(.text);
 
     } =0

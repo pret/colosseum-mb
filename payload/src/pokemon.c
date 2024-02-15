@@ -11,6 +11,9 @@
 #include "constants/items.h"
 #include "gflib/characters.h"
 
+extern bool8 gRomDetection_IsRubySapphire;
+extern const u8 gGiftRibbonMonDataIds[7];
+
 #define SUBSTRUCT_CASE(n, v1, v2, v3, v4)  \
 case n:                                    \
     switch (substructType)                 \
@@ -30,7 +33,7 @@ case n:                                    \
     }                                      \
     break;
 
-union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 personality, u8 substructType)
+static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 personality, u8 substructType)
 {
     union PokemonSubstruct *substruct = NULL;
 
@@ -90,7 +93,7 @@ union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 personality,
     return substruct;
 }
 
-u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
+static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
 {
     u16 checksum = 0;
     union PokemonSubstruct *substruct0 = GetSubstruct(boxMon, boxMon->personality, 0);
@@ -548,7 +551,7 @@ u32 GetBoxMonAbility(struct BoxPokemon *boxMon)
     return ability;
 }
 
-const u8 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon)
+const u32 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon)
 {
     u32 id;
     u16 ball = GetBoxMonData(boxMon, MON_DATA_POKEBALL, NULL);
@@ -573,7 +576,7 @@ const u8 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon)
     return gAgbPmRomParams->ballSpriteSheets[id].data;
 }
 
-const u8 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
+const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
 {
     u32 id;
     u16 ball = GetBoxMonData(boxMon, MON_DATA_POKEBALL, NULL);
@@ -716,8 +719,6 @@ u32 CheckPartyHasHadPokerus(struct Pokemon *party, u8 selection)
 
     return retVal;
 }
-
-extern bool8 gRomDetection_IsRubySapphire;
 
 void DrawSpindasSpots(u16 species, u32 personality, u8 *dest)
 {
@@ -1091,8 +1092,6 @@ void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg)
     }
 }
 
-extern const u8 gGiftRibbonMonDataIds[7];
-
 void GiveGiftRibbonToParty(u8 index, u8 ribbonId)
 {
     s32 i;
@@ -1168,7 +1167,7 @@ const struct CompressedSpritePalette *GetMonPalettePtrBySpeciesIdPersonality(u16
         return &gAgbPmRomParams->monPaletteTable[species];
 }
 
-static inline u16 GetUnownLetterByPersonalityInline(u32 personality)
+inline u16 GetUnownLetterByPersonality(u32 personality)
 {
     return (((personality & 0x3000000) >> 18) | ((personality & 0x30000) >> 12) | ((personality & 0x300) >> 6) | (personality & 0x3)) % 0x1C;
 }
@@ -1179,7 +1178,7 @@ u16 FixUnownSpecies(u16 species, u32 personality)
 
     if (species == SPECIES_UNOWN)
     {
-        u16 letter = GetUnownLetterByPersonalityInline(personality);
+        u16 letter = GetUnownLetterByPersonality(personality);
         if (letter == 0)
             letter = SPECIES_UNOWN;
         else
@@ -1237,10 +1236,10 @@ u32 GetMonSpritePaletteNumByBaseBlock(u32 id)
     return gTypeToPaletteNumber[id];
 }
 
-const u8 *GetAbilityName(u32 species)
+const u8 *GetAbilityName(u32 ability)
 {
     const u8 (*abilityNames)[][ABILITY_NAME_LENGTH + 1] = gAgbPmRomParams->abilityNames;
-    return (*abilityNames)[species];
+    return (*abilityNames)[ability];
 }
 
 const u8 *GetAbilityDescription(u32 ability)
@@ -1280,7 +1279,7 @@ struct Pokemon *GetPtrToEmptyPartySlot(void)
 };
 
 // The same as GetMonGender except GetGenderFromSpeciesAndPersonality isn't called by copied.
-UNUSED u8 GetMonGender2(struct Pokemon *mon)
+static UNUSED u8 GetMonGender2(struct Pokemon *mon)
 {
     const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
     u16 species = GetMonDataInline(mon, MON_DATA_SPECIES, NULL);
@@ -1300,7 +1299,3 @@ UNUSED u8 GetMonGender2(struct Pokemon *mon)
         return MON_MALE;
 }
 
-UNUSED u16 GetUnownLetterByPersonality(u32 personality)
-{
-    return GetUnownLetterByPersonalityInline(personality);
-}

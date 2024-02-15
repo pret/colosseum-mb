@@ -200,16 +200,31 @@ struct SpindaSpot
     u16 image[16];
 };
 
-void GetSpeciesName(u8 *name, s32 species);
-u32 GetMonStatus(struct Pokemon *mon);
-u8 GetMonGender(struct Pokemon *mon);
-struct Pokemon *GetPtrToEmptyPartySlot(void);
-u16 FixUnownSpecies(u16 species, u32 personality);
-void SetMonData(struct Pokemon * pokemon, s32 attr, const void * data);
-u32 GetMonData(struct Pokemon *mon, s32 field, u8 *data);
-void SetBoxMonData(struct BoxPokemon * boxmon, s32 attr, const void * data);
-u32 GetBoxMonData(struct BoxPokemon * boxmon, s32 attr, u8 * strbuf);
+u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data);
+const struct CompressedSpritePalette *GetBoxMonPalettePtr(u32 partyId);
+u32 GetBoxMonAbility(struct BoxPokemon *boxMon);
+const u32 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon);
+const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon);
 u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot);
+u32 GetBoxMonPPByMoveSlot(struct BoxPokemon *boxMon, u8 slot);
+u32 CheckPartyPokerus(struct Pokemon *party, u8 selection);
+u32 GetMonStatus(struct Pokemon *mon);
+u32 CheckPartyHasHadPokerus(struct Pokemon *party, u8 selection);
+void DrawSpindasSpots(u16 species, u32 personality, u8 *dest);
+void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg);
+void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg);
+void GiveGiftRibbonToParty(u8 index, u8 ribbonId);
+u32 GetMonData(struct Pokemon *mon, s32 field, u8 *data);
+u8 GetMonGender(struct Pokemon *mon);
+const struct CompressedSpritePalette *GetMonPalettePtrBySpeciesIdPersonality(u16 species, u32 otId, u32 personality);
+u16 FixUnownSpecies(u16 species, u32 personality);
+void GetSpeciesName(u8 *name, s32 species);
+u32 GetMonType(struct Pokemon *mon, u32 which);
+u32 GetMonSpritePaletteNumByBaseBlock(u32 id);
+const u8 *GetAbilityName(u32 ability);
+const u8 *GetAbilityDescription(u32 ability);
 s32 CalculatePPWithBonus(u32 move, s32 ppBonuses, u32 moveIndex);
+void CopyMoveName(u8 *dst, u32 move);
+struct Pokemon *GetPtrToEmptyPartySlot(void);
 
 #endif // GUARD_POKEMON_H
