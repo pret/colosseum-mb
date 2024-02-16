@@ -1307,6 +1307,7 @@ s32 sub_02001F04(s32 ret)
     return ret;
 }
 
+#ifndef NONMATCHING
 s32 sub_020023E8(void)
 {
     u16 keys;
@@ -1325,7 +1326,7 @@ s32 sub_020023E8(void)
 
         if (keys & B_BUTTON)
         {
-            if (gUnknown_02021860.unk125 == 0)
+            if (gUnknown_02021985 == 0)
             {
                 PlaySE(SONG_SE_SELECT);
                 return -1;
@@ -1338,9 +1339,11 @@ s32 sub_020023E8(void)
         }
         if (keys & A_BUTTON)
         {
+            // Nonmatching part is here. gUnknown_02021860 pointer is not loaded into register, but reused from r8.
+            // In a way, compiler is slighly smarter with my function than originally. I'm not sure where the difference could be in the code however.
             if (gUnknown_02021860.unk11B == PARTY_SIZE)
             {
-                if (gUnknown_02021860.unk125 == 0)
+                if (gUnknown_02021985 == 0)
                 {
                     PlaySE(SONG_SE_SELECT);
                     return -1;
@@ -1456,6 +1459,384 @@ s32 sub_020023E8(void)
     }
     return 1;
 }
+#else
+s32 NAKED sub_020023E8(void)
+{
+    asm_unified(".equ SE_SELECT,  0\t\n\
+	.equ SE_FAILURE, 1\t\n\
+                push {r4, r5, r6, r7, lr}\t\n\
+	mov r7, sl\t\n\
+	mov r6, sb\t\n\
+	mov r5, r8\t\n\
+	push {r5, r6, r7}\t\n\
+	sub sp, #0xc\t\n\
+	ldr r0, =gUnknown_0201F9A8\t\n\
+	ldr r2, =gUnknown_02021860\t\n\
+	movs r3, #0x8d\t\n\
+	lsls r3, r3, #1\t\n\
+	adds r1, r2, r3\t\n\
+	ldrb r1, [r1]\t\n\
+	lsls r1, r1, #2\t\n\
+	adds r0, r1, r0\t\n\
+	ldr r0, [r0]\t\n\
+	mov sb, r0\t\n\
+	ldr r0, =gUnknown_0201F9EC\t\n\
+	adds r1, r1, r0\t\n\
+	ldr r1, [r1]\t\n\
+	str r1, [sp, #8]\t\n\
+	mov r8, r2\t\n\
+	movs r4, #0x8f\t\n\
+	lsls r4, r4, #1\t\n\
+	add r4, r8\t\n\
+	mov sl, r4\t\n\
+_0200241A:\t\n\
+	movs r0, #1\t\n\
+	bl DelayFrames\t\n\
+	ldr r0, =gNewAndRepeatedKeys\t\n\
+	ldrh r5, [r0]\t\n\
+	cmp r5, #0\t\n\
+	beq _0200241A\t\n\
+	movs r0, #2\t\n\
+	ands r0, r5\t\n\
+	cmp r0, #0\t\n\
+	beq _02002450\t\n\
+	ldr r1, =gUnknown_02021985\t\n\
+	ldrb r0, [r1]\t\n\
+	cmp r0, #0\t\n\
+	beq _0200246C\t\n\
+	b _02002484\t\n\
+	.align 2, 0\t\n\
+	.pool\t\n\
+_02002450:\t\n\
+	movs r0, #1\t\n\
+	ands r0, r5\t\n\
+	cmp r0, #0\t\n\
+	beq _020024A8\t\n\
+	ldr r0, =gUnknown_02021860\t\n\
+	ldr r3, =0x0000011B\t\n\
+	adds r4, r0, r3\t\n\
+	ldrb r0, [r4]\t\n\
+	cmp r0, #6\t\n\
+	bne _0200248C\t\n\
+	ldr r1, =gUnknown_02021985\t\n\
+	ldrb r0, [r1]\t\n\
+	cmp r0, #0\t\n\
+	bne _02002484\t\n\
+_0200246C:\t\n\
+	movs r0, #SE_SELECT\t\n\
+	bl PlaySE\t\n\
+	movs r0, #1\t\n\
+	rsbs r0, r0, #0\t\n\
+	b _020026E4\t\n\
+	.align 2, 0\t\n\
+	.pool\t\n\
+_02002484:\t\n\
+	movs r0, #SE_FAILURE\t\n\
+	bl PlaySE\t\n\
+	b _0200241A\t\n\
+_0200248C:\t\n\
+	movs r0, #SE_SELECT\t\n\
+	bl PlaySE\t\n\
+	ldrb r0, [r4]\t\n\
+	bl sub_02001A8C\t\n\
+	adds r1, r0, #0\t\n\
+	movs r0, #1\t\n\
+	rsbs r0, r0, #0\t\n\
+	cmp r1, r0\t\n\
+	bne _020024A8\t\n\
+	movs r0, #1\t\n\
+	rsbs r0, r0, #0\t\n\
+	b _020026E4\t\n\
+_020024A8:\t\n\
+	ldr r6, =gUnknown_02021860\t\n\
+	ldr r3, =0x0000011B\t\n\
+	adds r4, r6, r3\t\n\
+	ldrb r7, [r4]\t\n\
+	movs r0, #0x40\t\n\
+	ands r0, r5\t\n\
+	cmp r0, #0\t\n\
+	beq _020024F6\t\n\
+	movs r0, #SE_SELECT\t\n\
+	bl PlaySE\t\n\
+	ldrb r0, [r4]\t\n\
+	adds r1, r0, #0\t\n\
+	cmp r1, #0\t\n\
+	bne _020024D4\t\n\
+	movs r0, #6\t\n\
+	b _020024E4\t\n\
+	.align 2, 0\t\n\
+	.pool\t\n\
+_020024D4:\t\n\
+	cmp r1, #6\t\n\
+	bne _020024E2\t\n\
+	movs r1, #0x90\t\n\
+	lsls r1, r1, #1\t\n\
+	adds r0, r6, r1\t\n\
+	ldrb r0, [r0]\t\n\
+	b _020024E4\t\n\
+_020024E2:\t\n\
+	subs r0, #1\t\n\
+_020024E4:\t\n\
+	strb r0, [r4]\t\n\
+	ldr r0, =0x0000011B\t\n\
+	add r0, r8\t\n\
+	ldrb r0, [r0]\t\n\
+	lsls r0, r0, #2\t\n\
+	add r0, sb\t\n\
+	ldrb r0, [r0, #2]\t\n\
+	mov r3, sl\t\n\
+	strb r0, [r3]\t\n\
+_020024F6:\t\n\
+	movs r0, #0x80\t\n\
+	ands r0, r5\t\n\
+	cmp r0, #0\t\n\
+	beq _0200253C\t\n\
+	movs r0, #SE_SELECT\t\n\
+	bl PlaySE\t\n\
+	ldr r3, =0x0000011B\t\n\
+	add r3, r8\t\n\
+	movs r0, #0x90\t\n\
+	lsls r0, r0, #1\t\n\
+	add r0, r8\t\n\
+	ldrb r2, [r3]\t\n\
+	adds r1, r2, #0\t\n\
+	ldrb r0, [r0]\t\n\
+	cmp r1, r0\t\n\
+	bne _02002520\t\n\
+	movs r0, #6\t\n\
+	b _0200252A\t\n\
+	.align 2, 0\t\n\
+	.pool\t\n\
+_02002520:\t\n\
+	cmp r1, #6\t\n\
+	bne _02002528\t\n\
+	movs r0, #0\t\n\
+	b _0200252A\t\n\
+_02002528:\t\n\
+	adds r0, r2, #1\t\n\
+_0200252A:\t\n\
+	strb r0, [r3]\t\n\
+	ldr r0, =0x0000011B\t\n\
+	add r0, r8\t\n\
+	ldrb r0, [r0]\t\n\
+	lsls r0, r0, #2\t\n\
+	add r0, sb\t\n\
+	ldrb r0, [r0, #2]\t\n\
+	mov r4, sl\t\n\
+	strb r0, [r4]\t\n\
+_0200253C:\t\n\
+	movs r0, #0x20\t\n\
+	ands r0, r5\t\n\
+	cmp r0, #0\t\n\
+	beq _0200256A\t\n\
+	movs r0, #SE_SELECT\t\n\
+	bl PlaySE\t\n\
+	ldr r0, =gUnknown_02021860\t\n\
+	ldr r1, =0x0000011B\t\n\
+	adds r2, r0, r1\t\n\
+	ldrb r1, [r2]\t\n\
+	lsls r0, r1, #2\t\n\
+	add r0, sb\t\n\
+	ldrb r0, [r0, #1]\t\n\
+	cmp r0, #0xff\t\n\
+	beq _0200256A\t\n\
+	mov r3, sl\t\n\
+	strb r1, [r3]\t\n\
+	ldrb r4, [r2]\t\n\
+	lsls r0, r4, #2\t\n\
+	add r0, sb\t\n\
+	ldrb r0, [r0, #1]\t\n\
+	strb r0, [r2]\t\n\
+_0200256A:\t\n\
+	movs r0, #0x10\t\n\
+	ands r5, r0\t\n\
+	cmp r5, #0\t\n\
+	beq _020025C8\t\n\
+	movs r0, #SE_SELECT\t\n\
+	bl PlaySE\t\n\
+	ldr r2, =gUnknown_02021860\t\n\
+	ldr r0, =0x0000011B\t\n\
+	adds r3, r2, r0\t\n\
+	ldrb r1, [r3]\t\n\
+	lsls r0, r1, #2\t\n\
+	add r0, sb\t\n\
+	ldrb r0, [r0]\t\n\
+	cmp r0, #7\t\n\
+	beq _02002598\t\n\
+	cmp r0, #0xff\t\n\
+	bne _020025C6\t\n\
+	b _020025C8\t\n\
+	.align 2, 0\t\n\
+	.pool\t\n\
+_02002598:\t\n\
+	mov r4, sl\t\n\
+	ldrb r1, [r4]\t\n\
+	strb r1, [r3]\t\n\
+	movs r4, #0x90\t\n\
+	lsls r4, r4, #1\t\n\
+	adds r0, r2, r4\t\n\
+	ldrb r0, [r0]\t\n\
+	lsls r1, r1, #0x18\t\n\
+	lsrs r1, r1, #0x18\t\n\
+	cmp r1, r0\t\n\
+	bls _020025C8\t\n\
+	strb r0, [r3]\t\n\
+	movs r0, #0x8d\t\n\
+	lsls r0, r0, #1\t\n\
+	adds r1, r2, r0\t\n\
+	subs r0, #0x19\t\n\
+	ldrh r1, [r1]\t\n\
+	cmp r1, r0\t\n\
+	bne _020025C8\t\n\
+	cmp r7, #0\t\n\
+	bne _020025C8\t\n\
+	strb r7, [r3]\t\n\
+	b _020025C8\t\n\
+_020025C6:\t\n\
+	strb r0, [r3]\t\n\
+_020025C8:\t\n\
+	ldr r0, =0x0000011B\t\n\
+	add r0, r8\t\n\
+	ldrb r0, [r0]\t\n\
+	cmp r7, r0\t\n\
+	bne _020025D4\t\n\
+	b _0200241A\t\n\
+_020025D4:\t\n\
+	cmp r7, #6\t\n\
+	beq _02002632\t\n\
+	lsls r0, r7, #2\t\n\
+	ldr r1, [sp, #8]\t\n\
+	adds r4, r1, r0\t\n\
+	ldrb r3, [r4, #2]\t\n\
+	lsls r1, r3, #2\t\n\
+	ldr r0, =gUnknown_0201F9B0\t\n\
+	adds r5, r1, r0\t\n\
+	ldr r2, =gPlayerPartyPtr\t\n\
+	movs r0, #0x64\t\n\
+	adds r1, r7, #0\t\n\
+	muls r1, r0, r1\t\n\
+	ldr r0, [r2]\t\n\
+	adds r0, r0, r1\t\n\
+	bl GetMonStatus\t\n\
+	cmp r0, #7\t\n\
+	beq _0200261C\t\n\
+	ldrb r1, [r4]\t\n\
+	ldrb r2, [r4, #1]\t\n\
+	ldrb r3, [r5]\t\n\
+	ldrb r0, [r5, #1]\t\n\
+	str r0, [sp]\t\n\
+	movs r0, #3\t\n\
+	str r0, [sp, #4]\t\n\
+	bl SetBgTilemapBufferPaletteRect\t\n\
+	b _02002644\t\n\
+	.align 2, 0\t\n\
+	.pool\t\n\
+_0200261C:\t\n\
+	ldrb r1, [r4]\t\n\
+	ldrb r2, [r4, #1]\t\n\
+	ldrb r3, [r5]\t\n\
+	ldrb r0, [r5, #1]\t\n\
+	str r0, [sp]\t\n\
+	movs r0, #5\t\n\
+	str r0, [sp, #4]\t\n\
+	movs r0, #3\t\n\
+	bl SetBgTilemapBufferPaletteRect\t\n\
+	b _02002644\t\n\
+_02002632:\t\n\
+	movs r0, #2\t\n\
+	str r0, [sp]\t\n\
+	movs r0, #1\t\n\
+	str r0, [sp, #4]\t\n\
+	movs r1, #0x18\t\n\
+	movs r2, #0x12\t\n\
+	movs r3, #6\t\n\
+	bl SetBgTilemapBufferPaletteRect\t\n\
+_02002644:\t\n\
+	ldr r5, =gUnknown_02021860\t\n\
+	ldr r4, =0x0000011B\t\n\
+	adds r0, r5, r4\t\n\
+	ldrb r1, [r0]\t\n\
+	cmp r1, #6\t\n\
+	beq _020026AA\t\n\
+	ldrb r3, [r0]\t\n\
+	lsls r0, r3, #2\t\n\
+	ldr r1, [sp, #8]\t\n\
+	adds r4, r1, r0\t\n\
+	ldrb r0, [r4, #2]\t\n\
+	lsls r1, r0, #2\t\n\
+	ldr r0, =gUnknown_0201F9B0\t\n\
+	adds r5, r1, r0\t\n\
+	ldr r2, =gPlayerPartyPtr\t\n\
+	movs r0, #0x64\t\n\
+	adds r1, r3, #0\t\n\
+	muls r1, r0, r1\t\n\
+	ldr r0, [r2]\t\n\
+	adds r0, r0, r1\t\n\
+	bl GetMonStatus\t\n\
+	cmp r0, #7\t\n\
+	beq _02002694\t\n\
+	ldrb r1, [r4]\t\n\
+	ldrb r2, [r4, #1]\t\n\
+	ldrb r3, [r5]\t\n\
+	ldrb r0, [r5, #1]\t\n\
+	str r0, [sp]\t\n\
+	movs r0, #7\t\n\
+	b _020026A0\t\n\
+	.align 2, 0\t\n\
+	.pool\t\n\
+_02002694:\t\n\
+	ldrb r1, [r4]\t\n\
+	ldrb r2, [r4, #1]\t\n\
+	ldrb r3, [r5]\t\n\
+	ldrb r0, [r5, #1]\t\n\
+	str r0, [sp]\t\n\
+	movs r0, #9\t\n\
+_020026A0:\t\n\
+	str r0, [sp, #4]\t\n\
+	movs r0, #3\t\n\
+	bl SetBgTilemapBufferPaletteRect\t\n\
+	b _020026D4\t\n\
+_020026AA:\t\n\
+	movs r4, #2\t\n\
+	str r4, [sp]\t\n\
+	str r4, [sp, #4]\t\n\
+	movs r0, #1\t\n\
+	movs r1, #0x18\t\n\
+	movs r2, #0x12\t\n\
+	movs r3, #6\t\n\
+	bl SetBgTilemapBufferPaletteRect\t\n\
+	movs r1, #0x8d\t\n\
+	lsls r1, r1, #1\t\n\
+	adds r0, r5, r1\t\n\
+	ldrb r0, [r0]\t\n\
+	cmp r0, #0\t\n\
+	bne _020026D0\t\n\
+	movs r0, #1\t\n\
+	mov r3, sl\t\n\
+	strb r0, [r3]\t\n\
+	b _020026D4\t\n\
+_020026D0:\t\n\
+	mov r0, sl\t\n\
+	strb r4, [r0]\t\n\
+_020026D4:\t\n\
+	ldr r1, =gBgTilemapBufferTransferScheduled\t\n\
+	movs r0, #1\t\n\
+	strb r0, [r1, #3]\t\n\
+	strb r0, [r1, #1]\t\n\
+	b _0200241A\t\n\
+	.align 2, 0\t\n\
+	.pool\t\n\
+_020026E4:\t\n\
+	add sp, #0xc\t\n\
+	pop {r3, r4, r5}\t\n\
+	mov r8, r3\t\n\
+	mov sb, r4\t\n\
+	mov sl, r5\t\n\
+	pop {r4, r5, r6, r7}\t\n\
+	pop {r1}\t\n\
+	bx r1");
+}
+#endif
 
 inline s32 sub_02002F38(u32 val)
 {

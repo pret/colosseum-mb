@@ -233,7 +233,7 @@ struct Struct_gUnknown_02023F50 *sub_0200CB2C(void)
 extern u8 gUnknown_020241D0[][320];
 extern u8 gUnknown_02024950;
 
-void *sub_0200CB34(u32 id)
+u8 *sub_0200CB34(u32 id)
 {
     return gUnknown_020241D0[id];
 }
@@ -764,7 +764,7 @@ bool32 sub_0200D394(u32 val)
             }
             else if (val == 0x88)
             {
-                gUnknown_020251F0.field0 = sub_0200CB34(0);
+                gUnknown_020251F0.field0 = (void *) sub_0200CB34(0);
                 sub_0200CB48(0);
                 REG_JOY_TRANS = val;
                 gUnknown_020251F0.field4 = 0x780;

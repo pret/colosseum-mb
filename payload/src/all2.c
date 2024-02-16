@@ -2,6 +2,7 @@
 #include "gflib.h"
 #include "all.h"
 #include "strings.h"
+#include "unk_200C5DC.h"
 #include "gflib/text.h"
 #include "gflib/gfxload.h"
 #include "libpmagb/pic_uncomp.h"
@@ -12,8 +13,10 @@
 #include "constants/species.h"
 #include "constants/moves.h"
 #include "constants/items.h"
+#include "constants/songs.h"
 
 extern u8 gUnknown_020219DF;
+extern u8 gUnknown_020219DE;
 
 extern const u32 gSummaryScreen_Pal[];
 extern const u32 gSummaryScreen_Gfx[];
@@ -32,7 +35,7 @@ struct UnkStruct02021990
     struct Sprite *unk10;
     u16 species; // 0x14
     u16 speciesPic; // 0x16 - for Unown
-    bool8 statsPrinted;
+    bool8 statsPrinted; // 0x18
     u8 fill19;
     u8 fill1A;
     u8 fill1B;
@@ -41,10 +44,14 @@ struct UnkStruct02021990
     struct Window *unk24;
     struct Window *unk28;
     struct Sprite *unk2C[MAX_MON_MOVES];
-    u8 unk3C[0x44-0x3C];
+    u8 fill3C;
+    u8 fill3D;
+    struct Sprite *unk40;
     u16 unk44[MAX_MON_MOVES];
     u16 unk4C;
-    u8 fill[4];
+    u8 unk4E;
+    u8 unk4F;
+    u8 unk50;
 };
 
 extern struct UnkStruct02021990 gUnknown_02021990;
@@ -58,8 +65,10 @@ extern const struct Subsprites *const gMonFrontPicSubspriteTable[];
 extern const struct Subsprites gUnknown_0201FA44[];
 extern const struct Subsprites gUnknown_0201FAF8[];
 extern const struct Subsprites gUnknown_0201FA5C[];
+extern const struct Subsprites gUnknown_0201FA74[];
 
 void sub_02003D80(u32 monId, bool32 a1);
+void sub_0200461C(struct Sprite *sprite);
 
 // This file's functions
 void sub_02002FEC(void)
@@ -499,7 +508,7 @@ void sub_02003D80(u32 monId, bool32 a1)
     RenderText(gUnknown_02021990.unk20, speciesText);
     if (species != SPECIES_NIDORAN_M && species != SPECIES_NIDORAN_F)
     {
-        u32 palNum;
+        u32 palNum = 0;
         u8 gender = GetMonGender(mon);
 
         if (gender == MON_MALE || gender == MON_FEMALE)
@@ -555,4 +564,218 @@ void sub_02003D80(u32 monId, bool32 a1)
 
     gBgTilemapBufferTransferScheduled[0] = TRUE;
     gBgTilemapBufferTransferScheduled[3] = TRUE;
+}
+
+s32 sub_02004024(s32 monId)
+{
+    u32 keys;
+    gUnknown_02021990.statsPrinted = FALSE;
+    sub_020031F8(monId);
+    while (1)
+    {
+        DelayFrames(1);
+        keys = gNewKeys;
+        if (keys & DPAD_UP && monId != 0)
+        {
+            PlaySE(SONG_SE_SELECT);
+            monId--;
+            sub_02003D80(monId, FALSE);
+            sub_020031F8(monId);
+        }
+        if (keys & DPAD_DOWN && monId != PARTY_SIZE - 1 && GetMonData(&gPlayerPartyPtr[monId + 1], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+        {
+            PlaySE(SONG_SE_SELECT);
+            monId++;
+            sub_02003D80(monId, FALSE);
+            sub_020031F8(monId);
+        }
+
+        if (keys & DPAD_RIGHT)
+        {
+            PlaySE(SONG_SE_SELECT);
+            break;
+        }
+        if (keys & (A_BUTTON | B_BUTTON))
+        {
+            PlaySE(SONG_SE_SELECT);
+            gUnknown_02021990.unk50 = monId;
+            monId = -1;
+            break;
+        }
+    }
+    if (monId != -1)
+    {
+        MoveSpriteToHead(gUnknown_02021990.type1Sprite);
+        MoveSpriteToHead(gUnknown_02021990.type2Sprite);
+    }
+    gUnknown_02021990.type1Sprite = NULL;
+    gUnknown_02021990.type2Sprite = NULL;
+
+    return monId;
+}
+
+extern u16 gUnknown_020219D4[];
+
+static inline void sub_20045B8(s32 monId, u32 moveSlot)
+{
+    u8 *txt = sub_0200CB34(monId);
+    SetBgTilemapBufferPaletteRect(0, 11, 15, 18, 4, 15);
+    FillWindowCharBufferRect(gUnknown_02021990.unk24, 0, 12, 18, 4, 0);
+    if (moveSlot != MAX_MON_MOVES)
+    {
+        TextWindowSetXY(gUnknown_02021990.unk24, 0, 0x60);
+        RenderText(gUnknown_02021990.unk24, &txt[moveSlot * 80]);
+        gBgTilemapBufferTransferScheduled[0] = TRUE;
+    }
+}
+
+s32 sub_020040FC(s32 monId)
+{
+    s32 i, var;
+    u8 *txtPtr;
+    u16 var_28;
+    u32 var_24;
+    u16 keys;
+
+    gUnknown_02021990.statsPrinted = FALSE;
+    SetBgPos(2, 0, 0);
+    sub_0200378C(monId);
+    var_28 = 0;
+    while (1)
+    {
+        DelayFrames(1);
+        keys = gNewKeys;
+        if (keys & DPAD_UP && monId != 0)
+        {
+            PlaySE(SONG_SE_SELECT);
+            monId--;
+            sub_02003D80(monId, FALSE);
+            sub_0200378C(monId);
+        }
+        if (keys & DPAD_DOWN && monId != PARTY_SIZE - 1 && GetMonData(&gPlayerPartyPtr[monId + 1], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+        {
+            PlaySE(SONG_SE_SELECT);
+            monId++;
+            sub_02003D80(monId, FALSE);
+            sub_0200378C(monId);
+        }
+
+        if (keys & DPAD_LEFT)
+        {
+            PlaySE(SONG_SE_SELECT);
+            break;
+        }
+        if (keys & B_BUTTON)
+        {
+            PlaySE(SONG_SE_SELECT);
+            gUnknown_02021990.unk50 = monId;
+            monId = -1;
+            break;
+        }
+
+        switch (var_28)
+        {
+        case 0:
+            if (keys & A_BUTTON)
+            {
+                PlaySE(SONG_SE_SELECT);
+                var_28 = 1;
+            }
+            break;
+        case 1:
+            gUnknown_02021990.unk4E = 0;
+            gUnknown_02021990.unk40 = AddSprite(80, 32, gUnknown_0201FA74);
+            SetSpritePaletteNum(gUnknown_02021990.unk40, 5);
+            gUnknown_02021990.unk40->callback = sub_0200461C;
+            CopyRectWithinBgTilemapBuffer(2, 0, 20, 20, 3, 10, 11);
+            TextWindowSetXY(gUnknown_02021990.unk24, 32, 72);
+            RenderText(gUnknown_02021990.unk24, gText_Cancel3);
+            ClearWindowCharBuffer(gUnknown_02021990.unk28, 0);
+            RenderText(gUnknown_02021990.unk28, gText_Cancel3);
+            gBgTilemapBufferTransferScheduled[0] = TRUE;
+            sub_02003BA4(monId, 0);
+            txtPtr = sub_0200CB34(monId);
+            SetBgTilemapBufferPaletteRect(0, 11, 15, 18, 4, 15);
+            FillWindowCharBufferRect(gUnknown_02021990.unk24, 0, 12, 18, 4, 0);
+            TextWindowSetXY(gUnknown_02021990.unk24, 0, 96);
+            RenderText(gUnknown_02021990.unk24, txtPtr);
+            gBgTilemapBufferTransferScheduled[0] = TRUE;
+            var_28 = 2;
+            // fallthrough
+        case 2:
+            do
+            {
+                s32 r1;
+
+                DelayFrames(1);
+                keys = gNewKeys;
+                var_24 = gUnknown_020219DE;
+                if (keys & DPAD_DOWN)
+                {
+                    PlaySE(SONG_SE_SELECT);
+                    for (var = -1, r1 = gUnknown_020219DE + 1; var == -1; r1++)
+                    {
+                        if (r1 == 5)
+                            r1 = 0;
+                        if (gUnknown_020219D4[r1] != 0)
+                            var = r1;
+                    }
+                    gUnknown_020219DE = var;
+                }
+                if (keys & DPAD_UP)
+                {
+                    PlaySE(SONG_SE_SELECT);
+                    for (var = -1, r1 = gUnknown_020219DE - 1; var == -1; r1--)
+                    {
+                        if (r1 == -1)
+                            r1 = 4;
+                        if (gUnknown_020219D4[r1] != 0)
+                            var = r1;
+                    }
+                    gUnknown_020219DE = var;
+                }
+
+                if (var_24 != gUnknown_02021990.unk4E)
+                {
+                    sub_02003A70(monId, gUnknown_02021990.unk4E);
+                    sub_20045B8(monId, gUnknown_02021990.unk4E);
+                    SetSpritePos(gUnknown_02021990.unk40, 80, 32 + (gUnknown_02021990.unk4E * 16));
+                    if (var_24 == MAX_MON_MOVES || gUnknown_02021990.unk4E == MAX_MON_MOVES)
+                        sub_02003BA4(monId, gUnknown_02021990.unk4E);
+                }
+
+                if (keys & (A_BUTTON | B_BUTTON))
+                {
+                    PlaySE(SONG_SE_SELECT);
+                    var_28 = 3;
+                }
+            } while (var_28 == 2);
+            break;
+        case 3:
+            MoveSpriteToHead(gUnknown_02021990.unk40);
+            CopyRectWithinBgTilemapBuffer(2, 0, 23, 20, 3, 10, 11);
+            FillWindowCharBufferRect(gUnknown_02021990.unk24, 4, 9, 5, 2, 0);
+            TextWindowSetXY(gUnknown_02021990.unk24, 32, 72);
+            FillWindowCharBufferRect(gUnknown_02021990.unk24, 0, 12, 18, 4, 0);
+            ClearWindowCharBuffer(gUnknown_02021990.unk28, 0);
+            RenderText(gUnknown_02021990.unk28, gText_Info);
+            gBgTilemapBufferTransferScheduled[0] = TRUE;
+            gBgTilemapBufferTransferScheduled[2] = TRUE;
+            if (gUnknown_02021990.unk4E != MAX_MON_MOVES)
+                sub_02003BA4(monId, 0);
+            var_28 = 0;
+            break;
+        }
+    }
+
+    if (monId != -1)
+    {
+        for (i = 0; i < MAX_MON_MOVES; i++)
+            MoveSpriteToHead(gUnknown_02021990.unk2C[i]);
+    }
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
+        gUnknown_02021990.unk2C[i] = 0;
+
+    return monId;
 }
