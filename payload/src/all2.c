@@ -17,6 +17,7 @@
 
 extern u8 gUnknown_020219DF;
 extern u8 gUnknown_020219DE;
+extern u16 gUnknown_020219D4[];
 
 extern const u32 gSummaryScreen_Pal[];
 extern const u32 gSummaryScreen_Gfx[];
@@ -36,9 +37,6 @@ struct UnkStruct02021990
     u16 species; // 0x14
     u16 speciesPic; // 0x16 - for Unown
     bool8 statsPrinted; // 0x18
-    u8 fill19;
-    u8 fill1A;
-    u8 fill1B;
     struct Window *unk1C;
     struct Window *unk20;
     struct Window *unk24;
@@ -67,11 +65,11 @@ extern const struct Subsprites gUnknown_0201FAF8[];
 extern const struct Subsprites gUnknown_0201FA5C[];
 extern const struct Subsprites gUnknown_0201FA74[];
 
-void sub_02003D80(u32 monId, bool32 a1);
-void sub_0200461C(struct Sprite *sprite);
+static void sub_02003D80(u32 monId, bool32 a1);
+static void sub_0200461C(struct Sprite *sprite);
 
 // This file's functions
-void sub_02002FEC(void)
+static void sub_02002FEC(void)
 {
     ClearVram();
     REG_DISPCNT = DISPCNT_BG_ALL_ON | DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP;
@@ -97,7 +95,7 @@ void sub_02002FEC(void)
     gUnknown_02021990.unk20 = AddWindow(3, &gUnknown_0201FB30);
 }
 
-void CreatePartyMonFrontPic(struct UnkStruct02021990 *a0, u32 monId, s32 x, s32 y)
+static void CreatePartyMonFrontPic(struct UnkStruct02021990 *a0, u32 monId, s32 x, s32 y)
 {
     void *bufferPic, *bufferPal;
     const struct CompressedSpriteSheet *frontPicSheet;
@@ -152,7 +150,7 @@ static inline void PrintStat(struct Window *win, s32 x, u32 monId, s32 monData, 
     RenderText(win, &statText[3 - xStat]);
 }
 
-void sub_020031F8(u32 monId)
+static void sub_020031F8(u32 monId)
 {
     u8 text[16];
     u8 statText[8];
@@ -290,7 +288,7 @@ void sub_020031F8(u32 monId)
     gUnknown_02021990.statsPrinted = TRUE;
 }
 
-void sub_0200378C(u32 monId)
+static void sub_0200378C(u32 monId)
 {
     u8 text[16];
     s32 i;
@@ -370,7 +368,7 @@ void sub_0200378C(u32 monId)
     gBgTilemapBufferTransferScheduled[3] = TRUE;
 }
 
-void sub_02003A70(u32 monId, u32 moveSlot)
+static void sub_02003A70(u32 monId, u32 moveSlot)
 {
     u8 text[8];
     struct Pokemon *mon = &gPlayerPartyPtr[monId];
@@ -418,7 +416,7 @@ void sub_02003A70(u32 monId, u32 moveSlot)
     }
 }
 
-void sub_02003BA4(u32 monId, u32 moveSlot)
+static void sub_02003BA4(u32 monId, u32 moveSlot)
 {
     struct UnkStruct02021990 *strPtr = &gUnknown_02021990;
     if (gUnknown_020219DF == 0)
@@ -465,7 +463,7 @@ void sub_02003BA4(u32 monId, u32 moveSlot)
     }
 }
 
-void sub_02003D80(u32 monId, bool32 a1)
+static void sub_02003D80(u32 monId, bool32 a1)
 {
     bool32 partyHasHadPokerus;
     s32 i;
@@ -566,7 +564,7 @@ void sub_02003D80(u32 monId, bool32 a1)
     gBgTilemapBufferTransferScheduled[3] = TRUE;
 }
 
-s32 sub_02004024(s32 monId)
+static s32 sub_02004024(s32 monId)
 {
     u32 keys;
     gUnknown_02021990.statsPrinted = FALSE;
@@ -614,8 +612,6 @@ s32 sub_02004024(s32 monId)
     return monId;
 }
 
-extern u16 gUnknown_020219D4[];
-
 static inline void sub_20045B8(s32 monId, u32 moveSlot)
 {
     u8 *txt = sub_0200CB34(monId);
@@ -629,7 +625,7 @@ static inline void sub_20045B8(s32 monId, u32 moveSlot)
     }
 }
 
-s32 sub_020040FC(s32 monId)
+static s32 sub_020040FC(s32 monId)
 {
     s32 i, var;
     u8 *txtPtr;
@@ -779,3 +775,72 @@ s32 sub_020040FC(s32 monId)
 
     return monId;
 }
+
+s32 sub_020044F0(monId)
+{
+    s32 i;
+
+    sub_02002FEC();
+    sub_02003D80(monId, FALSE);
+    gUnknown_02021990.statsPrinted = FALSE;
+    sub_020031F8(monId);
+    FadeIn();
+    while (1)
+    {
+        monId = sub_02004024(monId);
+        if (monId == -1)
+            break;
+        ClearWindowCharBuffer(gUnknown_02021990.unk24, 0);
+        TextWindowFillTileBufferForText(gUnknown_02021990.unk24);
+        for (i = 4; i != -1; i--)
+        {
+            DelayFrames(1);
+            SetBgPos(2, -(i * 32), 0);
+        }
+
+        monId = sub_020040FC(monId);
+        if (monId == -1)
+            break;
+        ClearWindowCharBuffer(gUnknown_02021990.unk24, 0);
+        TextWindowFillTileBufferForText(gUnknown_02021990.unk24);
+        for (i = 0; i < 5; i++)
+        {
+            DelayFrames(1);
+            SetBgPos(2, -32 -(i * 32), 0);
+        }
+    }
+    FadeOut();
+    return gUnknown_02021990.unk50;
+}
+
+// The same as sub_20045B8, but not inlined.
+static void sub_20045B8_(s32 monId, u32 moveSlot)
+{
+    u8 *txt = sub_0200CB34(monId);
+    SetBgTilemapBufferPaletteRect(0, 11, 15, 18, 4, 15);
+    FillWindowCharBufferRect(gUnknown_02021990.unk24, 0, 12, 18, 4, 0);
+    if (moveSlot != MAX_MON_MOVES)
+    {
+        TextWindowSetXY(gUnknown_02021990.unk24, 0, 0x60);
+        RenderText(gUnknown_02021990.unk24, &txt[moveSlot * 80]);
+        gBgTilemapBufferTransferScheduled[0] = TRUE;
+    }
+}
+
+static void sub_0200461C(struct Sprite *sprite)
+{
+    switch (sprite->unk14[0])
+    {
+    case 1:
+        SetSpriteInvisible(sprite, FALSE);
+        break;
+    case 36:
+        SetSpriteInvisible(sprite, TRUE);
+        break;
+    case 39:
+        sprite->unk14[0] = 0;
+        break;
+    }
+    sprite->unk14[0]++;
+}
+
