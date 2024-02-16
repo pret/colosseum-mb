@@ -145,6 +145,29 @@ u32 sub_020064B0(void);
 bool32 sub_02005704(u32);
 bool32 IsMonFainted(u32 monId);
 
+// const data
+const struct Window gFont0LatinInfo =
+{
+    .bg = 2,
+    .left = 4,
+    .top = 15,
+    .width = 22,
+    .height = 4,
+    .baseBlock = 0x20,
+    .fillValue = 0xF,
+    .glyphSize = 0x10,
+    .vramCharBase = (void *) VRAM + 0x08400,
+    .glyphGfx = gFont0LatinGfx,
+    .glyphWidths = gFont0LatinWidths,
+    .fgColor = 0,
+    .shadowColor = 0,
+    .currentX = 0,
+    .currentY = 0,
+    .glyphWidth = 0,
+    .startX = 0,
+    .startY = 0,
+};
+
 // This file's functions.
 void RenderText(struct Window *win, const u8 *str)
 {

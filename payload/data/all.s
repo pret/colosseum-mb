@@ -13,28 +13,7 @@
 	.endm
 
 	.section .rodata
-	.align 2, 0
-gFont0LatinInfo::
-	.byte 2 @ bg
-	.byte 4 @ left
-	.byte 15 @ top
-	.byte 22 @ width
-	.byte 4 @ height
-	.align 1
-	.2byte 0x0020 @ base block
-	.byte 0x0F @ bg color
-	.byte 0x10 @ glyph size
-	.align 2
-	.4byte 0x06008400 @ char addr
-	.4byte gFont0LatinGfx @ gfx
-	.4byte gFont0LatinWidths @ glyph widths
-	.byte 0 @ fg color
-	.byte 0 @ shadow color
-	.byte 0 @ current X
-	.byte 0 @ current Y
-	.byte 0 @ glyph fixed width
-	.byte 0 @ start X
-	.byte 0 @ start Y
+
 
 	.align 2, 0
 gFont0LatinGfx::
