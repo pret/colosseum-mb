@@ -54,6 +54,7 @@ SECTIONS {
     .rodata :
     ALIGN(4)
     {
+        src/all.o(.rodata);
         data/all.o(.rodata);
         src/strings.o(.rodata);
         src/graphics.o(.rodata);
