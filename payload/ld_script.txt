@@ -12,6 +12,7 @@ SECTIONS {
         src/main.o(.text);
         src/all.o(.text);
         src/all2.o(.text);
+        src/all.3.o(.text);
         asm/all.o(.text);
 
     } =0
@@ -25,8 +26,8 @@ SECTIONS {
         src/gflib/init.o(.text);
         src/gflib/bg.o(.text);
         src/gflib/sprite.o(.text);
-        asm/gflib/text.o(.text);
         src/gflib/text.o(.text);
+		asm/gflib/text.o(.text);
         src/gflib/keys.o(.text);
         src/gflib/gfxload.o(.text);
         src/gflib/sound.o(.text);

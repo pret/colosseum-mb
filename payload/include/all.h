@@ -29,11 +29,11 @@ struct UnkStruct_02024960
     u8 unk38[8];
     u8 unk40[0x81c-0x40];
     u8 unk81C[4][UNK81C_ARR_SIZE];
-    u32 unk84C_00:1;
-    u32 unk84C_01:1;
-    u32 unk84C_02:1;
-    u32 unk84C_03:1;
-    u32 unk84C_1:4;
+    u8 unk84C_00:1;
+    u8 unk84C_01:1;
+    u8 unk84C_02:1;
+    u8 unk84C_03:1;
+    u8 unk84C_1:4;
     u32 unk84C_2:16;
     u32 unk84C_3:8;
     u32 unk850_1:8;
@@ -60,7 +60,10 @@ extern volatile struct UnkStruct_02024960 gUnknown_02024960;
 #include "gflib/text.h"
 
 void FadeIn(void);
+void OverrideScreenFadeState(bool32 faded);
+bool32 IsScreenFadedOut(void);
 void FadeOut(void);
+void DrawTextWindowBorder(u32 a0, u32 a1, s32 a2, s32 a3, u32 a4);
 u8 *NumToPmString3CustomZeroChar(s32 num, u8 *str, u32 zeroChar);
 void RenderText(struct Window *win, const u8 *str);
 void RenderTextAt(struct Window *win, u32 x, u32 y, const u8 *str);

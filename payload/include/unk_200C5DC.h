@@ -7,5 +7,6 @@ s32 StringCompare(const u8 *str1, const u8 *str2);
 u8 *StringCopy(u8 *dst, const u8 *src);
 u16 GetStringSizeHandleExtCtrlCodes(u8 *str);
 bool32 SetFlag(s32 flag);
+u32 sub_0200CB54(void);
 
 #endif // GUARD_unk_200C5DC_H
