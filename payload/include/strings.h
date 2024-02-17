@@ -100,5 +100,6 @@ extern u8 gText_BerryProgramUpdated[];
 extern u8 gText_UnableUpdateBerryProgram[];
 
 extern u8 * gBattleStringsTable[];
+extern u8 * gTypeNames[];
 
 #endif // GUARD_STRINGS_H

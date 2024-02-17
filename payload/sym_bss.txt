@@ -1,5 +1,5 @@
 	.include "src/all.o"
-	.include "asm/all.o"
+	.include "src/all4.o"
 	.include "asm/m4a_1.o"
 	.include "src/gflib/sprite.o"
 	.include "src/gflib/text.o"

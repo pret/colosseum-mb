@@ -24,7 +24,13 @@ struct UnkStruct_02024960
     u32 unk_03_7:1;
     u32 unk4:24;
     u32 unk7:8;
-    u8 unk8[0x24-8];
+    u32 unk8;
+    u32 unkC;
+    u16 unk10;
+    u16 unk12;
+    u16 unk14[MAX_MON_MOVES];
+    u8 unk1C[MAX_MON_MOVES];
+    u8 fill20[4];
     u32 unk24[5];
     u8 unk38[8];
     u8 unk40[0x81c-0x40];
@@ -59,6 +65,8 @@ extern volatile struct UnkStruct_02024960 gUnknown_02024960;
 
 #include "gflib/text.h"
 
+void BufferString(u32 bufferId, const u8 *src);
+void DrawPartyMonHealthBar(int bgNum, int x, int y, u32 monId);
 void FadeIn(void);
 void OverrideScreenFadeState(bool32 faded);
 bool32 IsScreenFadedOut(void);
