@@ -1,0 +1,18 @@
+#include "global.h"
+#include "gflib.h"
+#include "all.h"
+#include "strings.h"
+#include "unk_200C5DC.h"
+#include "gflib/text.h"
+#include "gflib/gfxload.h"
+#include "libpmagb/pic_uncomp.h"
+#include "libpmagb/agb_rom.h"
+#include "libpmagb/berry.h"
+#include "pokemon.h"
+#include "constants/pokemon.h"
+#include "constants/species.h"
+#include "constants/moves.h"
+#include "constants/items.h"
+#include "constants/songs.h"
+
+

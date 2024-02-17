@@ -63,33 +63,41 @@ void sub_0200472C(void)
     }
 }
 
-/*
+// Same as ErrorPrint
+static inline void ErrorPrintInline(u32 msgId)
+{
+    struct Window *win;
+    struct Window winTemplate;
+
+    winTemplate = gFont0LatinInfo;
+    FillBgTilemapBufferRect(2, 0, 16, 30, 4, 0);
+    DrawTextWindowBorder(3, 14, 24, 6, 0xE001);
+    win = AddWindow(0, &winTemplate);
+    SetTextColor(win, 1, 8);
+    ClearWindowCharBuffer(win, 0xFFFF);
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    if (IsScreenFadedOut() == TRUE)
+        FadeIn();
+    RenderText(win, gErrorMessagePtrs[msgId]);
+    // Game stuck
+    while (1)
+    {
+        DelayFrames(100);
+    }
+}
+
 u32 sub_020047D4(void)
 {
     s32 r5;
-    struct Window winTemplate;
-    struct Window *win;
 
     gUnknown_02024960.unk_87B = 4;
     sub_0200465C();
     if (gAgbPmRomParams->unkB8_1 || !gRomDetection_IsEnglishROM)
     {
+        u8 UNUSED buff[8]; // Needed to match stack.
         OverrideScreenFadeState(TRUE);
-        winTemplate = gFont0LatinInfo;
-        FillBgTilemapBufferRect(2, 0, 16, 30, 4, 0);
-        DrawTextWindowBorder(3, 14, 24, 6, 0xE001);
-        win = AddWindow(0, &winTemplate);
-        SetTextColor(win, 1, 8);
-        ClearWindowCharBuffer(win, 0xFFFF);
-        gBgTilemapBufferTransferScheduled[2] = TRUE;
-        if (IsScreenFadedOut() == TRUE)
-            FadeIn();
-        RenderText(win, gErrorMessagePtrs[9]);
-        // Game stuck
-        while (1)
-        {
-            DelayFrames(100);
-        }
+        // Inline call needed to match.
+        ErrorPrintInline(9);
     }
 
     if (gUnknown_020217B8 != 1)
@@ -144,4 +152,33 @@ u32 sub_020047D4(void)
     FadeOut();
     return r5 - 1;
 }
-*/
+
+void WarningPrint(u32 msgId)
+{
+    struct Window *win = gMessageWindowPtr;
+
+    ClearWindowCharBuffer(win, 0xFFFF);
+    RenderText(win, gErrorMessagePtrs[msgId]);
+}
+
+void ErrorPrint(u32 msgId)
+{
+    struct Window *win;
+    struct Window winTemplate;
+
+    winTemplate = gFont0LatinInfo;
+    FillBgTilemapBufferRect(2, 0, 16, 30, 4, 0);
+    DrawTextWindowBorder(3, 14, 24, 6, 0xE001);
+    win = AddWindow(0, &winTemplate);
+    SetTextColor(win, 1, 8);
+    ClearWindowCharBuffer(win, 0xFFFF);
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    if (IsScreenFadedOut() == TRUE)
+        FadeIn();
+    RenderText(win, gErrorMessagePtrs[msgId]);
+    // Game stuck
+    while (1)
+    {
+        DelayFrames(100);
+    }
+}
