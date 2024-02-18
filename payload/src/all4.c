@@ -524,7 +524,7 @@ s32 sub_02005548(void)
     return var;
 }
 
-static inline void sub_2005E68(void)
+static inline void sub_2005E68_Inline(void)
 {
     CopyRectWithinBgTilemapBuffer(2, 0, 32, 30, 6, 0, 14);
     FillWindowCharBufferRect(gUnknown_02021A20.unk18, 18, 0, 10, 4, 0);
@@ -533,7 +533,7 @@ static inline void sub_2005E68(void)
     gBgTilemapBufferTransferScheduled[2] = TRUE;
 }
 
-static inline void sub_2005F08(u32 unused, s32 moveSlot)
+static inline void sub_2005F08_Inline(u32 unused, s32 moveSlot)
 {
     u8 text[28];
     u32 move = gUnknown_02024960.unk14[moveSlot];
@@ -555,7 +555,7 @@ void sub_020055D4(s32 monId, s32 moveSlot, u32 stringId, bool32 arg3)
     gUnknown_02021A20.unk8 = NULL;
 
     if (moveSlot != 0)
-        sub_2005F08(0, moveSlot - 1);
+        sub_2005F08_Inline(0, moveSlot - 1);
 
     GetMonData(&gPlayerPartyPtr[monId], MON_DATA_NICKNAME, text);
     BufferString(4, text);
@@ -565,7 +565,7 @@ void sub_020055D4(s32 monId, s32 moveSlot, u32 stringId, bool32 arg3)
     if (!arg3)
     {
         ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0);
-        sub_2005E68();
+        sub_2005E68_Inline();
     }
 }
 
@@ -574,7 +574,7 @@ u32 sub_0200645C(void);
 u32 sub_0200644C(void);
 u32 sub_02006430(s32 moveSlot);
 
-static inline bool32 sub_2005F44(s32 monId, s32 moveSlot)
+static inline bool32 sub_2005F44_Inline(s32 monId, s32 moveSlot)
 {
     switch (sub_02006414(moveSlot - 1))
     {
@@ -602,7 +602,7 @@ static inline bool32 sub_2005F44(s32 monId, s32 moveSlot)
     return FALSE;
 }
 
-static inline void sub_2005ECC(void)
+static inline void sub_2005ECC_Inline(void)
 {
     CopyRectWithinBgTilemapBuffer(3, 0, 20, 30, 6, 0, 14);
     ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0);
@@ -628,7 +628,7 @@ bool32 sub_02005704(u32 monId)
     gUnknown_02020A48 = monId;
     sub_02004AC4();
     sub_02004D68(monId);
-    sub_2005E68();
+    sub_2005E68_Inline();
     FadeIn();
     loop = TRUE;
     while (loop)
@@ -636,7 +636,7 @@ bool32 sub_02005704(u32 monId)
         switch (r7->state)
         {
         case 0:
-            sub_2005E68();
+            sub_2005E68_Inline();
             r7->state = sub_02004FB8(gText_BattleOptions, 4);
             if (r7->state == 0 && gUnknown_02024960.unk_03_0 == 2)
             {
@@ -667,11 +667,11 @@ bool32 sub_02005704(u32 monId)
                 if (r7->moveSlot == 0)
                 {
                     r7->state = 0;
-                    sub_2005ECC();
+                    sub_2005ECC_Inline();
                 }
                 else if (sub_02006430(r7->moveSlot - 1) == 0)
                 {
-                    if (sub_2005F44(gUnknown_02020A48, r7->moveSlot))
+                    if (sub_2005F44_Inline(gUnknown_02020A48, r7->moveSlot))
                     {
                         gUnknown_02024960.unk_87C = r9,
                         gUnknown_02024960.unk_87B = 1,
@@ -711,7 +711,7 @@ bool32 sub_02005704(u32 monId)
             {
                 sub_02004AC4();
                 sub_02004D68(monId);
-                sub_2005E68();
+                sub_2005E68_Inline();
                 FadeIn();
             }
             break;
@@ -724,7 +724,7 @@ bool32 sub_02005704(u32 monId)
             }
             else
             {
-                if (sub_2005F44(gUnknown_02020A48, r7->moveSlot))
+                if (sub_2005F44_Inline(gUnknown_02020A48, r7->moveSlot))
                 {
                     gUnknown_02024960.unk_87C = r9,
                     gUnknown_02024960.unk_87B = 1,
@@ -758,4 +758,110 @@ bool32 sub_02005704(u32 monId)
         FadeOut();
 
     return FALSE;
+}
+
+void sub_02005BB8(void)
+{
+    u16 var;
+    u32 var_28;
+    s32 i;
+
+    CpuFill16(0, gPlayerPartyPtr, sizeof(struct Pokemon) * PARTY_SIZE);
+    var_28 = gUnknown_02024960.unk_00;
+    for (i = 0; i < PARTY_SIZE; i++, var_28 >>= 4)
+    {
+        u32 id = var_28 & 0xF;
+        if ((id) != 0xF)
+        {
+            CpuCopy16(&gPlayerPartyBakPtr[id], &gPlayerPartyPtr[i], sizeof(struct Pokemon));
+
+            var = gUnknown_02024960.unk24[i].hp;
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_HP, &var);
+
+            var = gUnknown_02024960.unk24[i].status;
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_STATUS, &var);
+
+            var = 0;
+            if (gUnknown_02024960.unk24[i].unk27_0)
+                var = 0xF;
+            if (gUnknown_02024960.unk24[i].unk27_1)
+                var |= 0xF0;
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_POKERUS, &var);
+
+            if (gUnknown_02024960.unk24[i].unk27_2)
+            {
+                var = 1;
+                SetMonData(&gPlayerPartyPtr[i], MON_DATA_MAIL, &var);
+            }
+
+            var = 0;
+            if (gUnknown_02024960.unk24[i].unk27_3)
+                var = gUnknown_02024960.unk24[i].heldItem;
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_HELD_ITEM, &var);
+
+            var = gUnknown_02024960.unk24[i].moves[0];
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_MOVE1, &var);
+            var = gUnknown_02024960.unk24[i].moves[1];
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_MOVE2, &var);
+            var = gUnknown_02024960.unk24[i].moves[2];
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_MOVE3, &var);
+            var = gUnknown_02024960.unk24[i].moves[3];
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_MOVE4, &var);
+
+            var = gUnknown_02024960.unk24[i].pps[0];
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP1, &var);
+            var = gUnknown_02024960.unk24[i].pps[1];
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP2, &var);
+            var = gUnknown_02024960.unk24[i].pps[2];
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP3, &var);
+            var = gUnknown_02024960.unk24[i].pps[3];
+            SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP4, &var);
+
+            CpuCopy16((void*) gUnknown_02024960.unk24[i].unk38, sub_0200CB34(i), 320);
+        }
+    }
+
+    if (gUnknown_02024960.unk_03_0 != 0)
+        gUnknown_02024960.unk_858 = 1;
+    else
+        gUnknown_02024960.unk_858 = 0;
+}
+
+static s32 UNUSED sub_02005DCC(s32 monId, u32 stringId)
+{
+    u8 text[24];
+
+    gUnknown_02020A48 = monId;
+    sub_02004AC4();
+    sub_02004D68(monId);
+    CopyRectWithinBgTilemapBuffer(2, 0, 38, 30, 6, 0, 14);
+    FillBgTilemapBufferRect(3, 0, 14, 30, 6, 0);
+    ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0);
+    GetMonData(&gPlayerPartyPtr[monId], MON_DATA_NICKNAME, text);
+    BufferString(4, text);
+    FadeIn();
+    RenderText(gUnknown_02021A20.unk18, gBattleStringsTable[stringId]);
+    FadeOut();
+
+    return; // Garbage return
+}
+
+static void UNUSED sub_02005E68(void)
+{
+    sub_2005E68_Inline();
+}
+
+static void UNUSED sub_02005ECC(void)
+{
+    sub_2005ECC_Inline();
+}
+
+static void UNUSED sub_02005F08(u32 unused, s32 moveSlot)
+{
+    sub_2005F08_Inline(unused, moveSlot);
+}
+
+static bool32 UNUSED sub_02005F44(s32 monId, s32 moveSlot)
+{
+    return sub_2005F44_Inline(monId, moveSlot);
 }

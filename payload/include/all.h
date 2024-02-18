@@ -24,7 +24,21 @@ struct UnkStruct81C
     u32 unk826_3:1;
     u32 unk826_4:2;
 };
-#define UNK81C_ARR_SIZE 12
+
+struct UnkStruct24
+{
+    u16 hp; // 0x24
+    u32 status:12; // 0x26
+    u32 unk27_0:1;
+    u32 unk27_1:1;
+    u32 unk27_2:1;
+    u32 unk27_3:1;
+    u16 heldItem; // 0x28
+    u16 unk2A;
+    u16 moves[MAX_MON_MOVES]; // 0x2C , 0x2E , 0x30, 0x32
+    u8 pps[MAX_MON_MOVES]; // 0x34-0x37
+    u8 unk38[320];
+};
 
 struct UnkStruct_02024960
 {
@@ -40,9 +54,7 @@ struct UnkStruct_02024960
     u16 unk14[MAX_MON_MOVES];
     u8 unk1C[MAX_MON_MOVES];
     u8 fill20[4];
-    u32 unk24[5];
-    u8 unk38[8];
-    u8 unk40[0x81c-0x40];
+    struct UnkStruct24 unk24[PARTY_SIZE];
     struct UnkStruct81C unk81C[4];
     u8 unk84C_00:1;
     u8 unk84C_01:1;
