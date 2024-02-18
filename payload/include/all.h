@@ -15,6 +15,15 @@ struct UnkStruct868
     u32 a15:8;
 };
 
+struct UnkStruct81C
+{
+    u8 str[10];
+    u32 unk826_0:3;
+    u32 unk826_1:1;
+    u32 unk826_2:1;
+    u32 unk826_3:1;
+    u32 unk826_4:2;
+};
 #define UNK81C_ARR_SIZE 12
 
 struct UnkStruct_02024960
@@ -34,7 +43,7 @@ struct UnkStruct_02024960
     u32 unk24[5];
     u8 unk38[8];
     u8 unk40[0x81c-0x40];
-    u8 unk81C[4][UNK81C_ARR_SIZE];
+    struct UnkStruct81C unk81C[4];
     u8 unk84C_00:1;
     u8 unk84C_01:1;
     u8 unk84C_02:1;
@@ -55,7 +64,8 @@ struct UnkStruct_02024960
     u8 unk_879;
     u8 unk_87A;
     u8 unk_87B;
-    u8 filler_87C[2];
+    u8 unk_87C;
+    u8 filler_87D;
     u8 unk_87E;
     u8 unk_87F;
     u32 unk_880;
@@ -65,6 +75,7 @@ extern volatile struct UnkStruct_02024960 gUnknown_02024960;
 
 #include "gflib/text.h"
 
+void sub_02002A9C(s32 a0, u32 a1, u32 a2);
 void BufferString(u32 bufferId, const u8 *src);
 void DrawPartyMonHealthBar(int bgNum, int x, int y, u32 monId);
 void FadeIn(void);

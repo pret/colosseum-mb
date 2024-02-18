@@ -15,6 +15,8 @@
 #include "constants/items.h"
 #include "constants/songs.h"
 
+extern void sub_02002C80(void);
+
 extern const struct Window gUnknown_0201FE3C;
 extern const struct Window gUnknown_0201FE5C;
 
@@ -381,9 +383,379 @@ void sub_02005168(s32 id)
     RenderTextAt(gUnknown_02021A20.unk18, 191, 0, text);
 }
 
-void sub_02005264(void)
+s32 sub_02005264(s32 monId)
 {
+    u8 text[16];
+    s32 i, count;
+
     CopyRectWithinBgTilemapBuffer(2, 0, 38, 30, 6, 0, 14);
     FillBgTilemapBufferRect(3, 0, 14, 30, 6, 0);
-    ClearWindowCharBuffer(gUnknown_02021A20.unk18)
+    ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0);
+    RenderTextAt(gUnknown_02021A20.unk18, 176, 0, gText_PP);
+    sub_02005168(0);
+
+    for (count = 0, i = 0; i < MAX_MON_MOVES; i++)
+    {
+        u32 move = gUnknown_02024960.unk14[i];
+        if (move != MOVE_NONE)
+        {
+            CopyMoveName(text, move);
+            count++;
+        }
+        else
+        {
+            StringCopy(text, gText_1Dash);
+        }
+        BufferString(i, text);
+    }
+
+    sub_02004F04(gUnknown_02021A20.unk18, gUnknown_0201FDC4, 4);
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    gBgTilemapBufferTransferScheduled[3] = TRUE;
+
+    return count;
+}
+
+extern u8 gUnknown_02021A00[];
+extern u8 gStringBuffers[][32];
+
+u8 *sub_0200531C(s32 id)
+{
+    u8 UNUSED unusedVar[4];
+    u8 text[16];
+    s32 len, i;
+    u8 *txtPtr = gUnknown_02021A00;
+
+    CpuFill16(0, txtPtr, 0x20);
+    if (gUnknown_02024960.unk81C[id].str[0] == EOS)
+    {
+        txtPtr[0] = EOS;
+    }
+    else
+    {
+        txtPtr[0] = gUnknown_02024960.unk81C[id].unk826_0 + CHAR_0;
+        txtPtr[1] = CHAR_P;
+        txtPtr[2] = CHAR_COLON;
+        txtPtr[3] = CHAR_SPACE;
+        len = 4;
+        if (gUnknown_02024960.unk81C[id].unk826_1)
+        {
+            txtPtr[4] = EXT_CTRL_CODE_BEGIN;
+            txtPtr[5] = 0x15;
+            len = 6;
+        }
+        for (i = 0; i < gAgbPmRomParams->pokemonNameLength_2; i++)
+        {
+            if (gUnknown_02024960.unk81C[id].str[i] == EOS)
+                break;
+            txtPtr[i + len] = gUnknown_02024960.unk81C[id].str[i];
+        }
+        i += len;
+        if (gUnknown_02024960.unk81C[id].unk826_3 || gUnknown_02024960.unk81C[id].unk826_2)
+        {
+            u32 species;
+
+            if (gUnknown_02024960.unk81C[id].unk826_3)
+                species = SPECIES_NIDORAN_M;
+            else
+                species = SPECIES_NIDORAN_F;
+            GetSpeciesName(text, species);
+            if (StringCompare((u8 *)gUnknown_02024960.unk81C[id].str, text) == 0)
+            {
+                if (gUnknown_02024960.unk81C[id].unk826_4 == 0)
+                    txtPtr[i++] = CHAR_MALE;
+                else if (gUnknown_02024960.unk81C[id].unk826_4 == 1)
+                    txtPtr[i++] = CHAR_FEMALE;
+            }
+        }
+        else
+        {
+            if (gUnknown_02024960.unk81C[id].unk826_4 == 0)
+                txtPtr[i++] = CHAR_MALE;
+            else if (gUnknown_02024960.unk81C[id].unk826_4 == 1)
+                txtPtr[i++] = CHAR_FEMALE;
+        }
+        txtPtr[i] = EOS;
+    }
+
+    return txtPtr;
+}
+
+s32 sub_02005468(void)
+{
+    u8 text[1];
+
+    text[0] = EOS;
+    CopyRectWithinBgTilemapBuffer(3, 0, 20, 30, 6, 0, 14);
+    FillBgTilemapBufferRect(2, 0, 14, 30, 6, 0);
+    ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0xFFFF);
+    StringCopy(gStringBuffers[0], sub_0200531C(0));
+    StringCopy(gStringBuffers[1], sub_0200531C(1));
+    if (gUnknown_02024960.unk7 == 4)
+    {
+        StringCopy(gStringBuffers[2], sub_0200531C(2));
+        StringCopy(gStringBuffers[3], sub_0200531C(3));
+    }
+    else
+    {
+        StringCopy(gStringBuffers[2], text);
+        StringCopy(gStringBuffers[3], text);
+    }
+    sub_02004F04(gUnknown_02021A20.unk18, gUnknown_0201FDF4, 4);
+    gBgTilemapBufferTransferScheduled[3] = TRUE;
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    return gUnknown_02024960.unk7;
+}
+
+s32 sub_02005548(void)
+{
+    s32 var;
+
+    CopyRectWithinBgTilemapBuffer(3, 0, 20, 30, 6, 0, 14);
+    FillBgTilemapBufferRect(2, 0, 14, 30, 6, 0);
+    ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0xFFFF);
+    RenderTextAt(gUnknown_02021A20.unk18, 0, 0, gText_WillYouGiveIn);
+    sub_02004F04(gUnknown_02021A20.unk18, gUnknown_0201FE24, 2);
+    gBgTilemapBufferTransferScheduled[3] = TRUE;
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    var = sub_02004FB8(gUnknown_0201FE24, 2);
+    if (var != 1)
+        ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0);
+    return var;
+}
+
+static inline void sub_2005E68(void)
+{
+    CopyRectWithinBgTilemapBuffer(2, 0, 32, 30, 6, 0, 14);
+    FillWindowCharBufferRect(gUnknown_02021A20.unk18, 18, 0, 10, 4, 0);
+    RenderTextAt(gUnknown_02021A20.unk18, 0, 0, gText_WhatWillMonDo);
+    sub_02004F04(gUnknown_02021A20.unk18, gText_BattleOptions, 4);
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+}
+
+static inline void sub_2005F08(u32 unused, s32 moveSlot)
+{
+    u8 text[28];
+    u32 move = gUnknown_02024960.unk14[moveSlot];
+    if (move != MOVE_NONE)
+        CopyMoveName(text, move);
+    else
+        StringCopy(text, gText_1Dash);
+    BufferString(0, text);
+}
+
+void sub_020055D4(s32 monId, s32 moveSlot, u32 stringId, bool32 arg3)
+{
+    u8 text[24];
+
+    FillBgTilemapBufferRect(2, 0, 14, 30, 6, 0);
+    CopyRectWithinBgTilemapBuffer(3, 0, 20, 30, 6, 0, 14);
+    ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0);
+    MoveSpriteToHead(gUnknown_02021A20.unk8);
+    gUnknown_02021A20.unk8 = NULL;
+
+    if (moveSlot != 0)
+        sub_2005F08(0, moveSlot - 1);
+
+    GetMonData(&gPlayerPartyPtr[monId], MON_DATA_NICKNAME, text);
+    BufferString(4, text);
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    gBgTilemapBufferTransferScheduled[3] = TRUE;
+    RenderText(gUnknown_02021A20.unk18, gBattleStringsTable[stringId]);
+    if (!arg3)
+    {
+        ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0);
+        sub_2005E68();
+    }
+}
+
+u32 sub_02006414(s32 moveSlot);
+u32 sub_0200645C(void);
+u32 sub_0200644C(void);
+u32 sub_02006430(s32 moveSlot);
+
+static inline bool32 sub_2005F44(s32 monId, s32 moveSlot)
+{
+    switch (sub_02006414(moveSlot - 1))
+    {
+    case 0:
+        return TRUE;
+    case 1:
+        sub_020055D4(monId, moveSlot, 4, FALSE);
+        break;
+    case 2:
+        sub_020055D4(monId, moveSlot, 5, FALSE);
+        break;
+    case 3:
+        sub_020055D4(monId, moveSlot, 6, FALSE);
+        break;
+    case 4:
+        sub_020055D4(monId, moveSlot, 7, FALSE);
+        break;
+    case 5:
+        sub_020055D4(monId, sub_0200645C(), 8, FALSE);
+        break;
+    case 6:
+        sub_020055D4(monId, moveSlot, 9, FALSE);
+        break;
+    }
+    return FALSE;
+}
+
+static inline void sub_2005ECC(void)
+{
+    CopyRectWithinBgTilemapBuffer(3, 0, 20, 30, 6, 0, 14);
+    ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0);
+    gBgTilemapBufferTransferScheduled[3] = TRUE;
+}
+
+struct TstStruct
+{
+    u8 state;
+    u8 u1;
+    u8 moveSlot;
+};
+
+extern struct TstStruct gUnknown_020219F0;
+
+bool32 sub_02005704(u32 monId)
+{
+    u32 r2;
+    bool32 loop;
+    u32 r9;
+    struct TstStruct *r7 = &gUnknown_020219F0;
+
+    gUnknown_02020A48 = monId;
+    sub_02004AC4();
+    sub_02004D68(monId);
+    sub_2005E68();
+    FadeIn();
+    loop = TRUE;
+    while (loop)
+    {
+        switch (r7->state)
+        {
+        case 0:
+            sub_2005E68();
+            r7->state = sub_02004FB8(gText_BattleOptions, 4);
+            if (r7->state == 0 && gUnknown_02024960.unk_03_0 == 2)
+            {
+                gUnknown_02024960.unk_87B = 0;
+                loop = FALSE;
+            }
+            break;
+        case 1:
+            if (sub_0200644C() == 1)
+            {
+                sub_020055D4(gUnknown_02020A48, 0, 14, 1);
+                gUnknown_02024960.unk_87C = 0;
+                gUnknown_02024960.unk_87B = 1;
+                r7->state = 0;
+                loop = FALSE;
+            }
+            else if (sub_0200644C() == 2)
+            {
+                gUnknown_02024960.unk_87C = 0;
+                gUnknown_02024960.unk_87B = 1;
+                r7->state = 0;
+                loop = FALSE;
+            }
+            else
+            {
+                u32 var = sub_02005264(monId);
+                r7->moveSlot = sub_02004FB8(gUnknown_0201FDC4, var);
+                if (r7->moveSlot == 0)
+                {
+                    r7->state = 0;
+                    sub_2005ECC();
+                }
+                else if (sub_02006430(r7->moveSlot - 1) == 0)
+                {
+                    if (sub_2005F44(gUnknown_02020A48, r7->moveSlot))
+                    {
+                        gUnknown_02024960.unk_87C = r9,
+                        gUnknown_02024960.unk_87B = 1,
+                        loop = FALSE;
+                    }
+                    r7->state = 0;
+                }
+                else
+                {
+                    r7->state = 4;
+                }
+            }
+            break;
+        case 2:
+            r9 = sub_02005548();
+            r7->state = 0;
+            if (r9 == 1)
+            {
+                gUnknown_02024960.unk_87B = 3;
+                loop = FALSE;
+            }
+            break;
+        case 3:
+            FadeOut();
+            sub_02002C80();
+            if (gUnknown_02024960.unk_03_0 == 0)
+                gUnknown_02024960.unk_858 = 1;
+            else
+                gUnknown_02024960.unk_858 = 2;
+            sub_02002A9C(0, monId, 0);
+            r7->state = 0;
+            if (gUnknown_02024960.unk_87B != 4)
+            {
+                loop = FALSE;
+            }
+            else
+            {
+                sub_02004AC4();
+                sub_02004D68(monId);
+                sub_2005E68();
+                FadeIn();
+            }
+            break;
+        case 4:
+            sub_02005468();
+            r9 = sub_02004FB8(gUnknown_0201FDF4, 4);
+            if (r9 == 0)
+            {
+                r7->state = 1;
+            }
+            else
+            {
+                if (sub_2005F44(gUnknown_02020A48, r7->moveSlot))
+                {
+                    gUnknown_02024960.unk_87C = r9,
+                    gUnknown_02024960.unk_87B = 1,
+                    loop = FALSE;
+                }
+                r7->state = 0;
+            }
+            break;
+        }
+
+        DelayFrames(1);
+    }
+
+    r2 = 0;
+    switch (gUnknown_02024960.unk_87B)
+    {
+    case 1:
+        r2 = r7->moveSlot - 1;
+        r2 |= (((gUnknown_02024960.unk_87C - 1) << 8) & 0xFF00);
+        break;
+    case 2:
+        r2 = gUnknown_02024960.unk_87E;
+        break;
+    }
+
+    r2 |= (gUnknown_02024960.unk_87B) << 16;
+    gUnknown_02024960.unk_880 = r2;
+    gUnknown_02024960.unk_87F = 1;
+
+    if (!IsScreenFadedOut())
+        FadeOut();
+
+    return FALSE;
 }

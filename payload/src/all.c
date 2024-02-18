@@ -1101,21 +1101,21 @@ s32 sub_02001A8C(u32 monId)
             else if ((var & 0xFFFF) == 2)
             {
                 PlaySE(SONG_SE_FAILURE);
-                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16]);
+                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16].str);
                 sub_020019B4(gUnknown_02021860.unk122, 1);
                 i = 2;
             }
             else if ((var & 0xFFFF) == 4)
             {
                 PlaySE(SONG_SE_FAILURE);
-                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16]);
+                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16].str);
                 sub_020019B4(gUnknown_02021860.unk122, 2);
                 i = 2;
             }
             else if ((var & 0xFFFF) == 3)
             {
                 PlaySE(SONG_SE_FAILURE);
-                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16]);
+                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16].str);
                 sub_020019B4(gUnknown_02021860.unk122, 3);
                 i = 2;
             }
