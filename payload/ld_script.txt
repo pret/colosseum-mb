@@ -13,7 +13,6 @@ SECTIONS {
         src/all.o(.text);
         src/all2.o(.text);
         src/all4.o(.text);
-        asm/all.o(.text);
 
     } =0
 

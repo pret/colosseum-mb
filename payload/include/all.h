@@ -53,7 +53,11 @@ struct UnkStruct_02024960
     u16 unk12;
     u16 unk14[MAX_MON_MOVES];
     u8 unk1C[MAX_MON_MOVES];
-    u8 fill20[4];
+    u16 unk20;
+    u8 unk22_0:4;
+    u8 unk22_4:4;
+    u8 unk23_0:4;
+    u8 unk23_4:4;
     struct UnkStruct24 unk24[PARTY_SIZE];
     struct UnkStruct81C unk81C[4];
     u8 unk84C_00:1;
