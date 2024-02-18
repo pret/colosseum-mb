@@ -12,7 +12,6 @@ SECTIONS {
         src/main.o(.text);
         src/all.o(.text);
         src/all2.o(.text);
-        src/all.3.o(.text);
         src/all4.o(.text);
         asm/all.o(.text);
 

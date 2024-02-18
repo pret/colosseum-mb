@@ -1092,11 +1092,14 @@ void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg)
     }
 }
 
-void GiveGiftRibbonToParty(u8 index, u8 ribbonId)
+void GiveGiftRibbonToParty(s32 index_, s32 ribbonId_)
 {
     s32 i;
-    bool32 gotRibbon = FALSE;
     u8 arr[7];
+    // s32 required by other functions.
+    u8 index = index_;
+    u8 ribbonId = ribbonId_;
+    bool32 gotRibbon = FALSE;
 
     memcpy(arr, gGiftRibbonMonDataIds, 7);
     /*

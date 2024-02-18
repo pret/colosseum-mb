@@ -70,7 +70,7 @@ struct UnkStruct_02024960
     u8 unk_859;
     u8 unk_85A;
     u8 unk_85B;
-    u32 field85C[3];
+    u8 ALIGNED(4) field85C[12]; // Aligned for u32 copy
     struct UnkStruct868 unk868;
     u8 unk_878;
     u8 unk_879;

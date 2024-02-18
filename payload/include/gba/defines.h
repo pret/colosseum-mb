@@ -11,6 +11,7 @@
 #define EWRAM_DATA __attribute__((section("ewram_data")))
 #define NAKED __attribute__((naked))
 #define UNUSED __attribute__((unused))
+#define NO_RETURN __attribute__((noreturn))
 
 #if MODERN
 #define NOINLINE __attribute__((noinline))

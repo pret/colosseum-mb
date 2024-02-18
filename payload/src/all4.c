@@ -8,6 +8,7 @@
 #include "gflib/gfxload.h"
 #include "libpmagb/pic_uncomp.h"
 #include "libpmagb/agb_rom.h"
+#include "libpmagb/save.h"
 #include "pokemon.h"
 #include "constants/pokemon.h"
 #include "constants/species.h"
@@ -37,6 +38,184 @@ struct Unk2021A20Str
 };
 
 extern struct Unk2021A20Str gUnknown_02021A20;
+
+// Error related
+extern u8 gUnknown_020217B4;
+extern u8 gRomDetection_IsEnglishROM;
+extern u8 gUnknown_020217B8;
+extern const struct Window gFont0LatinInfo;
+extern const struct Window gUnknown_0201FB90;
+extern struct Window *gMessageWindowPtr;
+
+extern const u8 *gErrorMessagePtrs[];
+
+s32 sub_02006058(void);
+void sub_02006264(void);
+
+static void sub_0200465C(void)
+{
+    ClearVram();
+    REG_DISPCNT = DISPCNT_BG0_ON | DISPCNT_BG2_ON | DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP;
+    REG_BG0CNT = BGCNT_PRIORITY(1) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(31);
+    REG_BG2CNT = BGCNT_PRIORITY(0) | BGCNT_CHARBASE(2) | BGCNT_SCREENBASE(30);
+    REG_BG0CNT |= BGCNT_256COLOR;
+    AutoUnCompVram(gUnknown_0201B1A0, (void *) PLTT);
+    AutoUnCompVram(gUnknown_0201A894, (void *) PLTT + 0x1C0);
+    AutoUnCompVram(gMessageBox_Gfx, (void *) VRAM + 0x8000);
+    AutoUnCompVram(gTitle_Pal, (void *) PLTT);
+    AutoUnCompVram(gTitle_Gfx, (void *) VRAM);
+    AutoUnCompVram(gTitle_Tilemap, (void *) IWRAM_START );
+    DrawTextWindowBorder(0, 16, 30, 4, 0xE001);
+    gMessageWindowPtr = AddWindow(0, &gUnknown_0201FB90);
+    SetTextColor(gMessageWindowPtr, 1, 8);
+    gBgTilemapBufferTransferScheduled[0] = TRUE;
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+}
+
+static inline void PrintErrorMsg(struct Window *win, u32 msgId)
+{
+    ClearWindowCharBuffer(win, 0xFFFF);
+    RenderText(win, gErrorMessagePtrs[msgId]);
+}
+
+static void sub_0200472C(void)
+{
+    switch (gUnknown_020217B4)
+    {
+    case 2:
+        PrintErrorMsg(gMessageWindowPtr, 6);
+        break;
+    case 0xFF:
+        PrintErrorMsg(gMessageWindowPtr, 7);
+        break;
+    case 0:
+        PrintErrorMsg(gMessageWindowPtr, 8);
+        break;
+    default:
+        PrintErrorMsg(gMessageWindowPtr, 1);
+        break;
+    }
+}
+
+// Same as ErrorPrint
+static inline void ErrorPrintInline(u32 msgId)
+{
+    struct Window *win;
+    struct Window winTemplate;
+
+    winTemplate = gFont0LatinInfo;
+    FillBgTilemapBufferRect(2, 0, 16, 30, 4, 0);
+    DrawTextWindowBorder(3, 14, 24, 6, 0xE001);
+    win = AddWindow(0, &winTemplate);
+    SetTextColor(win, 1, 8);
+    ClearWindowCharBuffer(win, 0xFFFF);
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    if (IsScreenFadedOut() == TRUE)
+        FadeIn();
+    RenderText(win, gErrorMessagePtrs[msgId]);
+    // Game stuck
+    while (1)
+    {
+        DelayFrames(100);
+    }
+}
+
+u32 sub_020047D4(void)
+{
+    s32 r5;
+
+    gUnknown_02024960.unk_87B = 4;
+    sub_0200465C();
+    if (gAgbPmRomParams->unkB8_1 || !gRomDetection_IsEnglishROM)
+    {
+        u8 UNUSED buff[8]; // Needed to match stack.
+        OverrideScreenFadeState(TRUE);
+        // Inline call needed to match.
+        ErrorPrintInline(9);
+    }
+
+    if (gUnknown_020217B8 != 1)
+        sub_0200472C();
+    else
+        ClearWindowCharBuffer(gMessageWindowPtr, 0xFFFF);
+
+    gUnknown_02024960.unk_859 = 0;
+    gUnknown_02024960.unk84C_01 = 0;
+    gUnknown_02024960.unk_87A = 0;
+    gUnknown_02024960.unk84C_00 = 0;
+    FadeIn();
+    if (gUnknown_020217B4 == 2 || gUnknown_020217B4 == 0xFF || gUnknown_020217B4 == 0)
+    {
+        // Game stuck
+        while (1)
+        {
+            DelayFrames(0xFF);
+        }
+    }
+
+    if (gUnknown_020217B8 == 1)
+    {
+        RenderText(gMessageWindowPtr, gText_BerryProgramUpdated);
+        sub_0200472C();
+    }
+    if (gUnknown_02024960.unk_87F != 0)
+    {
+        REG_JOY_TRANS = gUnknown_02024960.unk_880;
+        gUnknown_02024960.unk_87F = 0;
+    }
+    r5 = 0;
+    while (r5 == 0)
+    {
+        DelayFrames(1);
+        if (gUnknown_02024960.unk_859 != 0 && sub_0200CB54() == 1)
+            r5 = 2;
+        if (gUnknown_02024960.unk84C_00 == 1)
+        {
+            gUnknown_02024960.unk84C_00 = 0;
+            sub_02006058();
+        }
+        if (gUnknown_02024960.unk_87A == 1)
+            r5 = 1;
+        if (gUnknown_02024960.unk_85A == 1)
+        {
+            gUnknown_02024960.unk_85A = 0;
+            sub_02006264();
+            PrintErrorMsg(gMessageWindowPtr, 1);
+        }
+    }
+    FadeOut();
+    return r5 - 1;
+}
+
+void WarningPrint(u32 msgId)
+{
+    struct Window *win = gMessageWindowPtr;
+
+    ClearWindowCharBuffer(win, 0xFFFF);
+    RenderText(win, gErrorMessagePtrs[msgId]);
+}
+
+void ErrorPrint(u32 msgId)
+{
+    struct Window *win;
+    struct Window winTemplate;
+
+    winTemplate = gFont0LatinInfo;
+    FillBgTilemapBufferRect(2, 0, 16, 30, 4, 0);
+    DrawTextWindowBorder(3, 14, 24, 6, 0xE001);
+    win = AddWindow(0, &winTemplate);
+    SetTextColor(win, 1, 8);
+    ClearWindowCharBuffer(win, 0xFFFF);
+    gBgTilemapBufferTransferScheduled[2] = TRUE;
+    if (IsScreenFadedOut() == TRUE)
+        FadeIn();
+    RenderText(win, gErrorMessagePtrs[msgId]);
+    // Game stuck
+    while (1)
+    {
+        DelayFrames(100);
+    }
+}
 
 void sub_02004AC4(void)
 {
@@ -864,4 +1043,124 @@ static void UNUSED sub_02005F08(u32 unused, s32 moveSlot)
 static bool32 UNUSED sub_02005F44(s32 monId, s32 moveSlot)
 {
     return sub_2005F44_Inline(monId, moveSlot);
+}
+
+bool32 sub_02005FCC(void)
+{
+    bool32 val = sub_0200A2C8(0);
+
+    gUnknown_02024960.unk84C_02 = 0;
+    if (!val)
+    {
+        REG_JOY_TRANS = 0;
+        while (!gUnknown_02024960.unk84C_02)
+            ;
+        val = sub_0200A2C8(1);
+        while (gUnknown_02024960.unk84C_03)
+            ;
+
+        if (!val)
+        {
+            REG_JOY_TRANS = 0;
+            return FALSE;
+        }
+    }
+
+    REG_JOY_TRANS = -1;
+    return TRUE;
+}
+
+extern u8 gRomDetection_IsRubySapphire;
+
+static inline u16 Test(const struct RomInfo *rom, void *sav2)
+{
+    u16 *ptr = sav2 + rom->gcnLinkFlagsOffs;
+    return *ptr;
+}
+
+static inline u8 Test2(const struct RomInfo *rom, void *sav2)
+{
+    u8 *ptr = sav2 + rom->sb2SpecialSaveWarpOffs;
+    return *ptr;
+}
+
+s32 sub_02006058(void)
+{
+    s32 i;
+    s32 var;
+
+    WarningPrint(2);
+    while (!gUnknown_02024960.unk84C_01)
+    {
+        if (!gUnknown_020251F0.field12)
+            return 2;
+    }
+
+    if (gRomDetection_IsRubySapphire)
+    {
+        if (!(GetPlayerMapType() & 2))
+        {
+            REG_JOY_TRANS = -1;
+            WarningPrint(5);
+            return 2;
+        }
+    }
+    else
+    {
+        u16 metGame, f;
+        u16 flags = Test(gAgbPmRomParams, gSaveBlock2Ptr);
+        if (!(flags & 0xFFFE))
+        {
+            REG_JOY_TRANS = -1;
+            ErrorPrint(10);
+        }
+        if (!(Test2(gAgbPmRomParams, gSaveBlock2Ptr) & 7))
+        {
+            REG_JOY_TRANS = -1;
+            ErrorPrint(10);
+        }
+
+        metGame = GetMonData(&gPlayerPartyPtr[gUnknown_02024960.unk84C_1], MON_DATA_MET_GAME, NULL);
+        f = 1 << metGame;
+        if (!(flags & f))
+        {
+            REG_JOY_TRANS = -1;
+            ErrorPrint(10);
+        }
+    }
+
+    WarningPrint(3);
+    SetSpeciesCaughtFlag(gUnknown_02024960.unk84C_2, &gPlayerPartyPtr[gUnknown_02024960.unk84C_2]);
+    if ((gUnknown_02024960.unk84C_3 | (gUnknown_02024960.unk850_1 << 8)) != 0)
+        SetSpeciesCaughtFlag((gUnknown_02024960.unk84C_3 | (gUnknown_02024960.unk850_1 << 8)),
+                             &gPlayerPartyPtr[(gUnknown_02024960.unk84C_3 | (gUnknown_02024960.unk850_1 << 8))]);
+
+    for (i = 0; i < 11; i++)
+    {
+        if (gGiftRibbonsPtr[i] == 0 && gUnknown_02024960.field85C[i] != 0)
+        {
+            gGiftRibbonsPtr[i] = gUnknown_02024960.field85C[i];
+            GiveGiftRibbonToParty(i, gUnknown_02024960.field85C[i]);
+        }
+    }
+
+    var = sub_02005FCC();
+    DelayFrames(GetFrameTotal() & 0x3F);
+    switch (var)
+    {
+    case 0:
+        WarningPrint(1);
+        break;
+    case 1:
+        WarningPrint(4);
+        break;
+    case 2:
+        WarningPrint(5);
+        break;
+    }
+
+    gUnknown_02024960.unk84C_00 = 0;
+    gUnknown_02024960.unk84C_01 = 0;
+    gUnknown_02024960.unk84C_02 = 0;
+    return var;
 }

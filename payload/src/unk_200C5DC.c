@@ -489,39 +489,6 @@ u8 USRom_GetPlayerMapType(struct SaveBlock1 *sav1)
     return 0;
 }
 
-struct UnkStruct_020251F0
-{
-    volatile u32 *field0;
-    u32 field4;
-    u8 field8[2];
-    vu8 field10;
-    u8 field11;
-    u8 field12;
-    u8 field13;
-    u8 field14;
-    u8 field15;
-    u8 field16;
-    u8 field17;
-    u8 field18;
-    u8 fill19;
-    u8 field20;
-    u8 fill21;
-    u8 fill22;
-    u8 fill23;
-    u8 fill24;
-    u8 fill25;
-    u8 fill26;
-    u8 fill27;
-    u32 field28;
-    u32 field32;
-    u32 field36;
-    u32 field40;
-    u32 field44;
-    u32 field48;
-};
-
-extern volatile struct UnkStruct_020251F0 gUnknown_020251F0;
-
 void sub_0200CF50(u32 val)
 {
     u32 a, b, c;
@@ -552,7 +519,7 @@ void sub_0200CF50(u32 val)
         gUnknown_020251F0.field28 += 4;
         if (gUnknown_020251F0.field28 >= gUnknown_020251F0.field4)
         {
-            gUnknown_020251F0.field0 = gUnknown_02024960.field85C;
+            gUnknown_020251F0.field0 = (void *) gUnknown_02024960.field85C;
             gUnknown_020251F0.field4 = sizeof(gUnknown_02024960.field85C);
             gUnknown_020251F0.field28 = 0;
             gUnknown_020251F0.field10++;
@@ -693,7 +660,7 @@ void sub_0200D1AC(u32 val)
         {
             gUnknown_020251F0.field4 = sizeof(gUnknown_02024960.field85C);
             gUnknown_020251F0.field28 = 0;
-            gUnknown_020251F0.field0 = gUnknown_02024960.field85C;
+            gUnknown_020251F0.field0 = (void *) gUnknown_02024960.field85C;
             gUnknown_020251F0.field10++;
         }
         break;

@@ -213,7 +213,7 @@ u32 CheckPartyHasHadPokerus(struct Pokemon *party, u8 selection);
 void DrawSpindasSpots(u16 species, u32 personality, u8 *dest);
 void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg);
 void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg);
-void GiveGiftRibbonToParty(u8 index, u8 ribbonId);
+void GiveGiftRibbonToParty(s32 index_, s32 ribbonId);
 u32 GetMonData(struct Pokemon *mon, s32 field, u8 *data);
 u8 GetMonGender(struct Pokemon *mon);
 const struct CompressedSpritePalette *GetMonPalettePtrBySpeciesIdPersonality(u16 species, u32 otId, u32 personality);

@@ -10,6 +10,7 @@
 #define SAVE_STATUS_NO_FLASH 4
 #define SAVE_STATUS_ERROR 0xFF
 
+bool32 sub_0200A2C8(s32 a);
 u8* ReadFirstSaveSector(void);
 void SetSaveSectorPtrs(void);
 u32 ReadSaveBlockChunks(void);
