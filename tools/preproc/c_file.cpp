@@ -22,6 +22,7 @@
 #include <cstdarg>
 #include <string>
 #include <memory>
+#include <stdexcept>
 #include "preproc.h"
 #include "c_file.h"
 #include "char_util.h"
@@ -353,7 +354,7 @@ void CFile::TryConvertIncbin()
 
             if (m_buffer[m_pos] == '\\')
                 RaiseError("unexpected escape in path string");
-            
+
             m_pos++;
         }
 
@@ -388,7 +389,7 @@ void CFile::TryConvertIncbin()
 
         m_pos++;
     }
-    
+
     if (m_buffer[m_pos] != ')')
         RaiseError("expected ')'");
 
