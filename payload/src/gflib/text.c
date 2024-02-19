@@ -11,9 +11,12 @@ static inline void *GetAddr(struct Window *window)
 {
     void *vaddr = window->vramCharBase + (window->currentY / 8) * window->width * 32;
     u32 x = window->currentX;
+
     vaddr += 32 * (x / 8);
     // Needed to match.
-    x++;x--;
+    x++;
+    x--;
+
     return vaddr;
 }
 
@@ -30,6 +33,7 @@ void DrawGlyphOnWindow_NoShadow(struct Window * window, u32 glyphId, u32 fgColor
     xpixel = 8 - (window->currentX & 7);
     glyphData = window->glyphGfx + glyphId * window->glyphSize;
     curpos--;
+
     for (i = 0; i < window->glyphSize; i++)
     {
         if (i != 8)
@@ -66,6 +70,7 @@ void DrawGlyphOnWindow_WithShadow(struct Window *window, u32 glyphId, u32 fgColo
 
     xpixel = 8 - (window->currentX & 7);
     glyphData = window->glyphGfx + (glyphId * window->glyphSize * 2);
+
     for (i = 0; i < window->glyphSize; i++)
     {
         vaddr = window->vramCharBase + ((window->currentY + i) >> 3) * window->width * 32 + (32 * (window->currentX >> 3));
@@ -101,9 +106,9 @@ void DrawGlyphOnWindow_WithShadow(struct Window *window, u32 glyphId, u32 fgColo
 static inline void TextWindowFillTileBufferForText_Inline(struct Window *win)
 {
     s32 i, j;
-
     u16 *addr = (void *) IWRAM_START + (win->bg << 12);
     u16 blockVal = win->baseBlock;
+
     for (i = win->top; i < win->top + win->height; i++)
     {
         for (j = win->left; j < win->left + win->width; j++)
@@ -153,6 +158,7 @@ void GenerateFontHalfrowLookupTable(u32 *ptr)
     s32 i;
 
     sFontHalfrowLookupTablePtr = ptr;
+
     for (i = 0; i <= 0xFF; i++)
     {
         u32 r1 = 0;
@@ -178,9 +184,9 @@ void GenerateFontHalfrowLookupTable(u32 *ptr)
     }
 }
 
-void ClearWindowCharBuffer(struct Window *window, u32 a1)
+void ClearWindowCharBuffer(struct Window *window, u32 fillValue)
 {
-    CpuFill16(a1, window->vramCharBase, (window->width * window->height) * 32);
+    CpuFill16(fillValue, window->vramCharBase, (window->width * window->height) * 32);
     TextWindowSetXY(window, 0, 0);
 }
 

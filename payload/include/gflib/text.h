@@ -34,7 +34,7 @@ void DrawGlyphOnWindow_NoShadow(struct Window *window, u32 glyphId, u32 fgColor)
 void DrawGlyphOnWindow_WithShadow(struct Window *window, u32 glyphId, u32 fgColor, u32 shadowColor);
 struct Window *AddWindow(u32 windowId, const struct Window *template);
 void GenerateFontHalfrowLookupTable(u32 * buffer);
-void ClearWindowCharBuffer(struct Window * window, u32 a1);
+void ClearWindowCharBuffer(struct Window * window, u32 tile);
 void FillWindowCharBufferRect(struct Window * window, s32 x, s32 y, s32 width, s32 height, u32 fillValue);
 void SetTextColor(struct Window * window, u8 fg, u8 shadow);
 void TextWindowNextLine(struct Window * window);

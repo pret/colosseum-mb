@@ -9,12 +9,12 @@ extern bool8 gBgTilemapBufferTransferScheduled[];
 
 void ResetGpuBuffers(void);
 void DoGpuUpdateAndTilemapTransfers(void);
-void CopyToBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, const u16 * src);
-void CopyFromBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, u16 * dest);
-void SetBgTilemapBufferPaletteRect(int bgNum, int left, int top, int width, int height, int paletteNum);
-void SetBgTilemapBufferTileAt(int bgNum, int x, int y, u16 tileNum);
-void FillBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, u16 tileNum);
-void CopyRectWithinBgTilemapBuffer(int bgNum, int srcLeft, int srcTop, int width, int height, int destLeft, int destTop);
-void SetBgPos(int bgNum, s32 x, s32 y);
+void CopyToBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, const u16 * src);
+void CopyFromBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, u16 * dest);
+void SetBgTilemapBufferPaletteRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, u32 paletteNum);
+void SetBgTilemapBufferTileAt(u32 bgNum, u32 x, u32 y, u16 tileNum);
+void FillBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, u16 tileNum);
+void CopyRectWithinBgTilemapBuffer(u32 bgNum, u32 srcLeft, u32 srcTop, s32 width, u32 height, u32 destLeft, u32 destTop);
+void SetBgPos(u32 bgNum, s32 x, s32 y);
 
 #endif //GFLIB_BG_H

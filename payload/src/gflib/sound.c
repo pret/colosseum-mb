@@ -1,27 +1,28 @@
 #include "global.h"
 #include "gflib/sound.h"
 
-static u8 gUnknown_02021368;
-static bool8 isSoundVsync;
+static u8 sIsSoundVSyncPaused;
+static bool8 sIsSoundVsync;
 
 void InitSound(void)
 {
-    gUnknown_02021368 = 0;
-    isSoundVsync = 0;
+    sIsSoundVSyncPaused = 0;
+    sIsSoundVsync = FALSE;
     m4aSoundInit();
 }
 
 void PauseSoundVSync(void)
 {
-    gUnknown_02021368 = 1;
-    isSoundVsync = 0;
+    sIsSoundVSyncPaused = 1;
+    sIsSoundVsync = FALSE;
 }
 
-bool32 EnableSoundVSync(u32 a0)
+bool32 EnableSoundVSync(u32 enable)
 {
-    if (a0 && gUnknown_02021368)
-        isSoundVsync = 1;
-    return isSoundVsync;
+    if (enable && sIsSoundVSyncPaused)
+        sIsSoundVsync = TRUE;
+
+    return sIsSoundVsync;
 }
 
 void PlaySE(u16 song)
@@ -54,8 +55,8 @@ bool8 sub_020093AC(void)
 void FadeOutSE(u16 song, u16 _speed)
 {
     struct MusicPlayerInfo * mPlayInfo;
-
     u16 speed = _speed >> 4;
+
     if (speed == 0)
         speed = 1;
 
@@ -89,12 +90,12 @@ void SetSEPitch(u16 song, s16 pitch)
 
 void SoundVSyncOff(void)
 {
-    isSoundVsync = 0;
+    sIsSoundVsync = FALSE;
     m4aSoundVSyncOff();
 }
 
 void SoundVSyncOn(void)
 {
     m4aSoundVSyncOn();
-    isSoundVsync = 1;
+    sIsSoundVsync = TRUE;
 }

@@ -27,30 +27,30 @@ struct Item
 
 u32 GetEnigmaBerryChecksum(struct EnigmaBerry * enigmaBerry)
 {
-    u32 i, csum;
+    u32 i, checksum;
     u8 * dest;
 
     // the description pointers could be pointing to anywhere in memory. we do not want these
     // pointers to factor into the checksum as it will produce a different result every time: so
     // back the pointers up and set them to null so the checksum is safe to calculate.
-    const u8 * desc1bak = gEnigmaBerryPtr->berry.description1;
-    const u8 * desc2bak = gEnigmaBerryPtr->berry.description2;
+    const u8 * desc1Bak = gEnigmaBerryPtr->berry.description1;
+    const u8 * desc2Bak = gEnigmaBerryPtr->berry.description2;
 
     gEnigmaBerryPtr->berry.description1 = NULL;
     gEnigmaBerryPtr->berry.description2 = NULL;
 
     dest = (u8 *)enigmaBerry;
-    csum = 0;
+    checksum = 0;
     for (i = 0; i < gAgbPmRomParams->enigmaBerrySize - 4; i++)
     {
-        csum += dest[i];
+        checksum += dest[i];
     }
 
     // the checksum is calculated: the descriptions are safe to restore now.
-    gEnigmaBerryPtr->berry.description1 = desc1bak;
-    gEnigmaBerryPtr->berry.description2 = desc2bak;
+    gEnigmaBerryPtr->berry.description1 = desc1Bak;
+    gEnigmaBerryPtr->berry.description2 = desc2Bak;
 
-    return csum;
+    return checksum;
 }
 
 // due to e-reader scans being particularly volatile to failure, it is a requirement to check for
@@ -102,13 +102,14 @@ const u8 *ItemId_GetName(u16 itemId)
     return items[SanitizeItemId(itemId)].name;
 }
 
-void CopyItemName(u32 itemId, u8 *string, const u8 * berry_str)
+void CopyItemName(u32 itemId, u8 *string, const u8 * berryString)
 {
     u16 itemId_ = itemId;
+
     if (itemId_ == ITEM_ENIGMA_BERRY)
     {
         StringCopy(string, GetBerryInfo(ITEM_TO_BERRY(ITEM_ENIGMA_BERRY))->name);
-        StringAppend(string, berry_str);
+        StringAppend(string, berryString);
     }
     else
     {

@@ -1,9 +1,9 @@
 #include "global.h"
 #include "gflib/bg.h"
 
-u16 gBgHofsBuffer[4];
-u16 gBgVofsBuffer[4];
-bool8 gBgTilemapBufferTransferScheduled[4];
+u16 gBgHofsBuffer[NUM_BACKGROUNDS];
+u16 gBgVofsBuffer[NUM_BACKGROUNDS];
+bool8 gBgTilemapBufferTransferScheduled[NUM_BACKGROUNDS];
 u32 filler1;
 u32 filler2;
 u32 filler3;
@@ -13,8 +13,9 @@ void DoGpuUpdateAndTilemapTransfers(void)
     s32 i;
     u16 bgCnt;
     void * screenBase;
-    size_t size;
+    u32 size;
     s32 r2;
+
     REG_BG0HOFS = gBgHofsBuffer[0];
     REG_BG1HOFS = gBgHofsBuffer[1];
     REG_BG2HOFS = gBgHofsBuffer[2];
@@ -23,7 +24,7 @@ void DoGpuUpdateAndTilemapTransfers(void)
     REG_BG1VOFS = gBgVofsBuffer[1];
     REG_BG2VOFS = gBgVofsBuffer[2];
     REG_BG3VOFS = gBgVofsBuffer[3];
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < NUM_BACKGROUNDS; i++)
     {
         if (gBgTilemapBufferTransferScheduled[i])
         {
@@ -47,9 +48,9 @@ void ResetGpuBuffers(void)
     gBgTilemapBufferTransferScheduled[0] = 0;
 }
 
-void CopyToBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, const u16 * src)
+void CopyToBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, const u16 * src)
 {
-    int x;
+    s32 x;
     u16 * ptr = (void *)(gBGTilemapBuffers + (bgNum << 12) + (top << 6) + (left << 1));
 
     while (height)
@@ -63,9 +64,9 @@ void CopyToBgTilemapBufferRect(int bgNum, int left, int top, int width, int heig
     }
 }
 
-void CopyFromBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, u16 * dest)
+void CopyFromBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, u16 * dest)
 {
-    int x;
+    s32 x;
     u16 * ptr = (void *)(gBGTilemapBuffers + (bgNum << 12) + (top << 6) + (left << 1));
 
     while (height)
@@ -79,9 +80,9 @@ void CopyFromBgTilemapBufferRect(int bgNum, int left, int top, int width, int he
     }
 }
 
-void SetBgTilemapBufferPaletteRect(int bgNum, int left, int top, int width, int height, int paletteNum)
+void SetBgTilemapBufferPaletteRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, u32 paletteNum)
 {
-    int x;
+    s32 x;
     u16 * ptr = (void *)(gBGTilemapBuffers + (bgNum << 12) + (top << 6) + (left << 1));
 
     while (height)
@@ -96,15 +97,15 @@ void SetBgTilemapBufferPaletteRect(int bgNum, int left, int top, int width, int 
     }
 }
 
-void SetBgTilemapBufferTileAt(int bgNum, int x, int y, u16 tileNum)
+void SetBgTilemapBufferTileAt(u32 bgNum, u32 x, u32 y, u16 tileNum)
 {
     u16 * ptr = (void *)(gBGTilemapBuffers + (bgNum << 12) + (y << 6) + (x << 1));
     *ptr = tileNum;
 }
 
-void FillBgTilemapBufferRect(int bgNum, int left, int top, int width, int height, u16 tileNum)
+void FillBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, u16 tileNum)
 {
-    int x;
+    s32 x;
     u16 * ptr = (void *)(gBGTilemapBuffers + (bgNum << 12) + (top << 6) + (left << 1));
 
     while (height)
@@ -118,9 +119,9 @@ void FillBgTilemapBufferRect(int bgNum, int left, int top, int width, int height
     }
 }
 
-void CopyRectWithinBgTilemapBuffer(int bgNum, int srcLeft, int srcTop, int width, int height, int destLeft, int destTop)
+void CopyRectWithinBgTilemapBuffer(u32 bgNum, u32 srcLeft, u32 srcTop, s32 width, u32 height, u32 destLeft, u32 destTop)
 {
-    int x;
+    s32 x;
     const u16 * srcPtr;
     u16 * destPtr;
 
@@ -139,7 +140,7 @@ void CopyRectWithinBgTilemapBuffer(int bgNum, int srcLeft, int srcTop, int width
     }
 }
 
-void SetBgPos(int bgNum, s32 x, s32 y)
+void SetBgPos(u32 bgNum, s32 x, s32 y)
 {
     gBgHofsBuffer[bgNum] = x;
     gBgVofsBuffer[bgNum] = y;

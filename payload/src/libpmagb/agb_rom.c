@@ -36,8 +36,10 @@ static inline void SeedSaveRng(void)
     {
         sum += firstSector[i];
     }
+
     gLastSaveBlockPtr = gSaveBlockLoadRegions + 4 * (sum & 0xFF);
     gSaveRngValue = sum;
+
     for (i = 0; i < (sum & 0xFF); i++)
     {
         SaveRandom();
@@ -47,7 +49,9 @@ static inline void SeedSaveRng(void)
 static inline void * UpdateSaveBlockPtr(u32 size)
 {
     void * ret = gLastSaveBlockPtr;
+
     gLastSaveBlockPtr = (gLastSaveBlockPtr + size) + ((SaveRandom() & 15) * 4);
+
     return ret;
 }
 
@@ -60,6 +64,7 @@ static inline void SetSaveBlock1Ptr(void)
 {
     void ** ptr = (void**)&gSaveBlock1Ptr;
     u32 size = gAgbPmRomParams->saveBlock1Size;
+
     SetSaveBlockPtr(ptr, size);
 }
 
@@ -67,6 +72,7 @@ static inline void SetSaveBlock1BakPtr(void)
 {
     void ** ptr = (void**)&gSaveBlock1BakPtr;
     u32 size = gAgbPmRomParams->saveBlock1Size;
+
     SetSaveBlockPtr(ptr, size);
 }
 
@@ -74,6 +80,7 @@ static inline void SetSaveBlock2Ptr(void)
 {
     void ** ptr = (void**)&gSaveBlock2Ptr;
     u32 size = gAgbPmRomParams->saveBlock2Size;
+
     SetSaveBlockPtr(ptr, size);
 }
 
@@ -81,12 +88,14 @@ static inline void SetPokemonStoragePtr(void)
 {
     void ** ptr = (void**)&gPokemonStoragePtr;
     u32 size = sizeof(struct PokemonStorage);
+
     SetSaveBlockPtr(ptr, size);
 }
 
 void SaveBlocksInit(void)
 {
     SeedSaveRng();
+
     switch (SaveRandom() & 3)
     {
     case 0:
@@ -114,6 +123,7 @@ void SaveBlocksInit(void)
         SetSaveBlock1Ptr();
         break;
     }
+
     gPlayerPartyPtr = gSaveBlock1Ptr + gAgbPmRomParams->partyOffset;
     gPlayerPartyBakPtr = gSaveBlock1BakPtr + gAgbPmRomParams->partyOffset;
     gPlayerPartyCountPtr = gSaveBlock1Ptr + gAgbPmRomParams->partyCountOffset;
@@ -130,6 +140,7 @@ void SaveBlocksInit(void)
 u16 SaveRandom(void)
 {
     gSaveRngValue = gSaveRngValue * 2061 + 7;
+
     return gSaveRngValue;
 }
 
