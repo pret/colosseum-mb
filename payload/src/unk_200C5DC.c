@@ -1,5 +1,6 @@
 #include "global.h"
 #include "libpmagb/agb_rom.h"
+#include "libpmagb/save.h"
 #include "gflib/characters.h"
 #include "gflib/keys.h"
 #include "gflib/init.h"
@@ -10,11 +11,12 @@
 #include "unk_200C5DC.h"
 #include "rom_info.h"
 #include "constants/items.h"
+#include "constants/maps.h"
 
 // This file's functions
 u8 GetPlayerMapType(void);
-u8 USRom_GetPlayerMapType(struct SaveBlock1 *sav1);
-bool8 sub_0200CD88(void);
+u8 GetRSPlayerMapType(struct SaveBlock1 *sav1);
+bool8 CheckIfPokedexIsObtained(void);
 bool32 IsFRLG(void);
 u8 ExtCtrlCodeGetLength(u8 c);
 
@@ -159,75 +161,75 @@ void SetSpeciesCaughtFlag(u32 species, struct Pokemon *mon)
     GetSetPokedexFlag(nationalDexNo, FLAG_SET_CAUGHT);
 }
 
-struct Struct_gUnknown_02023F50
+struct PlayerLinkInfo
 {
-    u32 field0_0:1;
-    u32 field0_1:1;
-    u32 field0_2:1;
-    u32 field0_3:1;
-    u32 field0_4:4;
-    u32 field1_0:2;
+    u32 hasPokedex:1;
+    u32 isInPokeCenter:1;
+    u32 isFRLG:1;
+    u32 isChampion:1;
+    u32 language:4;
+    u32 errorCode:2;
     u32 unused:15;
-    u8 field4[8];
-    u32 field12;
-    u8 field16[4];
+    u8 playerName[PLAYER_NAME_LENGTH + 1];
+    u32 playerGender;
+    u8 playerTrainerId[TRAINER_ID_LENGTH];
     struct Pokemon party[PARTY_SIZE];
-    u8 giftRibbons[11];
+    u8 giftRibbons[GIFT_RIBBONS_COUNT];
 };
 
-extern struct Struct_gUnknown_02023F50 gUnknown_02023F50;
+extern struct PlayerLinkInfo gPlayerLinkInfo;
 
-struct Struct_gUnknown_02023F50 *sub_0200C9C0(u8 *sav2, u8 *sav1, u32 arg2)
+struct PlayerLinkInfo *SetPlayerLinkInfo(u8 *sav2, u8 *sav1, u32 saveStatus)
 {
     s32 i;
-    struct Struct_gUnknown_02023F50* structPtr = &gUnknown_02023F50;
+    struct PlayerLinkInfo* structPtr = &gPlayerLinkInfo;
 
-    CpuFill16(0, &gUnknown_02023F50, sizeof(struct Struct_gUnknown_02023F50));
-    if (arg2 == 1)
+    CpuFill16(0, &gPlayerLinkInfo, sizeof(struct PlayerLinkInfo));
+    if (saveStatus == SAVE_STATUS_OK)
     {
         u8 *saveData;
 
         if (!gAgbPmRomParams->blockLinkColoXD)
         {
-            structPtr->field0_0 = sub_0200CD88();
-            structPtr->field0_1 = ((GetPlayerMapType() & 2) != 0);
-            structPtr->field0_2 = IsFRLG();
-            structPtr->field0_3 = ((GetPlayerMapType() & 0x80) != 0);
-            structPtr->field0_4 = gAgbPmRomParams->language;
+            structPtr->hasPokedex = CheckIfPokedexIsObtained();
+            structPtr->isInPokeCenter = ((GetPlayerMapType() & POKECENTER_SAVEWARP) != 0);
+            structPtr->isFRLG = IsFRLG();
+            structPtr->isChampion = ((GetPlayerMapType() & CHAMPION_SAVEWARP) != 0);
+            structPtr->language = gAgbPmRomParams->language;
         }
         saveData = &sav2[gAgbPmRomParams->playerNameOffset];
-        StringCopy(structPtr->field4, saveData);
+        StringCopy(structPtr->playerName, saveData);
 
         saveData = &sav2[gAgbPmRomParams->playerGenderOffset];
-        structPtr->field12 = *saveData;
+        structPtr->playerGender = *saveData;
 
         saveData = &sav2[gAgbPmRomParams->trainerIdOffset];
         for (i = 0; i < 4; i++)
-            structPtr->field16[i] = saveData[i];
+            structPtr->playerTrainerId[i] = saveData[i];
 
         for (i = 0; i < PARTY_SIZE; i++)
             CpuCopy16(&gPlayerPartyPtr[i], &structPtr->party[i], sizeof(struct Pokemon));
-        for (i = 0; i < 11; i++)
+        for (i = 0; i < GIFT_RIBBONS_COUNT; i++)
             structPtr->giftRibbons[i] = gGiftRibbonsPtr[i];
     }
-    else if (arg2 == 2)
+    else if (saveStatus == SAVE_STATUS_CORRUPT)
     {
-        structPtr->field1_0 = 1;
+        structPtr->errorCode = 1;
     }
-    else if (arg2 == 0xFF)
+    else if (saveStatus == SAVE_STATUS_ERROR)
     {
-        structPtr->field1_0 = 2;
+        structPtr->errorCode = 2;
     }
-    else if (arg2 == 0)
+    else if (saveStatus == SAVE_STATUS_EMPTY)
     {
-        structPtr->field1_0 = 3;
+        structPtr->errorCode = 3;
     }
     return structPtr;
 }
 
-struct Struct_gUnknown_02023F50 *sub_0200CB2C(void)
+struct PlayerLinkInfo *GetPlayerLinkInfo(void)
 {
-    return &gUnknown_02023F50;
+    return &gPlayerLinkInfo;
 }
 
 extern u8 gUnknown_020241D0[][320];
@@ -294,28 +296,28 @@ extern void SoftReset(u32);
 
 void DetectROM(void)
 {
-    u32 val, r4, r3;
+    u32 gameCode, rsVersion, notEnglishRS;
 
     gRomDetection_IsRubySapphire = FALSE;
     gRomDetection_IsEnglishROM = FALSE;
-    r4 = 0;
-    val = *(u32 *)(0x80000AC);
-    switch (val)
+    rsVersion = 0;
+    gameCode = *(u32 *)(0x80000AC);
+    switch (gameCode)
     {
     default:
-        r3 = TRUE;
+        notEnglishRS = TRUE;
         gRomDetection_IsEnglishROM = TRUE;
         break;
     case 0x45565841: // AXVE
         gRomDetection_IsEnglishROM = TRUE;
-        r4 = 2;
-        r3 = FALSE;
+        rsVersion = VERSION_RUBY;
+        notEnglishRS = FALSE;
         gRomDetection_IsRubySapphire = TRUE;
         break;
     case 0x45505841: // AXPE
         gRomDetection_IsEnglishROM = TRUE;
-        r4 = 1;
-        r3 = FALSE;
+        rsVersion = VERSION_SAPPHIRE;
+        notEnglishRS = FALSE;
         gRomDetection_IsRubySapphire = TRUE;
         break;
     case 0x46505841: // AXPF
@@ -326,16 +328,16 @@ void DetectROM(void)
     case 0x49505841: // AXPI
     case 0x53505841: // AXPS
     case 0x53565841: // AXVS
-        r3 = TRUE;
+        notEnglishRS = TRUE;
         gRomDetection_IsRubySapphire = TRUE;
         break;
     }
 
-    if (r3)
+    if (notEnglishRS)
     {
         gAgbPmRomParams = (void*)(0x8000100);
     }
-    else if (r4 == 2)
+    else if (rsVersion == VERSION_RUBY)
     {
         if (*(u8*)(0x80000BC) == 0)
             gAgbPmRomParams = &gAgbPmRomParams_AXVE_rev0;
@@ -350,7 +352,7 @@ void DetectROM(void)
             gAgbPmRomParams = &gAgbPmRomParams_AXPE_rev2;
     }
 
-    if (r3 == 1)
+    if (notEnglishRS == TRUE)
     {
         if (gAgbPmRomParams->language == LANGUAGE_ENGLISH)
             gRomDetection_IsEnglishROM = TRUE;
@@ -368,9 +370,9 @@ u8 GetPlayerMapType(void)
     }
     else
     {
-        ret = USRom_GetPlayerMapType(gSaveBlock1Ptr);
-        if (ret & 1)
-            ret |= 0x80;
+        ret = GetRSPlayerMapType(gSaveBlock1Ptr);
+        if (ret & CONTINUE_GAME_WARP)
+            ret |= CHAMPION_SAVEWARP;
     }
     return ret;
 }
@@ -380,13 +382,13 @@ static void UNUSED sub_0200CD84(void)
 
 }
 
-u8 sub_0200CD88(void)
+u8 CheckIfPokedexIsObtained(void)
 {
     bool32 val;
     if (!gRomDetection_IsRubySapphire)
         val = ((*((u8 *)(gSaveBlock2Ptr) + gAgbPmRomParams->gcnLinkFlagsOffset) & 1));
     else
-        val = CheckFlag(0x801);
+        val = CheckFlag(FLAG_SYS_POKEDEX_GET);
 
     if (!val)
         return FALSE;
@@ -465,26 +467,26 @@ s32 StringCompare(const u8 *str1, const u8 *str2)
 u8 ExtCtrlCodeGetLength(u8 c)
 {
     u8 len = 0;
-    if (c <= 22)
+    if (c <= EXT_CTRL_CODE_ENG)
         len = gExtCtrlCodeLengths[c];
     return len;
 }
 
-u8 USRom_GetPlayerMapType(struct SaveBlock1 *sav1)
+u8 GetRSPlayerMapType(struct SaveBlock1 *sav1)
 {
     s32 i;
     u16 mapGroup = sav1->location.mapGroup;
     u16 map = (mapGroup << 8) + sav1->location.mapNum;
 
-    for (i = 0; gRSPokemonCenterMaps[i] != 0xFFFF; i++)
+    for (i = 0; gRSPokemonCenterMaps[i] != MAP_UNDEFINED; i++)
     {
         if (gRSPokemonCenterMaps[i] == map)
-            return 2;
+            return POKECENTER_SAVEWARP;
     }
-    for (i = 0; gRSSpecialAreaMaps[i] != 0xFFFF; i++)
+    for (i = 0; gRSSpecialAreaMaps[i] != MAP_UNDEFINED; i++)
     {
         if (gRSSpecialAreaMaps[i] == map)
-            return 4;
+            return LOBBY_SAVEWARP;
     }
     return 0;
 }
@@ -492,11 +494,11 @@ u8 USRom_GetPlayerMapType(struct SaveBlock1 *sav1)
 void sub_0200CF50(u32 val)
 {
     u32 a, b, c;
-    switch (gUnknown_020251F0.field10)
+    switch (gUnknown_020251F0.state)
     {
     case 0:
         gUnknown_02024960.unk84C_1 = (u8)(val & 0x7);
-        gUnknown_020251F0.field10++;
+        gUnknown_020251F0.state++;
         break;
     case 1:
         gUnknown_02024960.unk84C_2 = val & 0x0000FFFF;
@@ -512,7 +514,7 @@ void sub_0200CF50(u32 val)
         gUnknown_02024960.field854 = (void*) &gPlayerPartyPtr[gUnknown_02024960.unk84C_1];
         gUnknown_020251F0.field4 = 100;
         gUnknown_020251F0.field28 = 0;
-        gUnknown_020251F0.field10++;
+        gUnknown_020251F0.state++;
         break;
     case 2:
         gUnknown_02024960.field854[gUnknown_020251F0.field28 / 4] = val;
@@ -522,7 +524,7 @@ void sub_0200CF50(u32 val)
             gUnknown_020251F0.field0 = (void *) gUnknown_02024960.field85C;
             gUnknown_020251F0.field4 = sizeof(gUnknown_02024960.field85C);
             gUnknown_020251F0.field28 = 0;
-            gUnknown_020251F0.field10++;
+            gUnknown_020251F0.state++;
         }
         break;
     case 3:
@@ -540,7 +542,7 @@ void sub_0200CF50(u32 val)
 void sub_0200D08C(u32 val)
 {
     s32 i;
-    switch (gUnknown_020251F0.field10)
+    switch (gUnknown_020251F0.state)
     {
     case 0:
         gUnknown_020251F0.field0[gUnknown_020251F0.field28 / 4] = val;
@@ -558,7 +560,7 @@ void sub_0200D08C(u32 val)
             gUnknown_020251F0.field28 = 0;
             gUnknown_020251F0.field0 = (void *) gUnknown_02024960.unk24;
             gUnknown_020251F0.field4 = gUnknown_02024960.unk_879 * 340;
-            gUnknown_020251F0.field10++;
+            gUnknown_020251F0.state++;
         }
         break;
     case 1:
@@ -569,7 +571,7 @@ void sub_0200D08C(u32 val)
             gUnknown_020251F0.field28 = 0;
             gUnknown_020251F0.field0 = (void*) gUnknown_02024960.unk81C;
             gUnknown_020251F0.field4 = gUnknown_02024960.unk7 * sizeof(struct UnkStruct81C);
-            gUnknown_020251F0.field10++;
+            gUnknown_020251F0.state++;
         }
         break;
     case 2:
@@ -599,41 +601,41 @@ void sub_0200D1AC(u32 val)
     u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffset;
     // Note: cast is needed here to make the code match. The whole struct is declared as volatile, but unkStruct isn't treated as volatile in this function.
     // It's possible only certain members of gUnknown_02024960 were volatile.
-    struct UnkStruct868 *unkStruct = (struct UnkStruct868 *) &gUnknown_02024960.unk868;
+    struct ExternalEventData2 *externalEventData = (struct ExternalEventData2 *) &gUnknown_02024960.externalEventData;
 
-    switch (gUnknown_020251F0.field10)
+    switch (gUnknown_020251F0.state)
     {
     case 0:
-        unkStruct->a8_0 = val;
-        gUnknown_020251F0.field10++;
+        externalEventData->currentPokeCoupons = val;
+        gUnknown_020251F0.state++;
         break;
     case 1:
-        unkStruct->a12 = val;
-        gUnknown_020251F0.field10++;
+        externalEventData->totalEarnedPokeCoupons = val;
+        gUnknown_020251F0.state++;
         break;
     case 2:
-        unkStruct->a11_3 = 0;
-        unkStruct->a11_2 = 0;
-        unkStruct->a11_1 = 0;
-        unkStruct->a11_0 = 0;
+        externalEventData->receivedAgetoCelebi = 0;
+        externalEventData->gotBronzePokeCouponTitleReward = 0;
+        externalEventData->gotSilverPokeCouponTitleReward = 0;
+        externalEventData->gotGoldPokeCouponTitleReward = 0;
         if (val & 1)
-            unkStruct->a11_0 = 1;
+            externalEventData->gotGoldPokeCouponTitleReward = 1;
         if (val & 2)
-            unkStruct->a11_1 = 1;
+            externalEventData->gotSilverPokeCouponTitleReward = 1;
         if (val & 4)
-            unkStruct->a11_2 = 1;
+            externalEventData->gotBronzePokeCouponTitleReward = 1;
         if (val & 8)
-            unkStruct->a11_3 = 1;
+            externalEventData->receivedAgetoCelebi = 1;
 
-        CopyN(sizeof(*unkStruct), ptr, (void*) unkStruct);
-        gUnknown_020251F0.field10++;
+        CopyN(sizeof(*externalEventData), ptr, (void*) externalEventData);
+        gUnknown_020251F0.state++;
         break;
     case 3:
         gUnknown_02024960.unk_85B = val >> 16;
         gUnknown_020251F0.field4 = val & 0xFFFF;
         gUnknown_020251F0.field28 = 0;
         gUnknown_020251F0.field0 = (void *) gPcItemsPtr;
-        gUnknown_020251F0.field10++;
+        gUnknown_020251F0.state++;
         break;
     case 4:
         gUnknown_020251F0.field0[gUnknown_020251F0.field28++] = val;
@@ -649,7 +651,7 @@ void sub_0200D1AC(u32 val)
                 gUnknown_020251F0.field4 = 100;
                 gUnknown_020251F0.field28 = 0;
                 gUnknown_020251F0.field0 = (void *) GetPtrToEmptyPartySlot();
-                gUnknown_020251F0.field10++;
+                gUnknown_020251F0.state++;
             }
         }
         break;
@@ -661,7 +663,7 @@ void sub_0200D1AC(u32 val)
             gUnknown_020251F0.field4 = sizeof(gUnknown_02024960.field85C);
             gUnknown_020251F0.field28 = 0;
             gUnknown_020251F0.field0 = (void *) gUnknown_02024960.field85C;
-            gUnknown_020251F0.field10++;
+            gUnknown_020251F0.state++;
         }
         break;
     case 6:
@@ -723,7 +725,7 @@ bool32 sub_0200D394(u32 val)
             }
             else if (val == 0x99)
             {
-                gUnknown_020251F0.field0 = (void *)sub_0200CB2C();
+                gUnknown_020251F0.field0 = (void *)GetPlayerLinkInfo();
                 REG_JOY_TRANS = val;
                 gUnknown_020251F0.field4 = 0x278;
                 gUnknown_020251F0.field28 = r6;
@@ -750,7 +752,7 @@ bool32 sub_0200D394(u32 val)
                 gUnknown_020251F0.field0 = (void*) &gUnknown_02024960;
                 gUnknown_020251F0.field4 = 0x24;
                 gUnknown_020251F0.field28 = r6;
-                gUnknown_020251F0.field10 = r6;
+                gUnknown_020251F0.state = r6;
                 gUnknown_02024960.unk_87A = r6;
             }
             else if (val == 0x55)
@@ -759,7 +761,7 @@ bool32 sub_0200D394(u32 val)
                 gUnknown_02024960.unk84C_01 = 0;
                 REG_JOY_TRANS = val;
                 gUnknown_020251F0.field17 = val;
-                gUnknown_020251F0.field10 = r6;
+                gUnknown_020251F0.state = r6;
             }
             else if (val == 0x44)
             {
@@ -772,7 +774,7 @@ bool32 sub_0200D394(u32 val)
             {
                 REG_JOY_TRANS = val;
                 gUnknown_020251F0.field17 = val;
-                gUnknown_020251F0.field10 = 0;
+                gUnknown_020251F0.state = 0;
             }
             else if (val == 0x60)
             {
@@ -825,24 +827,24 @@ void sub_0200D624(void)
     bool32 gameClear;
     u32 joyTransVal;
     u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffset;
-    struct UnkStruct868 *unkStruct = (struct UnkStruct868 *) &gUnknown_02024960.unk868;
+    struct ExternalEventData2 *externalEventData = (struct ExternalEventData2 *) &gUnknown_02024960.externalEventData;
 
-    switch (gUnknown_020251F0.field10)
+    switch (gUnknown_020251F0.state)
     {
     case 0:
-        CopyN(sizeof(*unkStruct), (void*) unkStruct, ptr);
-        REG_JOY_TRANS = unkStruct->a8_0;
-        gUnknown_020251F0.field10++;
+        CopyN(sizeof(*externalEventData), (void*) externalEventData, ptr);
+        REG_JOY_TRANS = externalEventData->currentPokeCoupons;
+        gUnknown_020251F0.state++;
         break;
     case 1:
-        REG_JOY_TRANS = unkStruct->a12;
-        gUnknown_020251F0.field10++;
+        REG_JOY_TRANS = externalEventData->totalEarnedPokeCoupons;
+        gUnknown_020251F0.state++;
         break;
     case 2:
         gameClear = CheckGameClear();
-        joyTransVal = (unkStruct->a11_0 << 0) | (unkStruct->a11_1 << 1) | (unkStruct->a11_2 << 2) | (unkStruct->a11_3 << 3) | (gameClear << 4);
+        joyTransVal = (externalEventData->gotGoldPokeCouponTitleReward << 0) | (externalEventData->gotSilverPokeCouponTitleReward << 1) | (externalEventData->gotBronzePokeCouponTitleReward << 2) | (externalEventData->receivedAgetoCelebi << 3) | (gameClear << 4);
         REG_JOY_TRANS = joyTransVal;
-        gUnknown_020251F0.field10++;
+        gUnknown_020251F0.state++;
         break;
     case 3:
         gUnknown_020251F0.field4 = gAgbPmRomParams->pcItemsCount;
@@ -851,7 +853,7 @@ void sub_0200D624(void)
         joyTransVal |= gUnknown_020251F0.field4;
         REG_JOY_TRANS = joyTransVal;
         gUnknown_020251F0.field0 = (void *) gPcItemsPtr;
-        gUnknown_020251F0.field10++;
+        gUnknown_020251F0.state++;
         break;
     case 4:
         REG_JOY_TRANS = gUnknown_020251F0.field0[gUnknown_020251F0.field28++];

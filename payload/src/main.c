@@ -25,7 +25,7 @@ struct RomHeader
 
 extern void sub_0200D9EC(void);
 extern const struct RomHeader gRomHeader;
-extern u8 gUnknown_020217B4;
+extern u8 gSaveStatus;
 extern u8 gUnknown_020217B8;
 
 extern IntrFunc *gTimer1InterruptFunction;
@@ -104,7 +104,7 @@ void GF_Main(void)
     InitFlash(2, gTimer1InterruptFunction);
     SaveBlocksInit();
     SetSaveSectorPtrs();
-    gUnknown_020217B4 = ReadSaveBlockChunks();
+    gSaveStatus = ReadSaveBlockChunks();
 
     gUnknown_020217B8 = sub_0200043C();
 
@@ -115,7 +115,7 @@ void GF_Main(void)
     REG_DISPSTAT = 8;
     REG_DISPCNT &= (0xFF7F);
     REG_IME = 1;
-    sub_0200C9C0(gSaveBlock2Ptr, gSaveBlock1Ptr, gUnknown_020217B4);
+    SetPlayerLinkInfo(gSaveBlock2Ptr, gSaveBlock1Ptr, gSaveStatus);
 
     sub_0200D924(gRomHeader.unkA8);
 
@@ -164,7 +164,7 @@ NAKED void GF_Main(void)
 	bl InitFlash\t\n\
 	bl SaveBlocksInit\t\n\
 	bl SetSaveSectorPtrs\t\n\
-	ldr r4, =gUnknown_020217B4\t\n\
+	ldr r4, =gSaveStatus\t\n\
 	bl ReadSaveBlockChunks\t\n\
 	strb r0, [r4]\t\n\
 	ldr r5, =gUnknown_020217B8\t\n\
@@ -231,9 +231,9 @@ _0200032C:\t\n\
 	ldr r0, [r0]\t\n\
 	ldr r1, =gSaveBlock1Ptr\t\n\
 	ldr r1, [r1]\t\n\
-	ldr r2, =gUnknown_020217B4\t\n\
+	ldr r2, =gSaveStatus\t\n\
 	ldrb r2, [r2]\t\n\
-	bl sub_0200C9C0\t\n\
+	bl SetPlayerLinkInfo\t\n\
 	adds r0, r6, #0\t\n\
 	bl sub_0200D924\t\n\
 	ldr r0, =sub_0200D9EC\t\n\

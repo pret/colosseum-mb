@@ -41,7 +41,7 @@ struct Unk2021A20Str
 extern struct Unk2021A20Str gUnknown_02021A20;
 
 // Error related
-extern u8 gUnknown_020217B4;
+extern u8 gSaveStatus;
 extern u8 gRomDetection_IsEnglishROM;
 extern u8 gUnknown_020217B8;
 extern const struct Window gFont0LatinInfo;
@@ -82,15 +82,15 @@ static inline void PrintErrorMsg(struct Window *win, u32 msgId)
 
 static void sub_0200472C(void)
 {
-    switch (gUnknown_020217B4)
+    switch (gSaveStatus)
     {
-    case 2:
+    case SAVE_STATUS_CORRUPT:
         PrintErrorMsg(gMessageWindowPtr, 6);
         break;
-    case 0xFF:
+    case SAVE_STATUS_ERROR:
         PrintErrorMsg(gMessageWindowPtr, 7);
         break;
-    case 0:
+    case SAVE_STATUS_EMPTY:
         PrintErrorMsg(gMessageWindowPtr, 8);
         break;
     default:
@@ -146,7 +146,7 @@ u32 sub_020047D4(void)
     gUnknown_02024960.unk_87A = 0;
     gUnknown_02024960.unk84C_00 = 0;
     FadeIn();
-    if (gUnknown_020217B4 == 2 || gUnknown_020217B4 == 0xFF || gUnknown_020217B4 == 0)
+    if (gSaveStatus == SAVE_STATUS_CORRUPT || gSaveStatus == SAVE_STATUS_ERROR || gSaveStatus == SAVE_STATUS_EMPTY)
     {
         // Game stuck
         while (1)

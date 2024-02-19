@@ -1,18 +1,18 @@
 #ifndef GUARD_ALL_H
 #define GUARD_ALL_H
 
-struct UnkStruct868
+struct ExternalEventData2
 {
-    u32 a0;
-    u32 a4;
-    u32 a8_0:24;
-    u32 a11_0:1;
-    u32 a11_1:1;
-    u32 a11_2:1;
-    u32 a11_3:1;
-    u32 a11_4:4;
-    u32 a12:24;
-    u32 a15:8;
+    u32 unknownExternalDataFields1;
+    u32 unknownExternalDataFields2;
+    u32 currentPokeCoupons:24;
+    u32 gotGoldPokeCouponTitleReward:1;
+    u32 gotSilverPokeCouponTitleReward:1;
+    u32 gotBronzePokeCouponTitleReward:1;
+    u32 receivedAgetoCelebi:1;
+    u32 unknownExternalDataFields3:4;
+    u32 totalEarnedPokeCoupons:24;
+    u32 unknownExternalDataFields4:8;
 };
 
 struct UnkStruct81C
@@ -75,7 +75,7 @@ struct UnkStruct_02024960
     u8 unk_85A;
     u8 unk_85B;
     u8 ALIGNED(4) field85C[12]; // Aligned for u32 copy
-    struct UnkStruct868 unk868;
+    struct ExternalEventData2 externalEventData;
     u8 unk_878;
     u8 unk_879;
     u8 unk_87A;

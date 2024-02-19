@@ -101,7 +101,7 @@ static u8 gScreenIsFadedOut;
 static u8 sPadding[2];
 static u16 sSomeWindowBaseBlock;
 
-extern u8 gUnknown_020217B4;
+extern u8 gSaveStatus;
 extern u8 gStringBuffers[][32];
 extern const u8 gFont1JapanGfx[];
 extern const u8 gFont0JapanGfx[];
