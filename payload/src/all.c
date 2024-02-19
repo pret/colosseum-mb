@@ -16,7 +16,6 @@
 #include "strings.h"
 #include "graphics.h"
 
-
 struct Unk02000D74Struct
 {
     u8 x;

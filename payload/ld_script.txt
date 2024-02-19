@@ -20,7 +20,6 @@ SECTIONS {
     ALIGN(4)
     {
         asm/m4a_1.o(.text);
-        /* asm/m4a.o(.text); */
         src/m4a.o(.text);
         src/gflib/init.o(.text);
         src/gflib/bg.o(.text);
@@ -32,7 +31,6 @@ SECTIONS {
         src/libpmagb/agb_rom.o(.text);
         src/libpmagb/pic_uncomp.o(.text);
         src/libpmagb/save.o(.text);
-        asm/libpmagb/save.o(.text);
         src/pokemon.o(.text);
         src/libpmagb/berry.o(.text);
         src/unk_200C5DC.o(.text);
