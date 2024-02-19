@@ -102,16 +102,16 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
     union PokemonSubstruct *substruct3 = GetSubstruct(boxMon, boxMon->personality, 3);
     s32 i;
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < (s32)NELEMS(substruct0->raw); i++)
         checksum += substruct0->raw[i];
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < (s32)NELEMS(substruct1->raw); i++)
         checksum += substruct1->raw[i];
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < (s32)NELEMS(substruct2->raw); i++)
         checksum += substruct2->raw[i];
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < (s32)NELEMS(substruct3->raw); i++)
         checksum += substruct3->raw[i];
 
     return checksum;
@@ -199,7 +199,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
             if (language == LANGUAGE_JAPANESE)
             {
                 text[0] = EXT_CTRL_CODE_BEGIN;
-                text[1] = 21;
+                text[1] = EXT_CTRL_CODE_JPN;
                 StringCopy(text + 2, data);
                 StringCopy(data, text);
             }
@@ -415,7 +415,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
             u16 *moves = (u16 *)data;
             s32 i = 0;
 
-            while (moves[i] != NUM_MOVES)
+            while (moves[i] != MOVES_COUNT)
             {
                 u16 move = moves[i];
                 if (substruct1->moves[0] == move
@@ -551,26 +551,26 @@ u32 GetBoxMonAbility(struct BoxPokemon *boxMon)
     return ability;
 }
 
-const u32 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon)
+const u32 *BoxMonGetCaughtBallItemSpriteSheet(struct BoxPokemon *boxMon)
 {
     u32 id;
     u16 ball = GetBoxMonData(boxMon, MON_DATA_POKEBALL, NULL);
 
     switch (ball)
     {
-    case 1:     id = 4;     break;
-    case 2:     id = 3;     break;
-    case 3:     id = 1;     break;
-    case 4:     id = 0;     break;
-    case 5:     id = 2;     break;
-    case 6:     id = 5;     break;
-    case 7:     id = 6;     break;
-    case 8:     id = 7;     break;
-    case 9:     id = 8;     break;
-    case 10:    id = 9;     break;
-    case 11:    id = 10;    break;
-    case 12:    id = 11;    break;
-    default:    id = 0;     break;
+    case ITEM_MASTER_BALL:  id = BALL_MASTER;   break;
+    case ITEM_ULTRA_BALL:   id = BALL_ULTRA;    break;
+    case ITEM_GREAT_BALL:   id = BALL_GREAT;    break;
+    case ITEM_POKE_BALL:    id = BALL_POKE;     break;
+    case ITEM_SAFARI_BALL:  id = BALL_SAFARI;   break;
+    case ITEM_NET_BALL:     id = BALL_NET;      break;
+    case ITEM_DIVE_BALL:    id = BALL_DIVE;      break;
+    case ITEM_NEST_BALL:    id = BALL_NEST;     break;
+    case ITEM_REPEAT_BALL:  id = BALL_REPEAT;   break;
+    case ITEM_TIMER_BALL:   id = BALL_TIMER;    break;
+    case ITEM_LUXURY_BALL:  id = BALL_LUXURY;   break;
+    case ITEM_PREMIER_BALL: id = BALL_PREMIER;  break;
+    default:                id = BALL_POKE;     break;
     }
 
     return gAgbPmRomParams->ballSpriteSheets[id].data;
@@ -583,19 +583,19 @@ const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
 
     switch (ball)
     {
-    case 1:     id = 4;     break;
-    case 2:     id = 3;     break;
-    case 3:     id = 1;     break;
-    case 4:     id = 0;     break;
-    case 5:     id = 2;     break;
-    case 6:     id = 5;     break;
-    case 7:     id = 6;     break;
-    case 8:     id = 7;     break;
-    case 9:     id = 8;     break;
-    case 10:    id = 9;     break;
-    case 11:    id = 10;    break;
-    case 12:    id = 11;    break;
-    default:    id = 0;     break;
+    case ITEM_MASTER_BALL:  id = BALL_MASTER;   break;
+    case ITEM_ULTRA_BALL:   id = BALL_ULTRA;    break;
+    case ITEM_GREAT_BALL:   id = BALL_GREAT;    break;
+    case ITEM_POKE_BALL:    id = BALL_POKE;     break;
+    case ITEM_SAFARI_BALL:  id = BALL_SAFARI;   break;
+    case ITEM_NET_BALL:     id = BALL_NET;      break;
+    case ITEM_DIVE_BALL:    id = BALL_DIVE;      break;
+    case ITEM_NEST_BALL:    id = BALL_NEST;     break;
+    case ITEM_REPEAT_BALL:  id = BALL_REPEAT;   break;
+    case ITEM_TIMER_BALL:   id = BALL_TIMER;    break;
+    case ITEM_LUXURY_BALL:  id = BALL_LUXURY;   break;
+    case ITEM_PREMIER_BALL: id = BALL_PREMIER;  break;
+    default:                id = BALL_POKE;     break;
     }
 
     return gAgbPmRomParams->ballSpritePalettes[id].data;

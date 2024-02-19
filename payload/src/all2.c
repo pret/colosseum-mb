@@ -535,7 +535,7 @@ static void sub_02003D80(u32 monId, bool32 a1)
     if (gUnknown_02021990.unkC == NULL)
         gUnknown_02021990.unkC = AddSprite(0, 128, gUnknown_0201FA5C);
     SetSpritePaletteNum(gUnknown_02021990.unkC, 3);
-    LZ77UnCompVram(BoxMonCaughtBallToItemId(&mon->box), (void *)VRAM + 0x12800);
+    LZ77UnCompVram(BoxMonGetCaughtBallItemSpriteSheet(&mon->box), (void *)VRAM + 0x12800);
     LZ77UnCompVram(BoxMonGetCaughtBallItemPalette(&mon->box), (void *)PLTT + 0x260);
     primaryStatus = GetMonStatus(mon);
     if (primaryStatus != STATUS_PRIMARY_NONE)

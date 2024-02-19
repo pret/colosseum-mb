@@ -310,7 +310,7 @@ struct SpindaSpot
 u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data);
 const struct CompressedSpritePalette *GetBoxMonPalettePtr(u32 partyId);
 u32 GetBoxMonAbility(struct BoxPokemon *boxMon);
-const u32 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon);
+const u32 *BoxMonGetCaughtBallItemSpriteSheet(struct BoxPokemon *boxMon);
 const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon);
 u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot);
 u32 GetBoxMonPPByMoveSlot(struct BoxPokemon *boxMon, u8 slot);
