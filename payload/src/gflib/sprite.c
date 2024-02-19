@@ -11,36 +11,37 @@ struct OamBuffer
 
 static struct OamBuffer sOamBuffer;
 
-void InsertSprite(struct Sprite * a0, struct Sprite * a1)
+void InsertSprite(struct Sprite * sprite1, struct Sprite * sprite2)
 {
-    a1->next = a0->next;
-    a1->prev = a0 - sSprites;
-    a0->next = sSprites[a0->next].prev = a1 - sSprites;
+    sprite2->next = sprite1->next;
+    sprite2->prev = sprite1 - sSprites;
+    sprite1->next = sSprites[sprite1->next].prev = sprite2 - sSprites;
 }
 
 struct Sprite * AddSprite(s32 x, s32 y, const struct Subsprites * subsprites)
 {
     s32 i;
-    struct Sprite * r7 = &sSprites[sSprites[0].next];
-    sSprites[r7->prev].next = r7->next;
-    sSprites[r7->next].prev = r7->prev;
-    InsertSprite(&sSprites[1], r7);
-    r7->x = x;
-    r7->y = y;
-    r7->spriteTemplates = subsprites;
-    r7->flag = 0;
-    r7->paletteNum = 0;
-    r7->tileOffset = 0;
-    r7->callback = NULL;
+    struct Sprite * newSprite = &sSprites[sSprites[0].next];
+
+    sSprites[newSprite->prev].next = newSprite->next;
+    sSprites[newSprite->next].prev = newSprite->prev;
+    InsertSprite(&sSprites[1], newSprite);
+    newSprite->x = x;
+    newSprite->y = y;
+    newSprite->spriteTemplates = subsprites;
+    newSprite->flag = 0;
+    newSprite->paletteNum = 0;
+    newSprite->tileOffset = 0;
+    newSprite->callback = NULL;
     for (i = 0; i < 4; i++)
-        r7->unk14[i] = 0;
-    return r7;
+        newSprite->data[i] = 0;
+    return newSprite;
 }
 
-void BufferSpriteOAM(struct Sprite * ptr)
+void BufferSpriteOAM(struct Sprite * sprite)
 {
-    u32 num_sprites;
-    struct OamData * oam_p;
+    u32 numSprites;
+    struct OamData * oam;
     const struct Subsprites * templates;
     s32 width;
     s32 left;
@@ -49,16 +50,16 @@ void BufferSpriteOAM(struct Sprite * ptr)
     u32 size;
     u32 flags;
 
-    num_sprites = sOamBuffer.numSprites;
-    oam_p = &sOamBuffer.oamBuffer[num_sprites];
+    numSprites = sOamBuffer.numSprites;
+    oam = &sOamBuffer.oamBuffer[numSprites];
+    templates = sprite->spriteTemplates;
 
-    templates = ptr->spriteTemplates;
     while (templates->oam != 0xFFFF)
     {
-        if (num_sprites == 0x80)
+        if (numSprites == 0x80)
             return;
 
-        if ((left = templates->x + ptr->x) < 0xF0 && (top = templates->y + ptr->y) < 0xA0)
+        if ((left = templates->x + sprite->x) < 0xF0 && (top = templates->y + sprite->y) < 0xA0)
         {
             size = ((templates->oam & 0xC000) >> 12) + (templates->oam >> 30);
             flags = templates->oam;
@@ -117,43 +118,43 @@ void BufferSpriteOAM(struct Sprite * ptr)
                 {
                     left &= 0x1FF;
                     top &= 0xFF;
-                    *(u32 *)oam_p = top | ((left << 16) | flags);
-                    *((u16 *)oam_p + 2) = ((templates->baseBlock & 0xFFF) | ptr->paletteNum) + ptr->tileOffset;
-                    oam_p++;
-                    num_sprites++;
+                    *(u32 *)oam = top | ((left << 16) | flags);
+                    *((u16 *)oam + 2) = ((templates->baseBlock & 0xFFF) | sprite->paletteNum) + sprite->tileOffset;
+                    oam++;
+                    numSprites++;
                 }
             }
         }
         templates++;
     }
-    sOamBuffer.numSprites = num_sprites;
+    sOamBuffer.numSprites = numSprites;
 }
 
 void UpdateSprites(void)
 {
-    s32 r2;
+    s32 numSprites;
     s32 i;
-    struct OamData * r4;
-    struct Sprite * ptr;
+    struct OamData * oam;
+    struct Sprite * sprite;
 
     i = sSprites[1].next;
 
     while (i != 1)
     {
-        ptr = &sSprites[i];
+        sprite = &sSprites[i];
 
-        if (ptr->callback != NULL)
-            ptr->callback(ptr);
+        if (sprite->callback != NULL)
+            sprite->callback(sprite);
 
-        if (!(ptr->flag & 1))
-            BufferSpriteOAM(ptr);
-        i = ptr->next;
+        if (!(sprite->flag & 1))
+            BufferSpriteOAM(sprite);
+        i = sprite->next;
     }
 
-    r4 = &sOamBuffer.oamBuffer[sOamBuffer.numSprites];
-    for (r2 = sOamBuffer.numSprites; r2 < 0x80 && *(u16 *)r4 != 0x200; r2++, r4++)
+    oam = &sOamBuffer.oamBuffer[sOamBuffer.numSprites];
+    for (numSprites = sOamBuffer.numSprites; numSprites < 0x80 && *(u16 *)oam != 0x200; numSprites++, oam++)
     {
-        *(u16 *)r4 = 0x200;
+        *(u16 *)oam = 0x200;
     }
     sOamBuffer.numSprites = 0;
 }
@@ -161,8 +162,8 @@ void UpdateSprites(void)
 void ResetSprites(void)
 {
     s32 i;
-    struct OamData * r2;
-    struct Sprite * r4;
+    struct OamData * oam;
+    struct Sprite * sprite;
 
     CpuFill16(0, sSprites, sizeof(sSprites));
     sSprites[0].next = 0;
@@ -175,16 +176,16 @@ void ResetSprites(void)
         InsertSprite(&sSprites[0], &sSprites[i]);
     }
     sOamBuffer.numSprites = 0;
-    r2 = &sOamBuffer.oamBuffer[0];
-    for (i = 0; i < 0x80; i++, r2++)
-        *(u16 *)r2 = 0x200;
+    oam = &sOamBuffer.oamBuffer[0];
+    for (i = 0; i < 0x80; i++, oam++)
+        *(u16 *)oam = 0x200;
 }
 
-void MoveSpriteToHead(struct Sprite * a0)
+void MoveSpriteToHead(struct Sprite * sprite)
 {
-    sSprites[a0->prev].next = a0->next;
-    sSprites[a0->next].prev = a0->prev;
-    InsertSprite(&sSprites[0], a0);
+    sSprites[sprite->prev].next = sprite->next;
+    sSprites[sprite->next].prev = sprite->prev;
+    InsertSprite(&sSprites[0], sprite);
 }
 
 void DoOamBufferTransfer(void)
@@ -192,29 +193,29 @@ void DoOamBufferTransfer(void)
     DmaCopy32(3, sOamBuffer.oamBuffer, (void *)OAM, OAM_SIZE);
 }
 
-void SetSpritePos(struct Sprite * r0, s32 r1, s32 r2)
+void SetSpritePos(struct Sprite * sprite, s32 x, s32 y)
 {
-    r0->x = r1;
-    r0->y = r2;
+    sprite->x = x;
+    sprite->y = y;
 }
 
-void AddSpritePos(struct Sprite * r0, s32 r1, s32 r2)
+void AddSpritePos(struct Sprite * sprite, s32 x, s32 y)
 {
-    r0->x += r1;
-    r0->y += r2;
+    sprite->x += x;
+    sprite->y += y;
 }
 
-void SetSpritePaletteNum(struct Sprite * r0, s32 r1)
+void SetSpritePaletteNum(struct Sprite * sprite, s32 paletteNum)
 {
-    r0->paletteNum = r1 << 12;
+    sprite->paletteNum = paletteNum << 12;
 }
 
-void SetSpriteTileOffset(struct Sprite * r0, s32 r1)
+void SetSpriteTileOffset(struct Sprite * sprite, s32 tileOffset)
 {
-    r0->tileOffset = r1;
+    sprite->tileOffset = tileOffset;
 }
 
-void SetSpriteInvisible(struct Sprite * r0, s32 r1)
+void SetSpriteInvisible(struct Sprite * sprite, s32 invisible)
 {
-    r0->flag = ((r0->flag & ~1) | r1);
+    sprite->flag = ((sprite->flag & ~1) | invisible);
 }

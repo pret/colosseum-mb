@@ -630,25 +630,25 @@ inline void sub_02002EE0(struct Window *win, struct UnkSpriteMonIconStruct *r9)
 void CreateMonIcon(struct Sprite *sprite)
 {
     u32 r1;
-    if (sprite->unk14[1] == 7 || sprite->unk14[1] == 20)
+    if (sprite->data[1] == 7 || sprite->data[1] == 20)
     {
-        struct UnkSpriteMonIconStruct *ptr = (void *)sprite->unk14[0];
+        struct UnkSpriteMonIconStruct *ptr = (void *)sprite->data[0];
         if (ptr->statusPrimary != STATUS_PRIMARY_FAINTED)
         {
-            sprite->unk14[1] = 0;
-            sprite->unk14[2]++;
+            sprite->data[1] = 0;
+            sprite->data[2]++;
         }
-        else if (sprite->unk14[1] == 7)
+        else if (sprite->data[1] == 7)
         {
-            sprite->unk14[1]++;
+            sprite->data[1]++;
             return;
         }
         else
         {
-            sprite->unk14[1] = 0;
+            sprite->data[1] = 0;
         }
 
-        r1 = sprite->unk14[2] & 1;
+        r1 = sprite->data[2] & 1;
         CopyMonIconToVram(ptr, r1);
         SetSpritePos(sprite, ptr->unk1, ptr->unk2);
         if (gUnknown_02021860.unk11B == ptr->monId)
@@ -662,7 +662,7 @@ void CreateMonIcon(struct Sprite *sprite)
     }
     else
     {
-        sprite->unk14[1]++;
+        sprite->data[1]++;
     }
 }
 
@@ -715,7 +715,7 @@ u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
     personality = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_PERSONALITY, NULL);
     a0->speciesIcon = FixUnownSpecies(a0->species, personality);
     sprite = AddSprite(x, y, gUnknown_0201F9F4);
-    sprite->unk14[0] = (uintptr_t)(a0);
+    sprite->data[0] = (uintptr_t)(a0);
     sprite->callback = CreateMonIcon;
     SetSpritePaletteNum(sprite, gAgbPmRomParams->monIconPaletteIds[a0->species]);
     SetSpriteTileOffset(sprite, a0->unk8);

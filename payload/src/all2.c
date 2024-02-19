@@ -66,7 +66,7 @@ extern const struct Subsprites gUnknown_0201FA5C[];
 extern const struct Subsprites gUnknown_0201FA74[];
 
 static void sub_02003D80(u32 monId, bool32 a1);
-static void sub_0200461C(struct Sprite *sprite);
+static void SpriteCB_MoveSelector(struct Sprite *sprite);
 
 // This file's functions
 static void sub_02002FEC(void)
@@ -682,7 +682,7 @@ static s32 sub_020040FC(s32 monId)
             gUnknown_02021990.unk4E = 0;
             gUnknown_02021990.unk40 = AddSprite(80, 32, gUnknown_0201FA74);
             SetSpritePaletteNum(gUnknown_02021990.unk40, 5);
-            gUnknown_02021990.unk40->callback = sub_0200461C;
+            gUnknown_02021990.unk40->callback = SpriteCB_MoveSelector;
             CopyRectWithinBgTilemapBuffer(2, 0, 20, 20, 3, 10, 11);
             TextWindowSetXY(gUnknown_02021990.unk24, 32, 72);
             RenderText(gUnknown_02021990.unk24, gText_Cancel3);
@@ -827,9 +827,9 @@ static void sub_20045B8_(s32 monId, u32 moveSlot)
     }
 }
 
-static void sub_0200461C(struct Sprite *sprite)
+static void SpriteCB_MoveSelector(struct Sprite *sprite)
 {
-    switch (sprite->unk14[0])
+    switch (sprite->data[0])
     {
     case 1:
         SetSpriteInvisible(sprite, FALSE);
@@ -838,9 +838,9 @@ static void sub_0200461C(struct Sprite *sprite)
         SetSpriteInvisible(sprite, TRUE);
         break;
     case 39:
-        sprite->unk14[0] = 0;
+        sprite->data[0] = 0;
         break;
     }
-    sprite->unk14[0]++;
+    sprite->data[0]++;
 }
 

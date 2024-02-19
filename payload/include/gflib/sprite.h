@@ -21,7 +21,7 @@ struct Sprite
     s16 y;
     const struct Subsprites * spriteTemplates;
     void (*callback)(struct Sprite *);
-    u32 unk14[4];
+    u32 data[4];
 };
 
 struct SpriteSheet
