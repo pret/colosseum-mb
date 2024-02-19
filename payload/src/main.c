@@ -72,7 +72,7 @@ inline u32 sub_0200043C(void)
     u8 buffer[64];
     u32 var18 = 0;
     u32 r4 = 0;
-    u32 language = gAgbPmRomParams->gameLanguage;
+    u32 language = gAgbPmRomParams->language;
 
     if (language != LANGUAGE_ENGLISH)
         return 0;

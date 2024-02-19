@@ -527,19 +527,19 @@ const struct CompressedSpritePalette *GetBoxMonPalettePtr(u32 partyId)
     u32 personality = GetMonDataInline(&gPlayerPartyPtr[partyId], MON_DATA_PERSONALITY, NULL);
 
     if (species > NUM_SPECIES)
-        return &gAgbPmRomParams->monPaletteTable[SPECIES_NONE];
+        return &gAgbPmRomParams->monNormalPalettes[SPECIES_NONE];
 
     shinyValue = HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality);
     if (shinyValue > 7)
-        return &gAgbPmRomParams->monPaletteTable[species];
+        return &gAgbPmRomParams->monNormalPalettes[species];
     else
-        return &gAgbPmRomParams->monShinyPaletteTable[species];
+        return &gAgbPmRomParams->monShinyPalettes[species];
 }
 
 u32 GetBoxMonAbility(struct BoxPokemon *boxMon)
 {
     u32 ability;
-    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
+    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
     u32 species = GetBoxMonData(boxMon, MON_DATA_SPECIES, NULL);
     u32 abilityNum = GetBoxMonData(boxMon, MON_DATA_ALT_ABILITY, NULL);
 
@@ -573,7 +573,7 @@ const u32 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon)
     default:    id = 0;     break;
     }
 
-    return gAgbPmRomParams->ballSpriteSheets[id].data;
+    return gAgbPmRomParams->ballGfx[id].data;
 }
 
 const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
@@ -598,7 +598,7 @@ const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
     default:    id = 0;     break;
     }
 
-    return gAgbPmRomParams->ballSpritePalettes[id].data;
+    return gAgbPmRomParams->ballPalettes[id].data;
 }
 
 u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot)
@@ -812,7 +812,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_NICKNAME:
     {
         s32 i;
-        for (i = 0; i < gAgbPmRomParams->pokemonNameLength_1; i++)
+        for (i = 0; i < gAgbPmRomParams->pokemonNameLength1; i++)
             boxMon->nickname[i] = data[i];
         break;
     }
@@ -1123,7 +1123,7 @@ void GiveGiftRibbonToParty(s32 index_, s32 ribbonId_)
                 gotRibbon = TRUE;
         }
         if (gotRibbon)
-            SetFlag(gAgbPmRomParams->giftRibbonsOffs);
+            SetFlag(gAgbPmRomParams->giftRibbonsOffset);
     }
 }
 
@@ -1150,7 +1150,7 @@ static inline u8 GetGenderFromSpeciesAndPersonality(u16 species, u32 personality
 
 u8 GetMonGender(struct Pokemon *mon)
 {
-    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
+    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
     u16 species = GetMonDataInline(mon, MON_DATA_SPECIES, NULL);
     u32 personality = GetMonDataInline(mon, MON_DATA_PERSONALITY, NULL);
     return GetGenderFromSpeciesAndPersonality(species, personality, speciesInfo);
@@ -1161,13 +1161,13 @@ const struct CompressedSpritePalette *GetMonPalettePtrBySpeciesIdPersonality(u16
     u32 shinyValue = 0;
 
     if (species > NUM_SPECIES)
-        return &gAgbPmRomParams->monPaletteTable[SPECIES_NONE];
+        return &gAgbPmRomParams->monNormalPalettes[SPECIES_NONE];
 
     shinyValue = HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality);
     if (shinyValue <= 7)
-        return &gAgbPmRomParams->monShinyPaletteTable[species];
+        return &gAgbPmRomParams->monShinyPalettes[species];
     else
-        return &gAgbPmRomParams->monPaletteTable[species];
+        return &gAgbPmRomParams->monNormalPalettes[species];
 }
 
 inline u16 GetUnownLetterByPersonality(u32 personality)
@@ -1202,14 +1202,14 @@ u16 FixUnownSpecies(u16 species, u32 personality)
 void GetSpeciesName(u8 *name, s32 species)
 {
     s32 i;
-    const u8 (*speciesNames)[][POKEMON_NAME_LENGTH + 1] = gAgbPmRomParams->speciesNames;
+    const u8 (*monSpeciesNames)[][POKEMON_NAME_LENGTH + 1] = gAgbPmRomParams->monSpeciesNames;
 
-    for (i = 0; i < gAgbPmRomParams->pokemonNameLength_1 + gAgbPmRomParams->unk82; i++)
+    for (i = 0; i < gAgbPmRomParams->pokemonNameLength1 + gAgbPmRomParams->endOfStringLength; i++)
     {
         if (species > NUM_SPECIES)
-            name[i] = (*speciesNames)[0][i];
+            name[i] = (*monSpeciesNames)[0][i];
         else
-            name[i] = (*speciesNames)[species][i];
+            name[i] = (*monSpeciesNames)[species][i];
 
         if (name[i] == EOS)
             break;
@@ -1220,7 +1220,7 @@ void GetSpeciesName(u8 *name, s32 species)
 
 u32 GetMonType(struct Pokemon *mon, u32 which)
 {
-    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
+    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
     u32 species = GetMonDataInline(mon, MON_DATA_SPECIES, NULL);
 
     switch (which)
@@ -1253,7 +1253,7 @@ const u8 *GetAbilityDescription(u32 ability)
 
 s32 CalculatePPWithBonus(u32 move, s32 ppBonuses, u32 moveIndex)
 {
-    const struct BattleMove *moves = gAgbPmRomParams->battleMoves;
+    const struct BattleMove *moves = gAgbPmRomParams->moves;
     s32 basePP = moves[move].pp;
     return basePP + ((basePP * 20 * ((gPPUpReadMasks[moveIndex] & ppBonuses) >> (2 * moveIndex))) / 100);
 }
@@ -1261,9 +1261,9 @@ s32 CalculatePPWithBonus(u32 move, s32 ppBonuses, u32 moveIndex)
 void CopyMoveName(u8 *dst, u32 move)
 {
     s32 i;
-    const u8 (*moveNames)[][ABILITY_NAME_LENGTH + 1] = gAgbPmRomParams->moveNames;
+    const u8 (*moveNames)[][MOVE_NAME_LENGTH + 1] = gAgbPmRomParams->moveNames;
 
-    for (i = 0; i < gAgbPmRomParams->unk78 + gAgbPmRomParams->unk82; i++)
+    for (i = 0; i < gAgbPmRomParams->moveNameLength + gAgbPmRomParams->endOfStringLength; i++)
     {
         dst[i] = (*moveNames)[move][i];
         if (dst[i] == EOS)
@@ -1284,7 +1284,7 @@ struct Pokemon *GetPtrToEmptyPartySlot(void)
 // The same as GetMonGender except GetGenderFromSpeciesAndPersonality isn't called by copied.
 static UNUSED u8 GetMonGender2(struct Pokemon *mon)
 {
-    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
+    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
     u16 species = GetMonDataInline(mon, MON_DATA_SPECIES, NULL);
     u32 personality = GetMonDataInline(mon, MON_DATA_PERSONALITY, NULL);
 

@@ -128,7 +128,7 @@ u32 sub_020047D4(void)
 
     gUnknown_02024960.unk_87B = 4;
     sub_0200465C();
-    if (gAgbPmRomParams->unkB8_1 || !gRomDetection_IsEnglishROM)
+    if (gAgbPmRomParams->blockLinkColoXD || !gRomDetection_IsEnglishROM)
     {
         u8 UNUSED buff[8]; // Needed to match stack.
         OverrideScreenFadeState(TRUE);
@@ -257,7 +257,7 @@ void sub_02004BEC(struct Unk2021A20Str *a0, u32 monId, s32 x, s32 y)
     void *buffer;
     u32 personality;
     const struct CompressedSpriteSheet *monFrontSheet;
-    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
+    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
 
     a0->unkC = gUnknown_02024960.unk10;
     if (a0->unkC == SPECIES_NONE)
@@ -270,7 +270,7 @@ void sub_02004BEC(struct Unk2021A20Str *a0, u32 monId, s32 x, s32 y)
 
     a0->unk0 = AddSprite(x, y, gUnknown_0201FC44[speciesInfo[a0->unkC].noFlip]);
     SetSpritePaletteNum(a0->unk0, 4);
-    monFrontSheet = &gAgbPmRomParams->monFrontPicTable[a0->unkE];
+    monFrontSheet = &gAgbPmRomParams->monFrontPics[a0->unkE];
     buffer = GetPicUncompPtr();
     LZ77UnCompVram(monFrontSheet->data, buffer);
     if (a0->unkC == SPECIES_CASTFORM)
@@ -544,11 +544,11 @@ void sub_02005168(s32 id)
     u8 text[16];
     s32 ppBonuses, ppTotal, ppCurr, type;
     struct Pokemon *mon = &gPlayerPartyPtr[gUnknown_02020A48];
-    const struct BattleMove *battleMoves = gAgbPmRomParams->battleMoves;
+    const struct BattleMove *moves = gAgbPmRomParams->moves;
     u32 move = gUnknown_02024960.unk14[id];
 
     FillWindowCharBufferRect(gUnknown_02021A20.unk18, 22, 2, 6, 2, 0);
-    type = battleMoves[move].type;
+    type = moves[move].type;
     RenderTextAt(gUnknown_02021A20.unk18, 176, 16, gTypeNames[type]);
 
     FillWindowCharBufferRect(gUnknown_02021A20.unk18, 24, 0, 4, 2, 0);
@@ -625,7 +625,7 @@ u8 *sub_0200531C(s32 id)
             txtPtr[5] = 0x15;
             len = 6;
         }
-        for (i = 0; i < gAgbPmRomParams->pokemonNameLength_2; i++)
+        for (i = 0; i < gAgbPmRomParams->pokemonNameLength2; i++)
         {
             if (gUnknown_02024960.unk81C[id].str[i] == EOS)
                 break;
@@ -1074,15 +1074,15 @@ bool32 sub_02005FCC(void)
 
 extern u8 gRomDetection_IsRubySapphire;
 
-static inline u16 Test(const struct RomInfo *rom, void *sav2)
+static inline u16 Test(const struct GFRomHeader *rom, void *sav2)
 {
-    u16 *ptr = sav2 + rom->gcnLinkFlagsOffs;
+    u16 *ptr = sav2 + rom->gcnLinkFlagsOffset;
     return *ptr;
 }
 
-static inline u8 Test2(const struct RomInfo *rom, void *sav2)
+static inline u8 Test2(const struct GFRomHeader *rom, void *sav2)
 {
-    u8 *ptr = sav2 + rom->sb2SpecialSaveWarpOffs;
+    u8 *ptr = sav2 + rom->warpFlagsOffset;
     return *ptr;
 }
 

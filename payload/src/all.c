@@ -588,7 +588,7 @@ inline void PutMonGenderOnBgTilemap(int x, int y, u32 monId)
 
 inline void CopyMonIconToVram(struct UnkSpriteMonIconStruct *ptr, u32 a1)
 {
-    CpuCopy16(&gAgbPmRomParams->monIconTable[ptr->speciesIcon][a1 * 512], (void *)VRAM + 0x10000 + (ptr->unk8 * 32), 512);
+    CpuCopy16(&gAgbPmRomParams->monIcons[ptr->speciesIcon][a1 * 512], (void *)VRAM + 0x10000 + (ptr->unk8 * 32), 512);
 }
 
 inline void sub_2002E70(s32 a0)
@@ -717,7 +717,7 @@ u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
     sprite = AddSprite(x, y, gUnknown_0201F9F4);
     sprite->unk14[0] = (uintptr_t)(a0);
     sprite->callback = CreateMonIcon;
-    SetSpritePaletteNum(sprite, gAgbPmRomParams->gMonIconPaletteIndices[a0->species]);
+    SetSpritePaletteNum(sprite, gAgbPmRomParams->monIconPaletteIds[a0->species]);
     SetSpriteTileOffset(sprite, a0->unk8);
     CopyMonIconToVram(a0, 1);
     a0->monSprite = sprite;
@@ -755,7 +755,7 @@ void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *
                 SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 5);
         }
 
-        r9->unk14 = CreateSomeWindowParameterized(1, coords->x + 4, coords->y + 1, gAgbPmRomParams->pokemonNameLength_2, 2, 8);
+        r9->unk14 = CreateSomeWindowParameterized(1, coords->x + 4, coords->y + 1, gAgbPmRomParams->pokemonNameLength2, 2, 8);
         GetMonData(&gPlayerPartyPtr[monId], MON_DATA_NICKNAME, monName);
         SomeMonNameStrMagic(monName, sp32, GetStringSizeHandleExtCtrlCodes(monName));
         if (GetMonData(&gPlayerPartyPtr[monId], MON_DATA_LANGUAGE, monName) != LANGUAGE_JAPANESE)
@@ -847,7 +847,7 @@ void sub_02001258(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *
                 SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 5);
         }
 
-        r9->unk14 = CreateSomeWindowParameterized(1, coords->x + 3, coords->y, gAgbPmRomParams->pokemonNameLength_2, 2, 8);
+        r9->unk14 = CreateSomeWindowParameterized(1, coords->x + 3, coords->y, gAgbPmRomParams->pokemonNameLength2, 2, 8);
         GetMonData(&gPlayerPartyPtr[monId], MON_DATA_NICKNAME, monName);
         SomeMonNameStrMagic(monName, sp32, GetStringSizeHandleExtCtrlCodes(monName));
         if (GetMonData(&gPlayerPartyPtr[monId], MON_DATA_LANGUAGE, monName) != LANGUAGE_JAPANESE)
@@ -941,7 +941,7 @@ void sub_020017E8(struct Unk02021860Struct *a0)
 {
     s32 i;
     const struct Unk02000D74Struct *coords;
-    const struct SpritePalette *monIconPaletteTable;
+    const struct SpritePalette *monIconPalettes;
 
     sSomeWindowBaseBlock = 0x80;
     ClearVram();
@@ -960,8 +960,8 @@ void sub_020017E8(struct Unk02021860Struct *a0)
     AutoUnCompVram(gTypeStatusIcons_Gfx, (void *) VRAM + 0x10000);
     sub_2002E70(gUnknown_02021860.unk118);
     gBgTilemapBufferTransferScheduled[1] = TRUE;
-    monIconPaletteTable = gAgbPmRomParams->monIconPaletteTable;
-    DmaCopy16(3, monIconPaletteTable[0].data, (void *) PLTT + 0x200, 0x60);
+    monIconPalettes = gAgbPmRomParams->monIconPalettes;
+    DmaCopy16(3, monIconPalettes[0].data, (void *) PLTT + 0x200, 0x60);
     AutoUnCompVram(gPartySlots_Tilemap, (void *) VRAM + 0x14000);
     if (a0->unk11A == 0)
         coords = gUnknown_0201F9BC;

@@ -102,7 +102,7 @@ static void CreatePartyMonFrontPic(struct UnkStruct02021990 *a0, u32 monId, s32 
     const struct CompressedSpritePalette *frontPicPal;
     u32 personality;
     bool32 noFlip;
-    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
+    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
 
     a0->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES, NULL);
     if (a0->species == SPECIES_NONE)
@@ -116,7 +116,7 @@ static void CreatePartyMonFrontPic(struct UnkStruct02021990 *a0, u32 monId, s32 
     noFlip = speciesInfo[a0->species].noFlip;
     DelayFrames(1);
 
-    frontPicSheet = &gAgbPmRomParams->monFrontPicTable[a0->speciesPic];
+    frontPicSheet = &gAgbPmRomParams->monFrontPics[a0->speciesPic];
     bufferPic = GetPicUncompPtr();
     LZ77UnCompVram(frontPicSheet->data, bufferPic);
     DrawSpindasSpots(a0->species, personality, bufferPic);
@@ -295,7 +295,7 @@ static void sub_0200378C(u32 monId)
     u32 move, moveType;
     s32 ppCurr, ppBonuses, ppMax;
     struct Pokemon *mon = &gPlayerPartyPtr[monId];
-    const struct BattleMove *battleMoves = gAgbPmRomParams->battleMoves;
+    const struct BattleMove *moves = gAgbPmRomParams->moves;
 
     SetTextColor(gUnknown_02021990.unk24, 1, 8);
     SetBgTilemapBufferPaletteRect(0, 24, 4, 5, 8, 15);
@@ -307,7 +307,7 @@ static void sub_0200378C(u32 monId)
         ppCurr = GetBoxMonPPByMoveSlot(&mon->box, i);
         ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
         ppMax = CalculatePPWithBonus(move, ppBonuses, i);
-        moveType = battleMoves[move].type;
+        moveType = moves[move].type;
 
         gUnknown_02021990.unk44[i] = move;
         if (gUnknown_02021990.unk2C[i] == NULL)
@@ -372,7 +372,7 @@ static void sub_02003A70(u32 monId, u32 moveSlot)
 {
     u8 text[8];
     struct Pokemon *mon = &gPlayerPartyPtr[monId];
-    const struct BattleMove *battleMoves = gAgbPmRomParams->battleMoves;
+    const struct BattleMove *moves = gAgbPmRomParams->moves;
 
     FillWindowCharBufferRect(gUnknown_02021990.unk20, 6, 3, 3, 4, 0);
     SetBgTilemapBufferPaletteRect(0, 7, 15, 3, 4, 15);
@@ -390,25 +390,25 @@ static void sub_02003A70(u32 monId, u32 moveSlot)
         {
             TextWindowSetXY(gUnknown_02021990.unk20, 52, 24);
             gUnknown_02021990.unk20->glyphWidth = 6;
-            if (battleMoves[move].power <= 1)
+            if (moves[move].power <= 1)
             {
                 RenderText(gUnknown_02021990.unk20, gText_3Dashes);
             }
             else
             {
-                NumToPmString3RightAlign(text, battleMoves[move].power);
+                NumToPmString3RightAlign(text, moves[move].power);
                 RenderText(gUnknown_02021990.unk20, text);
             }
 
             TextWindowSetXY(gUnknown_02021990.unk20, 52, 40);
             gUnknown_02021990.unk20->glyphWidth = 6;
-            if (battleMoves[move].accuracy == 0)
+            if (moves[move].accuracy == 0)
             {
                 RenderText(gUnknown_02021990.unk20, gText_3Dashes);
             }
             else
             {
-                NumToPmString3RightAlign(text, battleMoves[move].accuracy);
+                NumToPmString3RightAlign(text, moves[move].accuracy);
                 RenderText(gUnknown_02021990.unk20, text);
             }
         }

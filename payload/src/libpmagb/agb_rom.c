@@ -114,17 +114,17 @@ void SaveBlocksInit(void)
         SetSaveBlock1Ptr();
         break;
     }
-    gPlayerPartyPtr = gSaveBlock1Ptr + gAgbPmRomParams->playerPartyOffs;
-    gPlayerPartyBakPtr = gSaveBlock1BakPtr + gAgbPmRomParams->playerPartyOffs;
-    gPlayerPartyCountPtr = gSaveBlock1Ptr + gAgbPmRomParams->playerPartyCountOffs;
-    gPokedexPtr = gSaveBlock2Ptr + gAgbPmRomParams->pokedexOffs;
-    gDexSeen2Ptr = gSaveBlock1Ptr + gAgbPmRomParams->dexSeen2Offs;
-    gDexSeen3Ptr = gSaveBlock1Ptr + gAgbPmRomParams->dexSeen3Offs;
-    gFlagsPtr = gSaveBlock1Ptr + gAgbPmRomParams->flagsOffs;
-    gVarsPtr = gSaveBlock1Ptr + gAgbPmRomParams->varsOffs;
-    gGiftRibbonsPtr = gSaveBlock1Ptr + gAgbPmRomParams->giftRibbonsOffs;
-    gEnigmaBerryPtr = gSaveBlock1Ptr + gAgbPmRomParams->enigmaBerryOffs;
-    gPcItemsPtr = gSaveBlock1Ptr + gAgbPmRomParams->pcItemsOffs;
+    gPlayerPartyPtr = gSaveBlock1Ptr + gAgbPmRomParams->partyOffset;
+    gPlayerPartyBakPtr = gSaveBlock1BakPtr + gAgbPmRomParams->partyOffset;
+    gPlayerPartyCountPtr = gSaveBlock1Ptr + gAgbPmRomParams->partyCountOffset;
+    gPokedexPtr = gSaveBlock2Ptr + gAgbPmRomParams->pokedexOffset;
+    gDexSeen2Ptr = gSaveBlock1Ptr + gAgbPmRomParams->seen1Offset;
+    gDexSeen3Ptr = gSaveBlock1Ptr + gAgbPmRomParams->seen2Offset;
+    gFlagsPtr = gSaveBlock1Ptr + gAgbPmRomParams->flagsOffset;
+    gVarsPtr = gSaveBlock1Ptr + gAgbPmRomParams->varsOffset;
+    gGiftRibbonsPtr = gSaveBlock1Ptr + gAgbPmRomParams->giftRibbonsOffset;
+    gEnigmaBerryPtr = gSaveBlock1Ptr + gAgbPmRomParams->enigmaBerryOffset;
+    gPcItemsPtr = gSaveBlock1Ptr + gAgbPmRomParams->pcItemsOffset;
 }
 
 u16 SaveRandom(void)
