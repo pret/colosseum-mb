@@ -14,13 +14,13 @@ gUnknown_02021860:
 gUnknown_02021985:
 	.space 0xb
 
-gUnknown_02021990:
+gMonSummaryScreen:
 	.space 0x44
 
 gUnknown_020219D4:
 	.space 0xa
 
-gUnknown_020219DE:
+gCurrentMoveSlot:
 	.space 0x1
 
 gUnknown_020219DF:
