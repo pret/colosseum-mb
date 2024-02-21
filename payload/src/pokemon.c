@@ -120,6 +120,7 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
 static inline void EncryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
+
     for (i = 0; i < NELEMS(boxMon->secure.raw); i++)
     {
         boxMon->secure.raw[i] ^= boxMon->personality;
@@ -130,6 +131,7 @@ static inline void EncryptBoxMon(struct BoxPokemon *boxMon)
 static inline void DecryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
+
     for (i = 0; i < NELEMS(boxMon->secure.raw); i++)
     {
         boxMon->secure.raw[i] ^= boxMon->otId;
@@ -174,6 +176,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     {
         u32 language;
         u8 text[16];
+
         if (boxMon->isBadEgg)
         {
             StringCopy(data, gText_BadEgg);
@@ -429,6 +432,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
         break;
     case MON_DATA_RIBBON_COUNT:
         retVal = 0;
+
         if (substruct0->species && !substruct3->isEgg)
         {
             retVal += substruct3->coolRibbon;
@@ -452,6 +456,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
         break;
     case MON_DATA_RIBBONS:
         retVal = 0;
+
         if (substruct0->species && !substruct3->isEgg)
         {
             retVal = substruct3->championRibbon
@@ -521,7 +526,6 @@ static inline u32 GetMonDataInline(struct Pokemon *mon, s32 attr, u8 *strbuf)
 const struct CompressedSpritePalette *GetBoxMonPalettePtr(u32 partyId)
 {
     u32 shinyValue = 0;
-
     u16 species = GetMonDataInline(&gPlayerPartyPtr[partyId], MON_DATA_SPECIES_OR_EGG, NULL);
     u32 otId = GetMonDataInline(&gPlayerPartyPtr[partyId], MON_DATA_OT_ID, NULL);
     u32 personality = GetMonDataInline(&gPlayerPartyPtr[partyId], MON_DATA_PERSONALITY, NULL);
@@ -530,6 +534,7 @@ const struct CompressedSpritePalette *GetBoxMonPalettePtr(u32 partyId)
         return &gAgbPmRomParams->monPaletteTable[SPECIES_NONE];
 
     shinyValue = HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality);
+
     if (shinyValue > 7)
         return &gAgbPmRomParams->monPaletteTable[species];
     else
@@ -564,7 +569,7 @@ const u32 *BoxMonGetCaughtBallItemSpriteSheet(struct BoxPokemon *boxMon)
     case ITEM_POKE_BALL:    id = BALL_POKE;     break;
     case ITEM_SAFARI_BALL:  id = BALL_SAFARI;   break;
     case ITEM_NET_BALL:     id = BALL_NET;      break;
-    case ITEM_DIVE_BALL:    id = BALL_DIVE;      break;
+    case ITEM_DIVE_BALL:    id = BALL_DIVE;     break;
     case ITEM_NEST_BALL:    id = BALL_NEST;     break;
     case ITEM_REPEAT_BALL:  id = BALL_REPEAT;   break;
     case ITEM_TIMER_BALL:   id = BALL_TIMER;    break;
@@ -589,7 +594,7 @@ const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
     case ITEM_POKE_BALL:    id = BALL_POKE;     break;
     case ITEM_SAFARI_BALL:  id = BALL_SAFARI;   break;
     case ITEM_NET_BALL:     id = BALL_NET;      break;
-    case ITEM_DIVE_BALL:    id = BALL_DIVE;      break;
+    case ITEM_DIVE_BALL:    id = BALL_DIVE;     break;
     case ITEM_NEST_BALL:    id = BALL_NEST;     break;
     case ITEM_REPEAT_BALL:  id = BALL_REPEAT;   break;
     case ITEM_TIMER_BALL:   id = BALL_TIMER;    break;
@@ -604,6 +609,7 @@ const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
 u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot)
 {
     u32 move;
+
     switch (slot)
     {
     case 0: move = GetBoxMonData(boxMon, MON_DATA_MOVE1, NULL); break;
@@ -618,6 +624,7 @@ u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot)
 u32 GetBoxMonPPByMoveSlot(struct BoxPokemon *boxMon, u8 slot)
 {
     u32 pp;
+
     switch (slot)
     {
     case 0: pp = GetBoxMonData(boxMon, MON_DATA_PP1, NULL); break;
@@ -632,9 +639,9 @@ u32 GetBoxMonPPByMoveSlot(struct BoxPokemon *boxMon, u8 slot)
 u32 CheckPartyPokerus(struct Pokemon *party, u8 selection)
 {
     u32 retVal;
+    u32 partyIndex = 0;
+    u32 curBit = 1;
 
-    int partyIndex = 0;
-    unsigned curBit = 1;
     retVal = 0;
 
     if (selection)
@@ -681,6 +688,7 @@ u32 GetMonStatus(struct Pokemon *mon)
         return STATUS_PRIMARY_FAINTED;
 
     statusAilment = GetPrimaryStatus(GetMonDataInline(mon, MON_DATA_STATUS, NULL));
+
     if (statusAilment == STATUS_PRIMARY_NONE)
     {
         if (!CheckPartyPokerus(mon, 0))
@@ -695,9 +703,9 @@ u32 GetMonStatus(struct Pokemon *mon)
 u32 CheckPartyHasHadPokerus(struct Pokemon *party, u8 selection)
 {
     u32 retVal;
+    u32 partyIndex = 0;
+    u32 curBit = 1;
 
-    int partyIndex = 0;
-    unsigned curBit = 1;
     retVal = 0;
 
     if (selection)
@@ -724,7 +732,8 @@ void DrawSpindasSpots(u16 species, u32 personality, u8 *dest)
 {
     if (species == SPECIES_SPINDA)
     {
-        int i, j, k, var;
+        s32 i, j, k;
+        u32 var;
 
         if (gRomDetection_IsRubySapphire != FALSE)
             var = 0;
@@ -776,7 +785,6 @@ void DrawSpindasSpots(u16 species, u32 personality, u8 *dest)
 void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 {
     const u8 *data = dataArg;
-
     struct PokemonSubstruct0 *substruct0 = NULL;
     struct PokemonSubstruct1 *substruct1 = NULL;
     struct PokemonSubstruct2 *substruct2 = NULL;
@@ -812,6 +820,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_NICKNAME:
     {
         s32 i;
+
         for (i = 0; i < gAgbPmRomParams->pokemonNameLength_1; i++)
             boxMon->nickname[i] = data[i];
         break;
@@ -831,6 +840,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_OT_NAME:
     {
         s32 i;
+
         for (i = 0; i < gAgbPmRomParams->playerNameLength; i++)
             boxMon->otName[i] = data[i];
         break;
@@ -926,6 +936,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_MET_LEVEL:
     {
         u8 metLevel = *data;
+
         substruct3->metLevel = metLevel;
         break;
     }
@@ -935,6 +946,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_POKEBALL:
     {
         u8 pokeball = *data;
+
         substruct3->pokeball = pokeball;
         break;
     }
@@ -961,6 +973,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         break;
     case MON_DATA_IS_EGG:
         SET8(substruct3->isEgg);
+
         if (substruct3->isEgg)
             boxMon->isEgg = 1;
         else
@@ -1030,6 +1043,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 #else
         u32 ivs = *data; // Bug: Only the HP IV and the lower 3 bits of the Attack IV are read. The rest become 0.
 #endif
+
         substruct3->hpIV = ivs & 0x1F;
         substruct3->attackIV = (ivs >> 5) & 0x1F;
         substruct3->defenseIV = (ivs >> 10) & 0x1F;
@@ -1052,6 +1066,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg)
 {
     const u8 *data = dataArg;
+
     switch (field)
     {
     case MON_DATA_STATUS:
@@ -1117,6 +1132,7 @@ void GiveGiftRibbonToParty(s32 index_, s32 ribbonId_)
     if (index < 11 && ribbonId < 65 && index < 7)
     {
         gGiftRibbonsPtr[index] = ribbonId;
+
         for (i = 0; i < PARTY_SIZE; i++)
         {
             if (GetMonDataInline(&gPlayerPartyPtr[i], MON_DATA_SPECIES, NULL) != 0 && GetMonDataInline(&gPlayerPartyPtr[i], MON_DATA_SANITY_IS_EGG, NULL) == 0)
@@ -1153,6 +1169,7 @@ u8 GetMonGender(struct Pokemon *mon)
     const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
     u16 species = GetMonDataInline(mon, MON_DATA_SPECIES, NULL);
     u32 personality = GetMonDataInline(mon, MON_DATA_PERSONALITY, NULL);
+
     return GetGenderFromSpeciesAndPersonality(species, personality, speciesInfo);
 }
 
@@ -1164,6 +1181,7 @@ const struct CompressedSpritePalette *GetMonPalettePtrBySpeciesIdPersonality(u16
         return &gAgbPmRomParams->monPaletteTable[SPECIES_NONE];
 
     shinyValue = HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality);
+
     if (shinyValue <= 7)
         return &gAgbPmRomParams->monShinyPaletteTable[species];
     else
@@ -1242,12 +1260,14 @@ u32 GetMonSpritePaletteNumByBaseBlock(u32 id)
 const u8 *GetAbilityName(u32 ability)
 {
     const u8 (*abilityNames)[][ABILITY_NAME_LENGTH + 1] = gAgbPmRomParams->abilityNames;
+
     return (*abilityNames)[ability];
 }
 
 const u8 *GetAbilityDescription(u32 ability)
 {
     const u8 **desriptions = gAgbPmRomParams->abilityDescriptions;
+
     return desriptions[ability];
 }
 
@@ -1255,6 +1275,7 @@ s32 CalculatePPWithBonus(u32 move, s32 ppBonuses, u32 moveIndex)
 {
     const struct BattleMove *moves = gAgbPmRomParams->battleMoves;
     s32 basePP = moves[move].pp;
+
     return basePP + ((basePP * 20 * ((gPPUpReadMasks[moveIndex] & ppBonuses) >> (2 * moveIndex))) / 100);
 }
 
