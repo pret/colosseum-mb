@@ -40,7 +40,7 @@ void SetTextColor(struct Window * window, u8 fg, u8 shadow);
 void TextWindowNextLine(struct Window * window);
 void TextWindowSetXY(struct Window * window, u32 x, u32 y);
 void TextWindowShiftXY(struct Window * window, s32 dx, s32 dy);
-void TextWindowPrintSimpleString(struct Window * window, const u8 * glyphs);
+void UNUSED TextWindowPrintSimpleString(struct Window * window, const u8 * glyphs);
 void TextWindowFillTileBufferForText(struct Window * window);
 
 #ifdef __cplusplus

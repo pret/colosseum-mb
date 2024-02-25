@@ -77,7 +77,7 @@ struct {
 static u8 sWipeTries;
 static u32 gSaveValidStatus;
 
-bool8 WipeFailedSectors(void);
+static bool8 WipeFailedSectors(void);
 
 struct SaveBlockChunk sSaveBlockChunks[] = {
     SAVEBLOCK_CHUNK_FALSE_SIZE(gSaveBlock2Ptr, 0, 0x0004),
@@ -433,7 +433,7 @@ static inline u32 TryWriteSector(u8 sectorNum, void * data)
     }
 }
 
-u32 HandleWriteSector(u16 sectorId, const struct SaveBlockChunk * chunks)
+static u32 HandleWriteSector(u16 sectorId, const struct SaveBlockChunk * chunks)
 {
     u16 i;
     u16 sector;
@@ -505,7 +505,7 @@ u32 WriteSaveBlockChunks(void)
     return WriteSaveSectorOrSlot(0xFFFF, sSaveBlockChunks);
 }
 
-u8 HandleReplaceSector(u16 sectorId, const struct SaveBlockChunk * chunks)
+static u8 HandleReplaceSector(u16 sectorId, const struct SaveBlockChunk * chunks)
 {
     u16 i;
     u16 sector;
@@ -575,7 +575,7 @@ u8 HandleReplaceSector(u16 sectorId, const struct SaveBlockChunk * chunks)
     }
 }
 
-u8 WriteSectorSignatureByte(u16 sectorId, const struct SaveBlockChunk * chunks)
+static u8 WriteSectorSignatureByte(u16 sectorId, const struct SaveBlockChunk * chunks)
 {
     u16 sector = sectorId + gLastWrittenSector - 1;
 
@@ -597,7 +597,7 @@ u8 WriteSectorSignatureByte(u16 sectorId, const struct SaveBlockChunk * chunks)
     }
 }
 
-u8 WriteSectorSignatureByteInverse(u16 sectorId, const struct SaveBlockChunk * chunks)
+static u8 WriteSectorSignatureByteInverse(u16 sectorId, const struct SaveBlockChunk * chunks)
 {
     u16 sector = sectorId + gLastWrittenSector - 1;
 
@@ -689,7 +689,7 @@ inline u32 HandleReplaceSectorAndVerify(u16 chunk, const struct SaveBlockChunk *
     return status;
 }
 
-bool32 FullSaveAndLoopOverFailedSectors(void)
+static bool32 FullSaveAndLoopOverFailedSectors(void)
 {
     u8 status;
 
@@ -1072,7 +1072,7 @@ static inline bool8 WipeSector_Sub(void)
     return FALSE;
 }
 
-bool8 WipeSector(u16 sectorNum)
+static bool8 WipeSector(u16 sectorNum)
 {
     u16 i;
     bool8 ret;
@@ -1098,7 +1098,7 @@ bool8 WipeSector(u16 sectorNum)
     return ret;
 }
 
-bool8 WipeFailedSectors(void)
+static bool8 WipeFailedSectors(void)
 {
     u32 bits;
     u16 i;

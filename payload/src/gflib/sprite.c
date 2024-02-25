@@ -11,7 +11,7 @@ struct OamBuffer
 
 static struct OamBuffer sOamBuffer;
 
-void InsertSprite(struct Sprite * sprite1, struct Sprite * sprite2)
+static void InsertSprite(struct Sprite * sprite1, struct Sprite * sprite2)
 {
     sprite2->next = sprite1->next;
     sprite2->prev = sprite1 - sSprites;
@@ -38,7 +38,7 @@ struct Sprite * AddSprite(s32 x, s32 y, const struct Subsprites * subsprites)
     return newSprite;
 }
 
-void BufferSpriteOAM(struct Sprite * sprite)
+static void BufferSpriteOAM(struct Sprite * sprite)
 {
     u32 numSprites;
     struct OamData * oam;

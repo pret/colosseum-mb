@@ -226,7 +226,7 @@ void TextWindowShiftXY(struct Window * window, s32 dx, s32 dy)
     window->currentY += dy;
 }
 
-void TextWindowPrintSimpleString(struct Window * window, const u8 * glyphs)
+void UNUSED TextWindowPrintSimpleString(struct Window * window, const u8 * glyphs)
 {
     while (*glyphs != 0)
     {

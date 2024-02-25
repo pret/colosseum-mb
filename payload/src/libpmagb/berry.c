@@ -25,7 +25,7 @@ struct Item
     u8 secondaryId;
 };
 
-u32 GetEnigmaBerryChecksum(struct EnigmaBerry * enigmaBerry)
+u32 UNUSED GetEnigmaBerryChecksum(struct EnigmaBerry * enigmaBerry)
 {
     u32 i, checksum;
     u8 * dest;

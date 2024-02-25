@@ -64,7 +64,7 @@ void CopyToBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 heig
     }
 }
 
-void CopyFromBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, u16 * dest)
+void UNUSED CopyFromBgTilemapBufferRect(u32 bgNum, u32 left, u32 top, s32 width, u32 height, u16 * dest)
 {
     s32 x;
     u16 * ptr = (void *)(gBGTilemapBuffers + (bgNum << 12) + (top << 6) + (left << 1));

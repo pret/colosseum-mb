@@ -13,9 +13,9 @@ IntrFunc gIntrTable[14u];
 u32 gVBlankCounter;
 IntrFunc gVBlankCallback;
 
-void InitIntr(void);
-void VBlankIntr(void);
-void IntrDummy(void);
+static void InitIntr(void);
+static void VBlankIntr(void);
+static void IntrDummy(void);
 
 #define SR_KEYS (A_BUTTON | B_BUTTON | SELECT_BUTTON | START_BUTTON)
 
@@ -49,7 +49,7 @@ void DelayFrames(u32 frames)
     }
 }
 
-void InitIntr(void)
+static void InitIntr(void)
 {
     u32 i;
 
@@ -80,7 +80,7 @@ void SetVBlankCallback(IntrFunc cb)
     REG_IME = imeBak;
 }
 
-void VBlankIntr(void)
+static void VBlankIntr(void)
 {
     if (EnableSoundVSync(0))
         m4aSoundVSync();
@@ -97,7 +97,7 @@ void VBlankIntr(void)
         m4aSoundMain();
 }
 
-void IntrDummy(void)
+static void IntrDummy(void)
 {
 
 }

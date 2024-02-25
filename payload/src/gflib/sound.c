@@ -34,7 +34,7 @@ void PlaySE(u16 song)
     m4aMPlayImmInit(mPlayInfo);
 }
 
-void StopSE(u16 song)
+void UNUSED StopSE(u16 song)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
@@ -42,17 +42,17 @@ void StopSE(u16 song)
     m4aMPlayStop(mPlayInfo);
 }
 
-void StopAllSound(void)
+void UNUSED StopAllSound(void)
 {
     m4aMPlayAllStop();
 }
 
-bool8 sub_020093AC(void)
+bool8 UNUSED ReturnTrue(void)
 {
     return TRUE;
 }
 
-void FadeOutSE(u16 song, u16 _speed)
+void UNUSED FadeOutSE(u16 song, u16 _speed)
 {
     struct MusicPlayerInfo * mPlayInfo;
     u16 speed = _speed >> 4;
@@ -64,7 +64,7 @@ void FadeOutSE(u16 song, u16 _speed)
     m4aMPlayFadeOut(mPlayInfo, speed);
 }
 
-void SetSEVolume(u16 song, u16 volume)
+void UNUSED SetSEVolume(u16 song, u16 volume)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
@@ -72,7 +72,7 @@ void SetSEVolume(u16 song, u16 volume)
     m4aMPlayVolumeControl(mPlayInfo, 0xFF, volume);
 }
 
-void SetSETempo(u16 song, u16 tempo)
+void UNUSED SetSETempo(u16 song, u16 tempo)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
@@ -80,7 +80,7 @@ void SetSETempo(u16 song, u16 tempo)
     m4aMPlayTempoControl(mPlayInfo, tempo);
 }
 
-void SetSEPitch(u16 song, s16 pitch)
+void UNUSED SetSEPitch(u16 song, s16 pitch)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
