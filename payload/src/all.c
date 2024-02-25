@@ -132,7 +132,7 @@ extern const struct RomHeader gRomHeader;
 extern struct Unk02021860Struct gUnknown_02021860;
 extern s32 sub_020063FC(void);
 extern s32 sub_020064BC(u32 a0, u32 a1);
-extern u32 sub_020044F0(u32 a0);
+extern u32 ShowPokemonSummaryScreen(u32 monId);
 
 void sub_02002A9C(s32 a0, u32 a1, u32 a2);
 void sub_02002C44(void);
@@ -1161,7 +1161,7 @@ s32 sub_02001A8C(u32 monId)
         case 4:
             PlaySE(SONG_SE_SELECT);
             FadeOut();
-            gUnknown_02021860.unk11B = sub_020044F0(gUnknown_02021860.unk11B);
+            gUnknown_02021860.unk11B = ShowPokemonSummaryScreen(gUnknown_02021860.unk11B);
             monId = gUnknown_02021860.unk11B;
             if (gUnknown_02021860.unk11A == 1)
             {
@@ -1310,7 +1310,7 @@ s32 sub_02001F04(s32 ret)
         case 4:
             PlaySE(SONG_SE_SELECT);
             FadeOut();
-            gUnknown_02021860.unk11B = sub_020044F0(gUnknown_02021860.unk11B);
+            gUnknown_02021860.unk11B = ShowPokemonSummaryScreen(gUnknown_02021860.unk11B);
             if (gUnknown_02021860.unk11A == 1)
             {
                 if (gUnknown_02021860.unk11B == 0)

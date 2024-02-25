@@ -15,9 +15,9 @@
 #include "constants/items.h"
 #include "constants/songs.h"
 
-extern u8 gUnknown_020219DF;
-extern u8 gCurrentMoveSlot;
-extern u16 gUnknown_020219D4[];
+extern u8 gIsNotShowingMoveDetails; // Occupies the same memory as gMonSummaryScreen.isNotShowingMoveDetails
+extern u8 gCurrentMoveSlot; // Occupies the same memory as gMonSummaryScreen.currentMoveSlot
+extern u16 gSummaryCurrentMonMoves[]; // Occupies the same memory as gMonSummaryScreen.moves
 
 extern const u32 gSummaryScreen_Pal[];
 extern const u32 gSummaryScreen_Gfx[];
@@ -29,27 +29,27 @@ extern const u32 gTypeStatusIcons_Gfx[];
 
 struct PokemonSummaryScreenData
 {
-    struct Sprite *monSprite;
-    struct Sprite *type1Sprite; // 0x4
-    struct Sprite *type2Sprite; // 0x8
-    struct Sprite *ballSprite;
-    struct Sprite *statusSprite;
-    u16 species; // 0x14
-    u16 speciesPic; // 0x16 - for Unown
-    bool8 statsPrinted; // 0x18
-    struct Window *titleWindow;
-    struct Window *leftWindow;
-    struct Window *mainWindow;
-    struct Window *inputWindow;
-    struct Sprite *moveTypeSprites[MAX_MON_MOVES];
-    u8 fill3C;
-    u8 fill3D;
-    struct Sprite *moveSelectorSprite;
-    u16 moves[MAX_MON_MOVES];
-    u16 unk4C;
-    u8 currentMoveSlot;
-    u8 unk4F;
-    u8 unk50;
+    /*0x00*/ struct Sprite *monSprite;
+    /*0x04*/ struct Sprite *type1Sprite;
+    /*0x08*/ struct Sprite *type2Sprite;
+    /*0x0C*/ struct Sprite *ballSprite;
+    /*0x10*/ struct Sprite *statusSprite;
+    /*0x14*/ u16 species;
+    /*0x16*/ u16 speciesPic;
+    /*0x18*/ bool8 statsPrinted;
+    /*0x19*/ u8 unused1[3];
+    /*0x1C*/ struct Window *titleWindow;
+    /*0x20*/ struct Window *leftWindow;
+    /*0x24*/ struct Window *mainWindow;
+    /*0x28*/ struct Window *inputWindow;
+    /*0x2C*/ struct Sprite *moveTypeSprites[MAX_MON_MOVES];
+    /*0x3C*/ u32 unused2;
+    /*0x40*/ struct Sprite *moveSelectorSprite;
+    /*0x44*/ u16 moves[MAX_MON_MOVES + 1]; // gSummaryCurrentMonMoves
+    /*0x4E*/ u8 currentMoveSlot; // gCurrentMoveSlot
+    /*0x4F*/ u8 isNotShowingMoveDetails; // gIsNotShowingMoveDetails
+    /*0x50*/ u8 currentMonId;
+    /*0x51*/ u8 unused4;
 };
 
 extern struct PokemonSummaryScreenData gMonSummaryScreen;
@@ -65,11 +65,11 @@ extern const struct Subsprites gSubspriteStatus[];
 extern const struct Subsprites gSubspritePokeBall[];
 extern const struct Subsprites gSubspriteMoveSelector[];
 
-static void sub_02003D80(u32 monId, bool32 a1);
+static void PrintMainInfo(u32 monId, bool32 skipInitialDraws);
 static void sub_0200461C(struct Sprite *sprite);
 
 // This file's functions
-static void sub_02002FEC(void)
+static void InitGraphics(void)
 {
     ClearVram();
     REG_DISPCNT = DISPCNT_BG_ALL_ON | DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP;
@@ -95,7 +95,7 @@ static void sub_02002FEC(void)
     gMonSummaryScreen.leftWindow = AddWindow(3, &gWindowTemplateSummaryLeftPane);
 }
 
-static void CreatePartyMonFrontPic(struct PokemonSummaryScreenData *a0, u32 monId, s32 x, s32 y)
+static void CreatePartyMonFrontPic(struct PokemonSummaryScreenData *sum, u32 monId, s32 x, s32 y)
 {
     void *bufferPic, *bufferPal;
     const struct CompressedSpriteSheet *frontPicSheet;
@@ -104,53 +104,59 @@ static void CreatePartyMonFrontPic(struct PokemonSummaryScreenData *a0, u32 monI
     bool32 noFlip;
     const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
 
-    a0->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES, NULL);
-    if (a0->species == SPECIES_NONE)
+    sum->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES, NULL);
+
+    if (sum->species == SPECIES_NONE)
         return;
 
     personality = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_PERSONALITY, NULL);
-    a0->speciesPic = FixUnownSpecies(a0->species, personality);
-    if (a0->monSprite != NULL)
-        MoveSpriteToHead(a0->monSprite);
+    sum->speciesPic = FixUnownSpecies(sum->species, personality);
 
-    noFlip = speciesInfo[a0->species].noFlip;
+    if (sum->monSprite != NULL)
+        MoveSpriteToHead(sum->monSprite);
+
+    noFlip = speciesInfo[sum->species].noFlip;
     DelayFrames(1);
 
-    frontPicSheet = &gAgbPmRomParams->monFrontPicTable[a0->speciesPic];
+    frontPicSheet = &gAgbPmRomParams->monFrontPicTable[sum->speciesPic];
     bufferPic = GetPicUncompPtr();
     LZ77UnCompVram(frontPicSheet->data, bufferPic);
-    DrawSpindasSpots(a0->species, personality, bufferPic);
+    DrawSpindasSpots(sum->species, personality, bufferPic);
 
     frontPicPal = GetBoxMonPalettePtr(monId);
     bufferPal = bufferPic + 0x2000;
     LZ77UnCompWram(frontPicPal->data, bufferPal);
-    a0->monSprite = AddSprite(x, y, gMonFrontPicSubspriteTable[noFlip]);
-    SetSpritePaletteNum(a0->monSprite, 4);
+    sum->monSprite = AddSprite(x, y, gMonFrontPicSubspriteTable[noFlip]);
+    SetSpritePaletteNum(sum->monSprite, 4);
+
     if (!noFlip)
         CpuCopy16(bufferPic, (void *)VRAM + 0x16000, 0x800);
     else
         CpuCopy16(bufferPic, (void *)VRAM + 0x12000, 0x800);
+
     CpuCopy16(bufferPal, (void *)PLTT + 0x280, 0x20);
 }
 
 static inline void PrintStat(struct Window *win, s32 x, u32 monId, s32 monData, u8 *statText, s32 toAdd, s32 y)
 {
-    s32 xStat;
-
+    s32 digits;
     s32 stat = GetMonData(&gPlayerPartyPtr[monId], monData, NULL);
+
     NumToPmString3RightAlign(statText, stat);
+
     if (stat < 10)
-        xStat = 1;
+        digits = 1;
     else if (stat < 100)
-        xStat = 2;
+        digits = 2;
     else
-        xStat = 3;
-    x = (x + toAdd) - (xStat * 3);
+        digits = 3;
+
+    x = (x + toAdd) - (digits * 3);
     TextWindowSetXY(win, x, y);
-    RenderText(win, &statText[3 - xStat]);
+    RenderText(win, &statText[3 - digits]);
 }
 
-static void sub_020031F8(u32 monId)
+static void PrintTrainerMemoPage(u32 monId)
 {
     u8 text[16];
     u8 statText[8];
@@ -169,13 +175,16 @@ static void sub_020031F8(u32 monId)
     RenderText(gMonSummaryScreen.mainWindow, gText_Type);
     type1 = GetMonType(&gPlayerPartyPtr[monId], 1);
     type2 = GetMonType(&gPlayerPartyPtr[monId], 2);
+
     if (gMonSummaryScreen.type1Sprite == NULL)
     {
         gMonSummaryScreen.type1Sprite = AddSprite(122, 24, gSubspriteType);
         gMonSummaryScreen.type2Sprite = AddSprite(162, 24, gSubspriteType);
     }
+
     SetSpriteTileOffset(gMonSummaryScreen.type1Sprite, type1 * 8);
     SetSpritePaletteNum(gMonSummaryScreen.type1Sprite, GetMonSpritePaletteNumByBaseBlock(type1));
+
     if (type2 != 0 && type1 != type2)
     {
         SetSpriteTileOffset(gMonSummaryScreen.type2Sprite, type2 * 8);
@@ -201,6 +210,7 @@ static void sub_020031F8(u32 monId)
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 15, 64);
         RenderText(gMonSummaryScreen.mainWindow, gText_HP);
     }
+
     hp = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_HP, NULL);
     NumToPmString3RightAlign(text, hp);
     text[3] = CHAR_SLASH;
@@ -217,6 +227,7 @@ static void sub_020031F8(u32 monId)
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 2, 80);
         RenderText(gMonSummaryScreen.mainWindow, gText_Attack);
     }
+
     gMonSummaryScreen.mainWindow->glyphWidth = 6;
     FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 5, 10, 6, 2, 0);
     PrintStat(gMonSummaryScreen.mainWindow, 45, monId, MON_DATA_ATK, statText, 21, 80);
@@ -227,17 +238,20 @@ static void sub_020031F8(u32 monId)
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 0, 96);
         RenderText(gMonSummaryScreen.mainWindow, gText_Defense);
     }
+
     gMonSummaryScreen.mainWindow->glyphWidth = 6;
     FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 6, 12, 5, 2, 0);
     PrintStat(gMonSummaryScreen.mainWindow, 45, monId, MON_DATA_DEF, statText, 21, 96);
 
     // Sp Atk
     FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 16, 8, 3, 6, 0);
+
     if (!gMonSummaryScreen.statsPrinted)
     {
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 88, 64);
         RenderText(gMonSummaryScreen.mainWindow, gText_SpAtk);
     }
+
     PrintStat(gMonSummaryScreen.mainWindow, 128, monId, MON_DATA_SPATK, statText, 9, 64);
 
     // Sp Def
@@ -246,6 +260,7 @@ static void sub_020031F8(u32 monId)
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 88, 80);
         RenderText(gMonSummaryScreen.mainWindow, gText_SpDef);
     }
+
     PrintStat(gMonSummaryScreen.mainWindow, 128, monId, MON_DATA_SPDEF, statText, 9, 80);
 
     // Speed
@@ -254,12 +269,14 @@ static void sub_020031F8(u32 monId)
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 88, 96);
         RenderText(gMonSummaryScreen.mainWindow, gText_Speed);
     }
+
     PrintStat(gMonSummaryScreen.mainWindow, 128, monId, MON_DATA_SPEED, statText, 9, 96);
 
     // Item
     FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 0, 15, 18, 2, 0);
     TextWindowSetXY(gMonSummaryScreen.mainWindow, 0, 120);
     var = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_HELD_ITEM, NULL);
+
     if (var == ITEM_NONE)
     {
         RenderText(gMonSummaryScreen.mainWindow, gText_None);
@@ -272,6 +289,7 @@ static void sub_020031F8(u32 monId)
 
     if (gMonSummaryScreen.inputWindow == NULL)
         gMonSummaryScreen.inputWindow = AddWindow(1, &gWindowTemplateSummaryInputPane);
+
     ClearWindowCharBuffer(gMonSummaryScreen.inputWindow, 0);
     SetBgTilemapBufferTileAt(0, 23, 0, 0xF00B);
     SetBgTilemapBufferTileAt(0, 24, 0, 0xF00D);
@@ -288,7 +306,7 @@ static void sub_020031F8(u32 monId)
     gMonSummaryScreen.statsPrinted = TRUE;
 }
 
-static void sub_0200378C(u32 monId)
+static void PrintMovesPage(u32 monId)
 {
     u8 text[16];
     s32 i;
@@ -299,7 +317,7 @@ static void sub_0200378C(u32 monId)
 
     SetTextColor(gMonSummaryScreen.mainWindow, 1, 8);
     SetBgTilemapBufferPaletteRect(0, 24, 4, 5, 8, 15);
-    gMonSummaryScreen.unk4C = 0xFFFF;
+    gMonSummaryScreen.moves[MAX_MON_MOVES] = 0xFFFF;
 
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
@@ -310,8 +328,10 @@ static void sub_0200378C(u32 monId)
         moveType = battleMoves[move].type;
 
         gMonSummaryScreen.moves[i] = move;
+
         if (gMonSummaryScreen.moveTypeSprites[i] == NULL)
             gMonSummaryScreen.moveTypeSprites[i] = AddSprite(87, (i * 16) + 32, gSubspriteType);
+
         if (move != MOVE_NONE)
         {
             SetSpriteTileOffset(gMonSummaryScreen.moveTypeSprites[i], moveType * 8);
@@ -322,11 +342,13 @@ static void sub_0200378C(u32 monId)
         {
             SetSpriteInvisible(gMonSummaryScreen.moveTypeSprites[i], TRUE);
         }
+
         FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 4, 1 + (i * 2), 9, 2, 0);
         CopyMoveName(text, move);
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 0x20, 8 + (i * 16));
         RenderText(gMonSummaryScreen.mainWindow, text);
         FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 13, 1 + (i * 2), 5, 2, 0);
+
         if (move != MOVE_NONE)
         {
             NumToPmString3RightAlign(text, ppCurr);
@@ -352,6 +374,7 @@ static void sub_0200378C(u32 monId)
 
     if (gMonSummaryScreen.inputWindow == NULL)
         gMonSummaryScreen.inputWindow = AddWindow(1, &gWindowTemplateSummaryInputPane);
+
     ClearWindowCharBuffer(gMonSummaryScreen.inputWindow, 0);
     SetBgTilemapBufferTileAt(0, 23, 0, 0xF00B);
     SetBgTilemapBufferTileAt(0, 24, 0, 0xF00D);
@@ -368,7 +391,7 @@ static void sub_0200378C(u32 monId)
     gBgTilemapBufferTransferScheduled[3] = TRUE;
 }
 
-static void sub_02003A70(u32 monId, u32 moveSlot)
+static void PrintPowerAndAccuracy(u32 monId, u32 moveSlot)
 {
     u8 text[8];
     struct Pokemon *mon = &gPlayerPartyPtr[monId];
@@ -376,6 +399,7 @@ static void sub_02003A70(u32 monId, u32 moveSlot)
 
     FillWindowCharBufferRect(gMonSummaryScreen.leftWindow, 6, 3, 3, 4, 0);
     SetBgTilemapBufferPaletteRect(0, 7, 15, 3, 4, 15);
+
     if (moveSlot == MAX_MON_MOVES)
     {
         TextWindowSetXY(gMonSummaryScreen.leftWindow, 48, 24);
@@ -390,6 +414,7 @@ static void sub_02003A70(u32 monId, u32 moveSlot)
         {
             TextWindowSetXY(gMonSummaryScreen.leftWindow, 52, 24);
             gMonSummaryScreen.leftWindow->glyphWidth = 6;
+
             if (battleMoves[move].power <= 1)
             {
                 RenderText(gMonSummaryScreen.leftWindow, gText_3Dashes);
@@ -402,6 +427,7 @@ static void sub_02003A70(u32 monId, u32 moveSlot)
 
             TextWindowSetXY(gMonSummaryScreen.leftWindow, 52, 40);
             gMonSummaryScreen.leftWindow->glyphWidth = 6;
+
             if (battleMoves[move].accuracy == 0)
             {
                 RenderText(gMonSummaryScreen.leftWindow, gText_3Dashes);
@@ -412,18 +438,22 @@ static void sub_02003A70(u32 monId, u32 moveSlot)
                 RenderText(gMonSummaryScreen.leftWindow, text);
             }
         }
+
         gBgTilemapBufferTransferScheduled[0] = TRUE;
     }
 }
 
-static void sub_02003BA4(u32 monId, u32 moveSlot)
+static void ToggleMoveDetails(u32 monId, u32 moveSlot)
 {
     struct PokemonSummaryScreenData *strPtr = &gMonSummaryScreen;
-    if (gUnknown_020219DF == 0)
+
+    if (gIsNotShowingMoveDetails == FALSE)
     {
         FillWindowCharBufferRect(strPtr->leftWindow, 0, 2, 9, 6, 0);
+
         if (strPtr->statusSprite != NULL)
             SetSpriteInvisible(strPtr->statusSprite, TRUE);
+
         TextWindowFillTileBufferForText(strPtr->leftWindow);
         FillBgTilemapBufferRect(3, 0, 18, 10, 2, 0xF000);
         gBgTilemapBufferTransferScheduled[3] = TRUE;
@@ -440,9 +470,9 @@ static void sub_02003BA4(u32 monId, u32 moveSlot)
         RenderText(strPtr->leftWindow, gText_Power);
         TextWindowSetXY(strPtr->leftWindow, 0, 40);
         RenderText(strPtr->leftWindow, gText_Accuracy);
-        sub_02003A70(monId, moveSlot);
+        PrintPowerAndAccuracy(monId, moveSlot);
         DelayFrames(1);
-        gUnknown_020219DF = 1;
+        gIsNotShowingMoveDetails = TRUE;
     }
     else
     {
@@ -458,12 +488,12 @@ static void sub_02003BA4(u32 monId, u32 moveSlot)
         DelayFrames(1);
         CopyRectWithinBgTilemapBuffer(2, 0, 0, 9, 7, 1, 13);
         gBgTilemapBufferTransferScheduled[2] = TRUE;
-        sub_02003D80(monId, TRUE);
-        gUnknown_020219DF = 0;
+        PrintMainInfo(monId, TRUE);
+        gIsNotShowingMoveDetails = FALSE;
     }
 }
 
-static void sub_02003D80(u32 monId, bool32 a1)
+static void PrintMainInfo(u32 monId, bool32 skipInitialDraws)
 {
     bool32 partyHasHadPokerus;
     s32 i;
@@ -471,30 +501,37 @@ static void sub_02003D80(u32 monId, bool32 a1)
     u8 text[16];
     u8 speciesText[16];
     struct Pokemon *mon = &gPlayerPartyPtr[monId];
-    if (!a1)
+
+    if (!skipInitialDraws)
     {
         CreatePartyMonFrontPic(&gMonSummaryScreen, monId, 8, 0x20);
+
         if (gMonSummaryScreen.titleWindow == NULL)
         {
             gMonSummaryScreen.titleWindow = AddWindow(2, &gWindowTemplateSummaryTitlePane);
             SetTextColor(gMonSummaryScreen.titleWindow, 1, 8);
         }
+
         ClearWindowCharBuffer(gMonSummaryScreen.leftWindow, 0);
         SetTextColor(gMonSummaryScreen.leftWindow, 1, 8);
         GetMonData(mon, MON_DATA_NICKNAME, text);
         TextWindowSetXY(gMonSummaryScreen.leftWindow, 0, 0);
         RenderText(gMonSummaryScreen.leftWindow, text);
     }
+
     text[0] = CHAR_LV;
     text[1] = EOS;
     TextWindowSetXY(gMonSummaryScreen.leftWindow, 16, 32);
     RenderText(gMonSummaryScreen.leftWindow, text);
     lvl = GetMonData(mon, MON_DATA_LEVEL, NULL);
     NumToPmString3CustomZeroChar(lvl, text, CHAR_0);
+
     for (i = 0; text[i] == CHAR_0; i++)
         ;
+
     if (text[i] == EOS)
         i--;
+
     TextWindowSetXY(gMonSummaryScreen.leftWindow, 25, 32);
     gMonSummaryScreen.leftWindow->glyphWidth = 6;
     RenderText(gMonSummaryScreen.leftWindow, &text[i]);
@@ -504,6 +541,7 @@ static void sub_02003D80(u32 monId, bool32 a1)
     speciesText[0] = CHAR_SLASH;
     TextWindowSetXY(gMonSummaryScreen.leftWindow, 0, 16);
     RenderText(gMonSummaryScreen.leftWindow, speciesText);
+
     if (species != SPECIES_NIDORAN_M && species != SPECIES_NIDORAN_F)
     {
         u32 palNum = 0;
@@ -532,29 +570,36 @@ static void sub_02003D80(u32 monId, bool32 a1)
         }
 
     }
+
     if (gMonSummaryScreen.ballSprite == NULL)
         gMonSummaryScreen.ballSprite = AddSprite(0, 128, gSubspritePokeBall);
+
     SetSpritePaletteNum(gMonSummaryScreen.ballSprite, 3);
     LZ77UnCompVram(BoxMonCaughtBallToItemId(&mon->box), (void *)VRAM + 0x12800);
     LZ77UnCompVram(BoxMonGetCaughtBallItemPalette(&mon->box), (void *)PLTT + 0x260);
     primaryStatus = GetMonStatus(mon);
+
     if (primaryStatus != STATUS_PRIMARY_NONE)
     {
         CopyRectWithinBgTilemapBuffer(3, 8, 20, 10, 2, 0, 18);
         RenderTextAt(gMonSummaryScreen.leftWindow, 0, 48, gText_Status);
+
         if (gMonSummaryScreen.statusSprite == NULL)
             gMonSummaryScreen.statusSprite = AddSprite(47, 148, gSubspriteStatus);
+
         SetSpriteInvisible(gMonSummaryScreen.statusSprite, FALSE);
         SetSpriteTileOffset(gMonSummaryScreen.statusSprite, (primaryStatus - 1) * 4);
     }
     else
     {
         FillBgTilemapBufferRect(3, 0, 18, 10, 2, 0);
+
         if (gMonSummaryScreen.statusSprite != NULL)
             SetSpriteInvisible(gMonSummaryScreen.statusSprite, TRUE);
     }
 
     partyHasHadPokerus = CheckPartyHasHadPokerus(mon, 0);
+
     if (!CheckPartyPokerus(mon, 0) && partyHasHadPokerus)
         SetBgTilemapBufferTileAt(0, 2, 0x11, 0xF013);
     else
@@ -564,28 +609,32 @@ static void sub_02003D80(u32 monId, bool32 a1)
     gBgTilemapBufferTransferScheduled[3] = TRUE;
 }
 
-static s32 sub_02004024(s32 monId)
+static s32 TrainerMemoHandleInput(s32 monId)
 {
     u32 keys;
     gMonSummaryScreen.statsPrinted = FALSE;
-    sub_020031F8(monId);
+
+    PrintTrainerMemoPage(monId);
+
     while (1)
     {
         DelayFrames(1);
         keys = gNewKeys;
+
         if (keys & DPAD_UP && monId != 0)
         {
             PlaySE(SONG_SE_SELECT);
             monId--;
-            sub_02003D80(monId, FALSE);
-            sub_020031F8(monId);
+            PrintMainInfo(monId, FALSE);
+            PrintTrainerMemoPage(monId);
         }
+
         if (keys & DPAD_DOWN && monId != PARTY_SIZE - 1 && GetMonData(&gPlayerPartyPtr[monId + 1], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
         {
             PlaySE(SONG_SE_SELECT);
             monId++;
-            sub_02003D80(monId, FALSE);
-            sub_020031F8(monId);
+            PrintMainInfo(monId, FALSE);
+            PrintTrainerMemoPage(monId);
         }
 
         if (keys & DPAD_RIGHT)
@@ -593,30 +642,35 @@ static s32 sub_02004024(s32 monId)
             PlaySE(SONG_SE_SELECT);
             break;
         }
+
         if (keys & (A_BUTTON | B_BUTTON))
         {
             PlaySE(SONG_SE_SELECT);
-            gMonSummaryScreen.unk50 = monId;
+            gMonSummaryScreen.currentMonId = monId;
             monId = -1;
             break;
         }
     }
+
     if (monId != -1)
     {
         MoveSpriteToHead(gMonSummaryScreen.type1Sprite);
         MoveSpriteToHead(gMonSummaryScreen.type2Sprite);
     }
+
     gMonSummaryScreen.type1Sprite = NULL;
     gMonSummaryScreen.type2Sprite = NULL;
 
     return monId;
 }
 
-static inline void sub_20045B8(s32 monId, u32 moveSlot)
+static inline void PrintMoveDescription(s32 monId, u32 moveSlot)
 {
-    u8 *txt = sub_0200CB34(monId);
+    u8 *txt = GetTextBufferPointer(monId);
+
     SetBgTilemapBufferPaletteRect(0, 11, 15, 18, 4, 15);
     FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 0, 12, 18, 4, 0);
+
     if (moveSlot != MAX_MON_MOVES)
     {
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 0, 0x60);
@@ -625,35 +679,38 @@ static inline void sub_20045B8(s32 monId, u32 moveSlot)
     }
 }
 
-static s32 sub_020040FC(s32 monId)
+static s32 MovesPageHandleInput(s32 monId)
 {
-    s32 i, var;
+    s32 i, newMoveSlot;
     u8 *txtPtr;
-    u16 var_28;
-    u32 var_24;
+    u16 moveDetailsState;
+    u32 previousMoveSlot;
     u16 keys;
 
     gMonSummaryScreen.statsPrinted = FALSE;
     SetBgPos(2, 0, 0);
-    sub_0200378C(monId);
-    var_28 = 0;
+    PrintMovesPage(monId);
+    moveDetailsState = 0;
+
     while (1)
     {
         DelayFrames(1);
         keys = gNewKeys;
         if (keys & DPAD_UP && monId != 0)
+
         {
             PlaySE(SONG_SE_SELECT);
             monId--;
-            sub_02003D80(monId, FALSE);
-            sub_0200378C(monId);
+            PrintMainInfo(monId, FALSE);
+            PrintMovesPage(monId);
         }
+
         if (keys & DPAD_DOWN && monId != PARTY_SIZE - 1 && GetMonData(&gPlayerPartyPtr[monId + 1], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
         {
             PlaySE(SONG_SE_SELECT);
             monId++;
-            sub_02003D80(monId, FALSE);
-            sub_0200378C(monId);
+            PrintMainInfo(monId, FALSE);
+            PrintMovesPage(monId);
         }
 
         if (keys & DPAD_LEFT)
@@ -661,21 +718,22 @@ static s32 sub_020040FC(s32 monId)
             PlaySE(SONG_SE_SELECT);
             break;
         }
+
         if (keys & B_BUTTON)
         {
             PlaySE(SONG_SE_SELECT);
-            gMonSummaryScreen.unk50 = monId;
+            gMonSummaryScreen.currentMonId = monId;
             monId = -1;
             break;
         }
 
-        switch (var_28)
+        switch (moveDetailsState)
         {
         case 0:
             if (keys & A_BUTTON)
             {
                 PlaySE(SONG_SE_SELECT);
-                var_28 = 1;
+                moveDetailsState = 1;
             }
             break;
         case 1:
@@ -689,63 +747,72 @@ static s32 sub_020040FC(s32 monId)
             ClearWindowCharBuffer(gMonSummaryScreen.inputWindow, 0);
             RenderText(gMonSummaryScreen.inputWindow, gText_Cancel3);
             gBgTilemapBufferTransferScheduled[0] = TRUE;
-            sub_02003BA4(monId, 0);
-            txtPtr = sub_0200CB34(monId);
+            ToggleMoveDetails(monId, 0);
+            txtPtr = GetTextBufferPointer(monId);
             SetBgTilemapBufferPaletteRect(0, 11, 15, 18, 4, 15);
             FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 0, 12, 18, 4, 0);
             TextWindowSetXY(gMonSummaryScreen.mainWindow, 0, 96);
             RenderText(gMonSummaryScreen.mainWindow, txtPtr);
             gBgTilemapBufferTransferScheduled[0] = TRUE;
-            var_28 = 2;
+            moveDetailsState = 2;
             // fallthrough
         case 2:
             do
             {
-                s32 r1;
+                s32 tempMoveSlot;
 
                 DelayFrames(1);
                 keys = gNewKeys;
-                var_24 = gCurrentMoveSlot;
+                previousMoveSlot = gCurrentMoveSlot;
+
                 if (keys & DPAD_DOWN)
                 {
                     PlaySE(SONG_SE_SELECT);
-                    for (var = -1, r1 = gCurrentMoveSlot + 1; var == -1; r1++)
+
+                    for (newMoveSlot = -1, tempMoveSlot = gCurrentMoveSlot + 1; newMoveSlot == -1; tempMoveSlot++)
                     {
-                        if (r1 == 5)
-                            r1 = 0;
-                        if (gUnknown_020219D4[r1] != 0)
-                            var = r1;
+                        if (tempMoveSlot == 5)
+                            tempMoveSlot = 0;
+
+                        if (gSummaryCurrentMonMoves[tempMoveSlot] != MOVE_NONE) // if (gMonSummaryScreen.moves[tempMoveSlot] != MOVE_NONE)
+                            newMoveSlot = tempMoveSlot;
                     }
-                    gCurrentMoveSlot = var;
+
+                    gCurrentMoveSlot = newMoveSlot;
                 }
+
                 if (keys & DPAD_UP)
                 {
                     PlaySE(SONG_SE_SELECT);
-                    for (var = -1, r1 = gCurrentMoveSlot - 1; var == -1; r1--)
+
+                    for (newMoveSlot = -1, tempMoveSlot = gCurrentMoveSlot - 1; newMoveSlot == -1; tempMoveSlot--)
                     {
-                        if (r1 == -1)
-                            r1 = 4;
-                        if (gUnknown_020219D4[r1] != 0)
-                            var = r1;
+                        if (tempMoveSlot == -1)
+                            tempMoveSlot = 4;
+
+                        if (gSummaryCurrentMonMoves[tempMoveSlot] != MOVE_NONE) // if (gMonSummaryScreen.moves[tempMoveSlot] != MOVE_NONE)
+                            newMoveSlot = tempMoveSlot;
                     }
-                    gCurrentMoveSlot = var;
+
+                    gCurrentMoveSlot = newMoveSlot;
                 }
 
-                if (var_24 != gMonSummaryScreen.currentMoveSlot)
+                if (previousMoveSlot != gMonSummaryScreen.currentMoveSlot) // if (previousMoveSlot != gCurrentMoveSlot)
                 {
-                    sub_02003A70(monId, gMonSummaryScreen.currentMoveSlot);
-                    sub_20045B8(monId, gMonSummaryScreen.currentMoveSlot);
+                    PrintPowerAndAccuracy(monId, gMonSummaryScreen.currentMoveSlot);
+                    PrintMoveDescription(monId, gMonSummaryScreen.currentMoveSlot);
                     SetSpritePos(gMonSummaryScreen.moveSelectorSprite, 80, 32 + (gMonSummaryScreen.currentMoveSlot * 16));
-                    if (var_24 == MAX_MON_MOVES || gMonSummaryScreen.currentMoveSlot == MAX_MON_MOVES)
-                        sub_02003BA4(monId, gMonSummaryScreen.currentMoveSlot);
+
+                    if (previousMoveSlot == MAX_MON_MOVES || gMonSummaryScreen.currentMoveSlot == MAX_MON_MOVES)
+                        ToggleMoveDetails(monId, gMonSummaryScreen.currentMoveSlot);
                 }
 
                 if (keys & (A_BUTTON | B_BUTTON))
                 {
                     PlaySE(SONG_SE_SELECT);
-                    var_28 = 3;
+                    moveDetailsState = 3;
                 }
-            } while (var_28 == 2);
+            } while (moveDetailsState == 2);
             break;
         case 3:
             MoveSpriteToHead(gMonSummaryScreen.moveSelectorSprite);
@@ -757,9 +824,11 @@ static s32 sub_020040FC(s32 monId)
             RenderText(gMonSummaryScreen.inputWindow, gText_Info);
             gBgTilemapBufferTransferScheduled[0] = TRUE;
             gBgTilemapBufferTransferScheduled[2] = TRUE;
+
             if (gMonSummaryScreen.currentMoveSlot != MAX_MON_MOVES)
-                sub_02003BA4(monId, 0);
-            var_28 = 0;
+                ToggleMoveDetails(monId, 0);
+
+            moveDetailsState = 0;
             break;
         }
     }
@@ -776,33 +845,40 @@ static s32 sub_020040FC(s32 monId)
     return monId;
 }
 
-s32 sub_020044F0(monId)
+s32 ShowPokemonSummaryScreen(u32 monId)
 {
     s32 i;
 
-    sub_02002FEC();
-    sub_02003D80(monId, FALSE);
+    InitGraphics();
+    PrintMainInfo(monId, FALSE);
     gMonSummaryScreen.statsPrinted = FALSE;
-    sub_020031F8(monId);
+    PrintTrainerMemoPage(monId);
     FadeIn();
+
     while (1)
     {
-        monId = sub_02004024(monId);
+        monId = TrainerMemoHandleInput(monId);
+
         if (monId == -1)
             break;
+
         ClearWindowCharBuffer(gMonSummaryScreen.mainWindow, 0);
         TextWindowFillTileBufferForText(gMonSummaryScreen.mainWindow);
+
         for (i = 4; i != -1; i--)
         {
             DelayFrames(1);
             SetBgPos(2, -(i * 32), 0);
         }
 
-        monId = sub_020040FC(monId);
+        monId = MovesPageHandleInput(monId);
+
         if (monId == -1)
             break;
+
         ClearWindowCharBuffer(gMonSummaryScreen.mainWindow, 0);
         TextWindowFillTileBufferForText(gMonSummaryScreen.mainWindow);
+
         for (i = 0; i < 5; i++)
         {
             DelayFrames(1);
@@ -810,15 +886,18 @@ s32 sub_020044F0(monId)
         }
     }
     FadeOut();
-    return gMonSummaryScreen.unk50;
+
+    return gMonSummaryScreen.currentMonId;
 }
 
-// The same as sub_20045B8, but not inlined.
-static void sub_20045B8_(s32 monId, u32 moveSlot)
+// The same as PrintMoveDescription, but not inlined.
+static void PrintMoveDescription_(s32 monId, u32 moveSlot)
 {
-    u8 *txt = sub_0200CB34(monId);
+    u8 *txt = GetTextBufferPointer(monId);
+
     SetBgTilemapBufferPaletteRect(0, 11, 15, 18, 4, 15);
     FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 0, 12, 18, 4, 0);
+
     if (moveSlot != MAX_MON_MOVES)
     {
         TextWindowSetXY(gMonSummaryScreen.mainWindow, 0, 0x60);
@@ -841,6 +920,7 @@ static void sub_0200461C(struct Sprite *sprite)
         sprite->unk14[0] = 0;
         break;
     }
+
     sprite->unk14[0]++;
 }
 
