@@ -149,10 +149,10 @@ gPlayerLinkInfo:
 gUnknown_020241D0:
 	.space 0x780 @ 6 * 320
 
-gUnknown_02024950:
+gUnknownBoolean:
 	.space 0x10
 
-gUnknown_02024960:
+gMonLinkData:
 	.space 0x884
 
 gRomDetection_IsEnglishROM:
@@ -164,7 +164,7 @@ gAgbPmRomParams:
 gRomDetection_IsRubySapphire:
 	.space 0x4
 
-gUnknown_020251F0:
+gTransferData:
 	.space 0x34
 
 	.include "agb_flash.o"

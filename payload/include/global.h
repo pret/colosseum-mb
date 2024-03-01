@@ -49,6 +49,9 @@
 #define CONTEST_CATEGORY_TOUGH    4
 #define CONTEST_CATEGORIES_COUNT  5
 
+#define GENDER_MALE     0
+#define GENDER_FEMALE   1
+
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
 
@@ -777,7 +780,7 @@ struct SaveBlock1 /* 0x02025734 */
     /*0x2F9C*/ struct DayCare daycare;
     /*0x30B8*/ struct LinkBattleRecord linkBattleRecords[5];
     /*0x3108*/ u8 filler_3108[8];
-    /*0x3110*/ u8 giftRibbons[11];
+    /*0x3110*/ u8 giftRibbons[GIFT_RIBBONS_COUNT];
     /*0x311B*/ struct ExternalEventData externalEventData;
     /*0x312F*/ struct ExternalEventFlags externalEventFlags;
     /*0x3144*/ struct Roamer roamer;

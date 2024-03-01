@@ -93,7 +93,7 @@ struct Struct0201F9E
     u8 a3;
 };
 
-EWRAM_DATA volatile struct UnkStruct_02024960 gUnknown_02024960 = {0};
+EWRAM_DATA volatile struct MonLinkData gMonLinkData = {0};
 
 static UNUSED u8 gUnknown_02020A38[8];
 static u8 gScreenIsFadedOut;
@@ -1100,21 +1100,21 @@ s32 sub_02001A8C(u32 monId)
             else if ((var & 0xFFFF) == 2)
             {
                 PlaySE(SONG_SE_FAILURE);
-                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16].str);
+                BufferString(0, (void *) gMonLinkData.monName[var >> 16].str);
                 sub_020019B4(gUnknown_02021860.unk122, 1);
                 i = 2;
             }
             else if ((var & 0xFFFF) == 4)
             {
                 PlaySE(SONG_SE_FAILURE);
-                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16].str);
+                BufferString(0, (void *) gMonLinkData.monName[var >> 16].str);
                 sub_020019B4(gUnknown_02021860.unk122, 2);
                 i = 2;
             }
             else if ((var & 0xFFFF) == 3)
             {
                 PlaySE(SONG_SE_FAILURE);
-                BufferString(0, (void *) gUnknown_02024960.unk81C[var >> 16].str);
+                BufferString(0, (void *) gMonLinkData.monName[var >> 16].str);
                 sub_020019B4(gUnknown_02021860.unk122, 3);
                 i = 2;
             }
@@ -1134,12 +1134,12 @@ s32 sub_02001A8C(u32 monId)
                 }
                 else
                 {
-                    switch (sub_020064BC(gUnknown_02024960.unk4, gUnknown_02021860.unk11B))
+                    switch (sub_020064BC(gMonLinkData.unk4, gUnknown_02021860.unk11B))
                     {
                     case 0:
                         PlaySE(SONG_SE_SELECT);
-                        gUnknown_02024960.unk_87E = gUnknown_02021860.unk11B;
-                        gUnknown_02024960.unk_87B = 2;
+                        gMonLinkData.unk_87E = gUnknown_02021860.unk11B;
+                        gMonLinkData.unk_87B = 2;
                         return -1;
                     case 1:
                         PlaySE(SONG_SE_FAILURE);
@@ -1503,8 +1503,8 @@ inline void sub_02002F60(void)
             bits |= (ret << r6);
         r6 += 4;
     }
-    gUnknown_02024960.unk_880 = bits;
-    gUnknown_02024960.unk_87F = 1;
+    gMonLinkData.unk_880 = bits;
+    gMonLinkData.unk_87F = 1;
 }
 
 s32 sub_020026F4(void)
@@ -1671,11 +1671,11 @@ void sub_02002A9C(s32 a0, u32 a1, u32 a2)
     gUnknown_02021860.unk125 = a2;
     gUnknown_02021860.unk11A = 0;
 
-    if (gUnknown_02024960.unk_858 == 1)
+    if (gMonLinkData.unk_858 == 1)
     {
         gUnknown_02021860.unk11E = 1;
     }
-    else if (gUnknown_02024960.unk_858 == 2)
+    else if (gMonLinkData.unk_858 == 2)
     {
         gUnknown_02021860.unk11A = 1;
         gUnknown_02021860.unk11E = 2;
@@ -1693,7 +1693,7 @@ void sub_02002A9C(s32 a0, u32 a1, u32 a2)
         break;
     case 1:
         gUnknown_02021860.unk118 = 1;
-        gUnknown_02021860.unk123 = gUnknown_02024960.unk_859;
+        gUnknown_02021860.unk123 = gMonLinkData.unk_859;
         if (gUnknown_02021860.unk123 == 0 || gUnknown_02021860.unk123 > *gPlayerPartyCountPtr)
             gUnknown_02021860.unk123 = *gPlayerPartyCountPtr;
         gUnknown_02021860.unk124 = 0;
@@ -1745,7 +1745,7 @@ void NAKED sub_02002A9C(s32 a0, u32 a1, u32 a2)
 	lsls r0, r0, #1\t\n\
 	adds r2, r3, r0\t\n\
 	strb r5, [r2]\t\n\
-	ldr r1, =gUnknown_02024960\t\n\
+	ldr r1, =gMonLinkData\t\n\
 	ldr r0, =0x00000858\t\n\
 	adds r6, r1, r0\t\n\
 	ldrb r0, [r6]\t\n\

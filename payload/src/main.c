@@ -52,18 +52,18 @@ bool8 sub_0200023C(void)
     u32 r0;
 
     sub_02006490();
-    if (gUnknown_02024960.unk_03_0 == 0)
+    if (gMonLinkData.unk_03_0 == 0)
     {
-        gUnknown_02024960.unk_858 = 1;
+        gMonLinkData.unk_858 = 1;
     }
     else
     {
-        gUnknown_02024960.unk_858 = 2;
+        gMonLinkData.unk_858 = 2;
     }
     sub_02002A9C(0, sub_02006490(), 1);
-    r0 = gUnknown_02024960.unk_87E | (gUnknown_02024960.unk_87B << 16);
-    gUnknown_02024960.unk_880 = r0;
-    gUnknown_02024960.unk_87F = 1;
+    r0 = gMonLinkData.unk_87E | (gMonLinkData.unk_87B << 16);
+    gMonLinkData.unk_880 = r0;
+    gMonLinkData.unk_87F = 1;
     return FALSE;
 }
 
@@ -131,7 +131,7 @@ void GF_Main(void)
             sub_02005BB8();
             if (sub_020064B0() == 0)
             {
-                sub_02005704((gUnknown_02024960.unk_03_0 != 0) ? gUnknown_02024960.unk_03_0 - 1 : 0);
+                sub_02005704((gMonLinkData.unk_03_0 != 0) ? gMonLinkData.unk_03_0 - 1 : 0);
             }
             else
             {
@@ -251,7 +251,7 @@ _02000384:\t\n\
 	bl sub_020064B0\t\n\
 	cmp r0, #0\t\n\
 	bne _020003E4\t\n\
-	ldr r1, =gUnknown_02024960\t\n\
+	ldr r1, =gMonLinkData\t\n\
 	ldrb r0, [r1, #3]\t\n\
 	lsls r0, r0, #0x19\t\n\
 	cmp r0, #0\t\n\

@@ -6,10 +6,10 @@
 #define LOBBY_SAVEWARP               (1 << 2)
 #define CHAMPION_SAVEWARP            (1 << 7)
 
-struct UnkStruct_020251F0
+struct TransferData
 {
-    volatile u32 *field0;
-    u32 field4;
+    volatile u32 *data;
+    u32 transferSize;
     u8 field8[2];
     vu8 state;
     u8 field11;
@@ -29,7 +29,7 @@ struct UnkStruct_020251F0
     u8 fill25;
     u8 fill26;
     u8 fill27;
-    u32 field28;
+    u32 transferBytes;
     u32 field32;
     u32 field36;
     u32 field40;
@@ -37,7 +37,7 @@ struct UnkStruct_020251F0
     u32 field48;
 };
 
-extern volatile struct UnkStruct_020251F0 gUnknown_020251F0;
+extern volatile struct TransferData gTransferData;
 
 void SetSpeciesCaughtFlag(u32 species, struct Pokemon *mon);
 u8 GetPlayerMapType(void);
@@ -47,6 +47,6 @@ s32 StringCompare(const u8 *str1, const u8 *str2);
 u8 *StringCopy(u8 *dst, const u8 *src);
 u16 GetStringSizeHandleExtCtrlCodes(u8 *str);
 bool32 SetFlag(s32 flag);
-u32 sub_0200CB54(void);
+bool32 GetUnknownBoolean(void);
 
 #endif // GUARD_unk_200C5DC_H

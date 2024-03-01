@@ -126,7 +126,7 @@ u32 sub_020047D4(void)
 {
     s32 r5;
 
-    gUnknown_02024960.unk_87B = 4;
+    gMonLinkData.unk_87B = 4;
     sub_0200465C();
     if (gAgbPmRomParams->blockLinkColoXD || !gRomDetection_IsEnglishROM)
     {
@@ -141,10 +141,10 @@ u32 sub_020047D4(void)
     else
         ClearWindowCharBuffer(gMessageWindowPtr, 0xFFFF);
 
-    gUnknown_02024960.unk_859 = 0;
-    gUnknown_02024960.unk84C_01 = 0;
-    gUnknown_02024960.unk_87A = 0;
-    gUnknown_02024960.unk84C_00 = 0;
+    gMonLinkData.unk_859 = 0;
+    gMonLinkData.transferComplete = 0;
+    gMonLinkData.unk_87A = 0;
+    gMonLinkData.unk84C_00 = 0;
     FadeIn();
     if (gSaveStatus == SAVE_STATUS_CORRUPT || gSaveStatus == SAVE_STATUS_ERROR || gSaveStatus == SAVE_STATUS_EMPTY)
     {
@@ -160,27 +160,27 @@ u32 sub_020047D4(void)
         RenderText(gMessageWindowPtr, gText_BerryProgramUpdated);
         sub_0200472C();
     }
-    if (gUnknown_02024960.unk_87F != 0)
+    if (gMonLinkData.unk_87F != 0)
     {
-        REG_JOY_TRANS = gUnknown_02024960.unk_880;
-        gUnknown_02024960.unk_87F = 0;
+        REG_JOY_TRANS = gMonLinkData.unk_880;
+        gMonLinkData.unk_87F = 0;
     }
     r5 = 0;
     while (r5 == 0)
     {
         DelayFrames(1);
-        if (gUnknown_02024960.unk_859 != 0 && sub_0200CB54() == 1)
+        if (gMonLinkData.unk_859 != 0 && GetUnknownBoolean() == 1)
             r5 = 2;
-        if (gUnknown_02024960.unk84C_00 == 1)
+        if (gMonLinkData.unk84C_00 == 1)
         {
-            gUnknown_02024960.unk84C_00 = 0;
+            gMonLinkData.unk84C_00 = 0;
             sub_02006058();
         }
-        if (gUnknown_02024960.unk_87A == 1)
+        if (gMonLinkData.unk_87A == 1)
             r5 = 1;
-        if (gUnknown_02024960.unk_85A == 1)
+        if (gMonLinkData.unk_85A == 1)
         {
-            gUnknown_02024960.unk_85A = 0;
+            gMonLinkData.unk_85A = 0;
             sub_02006264();
             PrintErrorMsg(gMessageWindowPtr, 1);
         }
@@ -259,11 +259,11 @@ void sub_02004BEC(struct Unk2021A20Str *a0, u32 monId, s32 x, s32 y)
     const struct CompressedSpriteSheet *monFrontSheet;
     const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
 
-    a0->unkC = gUnknown_02024960.unk10;
+    a0->unkC = gMonLinkData.species;
     if (a0->unkC == SPECIES_NONE)
         return;
 
-    personality = gUnknown_02024960.unk8;
+    personality = gMonLinkData.personality;
     a0->unkE = FixUnownSpecies(a0->unkC, personality);
     if (a0->unk0 != NULL)
         MoveSpriteToHead(a0->unk0);
@@ -274,12 +274,12 @@ void sub_02004BEC(struct Unk2021A20Str *a0, u32 monId, s32 x, s32 y)
     buffer = GetPicUncompPtr();
     LZ77UnCompVram(monFrontSheet->data, buffer);
     if (a0->unkC == SPECIES_CASTFORM)
-        buffer += (gUnknown_02024960.unk12 * 0x800);
+        buffer += (gMonLinkData.unk12 * 0x800);
     DrawSpindasSpots(a0->unkC, personality, buffer);
     CpuCopy16(buffer, (void *)VRAM + 0x12000, 0x800);
-    LZ77UnCompWram(GetMonPalettePtrBySpeciesIdPersonality(a0->unkC, gUnknown_02024960.unkC, personality)->data, buffer);
+    LZ77UnCompWram(GetMonPalettePtrBySpeciesIdPersonality(a0->unkC, gMonLinkData.otId, personality)->data, buffer);
     if (a0->unkC == SPECIES_CASTFORM)
-        buffer += (gUnknown_02024960.unk12 * 32);
+        buffer += (gMonLinkData.unk12 * 32);
     CpuCopy16(buffer, (void *)PLTT + 0x280, 0x20);
 }
 
@@ -545,14 +545,14 @@ void sub_02005168(s32 id)
     s32 ppBonuses, ppTotal, ppCurr, type;
     struct Pokemon *mon = &gPlayerPartyPtr[gUnknown_02020A48];
     const struct BattleMove *moves = gAgbPmRomParams->moves;
-    u32 move = gUnknown_02024960.unk14[id];
+    u32 move = gMonLinkData.moves[id];
 
     FillWindowCharBufferRect(gUnknown_02021A20.unk18, 22, 2, 6, 2, 0);
     type = moves[move].type;
     RenderTextAt(gUnknown_02021A20.unk18, 176, 16, gTypeNames[type]);
 
     FillWindowCharBufferRect(gUnknown_02021A20.unk18, 24, 0, 4, 2, 0);
-    ppCurr = gUnknown_02024960.unk1C[id];
+    ppCurr = gMonLinkData.pps[id];
     ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
     ppTotal = CalculatePPWithBonus(move, ppBonuses, id);
     NumToPmString3RightAlign(text, ppCurr);
@@ -577,7 +577,7 @@ s32 sub_02005264(s32 monId)
 
     for (count = 0, i = 0; i < MAX_MON_MOVES; i++)
     {
-        u32 move = gUnknown_02024960.unk14[i];
+        u32 move = gMonLinkData.moves[i];
         if (move != MOVE_NONE)
         {
             CopyMoveName(text, move);
@@ -608,52 +608,52 @@ u8 *sub_0200531C(s32 id)
     u8 *txtPtr = gUnknown_02021A00;
 
     CpuFill16(0, txtPtr, 0x20);
-    if (gUnknown_02024960.unk81C[id].str[0] == EOS)
+    if (gMonLinkData.monName[id].str[0] == EOS)
     {
         txtPtr[0] = EOS;
     }
     else
     {
-        txtPtr[0] = gUnknown_02024960.unk81C[id].unk826_0 + CHAR_0;
+        txtPtr[0] = gMonLinkData.monName[id].playerId + CHAR_0;
         txtPtr[1] = CHAR_P;
         txtPtr[2] = CHAR_COLON;
         txtPtr[3] = CHAR_SPACE;
         len = 4;
-        if (gUnknown_02024960.unk81C[id].unk826_1)
+        if (gMonLinkData.monName[id].isJapanese)
         {
             txtPtr[4] = EXT_CTRL_CODE_BEGIN;
-            txtPtr[5] = 0x15;
+            txtPtr[5] = EXT_CTRL_CODE_JPN;
             len = 6;
         }
         for (i = 0; i < gAgbPmRomParams->pokemonNameLength2; i++)
         {
-            if (gUnknown_02024960.unk81C[id].str[i] == EOS)
+            if (gMonLinkData.monName[id].str[i] == EOS)
                 break;
-            txtPtr[i + len] = gUnknown_02024960.unk81C[id].str[i];
+            txtPtr[i + len] = gMonLinkData.monName[id].str[i];
         }
         i += len;
-        if (gUnknown_02024960.unk81C[id].unk826_3 || gUnknown_02024960.unk81C[id].unk826_2)
+        if (gMonLinkData.monName[id].isNidoranM || gMonLinkData.monName[id].isNidoranF)
         {
             u32 species;
 
-            if (gUnknown_02024960.unk81C[id].unk826_3)
+            if (gMonLinkData.monName[id].isNidoranM)
                 species = SPECIES_NIDORAN_M;
             else
                 species = SPECIES_NIDORAN_F;
             GetSpeciesName(text, species);
-            if (StringCompare((u8 *)gUnknown_02024960.unk81C[id].str, text) == 0)
+            if (StringCompare((u8 *)gMonLinkData.monName[id].str, text) == 0)
             {
-                if (gUnknown_02024960.unk81C[id].unk826_4 == 0)
+                if (gMonLinkData.monName[id].gender == GENDER_MALE)
                     txtPtr[i++] = CHAR_MALE;
-                else if (gUnknown_02024960.unk81C[id].unk826_4 == 1)
+                else if (gMonLinkData.monName[id].gender == GENDER_FEMALE)
                     txtPtr[i++] = CHAR_FEMALE;
             }
         }
         else
         {
-            if (gUnknown_02024960.unk81C[id].unk826_4 == 0)
+            if (gMonLinkData.monName[id].gender == GENDER_MALE)
                 txtPtr[i++] = CHAR_MALE;
-            else if (gUnknown_02024960.unk81C[id].unk826_4 == 1)
+            else if (gMonLinkData.monName[id].gender == GENDER_FEMALE)
                 txtPtr[i++] = CHAR_FEMALE;
         }
         txtPtr[i] = EOS;
@@ -672,7 +672,7 @@ s32 sub_02005468(void)
     ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0xFFFF);
     StringCopy(gStringBuffers[0], sub_0200531C(0));
     StringCopy(gStringBuffers[1], sub_0200531C(1));
-    if (gUnknown_02024960.unk7 == 4)
+    if (gMonLinkData.unk7 == 4)
     {
         StringCopy(gStringBuffers[2], sub_0200531C(2));
         StringCopy(gStringBuffers[3], sub_0200531C(3));
@@ -685,7 +685,7 @@ s32 sub_02005468(void)
     sub_02004F04(gUnknown_02021A20.unk18, gUnknown_0201FDF4, 4);
     gBgTilemapBufferTransferScheduled[3] = TRUE;
     gBgTilemapBufferTransferScheduled[2] = TRUE;
-    return gUnknown_02024960.unk7;
+    return gMonLinkData.unk7;
 }
 
 s32 sub_02005548(void)
@@ -717,7 +717,7 @@ static inline void sub_2005E68_Inline(void)
 static inline void sub_2005F08_Inline(u32 unused, s32 moveSlot)
 {
     u8 text[28];
-    u32 move = gUnknown_02024960.unk14[moveSlot];
+    u32 move = gMonLinkData.moves[moveSlot];
     if (move != MOVE_NONE)
         CopyMoveName(text, move);
     else
@@ -819,9 +819,9 @@ bool32 sub_02005704(u32 monId)
         case 0:
             sub_2005E68_Inline();
             r7->state = sub_02004FB8(gText_BattleOptions, 4);
-            if (r7->state == 0 && gUnknown_02024960.unk_03_0 == 2)
+            if (r7->state == 0 && gMonLinkData.unk_03_0 == 2)
             {
-                gUnknown_02024960.unk_87B = 0;
+                gMonLinkData.unk_87B = 0;
                 loop = FALSE;
             }
             break;
@@ -829,15 +829,15 @@ bool32 sub_02005704(u32 monId)
             if (sub_0200644C() == 1)
             {
                 sub_020055D4(gUnknown_02020A48, 0, 14, 1);
-                gUnknown_02024960.unk_87C = 0;
-                gUnknown_02024960.unk_87B = 1;
+                gMonLinkData.unk_87C = 0;
+                gMonLinkData.unk_87B = 1;
                 r7->state = 0;
                 loop = FALSE;
             }
             else if (sub_0200644C() == 2)
             {
-                gUnknown_02024960.unk_87C = 0;
-                gUnknown_02024960.unk_87B = 1;
+                gMonLinkData.unk_87C = 0;
+                gMonLinkData.unk_87B = 1;
                 r7->state = 0;
                 loop = FALSE;
             }
@@ -854,8 +854,8 @@ bool32 sub_02005704(u32 monId)
                 {
                     if (sub_2005F44_Inline(gUnknown_02020A48, r7->moveSlot))
                     {
-                        gUnknown_02024960.unk_87C = r9,
-                        gUnknown_02024960.unk_87B = 1,
+                        gMonLinkData.unk_87C = r9,
+                        gMonLinkData.unk_87B = 1,
                         loop = FALSE;
                     }
                     r7->state = 0;
@@ -871,20 +871,20 @@ bool32 sub_02005704(u32 monId)
             r7->state = 0;
             if (r9 == 1)
             {
-                gUnknown_02024960.unk_87B = 3;
+                gMonLinkData.unk_87B = 3;
                 loop = FALSE;
             }
             break;
         case 3:
             FadeOut();
             sub_02002C80();
-            if (gUnknown_02024960.unk_03_0 == 0)
-                gUnknown_02024960.unk_858 = 1;
+            if (gMonLinkData.unk_03_0 == 0)
+                gMonLinkData.unk_858 = 1;
             else
-                gUnknown_02024960.unk_858 = 2;
+                gMonLinkData.unk_858 = 2;
             sub_02002A9C(0, monId, 0);
             r7->state = 0;
-            if (gUnknown_02024960.unk_87B != 4)
+            if (gMonLinkData.unk_87B != 4)
             {
                 loop = FALSE;
             }
@@ -907,8 +907,8 @@ bool32 sub_02005704(u32 monId)
             {
                 if (sub_2005F44_Inline(gUnknown_02020A48, r7->moveSlot))
                 {
-                    gUnknown_02024960.unk_87C = r9,
-                    gUnknown_02024960.unk_87B = 1,
+                    gMonLinkData.unk_87C = r9,
+                    gMonLinkData.unk_87B = 1,
                     loop = FALSE;
                 }
                 r7->state = 0;
@@ -920,20 +920,20 @@ bool32 sub_02005704(u32 monId)
     }
 
     r2 = 0;
-    switch (gUnknown_02024960.unk_87B)
+    switch (gMonLinkData.unk_87B)
     {
     case 1:
         r2 = r7->moveSlot - 1;
-        r2 |= (((gUnknown_02024960.unk_87C - 1) << 8) & 0xFF00);
+        r2 |= (((gMonLinkData.unk_87C - 1) << 8) & 0xFF00);
         break;
     case 2:
-        r2 = gUnknown_02024960.unk_87E;
+        r2 = gMonLinkData.unk_87E;
         break;
     }
 
-    r2 |= (gUnknown_02024960.unk_87B) << 16;
-    gUnknown_02024960.unk_880 = r2;
-    gUnknown_02024960.unk_87F = 1;
+    r2 |= (gMonLinkData.unk_87B) << 16;
+    gMonLinkData.unk_880 = r2;
+    gMonLinkData.unk_87F = 1;
 
     if (!IsScreenFadedOut())
         FadeOut();
@@ -944,68 +944,68 @@ bool32 sub_02005704(u32 monId)
 void sub_02005BB8(void)
 {
     u16 var;
-    u32 var_28;
+    u32 partyCountNibbles;
     s32 i;
 
     CpuFill16(0, gPlayerPartyPtr, sizeof(struct Pokemon) * PARTY_SIZE);
-    var_28 = gUnknown_02024960.unk_00;
-    for (i = 0; i < PARTY_SIZE; i++, var_28 >>= 4)
+    partyCountNibbles = gMonLinkData.partyCountNibblefield;
+    for (i = 0; i < PARTY_SIZE; i++, partyCountNibbles >>= 4)
     {
-        u32 id = var_28 & 0xF;
+        u32 id = partyCountNibbles & 0xF;
         if ((id) != 0xF)
         {
             CpuCopy16(&gPlayerPartyBakPtr[id], &gPlayerPartyPtr[i], sizeof(struct Pokemon));
 
-            var = gUnknown_02024960.unk24[i].hp;
+            var = gMonLinkData.monData[i].hp;
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_HP, &var);
 
-            var = gUnknown_02024960.unk24[i].status;
+            var = gMonLinkData.monData[i].status;
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_STATUS, &var);
 
             var = 0;
-            if (gUnknown_02024960.unk24[i].unk27_0)
+            if (gMonLinkData.monData[i].giveMaxPokerusDays)
                 var = 0xF;
-            if (gUnknown_02024960.unk24[i].unk27_1)
+            if (gMonLinkData.monData[i].giveMaxPokerusStrain)
                 var |= 0xF0;
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_POKERUS, &var);
 
-            if (gUnknown_02024960.unk24[i].unk27_2)
+            if (gMonLinkData.monData[i].setMailTo1)
             {
                 var = 1;
                 SetMonData(&gPlayerPartyPtr[i], MON_DATA_MAIL, &var);
             }
 
             var = 0;
-            if (gUnknown_02024960.unk24[i].unk27_3)
-                var = gUnknown_02024960.unk24[i].heldItem;
+            if (gMonLinkData.monData[i].preserveHeldItem)
+                var = gMonLinkData.monData[i].heldItem;
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_HELD_ITEM, &var);
 
-            var = gUnknown_02024960.unk24[i].moves[0];
+            var = gMonLinkData.monData[i].moves[0];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_MOVE1, &var);
-            var = gUnknown_02024960.unk24[i].moves[1];
+            var = gMonLinkData.monData[i].moves[1];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_MOVE2, &var);
-            var = gUnknown_02024960.unk24[i].moves[2];
+            var = gMonLinkData.monData[i].moves[2];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_MOVE3, &var);
-            var = gUnknown_02024960.unk24[i].moves[3];
+            var = gMonLinkData.monData[i].moves[3];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_MOVE4, &var);
 
-            var = gUnknown_02024960.unk24[i].pps[0];
+            var = gMonLinkData.monData[i].pps[0];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP1, &var);
-            var = gUnknown_02024960.unk24[i].pps[1];
+            var = gMonLinkData.monData[i].pps[1];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP2, &var);
-            var = gUnknown_02024960.unk24[i].pps[2];
+            var = gMonLinkData.monData[i].pps[2];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP3, &var);
-            var = gUnknown_02024960.unk24[i].pps[3];
+            var = gMonLinkData.monData[i].pps[3];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP4, &var);
 
-            CpuCopy16((void*) gUnknown_02024960.unk24[i].unk38, sub_0200CB34(i), 320);
+            CpuCopy16((void*) gMonLinkData.monData[i].textBuffer, sub_0200CB34(i), 320);
         }
     }
 
-    if (gUnknown_02024960.unk_03_0 != 0)
-        gUnknown_02024960.unk_858 = 1;
+    if (gMonLinkData.unk_03_0 != 0)
+        gMonLinkData.unk_858 = 1;
     else
-        gUnknown_02024960.unk_858 = 0;
+        gMonLinkData.unk_858 = 0;
 }
 
 static s32 UNUSED sub_02005DCC(s32 monId, u32 stringId)
@@ -1051,14 +1051,14 @@ bool32 sub_02005FCC(void)
 {
     bool32 val = sub_0200A2C8(0);
 
-    gUnknown_02024960.unk84C_02 = 0;
+    gMonLinkData.unk84C_02 = 0;
     if (!val)
     {
         REG_JOY_TRANS = 0;
-        while (!gUnknown_02024960.unk84C_02)
+        while (!gMonLinkData.unk84C_02)
             ;
         val = sub_0200A2C8(1);
-        while (gUnknown_02024960.unk84C_03)
+        while (gMonLinkData.unk84C_03)
             ;
 
         if (!val)
@@ -1086,21 +1086,22 @@ static inline u8 Test2(const struct GFRomHeader *rom, void *sav2)
     return *ptr;
 }
 
+// Based on the use of SetSpeciesCaughtFlag below, I'm assuming this doesn't end up getting used in standard situations?
 s32 sub_02006058(void)
 {
     s32 i;
     s32 var;
 
     WarningPrint(2);
-    while (!gUnknown_02024960.unk84C_01)
+    while (!gMonLinkData.transferComplete)
     {
-        if (!gUnknown_020251F0.field12)
+        if (!gTransferData.field12)
             return 2;
     }
 
     if (gRomDetection_IsRubySapphire)
     {
-        if (!(GetPlayerMapType() & 2))
+        if (!(GetPlayerMapType() & POKECENTER_SAVEWARP))
         {
             REG_JOY_TRANS = -1;
             WarningPrint(5);
@@ -1122,7 +1123,7 @@ s32 sub_02006058(void)
             ErrorPrint(10);
         }
 
-        metGame = GetMonData(&gPlayerPartyPtr[gUnknown_02024960.unk84C_1], MON_DATA_MET_GAME, NULL);
+        metGame = GetMonData(&gPlayerPartyPtr[gMonLinkData.monId], MON_DATA_MET_GAME, NULL);
         f = 1 << metGame;
         if (!(flags & f))
         {
@@ -1132,17 +1133,17 @@ s32 sub_02006058(void)
     }
 
     WarningPrint(3);
-    SetSpeciesCaughtFlag(gUnknown_02024960.unk84C_2, &gPlayerPartyPtr[gUnknown_02024960.unk84C_2]);
-    if ((gUnknown_02024960.unk84C_3 | (gUnknown_02024960.unk850_1 << 8)) != 0)
-        SetSpeciesCaughtFlag((gUnknown_02024960.unk84C_3 | (gUnknown_02024960.unk850_1 << 8)),
-                             &gPlayerPartyPtr[(gUnknown_02024960.unk84C_3 | (gUnknown_02024960.unk850_1 << 8))]);
+    SetSpeciesCaughtFlag(gMonLinkData.species2, &gPlayerPartyPtr[gMonLinkData.species2]); // This most likely is going to read way out of bounds as we're using species instead of slot ID
+    if ((gMonLinkData.speciesLowerByte | (gMonLinkData.speciesUpperByte << 8)) != 0)
+        SetSpeciesCaughtFlag((gMonLinkData.speciesLowerByte | (gMonLinkData.speciesUpperByte << 8)),
+                             &gPlayerPartyPtr[(gMonLinkData.speciesLowerByte | (gMonLinkData.speciesUpperByte << 8))]);
 
     for (i = 0; i < 11; i++)
     {
-        if (gGiftRibbonsPtr[i] == 0 && gUnknown_02024960.field85C[i] != 0)
+        if (gGiftRibbonsPtr[i] == 0 && gMonLinkData.giftRibbons[i] != 0)
         {
-            gGiftRibbonsPtr[i] = gUnknown_02024960.field85C[i];
-            GiveGiftRibbonToParty(i, gUnknown_02024960.field85C[i]);
+            gGiftRibbonsPtr[i] = gMonLinkData.giftRibbons[i];
+            GiveGiftRibbonToParty(i, gMonLinkData.giftRibbons[i]);
         }
     }
 
@@ -1161,9 +1162,9 @@ s32 sub_02006058(void)
         break;
     }
 
-    gUnknown_02024960.unk84C_00 = 0;
-    gUnknown_02024960.unk84C_01 = 0;
-    gUnknown_02024960.unk84C_02 = 0;
+    gMonLinkData.unk84C_00 = 0;
+    gMonLinkData.transferComplete = 0;
+    gMonLinkData.unk84C_02 = 0;
     return var;
 }
 
@@ -1173,20 +1174,20 @@ s32 sub_02006264(void)
     s32 var;
 
     WarningPrint(3);
-    if (gUnknown_02024960.unk_85B != 0)
+    if (gMonLinkData.species3 != SPECIES_NONE)
     {
         (*gPlayerPartyCountPtr)++;
-        if (!GetSetPokedexFlag(gUnknown_02024960.unk_85B, FLAG_GET_CAUGHT))
+        if (!GetSetPokedexFlag(gMonLinkData.species3, FLAG_GET_CAUGHT))
         {
-            GetSetPokedexFlag(gUnknown_02024960.unk_85B, FLAG_SET_SEEN);
-            GetSetPokedexFlag(gUnknown_02024960.unk_85B, FLAG_SET_CAUGHT);
+            GetSetPokedexFlag(gMonLinkData.species3, FLAG_SET_SEEN);
+            GetSetPokedexFlag(gMonLinkData.species3, FLAG_SET_CAUGHT);
         }
-        for (i = 0; i < 11; i++)
+        for (i = 0; i < GIFT_RIBBONS_COUNT; i++)
         {
-            if (gGiftRibbonsPtr[i] == 0 && gUnknown_02024960.field85C[i] != 0)
+            if (gGiftRibbonsPtr[i] == 0 && gMonLinkData.giftRibbons[i] != 0)
             {
-                gGiftRibbonsPtr[i] = gUnknown_02024960.field85C[i];
-                GiveGiftRibbonToParty(i, gUnknown_02024960.field85C[i]);
+                gGiftRibbonsPtr[i] = gMonLinkData.giftRibbons[i];
+                GiveGiftRibbonToParty(i, gMonLinkData.giftRibbons[i]);
             }
         }
     }
@@ -1205,58 +1206,58 @@ s32 sub_02006264(void)
         break;
     }
 
-    gUnknown_02024960.unk84C_00 = 0;
-    gUnknown_02024960.unk84C_01 = 0;
-    gUnknown_02024960.unk84C_02 = 0;
+    gMonLinkData.unk84C_00 = 0;
+    gMonLinkData.transferComplete = 0;
+    gMonLinkData.unk84C_02 = 0;
     return var;
 }
 
 void sub_02006344(void)
 {
     u16 species;
-    u32 r6 = gUnknown_02024960.unk10;
+    u32 r6 = gMonLinkData.species;
     if (r6 != 0)
         return;
 
-    gUnknown_02024960.unk_858 = 2;
-    gUnknown_02024960.unk8 = GetMonData(&gPlayerPartyPtr[0], MON_DATA_PERSONALITY, NULL);
-    gUnknown_02024960.unkC = GetMonData(&gPlayerPartyPtr[0], MON_DATA_OT_ID, NULL);
+    gMonLinkData.unk_858 = 2;
+    gMonLinkData.personality = GetMonData(&gPlayerPartyPtr[0], MON_DATA_PERSONALITY, NULL);
+    gMonLinkData.otId = GetMonData(&gPlayerPartyPtr[0], MON_DATA_OT_ID, NULL);
     species = GetMonData(&gPlayerPartyPtr[0], MON_DATA_SPECIES, NULL);
-    gUnknown_02024960.unk10 = species;
-    gUnknown_02024960.unk12 = r6;
-    gUnknown_02024960.unk14[0] = GetBoxMonMoveBySlot(&gPlayerPartyPtr[0].box, 0);
-    gUnknown_02024960.unk14[1] = GetBoxMonMoveBySlot(&gPlayerPartyPtr[0].box, 1);
-    gUnknown_02024960.unk14[2] = GetBoxMonMoveBySlot(&gPlayerPartyPtr[0].box, 2);
-    gUnknown_02024960.unk14[3] = GetBoxMonMoveBySlot(&gPlayerPartyPtr[0].box, 3);
-    gUnknown_02024960.unk1C[0] = GetBoxMonPPByMoveSlot(&gPlayerPartyPtr[0].box, 0);
-    gUnknown_02024960.unk1C[1] = GetBoxMonPPByMoveSlot(&gPlayerPartyPtr[0].box, 1);
-    gUnknown_02024960.unk1C[2] = GetBoxMonPPByMoveSlot(&gPlayerPartyPtr[0].box, 2);
-    gUnknown_02024960.unk1C[3] = GetBoxMonPPByMoveSlot(&gPlayerPartyPtr[0].box, 3);
+    gMonLinkData.species = species;
+    gMonLinkData.unk12 = r6;
+    gMonLinkData.moves[0] = GetBoxMonMoveBySlot(&gPlayerPartyPtr[0].box, 0);
+    gMonLinkData.moves[1] = GetBoxMonMoveBySlot(&gPlayerPartyPtr[0].box, 1);
+    gMonLinkData.moves[2] = GetBoxMonMoveBySlot(&gPlayerPartyPtr[0].box, 2);
+    gMonLinkData.moves[3] = GetBoxMonMoveBySlot(&gPlayerPartyPtr[0].box, 3);
+    gMonLinkData.pps[0] = GetBoxMonPPByMoveSlot(&gPlayerPartyPtr[0].box, 0);
+    gMonLinkData.pps[1] = GetBoxMonPPByMoveSlot(&gPlayerPartyPtr[0].box, 1);
+    gMonLinkData.pps[2] = GetBoxMonPPByMoveSlot(&gPlayerPartyPtr[0].box, 2);
+    gMonLinkData.pps[3] = GetBoxMonPPByMoveSlot(&gPlayerPartyPtr[0].box, 3);
 }
 
 u32 sub_020063FC(void)
 {
-    return (gUnknown_02024960.unk23_0) | (gUnknown_02024960.unk23_4 << 16);
+    return (gMonLinkData.unk23_0) | (gMonLinkData.unk23_4 << 16);
 }
 
 u32 sub_02006414(s32 moveSlot)
 {
-    return sub_020064BC(gUnknown_02024960.unk20, moveSlot) & 7;
+    return sub_020064BC(gMonLinkData.unk20, moveSlot) & 7;
 }
 
 u32 sub_02006430(s32 moveSlot)
 {
-    return (sub_020064BC(gUnknown_02024960.unk20, moveSlot) >> 3) & 1;
+    return (sub_020064BC(gMonLinkData.unk20, moveSlot) >> 3) & 1;
 }
 
 u32 sub_0200644C(void)
 {
-    return gUnknown_02024960.unk22_0;
+    return gMonLinkData.unk22_0;
 }
 
 u32 sub_0200645C(void)
 {
-    return gUnknown_02024960.unk22_4 + 1;
+    return gMonLinkData.unk22_4 + 1;
 }
 
 bool32 IsMonFainted(u32 monId)
@@ -1271,15 +1272,15 @@ bool32 IsMonFainted(u32 monId)
 
 u32 sub_02006490(void)
 {
-    if (gUnknown_02024960.unk_03_0 != 0)
-        return gUnknown_02024960.unk_03_0 - 1;
+    if (gMonLinkData.unk_03_0 != 0)
+        return gMonLinkData.unk_03_0 - 1;
     else
         return 0;
 }
 
 u32 sub_020064B0(void)
 {
-    return gUnknown_02024960.unk_03_7;
+    return gMonLinkData.unk_03_7;
 }
 
 u32 sub_020064BC(u32 a0, s32 a1)
@@ -1296,18 +1297,18 @@ u32 sub_020064BC(u32 a0, s32 a1)
     return a0 & 0xF;
 }
 
-u32 sub_020064D0(s32 a0)
+static u32 UNUSED IsPartySlotOccupied(s32 a0) // If return value is 0xF, slot is occupied
 {
-    u32 r1 = gUnknown_02024960.unk_00;
+    u32 partyCountNibbles = gMonLinkData.partyCountNibblefield;
     if (a0 > 0)
     {
         s32 r0 = a0;
         do
         {
-            r1 >>= 4;
+            partyCountNibbles >>= 4;
             r0--;
         } while (r0 != 0);
     }
 
-    return r1 & 0xF;
+    return partyCountNibbles & 0xF;
 }
