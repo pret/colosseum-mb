@@ -7,5 +7,5 @@
 	.include "src/gflib/sound.o"
 	.include "src/libpmagb/save.o"
 	.include "src/agb_flash.o"
-	.include "src/unk_200E344.o"
+	.include "src/berry_fix.o"
 	.include "src/siirtc.o"
