@@ -11,7 +11,7 @@ SECTIONS {
         asm/crt0.o(.text);
         src/main.o(.text);
         src/all.o(.text);
-        src/all2.o(.text);
+        src/pokemon_summary_screen.o(.text);
         src/all4.o(.text);
 
     } =0
