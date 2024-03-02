@@ -699,6 +699,15 @@
 #define SIO_MULTI_DI_SHIFT 3
 #define SIO_MULTI_DI_MASK  0x1
 
+// joy bus
+#define JOYCNT_RESET        (1 << 0)
+#define JOYCNT_RECV_CMPLT   (1 << 1)
+#define JOYCNT_TRAN_CMPLT   (1 << 2)
+#define JOYCNT_RESET_IRQ    (1 << 6)
+
+#define RCNT_JOYBUS1    (1 << 14)
+#define RCNT_JOYBUS2    (1 << 15)
+
 // keys
 #define A_BUTTON        0x0001
 #define B_BUTTON        0x0002

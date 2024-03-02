@@ -34,7 +34,7 @@ struct MonData
     u32 setMailTo1:1;
     u32 preserveHeldItem:1;
     u32 heldItem:16; // 0x28
-    u16 unk2A;
+    u16 unused;
     u16 moves[MAX_MON_MOVES]; // 0x2C , 0x2E , 0x30, 0x32
     u8 pps[MAX_MON_MOVES]; // 0x34-0x37
     u8 textBuffer[320];
@@ -46,7 +46,7 @@ struct MonLinkData
     u32 unk_03_0:7;
     u32 unk_03_7:1;
     u32 unk4:24;
-    u32 unk7:8;
+    u32 monCount:8;
     u32 personality;
     u32 otId;
     u16 species;
@@ -71,7 +71,7 @@ struct MonLinkData
     u32 unk850_2:24;
     u32 *monPtr;
     u8 unk_858;
-    u8 unk_859;
+    u8 numMonsToSelect;
     u8 unk_85A;
     u8 species3; // Only 1 byte, so can not contain a Hoenn species
     u8 ALIGNED(4) giftRibbons[GIFT_RIBBONS_COUNT + 1]; // Aligned for u32 copy

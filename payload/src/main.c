@@ -19,11 +19,12 @@
 
 struct RomHeader
 {
-    u8 a0[0xA8];
-    u8 unkA8[8];
+    u8 nintendoLogo[156];
+    u8 gameTitle[12];
+    u8 gameCode[8];
 };
 
-extern void sub_0200D9EC(void);
+extern void VBlankCB(void);
 extern const struct RomHeader gRomHeader;
 extern u8 gSaveStatus;
 extern u8 gUnknown_020217B8;
@@ -33,7 +34,7 @@ extern struct Unk02021860Struct gUnknown_02021860;
 extern s32 sub_020063FC(void);
 extern s32 sub_020064BC(u32 a0, u32 a1);
 extern u32 sub_020044F0(u32 a0);
-extern void sub_0200D924(const u8*);
+extern void InitLink(const u8* gameCode);
 
 void sub_02002A9C(s32 a0, u32 a1, u32 a2);
 void sub_02002C44(void);
@@ -111,15 +112,15 @@ void GF_Main(void)
     InitSound();
     sub_02002C44();
     SetKeyRepeatTiming(0x28, 5);
-    REG_IE = 1;
+    REG_IE = INTR_FLAG_VBLANK;
     REG_DISPSTAT = 8;
     REG_DISPCNT &= (0xFF7F);
     REG_IME = 1;
     SetPlayerLinkInfo(gSaveBlock2Ptr, gSaveBlock1Ptr, gSaveStatus);
 
-    sub_0200D924(gRomHeader.unkA8);
+    InitLink(gRomHeader.gameCode);
 
-    SetVBlankCallback(sub_0200D9EC);
+    SetVBlankCallback(VBlankCB);
     PauseSoundVSync();
     GenerateFontHalfrowLookupTable((u32 *) 0x03004000);
     FadeOut();
@@ -235,8 +236,8 @@ _0200032C:\t\n\
 	ldrb r2, [r2]\t\n\
 	bl SetPlayerLinkInfo\t\n\
 	adds r0, r6, #0\t\n\
-	bl sub_0200D924\t\n\
-	ldr r0, =sub_0200D9EC\t\n\
+	bl InitLink\t\n\
+	ldr r0, =VBlankCB\t\n\
 	bl SetVBlankCallback\t\n\
 	bl PauseSoundVSync\t\n\
 	ldr r0, =0x03004000\t\n\

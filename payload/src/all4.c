@@ -141,7 +141,7 @@ u32 sub_020047D4(void)
     else
         ClearWindowCharBuffer(gMessageWindowPtr, 0xFFFF);
 
-    gMonLinkData.unk_859 = 0;
+    gMonLinkData.numMonsToSelect = 0;
     gMonLinkData.transferComplete = 0;
     gMonLinkData.unk_87A = 0;
     gMonLinkData.unk84C_00 = 0;
@@ -169,7 +169,7 @@ u32 sub_020047D4(void)
     while (r5 == 0)
     {
         DelayFrames(1);
-        if (gMonLinkData.unk_859 != 0 && GetUnknownBoolean() == 1)
+        if (gMonLinkData.numMonsToSelect != 0 && GetUnknownBoolean() == 1)
             r5 = 2;
         if (gMonLinkData.unk84C_00 == 1)
         {
@@ -672,7 +672,7 @@ s32 sub_02005468(void)
     ClearWindowCharBuffer(gUnknown_02021A20.unk18, 0xFFFF);
     StringCopy(gStringBuffers[0], sub_0200531C(0));
     StringCopy(gStringBuffers[1], sub_0200531C(1));
-    if (gMonLinkData.unk7 == 4)
+    if (gMonLinkData.monCount == 4)
     {
         StringCopy(gStringBuffers[2], sub_0200531C(2));
         StringCopy(gStringBuffers[3], sub_0200531C(3));
@@ -685,7 +685,7 @@ s32 sub_02005468(void)
     sub_02004F04(gUnknown_02021A20.unk18, gUnknown_0201FDF4, 4);
     gBgTilemapBufferTransferScheduled[3] = TRUE;
     gBgTilemapBufferTransferScheduled[2] = TRUE;
-    return gMonLinkData.unk7;
+    return gMonLinkData.monCount;
 }
 
 s32 sub_02005548(void)

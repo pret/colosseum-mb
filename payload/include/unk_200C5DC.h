@@ -6,6 +6,21 @@
 #define LOBBY_SAVEWARP               (1 << 2)
 #define CHAMPION_SAVEWARP            (1 << 7)
 
+#define LINK_CMD_RESET              0x00
+#define LINK_CMD_0x01               0x01
+#define LINK_CMD_TRAN_PLAYER_DATA2  0x04
+#define LINK_CMD_RECV_GIFT_DATA     0x22
+#define LINK_CMD_TRAN_GIFT_DATA     0x33
+#define LINK_CMD_0x44               0x44
+#define LINK_CMD_RECV_PARTY_MON     0x55
+#define LINK_CMD_SOFT_RESET_ROM     0x60
+#define LINK_CMD_SOFT_RESET         0x61
+#define LINK_CMD_RECV_MON_DATA      0x66
+#define LINK_CMD_RECV_UNKNOWN       0x77
+#define LINK_CMD_RECV_TEXT          0x88
+#define LINK_CMD_TRAN_PLAYER_DATA1  0x99
+#define LINK_CMD_READ_INPUT         0xAA
+
 struct TransferData
 {
     volatile u32 *data;
@@ -18,7 +33,7 @@ struct TransferData
     u8 field14;
     u8 field15;
     u8 field16;
-    u8 field17;
+    u8 currentCmd;
     u8 field18;
     u8 fill19;
     u8 field20;
@@ -30,11 +45,11 @@ struct TransferData
     u8 fill26;
     u8 fill27;
     u32 transferBytes;
-    u32 field32;
+    u32 gameCode;
     u32 field36;
-    u32 field40;
-    u32 field44;
-    u32 field48;
+    u32 lowerCaseGameCode;
+    u32 gameCode2;
+    u32 makerCode;
 };
 
 extern volatile struct TransferData gTransferData;

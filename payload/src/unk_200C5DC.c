@@ -527,7 +527,7 @@ static u8 GetRSPlayerMapType(struct SaveBlock1 *sav1)
     return 0;
 }
 
-static void sub_0200CF50(u32 val)
+static void ReceivePartyMon(u32 val)
 {
     u32 speciesLower1, speciesLower2, speciesUpper;
 
@@ -549,7 +549,7 @@ static void sub_0200CF50(u32 val)
         gMonLinkData.speciesUpperByte = speciesUpper;
 
         gMonLinkData.monPtr = (void*) &gPlayerPartyPtr[gMonLinkData.monId];
-        gTransferData.transferSize = 100;
+        gTransferData.transferSize = sizeof(struct Pokemon);
         gTransferData.transferBytes = 0;
         gTransferData.state++;
         break;
@@ -572,13 +572,13 @@ static void sub_0200CF50(u32 val)
         if (gTransferData.transferBytes >= gTransferData.transferSize)
         {
             gMonLinkData.transferComplete = 1;
-            gTransferData.field17 = 0;
+            gTransferData.currentCmd = LINK_CMD_RESET;
         }
         break;
     }
 }
 
-void sub_0200D08C(u32 val)
+static void ReceiveMonData(u32 val)
 {
     s32 i;
 
@@ -614,7 +614,7 @@ void sub_0200D08C(u32 val)
         {
             gTransferData.transferBytes = 0;
             gTransferData.data = (void*) gMonLinkData.monName;
-            gTransferData.transferSize = gMonLinkData.unk7 * sizeof(struct MonName);
+            gTransferData.transferSize = gMonLinkData.monCount * sizeof(struct MonName);
             gTransferData.state++;
         }
         break;
@@ -624,7 +624,7 @@ void sub_0200D08C(u32 val)
 
         if (gTransferData.transferBytes >= gTransferData.transferSize)
         {
-            gTransferData.field17 = 0;
+            gTransferData.currentCmd = LINK_CMD_RESET;
             gMonLinkData.unk_87A = 1;
         }
         break;
@@ -641,10 +641,10 @@ static inline void CopyN(s32 n, u8 *dst, const u8 *src)
     }
 }
 
-void sub_0200D1AC(u32 val)
+static void ReceiveGiftData(u32 val)
 {
     u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffset;
-    // Note: cast is needed here to make the code match. The whole struct is declared as volatile, but unkStruct isn't treated as volatile in this function.
+    // Note: cast is needed here to make the code match. The whole struct is declared as volatile, but externalEventData isn't treated as volatile in this function.
     // It's possible only certain members of gMonLinkData were volatile.
     struct ExternalEventData2 *externalEventData = (struct ExternalEventData2 *) &gMonLinkData.externalEventData;
 
@@ -693,12 +693,12 @@ void sub_0200D1AC(u32 val)
         {
             if (gMonLinkData.species3 == SPECIES_NONE)
             {
-                gTransferData.field17 = 0;
+                gTransferData.currentCmd = LINK_CMD_RESET;
                 gMonLinkData.unk_85A = 1;
             }
             else
             {
-                gTransferData.transferSize = 100;
+                gTransferData.transferSize = sizeof(struct Pokemon);
                 gTransferData.transferBytes = 0;
                 gTransferData.data = (void *) GetPtrToEmptyPartySlot();
                 gTransferData.state++;
@@ -724,13 +724,13 @@ void sub_0200D1AC(u32 val)
         if (gTransferData.transferBytes >= gTransferData.transferSize)
         {
             gMonLinkData.unk_85A = 1;
-            gTransferData.field17 = 0;
+            gTransferData.currentCmd = LINK_CMD_RESET;
         }
         break;
     }
 }
 
-bool32 sub_0200D394(u32 val)
+static bool32 ProcessReceiveCommand(u32 val)
 {
     u32 r3 = gTransferData.field12;
 
@@ -742,19 +742,19 @@ bool32 sub_0200D394(u32 val)
                 return FALSE;
         }
 
-        if (val == gTransferData.field40)
+        if (val == gTransferData.lowerCaseGameCode)
         {
             REG_JOYSTAT = 0x10;
             gTransferData.field36 = val;
             gTransferData.field12 = 1;
-            gTransferData.field17 = 1;
+            gTransferData.currentCmd = LINK_CMD_0x01;
         }
-        else if (val == gTransferData.field44)
+        else if (val == gTransferData.gameCode2)
         {
             REG_JOYSTAT = r3;
             gTransferData.field36 = val;
             gTransferData.field12 = 1;
-            gTransferData.field17 = 0;
+            gTransferData.currentCmd = LINK_CMD_RESET;
         }
         else
         {
@@ -767,108 +767,108 @@ bool32 sub_0200D394(u32 val)
     }
     else
     {
-        s32 r6 = gTransferData.field17;
+        s32 currentCmd = gTransferData.currentCmd;
 
-        switch (r6)
+        switch (currentCmd)
         {
-        case 0:
+        case LINK_CMD_RESET:
             val >>= 24;
-            if (val == 0xAA)
+            if (val == LINK_CMD_READ_INPUT)
             {
                 REG_JOY_TRANS = (gHeldKeys << 0x10) | val;
             }
-            else if (val == 0x99)
+            else if (val == LINK_CMD_TRAN_PLAYER_DATA1)
             {
                 gTransferData.data = (void *)GetPlayerLinkInfo();
                 REG_JOY_TRANS = val;
-                gTransferData.transferSize = 0x278;
-                gTransferData.transferBytes = r6;
-                gTransferData.field17 = 4;
+                gTransferData.transferSize = sizeof(struct PlayerLinkInfo);
+                gTransferData.transferBytes = currentCmd; // 0
+                gTransferData.currentCmd = LINK_CMD_TRAN_PLAYER_DATA2;
             }
-            else if (val == 0x88)
+            else if (val == LINK_CMD_RECV_TEXT)
             {
                 gTransferData.data = (void *) sub_0200CB34(0);
                 SetUnknownBoolean(0);
                 REG_JOY_TRANS = val;
-                gTransferData.transferSize = 0x780;
-                gTransferData.transferBytes = r6;
-                gTransferData.field17 = val;
+                gTransferData.transferSize = sizeof(*gUnknown_020241D0) * 6;
+                gTransferData.transferBytes = currentCmd; // 0
+                gTransferData.currentCmd = val;
             }
-            else if (val == 0x77)
+            else if (val == LINK_CMD_RECV_UNKNOWN)
             {
                 REG_JOY_TRANS = val;
-                gTransferData.field17 = val;
+                gTransferData.currentCmd = val;
             }
-            else if (val == 0x66)
+            else if (val == LINK_CMD_RECV_MON_DATA)
             {
                 REG_JOY_TRANS = val;
-                gTransferData.field17 = val;
+                gTransferData.currentCmd = val;
                 gTransferData.data = (void*) &gMonLinkData;
-                gTransferData.transferSize = 0x24;
-                gTransferData.transferBytes = r6;
-                gTransferData.state = r6;
-                gMonLinkData.unk_87A = r6;
+                gTransferData.transferSize = 0x24; // Everything before monData
+                gTransferData.transferBytes = currentCmd; // 0
+                gTransferData.state = currentCmd; // 0
+                gMonLinkData.unk_87A = currentCmd; // 0
             }
-            else if (val == 0x55)
+            else if (val == LINK_CMD_RECV_PARTY_MON)
             {
                 gMonLinkData.unk84C_00 = 1;
                 gMonLinkData.transferComplete = 0;
                 REG_JOY_TRANS = val;
-                gTransferData.field17 = val;
-                gTransferData.state = r6;
+                gTransferData.currentCmd = val;
+                gTransferData.state = currentCmd; // 0
             }
-            else if (val == 0x44)
+            else if (val == LINK_CMD_0x44)
             {
                 REG_JOY_TRANS = val;
-                gTransferData.field17 = val;
+                gTransferData.currentCmd = val;
                 gMonLinkData.unk84C_02 = 1;
                 gMonLinkData.unk84C_03 = 1;
             }
-            else if (val == 0x33 || val == 0x22)
+            else if (val == LINK_CMD_TRAN_GIFT_DATA || val == LINK_CMD_RECV_GIFT_DATA)
             {
                 REG_JOY_TRANS = val;
-                gTransferData.field17 = val;
+                gTransferData.currentCmd = val;
                 gTransferData.state = 0;
             }
-            else if (val == 0x60)
+            else if (val == LINK_CMD_SOFT_RESET_ROM)
             {
                 REG_JOY_TRANS = val;
                 REG_IME = 0;
                 SoftResetRom(0);
             }
-            else if (val == 0x61)
+            else if (val == LINK_CMD_SOFT_RESET)
             {
                 REG_JOY_TRANS = val;
                 REG_IME = 0;
                 SoftReset(0);
             }
             break;
-        case 136:
+        case LINK_CMD_RECV_TEXT:
             gTransferData.data[gTransferData.transferBytes / 4] = val;
             gTransferData.transferBytes += 4;
 
             if (gTransferData.transferBytes >= gTransferData.transferSize)
             {
                 REG_JOYSTAT = 0;
-                gTransferData.field17 = 0;
+                gTransferData.currentCmd = LINK_CMD_RESET;
                 gTransferData.field12 = 0;
                 SetUnknownBoolean(1);
             }
             break;
-        case 119:
+        case LINK_CMD_RECV_UNKNOWN:
             gMonLinkData.unk_858 = val >> 24;
-            gMonLinkData.unk_859 = val;
+            gMonLinkData.numMonsToSelect = val;
             gMonLinkData.unk_878 = 1;
-            gTransferData.field17 = 0;
+            gTransferData.currentCmd = LINK_CMD_RESET;
             break;
-        case 102:
-            sub_0200D08C(val);
+        case LINK_CMD_RECV_MON_DATA:
+            ReceiveMonData(val);
             break;
-        case 85:
-            sub_0200CF50(val);
+        case LINK_CMD_RECV_PARTY_MON:
+            ReceivePartyMon(val);
             break;
-        case 34:
-            sub_0200D1AC(val);
+        case LINK_CMD_RECV_GIFT_DATA:
+            ReceiveGiftData(val);
             break;
         default:
             goto RET_FALSE; // return FALSE doesn't match
@@ -877,7 +877,7 @@ bool32 sub_0200D394(u32 val)
     return TRUE;
 }
 
-void sub_0200D624(void)
+static void TransmitGiftData(void)
 {
     bool32 gameClear;
     u32 joyTransVal;
@@ -915,14 +915,14 @@ void sub_0200D624(void)
 
         if (gTransferData.transferBytes == gTransferData.transferSize)
         {
-            gTransferData.field17 = 0;
+            gTransferData.currentCmd = LINK_CMD_RESET;
             gTransferData.field12 = 0;
         }
         break;
     }
 }
 
-bool32 sub_0200D748(void)
+static bool32 ProcessTransmitCommand(void)
 {
     if (gTransferData.field12 == 0)
     {
@@ -938,9 +938,9 @@ bool32 sub_0200D748(void)
     }
     else
     {
-        switch (gTransferData.field17)
+        switch (gTransferData.currentCmd)
         {
-        case 4:
+        case LINK_CMD_TRAN_PLAYER_DATA2:
             if (gTransferData.transferBytes < gTransferData.transferSize)
             {
                 REG_JOY_TRANS = gTransferData.data[gTransferData.transferBytes / 4];
@@ -949,23 +949,24 @@ bool32 sub_0200D748(void)
             else
             {
                 REG_JOYSTAT = 0;
-                gTransferData.field17 = 0;
+                gTransferData.currentCmd = LINK_CMD_RESET;
                 gTransferData.field12 = 0;
             }
             break;
-        case 0x33:
-            sub_0200D624();
+        case LINK_CMD_RECV_GIFT_DATA:
             break;
-        case 0x44:
+        case LINK_CMD_TRAN_GIFT_DATA:
+            TransmitGiftData();
+            break;
+        case LINK_CMD_0x44:
             gMonLinkData.unk84C_03 = 0;
-            gTransferData.field17 = 0;
+            gTransferData.currentCmd = LINK_CMD_RESET;
             break;
-        case 0x55:
-        case 0x66:
-        case 0x60:
-        case 0x77:
-        case 0x88:
-        case 0x22:
+        case LINK_CMD_RECV_PARTY_MON:
+        case LINK_CMD_SOFT_RESET_ROM:
+        case LINK_CMD_RECV_MON_DATA:
+        case LINK_CMD_RECV_UNKNOWN:
+        case LINK_CMD_RECV_TEXT:
             break;
         default:
             return FALSE;
@@ -974,18 +975,18 @@ bool32 sub_0200D748(void)
     return TRUE;
 }
 
-void sub_0200D80C(void)
+static void JoyBusVCOuntIntr(void)
 {
     u32 joyCnt = REG_JOYCNT;
 
-    if (!(joyCnt & 4) || sub_0200D748() != 0)
+    if (!(joyCnt & JOYCNT_TRAN_CMPLT) || ProcessTransmitCommand() != FALSE)
     {
-        if (!(joyCnt & 2))
+        if (!(joyCnt & JOYCNT_RECV_CMPLT))
             goto loc_200D850;
 
         gTransferData.field11 = 1;
 
-        if (sub_0200D394(REG_JOY_RECV) != 0)
+        if (ProcessReceiveCommand(REG_JOY_RECV) != FALSE)
             goto loc_200D850;
     }
 
@@ -994,10 +995,10 @@ void sub_0200D80C(void)
     gTransferData.field13 = 0;
 
 loc_200D850:
-    if (joyCnt & 1)
+    if (joyCnt & JOYCNT_RESET)
     {
         u16 UNUSED joyRcv = REG_JOY_RECV;
-        REG_JOY_TRANS = gTransferData.field32;
+        REG_JOY_TRANS = gTransferData.gameCode;
         REG_JOYSTAT = 0;
         gTransferData.field12 = 0;
         gTransferData.field13 = 1;
@@ -1008,33 +1009,33 @@ loc_200D850:
     gTransferData.field15 = 0;
 }
 
-void sub_0200D8A4(void)
+static void InitJoyBus(void)
 {
     u16 UNUSED joyRcv;
     u16 ime = REG_IME;
 
     REG_IME = 0;
     if (gTransferData.field18 == 0)
-        REG_RCNT = 0x8000;
-    REG_RCNT = 0xC000;
+        REG_RCNT = RCNT_JOYBUS2;
+    REG_RCNT = RCNT_JOYBUS1 | RCNT_JOYBUS2;
     REG_JOYSTAT = 0;
     joyRcv = REG_JOY_RECV;
     REG_JOY_TRANS = 0;
-    REG_JOYCNT = 0x47;
-    REG_IF = 0x80;
-    REG_IE |= 0x80;
+    REG_JOYCNT = JOYCNT_RESET | JOYCNT_RECV_CMPLT | JOYCNT_TRAN_CMPLT | JOYCNT_RESET_IRQ;
+    REG_IF = INTR_FLAG_SERIAL;
+    REG_IE |= INTR_FLAG_SERIAL;
 
     gTransferData.field15 = 0;
     gTransferData.field12 = 0;
     gTransferData.field13 = 0;
     gTransferData.field18 = 0;
-    gTransferData.field17 = 0;
+    gTransferData.currentCmd = LINK_CMD_RESET;
     gTransferData.field11 = 0;
 
     REG_IME = ime;
 }
 
-void sub_0200D924(const u8 *headerSth)
+void InitLink(const u8 *gameCode)
 {
     s32 i;
     u16 ime = REG_IME;
@@ -1047,26 +1048,26 @@ void sub_0200D924(const u8 *headerSth)
     }
 
     gTransferData.field18 = 1;
-    sub_0200D8A4();
-    REG_IE |= 0x80;
+    InitJoyBus();
+    REG_IE |= INTR_FLAG_SERIAL;
 
-    if (headerSth[0] == 0x54 && headerSth[1] == 0x45 && headerSth[2] == 0x53 && headerSth[3] == 0x54)
+    if (gameCode[0] == 'T' && gameCode[1] == 'E' && gameCode[2] == 'S' && gameCode[3] == 'T')
         gTransferData.field14 = 0xFE;
     else
         gTransferData.field14 = 0x28;
 
-    gTransferData.field32 = (headerSth[3] << 24) | (headerSth[2] << 16) | (headerSth[1] << 8) | (headerSth[0]);
-    gTransferData.field44 = gTransferData.field32;
-    gTransferData.field40 = gTransferData.field32 | 0x20202020;
-    gTransferData.field48 = (headerSth[4] << 24) | (headerSth[5] << 16) | (headerSth[6] << 8) | (headerSth[7]);
-    SetIntrFunc(0, sub_0200D80C);
+    gTransferData.gameCode = (gameCode[3] << 24) | (gameCode[2] << 16) | (gameCode[1] << 8) | (gameCode[0]);
+    gTransferData.gameCode2 = gTransferData.gameCode;
+    gTransferData.lowerCaseGameCode = gTransferData.gameCode | 0x20202020; // Turns upper case ASCII to lower case
+    gTransferData.makerCode = (gameCode[4] << 24) | (gameCode[5] << 16) | (gameCode[6] << 8) | (gameCode[7]);
+    SetIntrFunc(0, JoyBusVCOuntIntr);
 
     REG_IME = ime;
 }
 
-bool32 sub_0200D9EC(void)
+bool32 VBlankCB(void)
 {
-    if (*(u8*)(0x80000B2) != 0x96)
+    if (*(u8*)(0x80000B2) != 0x96) // gRomHeader.gameCode[6] != 0x96
         SoftReset(0);
 
     if (gTransferData.field15 <= gTransferData.field14)
@@ -1081,7 +1082,7 @@ bool32 sub_0200D9EC(void)
     SoftReset(0);
 }
 
-void UNUSED sub_0200DA38(u8 *dst, const u8 *src, s32 n)
+static void UNUSED CopyN2(u8 *dst, const u8 *src, s32 n)
 {
     CopyN(n, dst, src);
 }

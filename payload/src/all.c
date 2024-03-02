@@ -64,7 +64,7 @@ struct Unk02021860Struct
     u8 unk118;
     u8 unk119;
     u8 unk11A;
-    u8 unk11B;
+    u8 selectedMon;
     u8 filler11C;
     u8 filler11D;
     u8 unk11E;
@@ -72,8 +72,8 @@ struct Unk02021860Struct
     u8 unk120;
     u8 unk121;
     u8 unk122;
-    u8 unk123;
-    u8 unk124;
+    u8 numMonsToSelect;
+    u8 numMonsLeftToSelect;
     u8 unk125;
 };
 
@@ -651,7 +651,7 @@ void CreateMonIcon(struct Sprite *sprite)
         r1 = sprite->data[2] & 1;
         CopyMonIconToVram(ptr, r1);
         SetSpritePos(sprite, ptr->unk1, ptr->unk2);
-        if (gUnknown_02021860.unk11B == ptr->monId)
+        if (gUnknown_02021860.selectedMon == ptr->monId)
         {
             if (gUnknown_02021860.unk121 == 4)
                 AddSpritePos(sprite, 0, -gUnknown_02021860.unk121);
@@ -672,10 +672,10 @@ void sub_02000BFC(void)
     struct Window *win;
     s32 i;
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < PARTY_SIZE; i++)
     {
         struct UnkSpriteMonIconStruct *ptr = &gUnknown_02021860.unk0[i];
-        if (ptr->unk22 == gUnknown_02021860.unk124)
+        if (ptr->unk22 == gUnknown_02021860.numMonsLeftToSelect)
         {
             ptr->unk22 = 0;
             win = ptr->win;
@@ -692,8 +692,8 @@ void sub_02000BFC(void)
                 TextWindowSetXY(win, 0, 2);
                 RenderText(win, gText_Number);
             }
-            gUnknown_02021860.unk124--;
-            gUnknown_02021860.unk11B = i;
+            gUnknown_02021860.numMonsLeftToSelect--;
+            gUnknown_02021860.selectedMon = i;
             break;
         }
     }
@@ -744,12 +744,12 @@ void sub_02000D74(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *
         CopyToBgTilemapBufferRect(3, coords->x, coords->y, r5->unk0, r5->unk1, (u16 *) (VRAM + 0x14000) + r5->unk2);
         if (r9->statusPrimary != STATUS_PRIMARY_FAINTED)
         {
-            if (a0->unk11B == monId)
+            if (a0->selectedMon == monId)
                 SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 7);
         }
         else
         {
-            if (a0->unk11B == monId)
+            if (a0->selectedMon == monId)
                 SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 9);
             else
                 SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 5);
@@ -836,12 +836,12 @@ void sub_02001258(struct Unk02021860Struct *a0, const struct Unk02000D74Struct *
         CopyToBgTilemapBufferRect(3, coords->x, coords->y, r5->unk0, r5->unk1, (u16 *) (VRAM + 0x14000) + r5->unk2);
         if (r9->statusPrimary != STATUS_PRIMARY_FAINTED)
         {
-            if (a0->unk11B == monId)
+            if (a0->selectedMon == monId)
                 SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 7);
         }
         else
         {
-            if (a0->unk11B == monId)
+            if (a0->selectedMon == monId)
                 SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 9);
             else
                 SetBgTilemapBufferPaletteRect(3, coords->x, coords->y, r5->unk0, r5->unk1, 5);
@@ -916,12 +916,12 @@ void sub_02001738(u32 selectMonsTextId)
     gUnknown_02021860.unk108 = AddWindow(0, &gUnknown_0201F8B0);
     SetTextColor(gUnknown_02021860.unk108, 1, 8);
     ClearWindowCharBuffer(gUnknown_02021860.unk108, 0xFFFF);
-    if (gUnknown_02021860.unk123 != 0)
+    if (gUnknown_02021860.numMonsToSelect != 0)
     {
         switch (selectMonsTextId)
         {
         case 0:
-            text[0] = gUnknown_02021860.unk123 + CHAR_0;
+            text[0] = gUnknown_02021860.numMonsToSelect + CHAR_0;
             text[1] = EOS;
             BufferString(0, text);
             RenderText(gUnknown_02021860.unk108, gText_SelectNumberPokemon);
@@ -1120,38 +1120,38 @@ s32 sub_02001A8C(u32 monId)
             }
             else
             {
-                if (IsMonFainted(gUnknown_02021860.unk11B) == TRUE)
+                if (IsMonFainted(gUnknown_02021860.selectedMon) == TRUE)
                 {
                     PlaySE(SONG_SE_FAILURE);
-                    sub_020019B4(gUnknown_02021860.unk11B, 10);
+                    sub_020019B4(gUnknown_02021860.selectedMon, 10);
                     i = 2;
                 }
-                else if (gUnknown_02021860.unk122 == gUnknown_02021860.unk11B)
+                else if (gUnknown_02021860.unk122 == gUnknown_02021860.selectedMon)
                 {
                     PlaySE(SONG_SE_FAILURE);
-                    sub_020019B4(gUnknown_02021860.unk11B, 11);
+                    sub_020019B4(gUnknown_02021860.selectedMon, 11);
                     i = 2;
                 }
                 else
                 {
-                    switch (sub_020064BC(gMonLinkData.unk4, gUnknown_02021860.unk11B))
+                    switch (sub_020064BC(gMonLinkData.unk4, gUnknown_02021860.selectedMon))
                     {
                     case 0:
                         PlaySE(SONG_SE_SELECT);
-                        gMonLinkData.unk_87E = gUnknown_02021860.unk11B;
+                        gMonLinkData.unk_87E = gUnknown_02021860.selectedMon;
                         gMonLinkData.unk_87B = 2;
                         return -1;
                     case 1:
                         PlaySE(SONG_SE_FAILURE);
-                        sub_020019B4(gUnknown_02021860.unk11B, 13);
+                        sub_020019B4(gUnknown_02021860.selectedMon, 13);
                         break;
                     case 2:
                         PlaySE(SONG_SE_FAILURE);
-                        sub_020019B4(gUnknown_02021860.unk11B, 11);
+                        sub_020019B4(gUnknown_02021860.selectedMon, 11);
                         break;
                     case 3:
                         PlaySE(SONG_SE_FAILURE);
-                        sub_020019B4(gUnknown_02021860.unk11B, 12);
+                        sub_020019B4(gUnknown_02021860.selectedMon, 12);
                         break;
                     }
                     i = 2;
@@ -1161,13 +1161,13 @@ s32 sub_02001A8C(u32 monId)
         case 4:
             PlaySE(SONG_SE_SELECT);
             FadeOut();
-            gUnknown_02021860.unk11B = sub_020044F0(gUnknown_02021860.unk11B);
-            monId = gUnknown_02021860.unk11B;
+            gUnknown_02021860.selectedMon = sub_020044F0(gUnknown_02021860.selectedMon);
+            monId = gUnknown_02021860.selectedMon;
             if (gUnknown_02021860.unk11A == 1)
             {
-                if (gUnknown_02021860.unk11B == 0)
+                if (gUnknown_02021860.selectedMon == 0)
                     gUnknown_02021860.unk11E = 2;
-                else if (gUnknown_02021860.unk11B == 1)
+                else if (gUnknown_02021860.selectedMon == 1)
                     gUnknown_02021860.unk11E = 4;
             }
             sub_020017E8(&gUnknown_02021860);
@@ -1274,7 +1274,7 @@ s32 sub_02001F04(s32 ret)
         case 3:
             if (var_24->unk22 == 0)
             {
-                if (gUnknown_02021860.unk124 == gUnknown_02021860.unk123)
+                if (gUnknown_02021860.numMonsLeftToSelect == gUnknown_02021860.numMonsToSelect)
                 {
                     PlaySE(SONG_SE_FAILURE);
                     i = 1;
@@ -1282,11 +1282,11 @@ s32 sub_02001F04(s32 ret)
                 else
                 {
                     PlaySE(SONG_SE_SELECT);
-                    var_24->unk22 = ++gUnknown_02021860.unk124;
+                    var_24->unk22 = ++gUnknown_02021860.numMonsLeftToSelect;
                     sub_02002EE0(var_24->win, var_24);
                     REG_JOY_TRANS = 0x1000000;
-                    if (gUnknown_02021860.unk124 == gUnknown_02021860.unk123)
-                        gUnknown_02021860.unk11B = 6;
+                    if (gUnknown_02021860.numMonsLeftToSelect == gUnknown_02021860.numMonsToSelect)
+                        gUnknown_02021860.selectedMon = 6;
                     i = 2;
                 }
             }
@@ -1303,23 +1303,23 @@ s32 sub_02001F04(s32 ret)
                 var_24->unk22 = 0;
                 sub_02002EE0(var_24->win, var_24);
                 REG_JOY_TRANS = 0xFF000000;
-                gUnknown_02021860.unk124--;
+                gUnknown_02021860.numMonsLeftToSelect--;
                 i = 2;
             }
             break;
         case 4:
             PlaySE(SONG_SE_SELECT);
             FadeOut();
-            gUnknown_02021860.unk11B = sub_020044F0(gUnknown_02021860.unk11B);
+            gUnknown_02021860.selectedMon = sub_020044F0(gUnknown_02021860.selectedMon);
             if (gUnknown_02021860.unk11A == 1)
             {
-                if (gUnknown_02021860.unk11B == 0)
+                if (gUnknown_02021860.selectedMon == 0)
                     gUnknown_02021860.unk11E = 2;
-                else if (gUnknown_02021860.unk11B == 1)
+                else if (gUnknown_02021860.selectedMon == 1)
                     gUnknown_02021860.unk11E = 4;
             }
             sub_020017E8(&gUnknown_02021860);
-            ret = gUnknown_02021860.unk11B;
+            ret = gUnknown_02021860.selectedMon;
             var_24 = &gUnknown_02021860.unk0[ret];
             i = 0;
             break;
@@ -1360,7 +1360,7 @@ s32 sub_020023E8(void)
         }
         if (keys & A_BUTTON)
         {
-            if (gUnknown_02021860.unk11B == PARTY_SIZE)
+            if (gUnknown_02021860.selectedMon == PARTY_SIZE)
             {
                 if (gUnknown_02021860.unk125 == 0)
                 {
@@ -1378,67 +1378,67 @@ s32 sub_020023E8(void)
                 s32 var = 0;
 
                 PlaySE(SONG_SE_SELECT);
-                var = sub_02001A8C(gUnknown_02021860.unk11B);
+                var = sub_02001A8C(gUnknown_02021860.selectedMon);
                 if (var == -1)
                     return -1;
             }
         }
 
-        monId = gUnknown_02021860.unk11B;
+        monId = gUnknown_02021860.selectedMon;
         if (keys & DPAD_UP)
         {
             PlaySE(SONG_SE_SELECT);
-            if (gUnknown_02021860.unk11B == 0)
-                gUnknown_02021860.unk11B = PARTY_SIZE;
-            else if (gUnknown_02021860.unk11B == PARTY_SIZE)
-                gUnknown_02021860.unk11B = gUnknown_02021860.unk120;
+            if (gUnknown_02021860.selectedMon == 0)
+                gUnknown_02021860.selectedMon = PARTY_SIZE;
+            else if (gUnknown_02021860.selectedMon == PARTY_SIZE)
+                gUnknown_02021860.selectedMon = gUnknown_02021860.unk120;
             else
-                gUnknown_02021860.unk11B--;
-            gUnknown_02021860.unk11E = r9[gUnknown_02021860.unk11B].a2;
+                gUnknown_02021860.selectedMon--;
+            gUnknown_02021860.unk11E = r9[gUnknown_02021860.selectedMon].a2;
         }
         if (keys & DPAD_DOWN)
         {
             PlaySE(SONG_SE_SELECT);
-            if (gUnknown_02021860.unk11B == gUnknown_02021860.unk120)
-                gUnknown_02021860.unk11B = PARTY_SIZE;
-            else if (gUnknown_02021860.unk11B == PARTY_SIZE)
-                gUnknown_02021860.unk11B = 0;
+            if (gUnknown_02021860.selectedMon == gUnknown_02021860.unk120)
+                gUnknown_02021860.selectedMon = PARTY_SIZE;
+            else if (gUnknown_02021860.selectedMon == PARTY_SIZE)
+                gUnknown_02021860.selectedMon = 0;
             else
-                gUnknown_02021860.unk11B++;
-            gUnknown_02021860.unk11E = r9[gUnknown_02021860.unk11B].a2;
+                gUnknown_02021860.selectedMon++;
+            gUnknown_02021860.unk11E = r9[gUnknown_02021860.selectedMon].a2;
         }
         if (keys & DPAD_LEFT)
         {
             PlaySE(SONG_SE_SELECT);
-            if (r9[gUnknown_02021860.unk11B].a1 != 0xFF)
+            if (r9[gUnknown_02021860.selectedMon].a1 != 0xFF)
             {
-                gUnknown_02021860.unk11E = gUnknown_02021860.unk11B;
-                gUnknown_02021860.unk11B = r9[gUnknown_02021860.unk11B].a1;
+                gUnknown_02021860.unk11E = gUnknown_02021860.selectedMon;
+                gUnknown_02021860.selectedMon = r9[gUnknown_02021860.selectedMon].a1;
             }
         }
         if (keys & DPAD_RIGHT)
         {
             PlaySE(SONG_SE_SELECT);
-            switch (r9[gUnknown_02021860.unk11B].a0)
+            switch (r9[gUnknown_02021860.selectedMon].a0)
             {
             case 0xFF:
                 break;
             case 7:
-                gUnknown_02021860.unk11B = gUnknown_02021860.unk11E;
-                if (gUnknown_02021860.unk11B > gUnknown_02021860.unk120)
+                gUnknown_02021860.selectedMon = gUnknown_02021860.unk11E;
+                if (gUnknown_02021860.selectedMon > gUnknown_02021860.unk120)
                 {
-                    gUnknown_02021860.unk11B = gUnknown_02021860.unk120;
-                    if (gUnknown_02021860.unk11A == 1 && gUnknown_02021860.unk11B == 1 && monId == 0)
-                        gUnknown_02021860.unk11B = monId;
+                    gUnknown_02021860.selectedMon = gUnknown_02021860.unk120;
+                    if (gUnknown_02021860.unk11A == 1 && gUnknown_02021860.selectedMon == 1 && monId == 0)
+                        gUnknown_02021860.selectedMon = monId;
                 }
                 break;
             default:
-                gUnknown_02021860.unk11B = r9[gUnknown_02021860.unk11B].a0;
+                gUnknown_02021860.selectedMon = r9[gUnknown_02021860.selectedMon].a0;
                 break;
             }
         }
 
-        if (monId == gUnknown_02021860.unk11B)
+        if (monId == gUnknown_02021860.selectedMon)
             continue;
 
         if (monId != PARTY_SIZE)
@@ -1455,11 +1455,11 @@ s32 sub_020023E8(void)
             SetBgTilemapBufferPaletteRect(1, 24, 18, 6, 2, 1);
         }
 
-        if (gUnknown_02021860.unk11B != PARTY_SIZE)
+        if (gUnknown_02021860.selectedMon != PARTY_SIZE)
         {
-            r4 = &var_24[gUnknown_02021860.unk11B];
+            r4 = &var_24[gUnknown_02021860.selectedMon];
             r5 = &gUnknown_0201F9B0[r4->a2];
-            if (GetMonStatus(&gPlayerPartyPtr[gUnknown_02021860.unk11B]) != STATUS_PRIMARY_FAINTED)
+            if (GetMonStatus(&gPlayerPartyPtr[gUnknown_02021860.selectedMon]) != STATUS_PRIMARY_FAINTED)
                 SetBgTilemapBufferPaletteRect(3, r4->a0, r4->a1, r5->unk0, r5->unk1, 7);
             else
                 SetBgTilemapBufferPaletteRect(3, r4->a0, r4->a1, r5->unk0, r5->unk1, 9);
@@ -1496,7 +1496,7 @@ inline void sub_02002F60(void)
     u32 bits = 0;
     u32 r6 = 0;
 
-    for (i = 1; i < gUnknown_02021860.unk124 + 1; i++)
+    for (i = 1; i < gUnknown_02021860.numMonsLeftToSelect + 1; i++)
     {
         s32 ret = sub_02002F38(i);
         if (ret != -1)
@@ -1523,10 +1523,10 @@ s32 sub_020026F4(void)
         if (keys == 0)
             continue;
 
-        monId = gUnknown_02021860.unk11B;
+        monId = gUnknown_02021860.selectedMon;
         if (keys & B_BUTTON)
         {
-            if (gUnknown_02021860.unk124 != 0)
+            if (gUnknown_02021860.numMonsLeftToSelect != 0)
             {
                 sub_02000BFC();
                 PlaySE(SONG_SE_SELECT);
@@ -1540,9 +1540,9 @@ s32 sub_020026F4(void)
         }
         if (keys & A_BUTTON)
         {
-            if (gUnknown_02021860.unk11B == PARTY_SIZE)
+            if (gUnknown_02021860.selectedMon == PARTY_SIZE)
             {
-                if (gUnknown_02021860.unk124 != gUnknown_02021860.unk123)
+                if (gUnknown_02021860.numMonsLeftToSelect != gUnknown_02021860.numMonsToSelect)
                 {
                     PlaySE(SONG_SE_FAILURE);
                     sub_02001738(1);
@@ -1556,7 +1556,7 @@ s32 sub_020026F4(void)
             }
             else
             {
-                s32 var = sub_02001F04(gUnknown_02021860.unk11B);
+                s32 var = sub_02001F04(gUnknown_02021860.selectedMon);
                 if (var == -1)
                     return -1;
                 else if (var != monId)
@@ -1567,57 +1567,57 @@ s32 sub_020026F4(void)
         if (keys & DPAD_UP)
         {
             PlaySE(SONG_SE_SELECT);
-            if (gUnknown_02021860.unk11B == 0)
-                gUnknown_02021860.unk11B = PARTY_SIZE;
-            else if (gUnknown_02021860.unk11B == PARTY_SIZE)
-                gUnknown_02021860.unk11B = gUnknown_02021860.unk120;
+            if (gUnknown_02021860.selectedMon == 0)
+                gUnknown_02021860.selectedMon = PARTY_SIZE;
+            else if (gUnknown_02021860.selectedMon == PARTY_SIZE)
+                gUnknown_02021860.selectedMon = gUnknown_02021860.unk120;
             else
-                gUnknown_02021860.unk11B--;
-            gUnknown_02021860.unk11E = r9[gUnknown_02021860.unk11B].a2;
+                gUnknown_02021860.selectedMon--;
+            gUnknown_02021860.unk11E = r9[gUnknown_02021860.selectedMon].a2;
         }
         if (keys & DPAD_DOWN)
         {
             PlaySE(SONG_SE_SELECT);
-            if (gUnknown_02021860.unk11B == gUnknown_02021860.unk120)
-                gUnknown_02021860.unk11B = PARTY_SIZE;
-            else if (gUnknown_02021860.unk11B == PARTY_SIZE)
-                gUnknown_02021860.unk11B = 0;
+            if (gUnknown_02021860.selectedMon == gUnknown_02021860.unk120)
+                gUnknown_02021860.selectedMon = PARTY_SIZE;
+            else if (gUnknown_02021860.selectedMon == PARTY_SIZE)
+                gUnknown_02021860.selectedMon = 0;
             else
-                gUnknown_02021860.unk11B++;
-            gUnknown_02021860.unk11E = r9[gUnknown_02021860.unk11B].a2;
+                gUnknown_02021860.selectedMon++;
+            gUnknown_02021860.unk11E = r9[gUnknown_02021860.selectedMon].a2;
         }
         if (keys & DPAD_LEFT)
         {
             PlaySE(SONG_SE_SELECT);
-            if (r9[gUnknown_02021860.unk11B].a1 != 0xFF)
+            if (r9[gUnknown_02021860.selectedMon].a1 != 0xFF)
             {
-                gUnknown_02021860.unk11E = gUnknown_02021860.unk11B;
-                gUnknown_02021860.unk11B = r9[gUnknown_02021860.unk11B].a1;
+                gUnknown_02021860.unk11E = gUnknown_02021860.selectedMon;
+                gUnknown_02021860.selectedMon = r9[gUnknown_02021860.selectedMon].a1;
             }
         }
         if (keys & DPAD_RIGHT)
         {
             PlaySE(SONG_SE_SELECT);
-            switch (r9[gUnknown_02021860.unk11B].a0)
+            switch (r9[gUnknown_02021860.selectedMon].a0)
             {
             case 0xFF:
                 break;
             case 7:
-                gUnknown_02021860.unk11B = gUnknown_02021860.unk11E;
-                if (gUnknown_02021860.unk11B > gUnknown_02021860.unk120)
+                gUnknown_02021860.selectedMon = gUnknown_02021860.unk11E;
+                if (gUnknown_02021860.selectedMon > gUnknown_02021860.unk120)
                 {
-                    gUnknown_02021860.unk11B = gUnknown_02021860.unk120;
-                    if (gUnknown_02021860.unk11A == 1 && gUnknown_02021860.unk11B == 1 && monId == 0)
-                        gUnknown_02021860.unk11B = monId;
+                    gUnknown_02021860.selectedMon = gUnknown_02021860.unk120;
+                    if (gUnknown_02021860.unk11A == 1 && gUnknown_02021860.selectedMon == 1 && monId == 0)
+                        gUnknown_02021860.selectedMon = monId;
                 }
                 break;
             default:
-                gUnknown_02021860.unk11B = r9[gUnknown_02021860.unk11B].a0;
+                gUnknown_02021860.selectedMon = r9[gUnknown_02021860.selectedMon].a0;
                 break;
             }
         }
 
-        if (monId == gUnknown_02021860.unk11B)
+        if (monId == gUnknown_02021860.selectedMon)
             continue;
 
         if (monId != PARTY_SIZE)
@@ -1634,11 +1634,11 @@ s32 sub_020026F4(void)
             SetBgTilemapBufferPaletteRect(1, 24, 18, 6, 2, 1);
         }
 
-        if (gUnknown_02021860.unk11B != PARTY_SIZE)
+        if (gUnknown_02021860.selectedMon != PARTY_SIZE)
         {
-            r4 = &var_24[gUnknown_02021860.unk11B];
+            r4 = &var_24[gUnknown_02021860.selectedMon];
             r5 = &gUnknown_0201F9B0[r4->a2];
-            if (GetMonStatus(&gPlayerPartyPtr[gUnknown_02021860.unk11B]) != STATUS_PRIMARY_FAINTED)
+            if (GetMonStatus(&gPlayerPartyPtr[gUnknown_02021860.selectedMon]) != STATUS_PRIMARY_FAINTED)
                 SetBgTilemapBufferPaletteRect(3, r4->a0, r4->a1, r5->unk0, r5->unk1, 7);
             else
                 SetBgTilemapBufferPaletteRect(3, r4->a0, r4->a1, r5->unk0, r5->unk1, 9);
@@ -1667,7 +1667,7 @@ void sub_02002A9C(s32 a0, u32 a1, u32 a2)
     u32 status;
 
     gUnknown_02021860.unk122 = a1;
-    gUnknown_02021860.unk11B = 0;
+    gUnknown_02021860.selectedMon = 0;
     gUnknown_02021860.unk125 = a2;
     gUnknown_02021860.unk11A = 0;
 
@@ -1685,7 +1685,7 @@ void sub_02002A9C(s32 a0, u32 a1, u32 a2)
     {
     case 0:
         gUnknown_02021860.unk118 = 0;
-        gUnknown_02021860.unk123 = 0;
+        gUnknown_02021860.numMonsToSelect = 0;
         sub_020017E8(&gUnknown_02021860);
         FadeIn();
         sub_020023E8();
@@ -1693,10 +1693,10 @@ void sub_02002A9C(s32 a0, u32 a1, u32 a2)
         break;
     case 1:
         gUnknown_02021860.unk118 = 1;
-        gUnknown_02021860.unk123 = gMonLinkData.unk_859;
-        if (gUnknown_02021860.unk123 == 0 || gUnknown_02021860.unk123 > *gPlayerPartyCountPtr)
-            gUnknown_02021860.unk123 = *gPlayerPartyCountPtr;
-        gUnknown_02021860.unk124 = 0;
+        gUnknown_02021860.numMonsToSelect = gMonLinkData.numMonsToSelect;
+        if (gUnknown_02021860.numMonsToSelect == 0 || gUnknown_02021860.numMonsToSelect > *gPlayerPartyCountPtr)
+            gUnknown_02021860.numMonsToSelect = *gPlayerPartyCountPtr;
+        gUnknown_02021860.numMonsLeftToSelect = 0;
         for (i = 0; i < PARTY_SIZE; i++)
         {
             gUnknown_02021860.unk0[i].unk22 = 0;
@@ -1919,13 +1919,13 @@ void sub_02002C44(void)
 {
     CpuFill16(0, &gUnknown_02021860, sizeof(gUnknown_02021860));
     gUnknown_02021860.unk11A = 0;
-    gUnknown_02021860.unk11B = 0;
+    gUnknown_02021860.selectedMon = 0;
     gUnknown_02021860.unk11E = 1;
 }
 
 void sub_02002C80(void)
 {
-    gUnknown_02021860.unk11B = 0;
+    gUnknown_02021860.selectedMon = 0;
     if (gUnknown_02021860.unk11A == 0)
         gUnknown_02021860.unk11E = 1;
     else
