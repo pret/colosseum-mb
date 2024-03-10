@@ -1,7 +1,7 @@
 #include "global.h"
 #include "gflib/sound.h"
 
-static u8 sIsSoundVSyncPaused;
+static bool8 sIsSoundVSyncPaused;
 static bool8 sIsSoundVsync;
 
 void InitSound(void)

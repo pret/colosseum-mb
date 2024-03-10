@@ -30,18 +30,18 @@ struct GFRomHeader
     u8 pokemonNameLength1;
     u8 pokemonNameLength2;
     u8 moveNameLength;
-    u8 itemNameLength;
-    u8 berryNameLength;
-    u8 abilityNameLength;
-    u8 typeNameLength;
-    u8 mapNameLength1;
-    u8 mapNameLength2;
-    u8 trainerClassNameLength;
-    u8 decorationNameLength;
-    u8 dexCategoryNameLength;
+    u8 itemNameLength; // No use case has been documented, purpose derived from leaks
+    u8 berryNameLength; //No use case has been documented, purpose derived from leaks
+    u8 abilityNameLength; //No use case has been documented, purpose derived from leaks
+    u8 typeNameLength; // No use case has been documented, purpose derived from leaks
+    u8 mapNameLength1; // No use case has been documented, purpose derived from leaks
+    u8 mapNameLength2; // No use case has been documented, purpose derived from leaks
+    u8 trainerClassNameLength; // No use case has been documented, purpose derived from leaks
+    u8 decorationNameLength; // No use case has been documented, purpose derived from leaks
+    u8 dexCategoryNameLength; // No use case has been documented, purpose derived from leaks
     u8 endOfStringLength;
-    u8 frontierTrainerNameLength;
-    u8 easyChatWordLength;
+    u8 frontierTrainerNameLength; // No use case has been documented, purpose derived from leaks
+    u8 easyChatWordLength; // No use case has been documented, purpose derived from leaks
     u32 saveBlock2Size;
     u32 saveBlock1Size;
     u32 partyCountOffset;
