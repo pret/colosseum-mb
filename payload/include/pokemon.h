@@ -173,7 +173,7 @@ struct PokemonSubstruct3
     // If set, a Pokémon is a fateful encounter in FRLG's summary screen if hatched & for all Pokémon in Gen 4+ summary screens.
     // Set for in-game event island legendaries, events distributed after a certain date, & Pokémon from XD: Gale of Darkness.
     // Not to be confused with METLOC_FATEFUL_ENCOUNTER.
-    //u32 modernFatefulEncounter:5;
+    //u32 modernFatefulEncounter:1;
 };
 
 union PokemonSubstruct

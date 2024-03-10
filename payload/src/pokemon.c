@@ -1222,7 +1222,7 @@ u16 FixUnownSpecies(u16 species, u32 personality)
     else
     {
         if (species > SPECIES_EGG)
-            result = SPECIES_OLD_UNOWN_J; // ???
+            result = INVALID_ICON_SPECIES; // ???
         else
             result = species;
     }
