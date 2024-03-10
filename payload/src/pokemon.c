@@ -102,16 +102,16 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
     union PokemonSubstruct *substruct3 = GetSubstruct(boxMon, boxMon->personality, 3);
     s32 i;
 
-    for (i = 0; i < (s32)NELEMS(substruct0->raw); i++)
+    for (i = 0; i < (s32)ARRAY_COUNT(substruct0->raw); i++)
         checksum += substruct0->raw[i];
 
-    for (i = 0; i < (s32)NELEMS(substruct1->raw); i++)
+    for (i = 0; i < (s32)ARRAY_COUNT(substruct1->raw); i++)
         checksum += substruct1->raw[i];
 
-    for (i = 0; i < (s32)NELEMS(substruct2->raw); i++)
+    for (i = 0; i < (s32)ARRAY_COUNT(substruct2->raw); i++)
         checksum += substruct2->raw[i];
 
-    for (i = 0; i < (s32)NELEMS(substruct3->raw); i++)
+    for (i = 0; i < (s32)ARRAY_COUNT(substruct3->raw); i++)
         checksum += substruct3->raw[i];
 
     return checksum;
@@ -121,7 +121,7 @@ static inline void EncryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
 
-    for (i = 0; i < NELEMS(boxMon->secure.raw); i++)
+    for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
     {
         boxMon->secure.raw[i] ^= boxMon->personality;
         boxMon->secure.raw[i] ^= boxMon->otId;
@@ -132,7 +132,7 @@ static inline void DecryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
 
-    for (i = 0; i < NELEMS(boxMon->secure.raw); i++)
+    for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
     {
         boxMon->secure.raw[i] ^= boxMon->otId;
         boxMon->secure.raw[i] ^= boxMon->personality;
