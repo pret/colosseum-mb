@@ -893,17 +893,7 @@ s32 ShowPokemonSummaryScreen(u32 monId)
 // The same as PrintMoveDescription, but not inlined.
 static void PrintMoveDescription_(s32 monId, u32 moveSlot)
 {
-    u8 *txt = GetTextBufferPointer(monId);
-
-    SetBgTilemapBufferPaletteRect(0, 11, 15, 18, 4, 15);
-    FillWindowCharBufferRect(gMonSummaryScreen.mainWindow, 0, 12, 18, 4, 0);
-
-    if (moveSlot != MAX_MON_MOVES)
-    {
-        TextWindowSetXY(gMonSummaryScreen.mainWindow, 0, 0x60);
-        RenderText(gMonSummaryScreen.mainWindow, &txt[moveSlot * 80]);
-        gBgTilemapBufferTransferScheduled[0] = TRUE;
-    }
+    PrintMoveDescription(monId, moveSlot);
 }
 
 static void sub_0200461C(struct Sprite *sprite)
