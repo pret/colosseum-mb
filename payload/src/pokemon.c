@@ -102,16 +102,16 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
     union PokemonSubstruct *substruct3 = GetSubstruct(boxMon, boxMon->personality, 3);
     s32 i;
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < (s32)ARRAY_COUNT(substruct0->raw); i++)
         checksum += substruct0->raw[i];
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < (s32)ARRAY_COUNT(substruct1->raw); i++)
         checksum += substruct1->raw[i];
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < (s32)ARRAY_COUNT(substruct2->raw); i++)
         checksum += substruct2->raw[i];
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < (s32)ARRAY_COUNT(substruct3->raw); i++)
         checksum += substruct3->raw[i];
 
     return checksum;
@@ -120,7 +120,8 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
 static inline void EncryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
-    for (i = 0; i < NELEMS(boxMon->secure.raw); i++)
+
+    for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
     {
         boxMon->secure.raw[i] ^= boxMon->personality;
         boxMon->secure.raw[i] ^= boxMon->otId;
@@ -130,7 +131,8 @@ static inline void EncryptBoxMon(struct BoxPokemon *boxMon)
 static inline void DecryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
-    for (i = 0; i < NELEMS(boxMon->secure.raw); i++)
+
+    for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
     {
         boxMon->secure.raw[i] ^= boxMon->otId;
         boxMon->secure.raw[i] ^= boxMon->personality;
@@ -145,7 +147,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     struct PokemonSubstruct2 *substruct2 = NULL;
     struct PokemonSubstruct3 *substruct3 = NULL;
 
-    if (field > MON_DATA_10)
+    if (field > MON_DATA_ENCRYPT_SEPARATOR)
     {
         substruct0 = &(GetSubstruct(boxMon, boxMon->personality, 0)->type0);
         substruct1 = &(GetSubstruct(boxMon, boxMon->personality, 1)->type1);
@@ -174,6 +176,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     {
         u32 language;
         u8 text[16];
+
         if (boxMon->isBadEgg)
         {
             StringCopy(data, gText_BadEgg);
@@ -199,7 +202,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
             if (language == LANGUAGE_JAPANESE)
             {
                 text[0] = EXT_CTRL_CODE_BEGIN;
-                text[1] = 21;
+                text[1] = EXT_CTRL_CODE_JPN;
                 StringCopy(text + 2, data);
                 StringCopy(data, text);
             }
@@ -211,13 +214,13 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     case MON_DATA_LANGUAGE:
         retVal = boxMon->language;
         break;
-    case MON_DATA_SANITY_BIT1:
+    case MON_DATA_SANITY_IS_BAD_EGG:
         retVal = boxMon->isBadEgg;
         break;
-    case MON_DATA_SANITY_BIT2:
+    case MON_DATA_SANITY_HAS_SPECIES:
         retVal = boxMon->hasSpecies;
         break;
-    case MON_DATA_SANITY_BIT3:
+    case MON_DATA_SANITY_IS_EGG:
         retVal = boxMon->isEgg;
         break;
     case MON_DATA_OT_NAME:
@@ -239,7 +242,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     case MON_DATA_CHECKSUM:
         retVal = boxMon->checksum;
         break;
-    case MON_DATA_10:
+    case MON_DATA_ENCRYPT_SEPARATOR:
         retVal = boxMon->unknown;
         break;
     case MON_DATA_SPECIES:
@@ -344,8 +347,8 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     case MON_DATA_IS_EGG:
         retVal = substruct3->isEgg;
         break;
-    case MON_DATA_ALT_ABILITY:
-        retVal = substruct3->altAbility;
+    case MON_DATA_ABILITY_NUM:
+        retVal = substruct3->abilityNum;
         break;
     case MON_DATA_COOL_RIBBON:
         retVal = substruct3->coolRibbon;
@@ -398,10 +401,10 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     case MON_DATA_WORLD_RIBBON:
         retVal = substruct3->worldRibbon;
         break;
-    case MON_DATA_EVENT_LEGAL:
-        retVal = substruct3->eventLegal;
+    case MON_DATA_MODERN_FATEFUL_ENCOUNTER:
+        retVal = substruct3->modernFatefulEncounter;
         break;
-    case MON_DATA_SPECIES2:
+    case MON_DATA_SPECIES_OR_EGG:
         retVal = substruct0->species;
         if (substruct0->species && (substruct3->isEgg || boxMon->isBadEgg))
             retVal = SPECIES_EGG;
@@ -415,7 +418,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
             u16 *moves = (u16 *)data;
             s32 i = 0;
 
-            while (moves[i] != NUM_MOVES)
+            while (moves[i] != MOVES_COUNT)
             {
                 u16 move = moves[i];
                 if (substruct1->moves[0] == move
@@ -429,6 +432,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
         break;
     case MON_DATA_RIBBON_COUNT:
         retVal = 0;
+
         if (substruct0->species && !substruct3->isEgg)
         {
             retVal += substruct3->coolRibbon;
@@ -452,6 +456,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
         break;
     case MON_DATA_RIBBONS:
         retVal = 0;
+
         if (substruct0->species && !substruct3->isEgg)
         {
             retVal = substruct3->championRibbon
@@ -477,7 +482,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
         break;
     }
 
-    if (field > MON_DATA_10)
+    if (field > MON_DATA_ENCRYPT_SEPARATOR)
         EncryptBoxMon(boxMon);
 
     return retVal;
@@ -521,8 +526,7 @@ static inline u32 GetMonDataInline(struct Pokemon *mon, s32 attr, u8 *strbuf)
 const struct CompressedSpritePalette *GetBoxMonPalettePtr(u32 partyId)
 {
     u32 shinyValue = 0;
-
-    u16 species = GetMonDataInline(&gPlayerPartyPtr[partyId], MON_DATA_SPECIES2, NULL);
+    u16 species = GetMonDataInline(&gPlayerPartyPtr[partyId], MON_DATA_SPECIES_OR_EGG, NULL);
     u32 otId = GetMonDataInline(&gPlayerPartyPtr[partyId], MON_DATA_OT_ID, NULL);
     u32 personality = GetMonDataInline(&gPlayerPartyPtr[partyId], MON_DATA_PERSONALITY, NULL);
 
@@ -530,6 +534,7 @@ const struct CompressedSpritePalette *GetBoxMonPalettePtr(u32 partyId)
         return &gAgbPmRomParams->monNormalPalettes[SPECIES_NONE];
 
     shinyValue = HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality);
+
     if (shinyValue > 7)
         return &gAgbPmRomParams->monNormalPalettes[species];
     else
@@ -541,7 +546,7 @@ u32 GetBoxMonAbility(struct BoxPokemon *boxMon)
     u32 ability;
     const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
     u32 species = GetBoxMonData(boxMon, MON_DATA_SPECIES, NULL);
-    u32 abilityNum = GetBoxMonData(boxMon, MON_DATA_ALT_ABILITY, NULL);
+    u32 abilityNum = GetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, NULL);
 
     if (abilityNum == 0)
         ability = speciesInfo[species].abilities[0];
@@ -551,26 +556,26 @@ u32 GetBoxMonAbility(struct BoxPokemon *boxMon)
     return ability;
 }
 
-const u32 *BoxMonCaughtBallToItemId(struct BoxPokemon *boxMon)
+const u32 *BoxMonGetCaughtBallItemSpriteSheet(struct BoxPokemon *boxMon)
 {
     u32 id;
     u16 ball = GetBoxMonData(boxMon, MON_DATA_POKEBALL, NULL);
 
     switch (ball)
     {
-    case 1:     id = 4;     break;
-    case 2:     id = 3;     break;
-    case 3:     id = 1;     break;
-    case 4:     id = 0;     break;
-    case 5:     id = 2;     break;
-    case 6:     id = 5;     break;
-    case 7:     id = 6;     break;
-    case 8:     id = 7;     break;
-    case 9:     id = 8;     break;
-    case 10:    id = 9;     break;
-    case 11:    id = 10;    break;
-    case 12:    id = 11;    break;
-    default:    id = 0;     break;
+    case ITEM_MASTER_BALL:  id = BALL_MASTER;   break;
+    case ITEM_ULTRA_BALL:   id = BALL_ULTRA;    break;
+    case ITEM_GREAT_BALL:   id = BALL_GREAT;    break;
+    case ITEM_POKE_BALL:    id = BALL_POKE;     break;
+    case ITEM_SAFARI_BALL:  id = BALL_SAFARI;   break;
+    case ITEM_NET_BALL:     id = BALL_NET;      break;
+    case ITEM_DIVE_BALL:    id = BALL_DIVE;     break;
+    case ITEM_NEST_BALL:    id = BALL_NEST;     break;
+    case ITEM_REPEAT_BALL:  id = BALL_REPEAT;   break;
+    case ITEM_TIMER_BALL:   id = BALL_TIMER;    break;
+    case ITEM_LUXURY_BALL:  id = BALL_LUXURY;   break;
+    case ITEM_PREMIER_BALL: id = BALL_PREMIER;  break;
+    default:                id = BALL_POKE;     break;
     }
 
     return gAgbPmRomParams->ballGfx[id].data;
@@ -583,19 +588,19 @@ const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
 
     switch (ball)
     {
-    case 1:     id = 4;     break;
-    case 2:     id = 3;     break;
-    case 3:     id = 1;     break;
-    case 4:     id = 0;     break;
-    case 5:     id = 2;     break;
-    case 6:     id = 5;     break;
-    case 7:     id = 6;     break;
-    case 8:     id = 7;     break;
-    case 9:     id = 8;     break;
-    case 10:    id = 9;     break;
-    case 11:    id = 10;    break;
-    case 12:    id = 11;    break;
-    default:    id = 0;     break;
+    case ITEM_MASTER_BALL:  id = BALL_MASTER;   break;
+    case ITEM_ULTRA_BALL:   id = BALL_ULTRA;    break;
+    case ITEM_GREAT_BALL:   id = BALL_GREAT;    break;
+    case ITEM_POKE_BALL:    id = BALL_POKE;     break;
+    case ITEM_SAFARI_BALL:  id = BALL_SAFARI;   break;
+    case ITEM_NET_BALL:     id = BALL_NET;      break;
+    case ITEM_DIVE_BALL:    id = BALL_DIVE;     break;
+    case ITEM_NEST_BALL:    id = BALL_NEST;     break;
+    case ITEM_REPEAT_BALL:  id = BALL_REPEAT;   break;
+    case ITEM_TIMER_BALL:   id = BALL_TIMER;    break;
+    case ITEM_LUXURY_BALL:  id = BALL_LUXURY;   break;
+    case ITEM_PREMIER_BALL: id = BALL_PREMIER;  break;
+    default:                id = BALL_POKE;     break;
     }
 
     return gAgbPmRomParams->ballPalettes[id].data;
@@ -604,6 +609,7 @@ const u32 *BoxMonGetCaughtBallItemPalette(struct BoxPokemon *boxMon)
 u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot)
 {
     u32 move;
+
     switch (slot)
     {
     case 0: move = GetBoxMonData(boxMon, MON_DATA_MOVE1, NULL); break;
@@ -618,6 +624,7 @@ u32 GetBoxMonMoveBySlot(struct BoxPokemon *boxMon, s32 slot)
 u32 GetBoxMonPPByMoveSlot(struct BoxPokemon *boxMon, u8 slot)
 {
     u32 pp;
+
     switch (slot)
     {
     case 0: pp = GetBoxMonData(boxMon, MON_DATA_PP1, NULL); break;
@@ -632,9 +639,9 @@ u32 GetBoxMonPPByMoveSlot(struct BoxPokemon *boxMon, u8 slot)
 u32 CheckPartyPokerus(struct Pokemon *party, u8 selection)
 {
     u32 retVal;
+    u32 partyIndex = 0;
+    u32 curBit = 1;
 
-    int partyIndex = 0;
-    unsigned curBit = 1;
     retVal = 0;
 
     if (selection)
@@ -681,6 +688,7 @@ u32 GetMonStatus(struct Pokemon *mon)
         return STATUS_PRIMARY_FAINTED;
 
     statusAilment = GetPrimaryStatus(GetMonDataInline(mon, MON_DATA_STATUS, NULL));
+
     if (statusAilment == STATUS_PRIMARY_NONE)
     {
         if (!CheckPartyPokerus(mon, 0))
@@ -695,9 +703,9 @@ u32 GetMonStatus(struct Pokemon *mon)
 u32 CheckPartyHasHadPokerus(struct Pokemon *party, u8 selection)
 {
     u32 retVal;
+    u32 partyIndex = 0;
+    u32 curBit = 1;
 
-    int partyIndex = 0;
-    unsigned curBit = 1;
     retVal = 0;
 
     if (selection)
@@ -720,11 +728,22 @@ u32 CheckPartyHasHadPokerus(struct Pokemon *party, u8 selection)
     return retVal;
 }
 
+#define SPINDA_SPOT_HEIGHT 16
+#define SPINDA_SPOT_WIDTH  16
+
+// Spots can be drawn on Spinda's color indexes 1, 2, or 3
+#define FIRST_SPOT_COLOR 1
+#define LAST_SPOT_COLOR  3
+
+// To draw a spot pixel, add 4 to the color index
+#define SPOT_COLOR_ADJUSTMENT 4
+
 void DrawSpindasSpots(u16 species, u32 personality, u8 *dest)
 {
     if (species == SPECIES_SPINDA)
     {
-        int i, j, k, var;
+        s32 i, row, column;
+        u32 var;
 
         if (gRomDetection_IsRubySapphire != FALSE)
             var = 0;
@@ -736,29 +755,32 @@ void DrawSpindasSpots(u16 species, u32 personality, u8 *dest)
             u8 x = gSpindaSpotGraphics[i].x + ((personality & 0x0F) - 8);
             u8 y = gSpindaSpotGraphics[i].y + (((personality & 0xF0) >> 4) - 8) - var;
 
-            for (j = 0; j < 16; j++)
+            for (row = 0; row < SPINDA_SPOT_HEIGHT; row++)
             {
-                s32 row = gSpindaSpotGraphics[i].image[j];
+                s32 spotPixelRow = gSpindaSpotGraphics[i].image[row];
 
-                for (k = x; k < x + 16; k++)
+                for (column = x; column < x + SPINDA_SPOT_WIDTH; column++)
                 {
-                    u8 *val = dest + ((k / 8) * 32) + ((k % 8) / 2) + ((y >> 3) << 8) + ((y & 7) << 2);
+                    u8 *destPixels  = dest + ((column / 8) * TILE_SIZE_4BPP) +
+                                             ((column % 8) / 2) +
+                                                ((y / 8) * TILE_SIZE_4BPP * 8) +
+                                                ((y % 8) * 4);
 
-                    if (row & 1)
+                    if (spotPixelRow & 1)
                     {
-                        if (k & 1)
+                        if (column & 1)
                         {
-                            if ((u8)((*val & 0xF0) - 0x10) <= 0x20)
-                                *val += 0x40;
+                            if ((u8)((*destPixels & 0xF0) - (FIRST_SPOT_COLOR << 4)) <= ((LAST_SPOT_COLOR - FIRST_SPOT_COLOR) << 4))
+                                *destPixels  += (SPOT_COLOR_ADJUSTMENT << 4);
                         }
                         else
                         {
-                            if ((u8)((*val & 0xF) - 0x01) <= 0x02)
-                                *val += 0x04;
+                            if ((u8)((*destPixels & 0xF) - FIRST_SPOT_COLOR) <= (LAST_SPOT_COLOR - FIRST_SPOT_COLOR))
+                                *destPixels  += SPOT_COLOR_ADJUSTMENT;
                         }
                     }
 
-                    row >>= 1;
+                    spotPixelRow >>= 1;
                 }
 
                 y++;
@@ -776,13 +798,12 @@ void DrawSpindasSpots(u16 species, u32 personality, u8 *dest)
 void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 {
     const u8 *data = dataArg;
-
     struct PokemonSubstruct0 *substruct0 = NULL;
     struct PokemonSubstruct1 *substruct1 = NULL;
     struct PokemonSubstruct2 *substruct2 = NULL;
     struct PokemonSubstruct3 *substruct3 = NULL;
 
-    if (field > MON_DATA_10)
+    if (field > MON_DATA_ENCRYPT_SEPARATOR)
     {
         substruct0 = &(GetSubstruct(boxMon, boxMon->personality, 0)->type0);
         substruct1 = &(GetSubstruct(boxMon, boxMon->personality, 1)->type1);
@@ -812,6 +833,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_NICKNAME:
     {
         s32 i;
+
         for (i = 0; i < gAgbPmRomParams->pokemonNameLength1; i++)
             boxMon->nickname[i] = data[i];
         break;
@@ -819,18 +841,19 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_LANGUAGE:
         SET8(boxMon->language);
         break;
-    case MON_DATA_SANITY_BIT1:
+    case MON_DATA_SANITY_IS_BAD_EGG:
         SET8(boxMon->isBadEgg);
         break;
-    case MON_DATA_SANITY_BIT2:
+    case MON_DATA_SANITY_HAS_SPECIES:
         SET8(boxMon->hasSpecies);
         break;
-    case MON_DATA_SANITY_BIT3:
+    case MON_DATA_SANITY_IS_EGG:
         SET8(boxMon->isEgg);
         break;
     case MON_DATA_OT_NAME:
     {
         s32 i;
+
         for (i = 0; i < gAgbPmRomParams->playerNameLength; i++)
             boxMon->otName[i] = data[i];
         break;
@@ -841,7 +864,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_CHECKSUM:
         SET16(boxMon->checksum);
         break;
-    case MON_DATA_10:
+    case MON_DATA_ENCRYPT_SEPARATOR:
         SET16(boxMon->unknown);
         break;
     case MON_DATA_SPECIES:
@@ -926,6 +949,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_MET_LEVEL:
     {
         u8 metLevel = *data;
+
         substruct3->metLevel = metLevel;
         break;
     }
@@ -935,6 +959,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_POKEBALL:
     {
         u8 pokeball = *data;
+
         substruct3->pokeball = pokeball;
         break;
     }
@@ -961,13 +986,14 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         break;
     case MON_DATA_IS_EGG:
         SET8(substruct3->isEgg);
+
         if (substruct3->isEgg)
             boxMon->isEgg = 1;
         else
             boxMon->isEgg = 0;
         break;
-    case MON_DATA_ALT_ABILITY:
-        SET8(substruct3->altAbility);
+    case MON_DATA_ABILITY_NUM:
+        SET8(substruct3->abilityNum);
         break;
     case MON_DATA_COOL_RIBBON:
         SET8(substruct3->coolRibbon);
@@ -1020,8 +1046,8 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_WORLD_RIBBON:
         SET8(substruct3->worldRibbon);
         break;
-    case MON_DATA_EVENT_LEGAL:
-        SET8(substruct3->eventLegal);
+    case MON_DATA_MODERN_FATEFUL_ENCOUNTER:
+        SET8(substruct3->modernFatefulEncounter);
         break;
     case MON_DATA_IVS:
     {
@@ -1030,6 +1056,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 #else
         u32 ivs = *data; // Bug: Only the HP IV and the lower 3 bits of the Attack IV are read. The rest become 0.
 #endif
+
         substruct3->hpIV = ivs & 0x1F;
         substruct3->attackIV = (ivs >> 5) & 0x1F;
         substruct3->defenseIV = (ivs >> 10) & 0x1F;
@@ -1042,7 +1069,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         break;
     }
 
-    if (field > MON_DATA_10)
+    if (field > MON_DATA_ENCRYPT_SEPARATOR)
     {
         boxMon->checksum = CalculateBoxMonChecksum(boxMon);
         EncryptBoxMon(boxMon);
@@ -1052,6 +1079,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg)
 {
     const u8 *data = dataArg;
+
     switch (field)
     {
     case MON_DATA_STATUS:
@@ -1084,7 +1112,7 @@ void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg)
     case MON_DATA_MAIL:
         SET8(mon->mail);
         break;
-    case MON_DATA_SPECIES2:
+    case MON_DATA_SPECIES_OR_EGG:
         break;
     default:
         SetBoxMonData(&mon->box, field, data);
@@ -1117,9 +1145,10 @@ void GiveGiftRibbonToParty(s32 index_, s32 ribbonId_)
     if (index < 11 && ribbonId < 65 && index < 7)
     {
         gGiftRibbonsPtr[index] = ribbonId;
+
         for (i = 0; i < PARTY_SIZE; i++)
         {
-            if (GetMonDataInline(&gPlayerPartyPtr[i], MON_DATA_SPECIES, NULL) != 0 && GetMonDataInline(&gPlayerPartyPtr[i], MON_DATA_SANITY_BIT3, NULL) == 0)
+            if (GetMonDataInline(&gPlayerPartyPtr[i], MON_DATA_SPECIES, NULL) != 0 && GetMonDataInline(&gPlayerPartyPtr[i], MON_DATA_SANITY_IS_EGG, NULL) == 0)
                 gotRibbon = TRUE;
         }
         if (gotRibbon)
@@ -1153,6 +1182,7 @@ u8 GetMonGender(struct Pokemon *mon)
     const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
     u16 species = GetMonDataInline(mon, MON_DATA_SPECIES, NULL);
     u32 personality = GetMonDataInline(mon, MON_DATA_PERSONALITY, NULL);
+
     return GetGenderFromSpeciesAndPersonality(species, personality, speciesInfo);
 }
 
@@ -1164,6 +1194,7 @@ const struct CompressedSpritePalette *GetMonPalettePtrBySpeciesIdPersonality(u16
         return &gAgbPmRomParams->monNormalPalettes[SPECIES_NONE];
 
     shinyValue = HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality);
+
     if (shinyValue <= 7)
         return &gAgbPmRomParams->monShinyPalettes[species];
     else
@@ -1191,7 +1222,7 @@ u16 FixUnownSpecies(u16 species, u32 personality)
     else
     {
         if (species > SPECIES_EGG)
-            result = 260;
+            result = INVALID_ICON_SPECIES;
         else
             result = species;
     }
@@ -1242,12 +1273,14 @@ u32 GetMonSpritePaletteNumByBaseBlock(u32 id)
 const u8 *GetAbilityName(u32 ability)
 {
     const u8 (*abilityNames)[][ABILITY_NAME_LENGTH + 1] = gAgbPmRomParams->abilityNames;
+
     return (*abilityNames)[ability];
 }
 
 const u8 *GetAbilityDescription(u32 ability)
 {
     const u8 **desriptions = gAgbPmRomParams->abilityDescriptions;
+
     return desriptions[ability];
 }
 
@@ -1255,6 +1288,7 @@ s32 CalculatePPWithBonus(u32 move, s32 ppBonuses, u32 moveIndex)
 {
     const struct BattleMove *moves = gAgbPmRomParams->moves;
     s32 basePP = moves[move].pp;
+
     return basePP + ((basePP * 20 * ((gPPUpReadMasks[moveIndex] & ppBonuses) >> (2 * moveIndex))) / 100);
 }
 

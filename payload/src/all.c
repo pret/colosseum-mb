@@ -704,7 +704,7 @@ u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
     u32 personality;
     struct Sprite *sprite;
 
-    a0->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES2, NULL);
+    a0->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES_OR_EGG, NULL);
     if (a0->species == SPECIES_NONE)
         return SPECIES_NONE;
 
