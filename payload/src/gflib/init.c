@@ -13,9 +13,9 @@ IntrFunc gIntrTable[14u];
 u32 gVBlankCounter;
 IntrFunc gVBlankCallback;
 
-void InitIntr(void);
-void VBlankIntr(void);
-void IntrDummy(void);
+static void InitIntr(void);
+static void VBlankIntr(void);
+static void IntrDummy(void);
 
 #define SR_KEYS (A_BUTTON | B_BUTTON | SELECT_BUTTON | START_BUTTON)
 
@@ -37,9 +37,9 @@ u32 GetFrameTotal(void)
     return gVBlankCounter;
 }
 
-void DelayFrames(u32 a0)
+void DelayFrames(u32 frames)
 {
-    for (; a0 != 0; a0--)
+    for (; frames != 0; frames--)
     {
         UpdateSprites();
         VBlankIntrWait();
@@ -49,19 +49,22 @@ void DelayFrames(u32 a0)
     }
 }
 
-void InitIntr(void)
+static void InitIntr(void)
 {
-    int i;
+    u32 i;
+
     gVBlankCallback = NULL;
+
     for (i = 0; i < 14u; i++)
         gIntrTable[i] = IntrDummy;
+
     if (VBlankIntr != NULL)
         gIntrTable[1] = VBlankIntr;
     else
         gIntrTable[1] = IntrDummy;
 }
 
-void SetIntrFunc(int i, IntrFunc func)
+void SetIntrFunc(u32 i, IntrFunc func)
 {
     if (func != NULL)
         gIntrTable[i] = func;
@@ -77,21 +80,24 @@ void SetVBlankCallback(IntrFunc cb)
     REG_IME = imeBak;
 }
 
-void VBlankIntr(void)
+static void VBlankIntr(void)
 {
     if (EnableSoundVSync(0))
         m4aSoundVSync();
+
     DoOamBufferTransfer();
     DoGpuUpdateAndTilemapTransfers();
     gVBlankCounter++;
     INTR_CHECK = INTR_FLAG_VBLANK;
+
     if (gVBlankCallback != NULL)
         gVBlankCallback();
+
     if (EnableSoundVSync(1))
         m4aSoundMain();
 }
 
-void IntrDummy(void)
+static void IntrDummy(void)
 {
 
 }
