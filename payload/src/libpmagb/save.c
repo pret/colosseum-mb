@@ -29,7 +29,7 @@ struct SaveSector
 // Each 4 KiB flash sector contains 3968 bytes of actual data followed by a 128 byte footer
 #define SECTOR_DATA_SIZE 3968u
 #define SECTOR_FOOTER_SIZE 128
-#define SECTOR_SIGNATURE_OFFSET 0x0FF8
+#define SECTOR_SIGNATURE_OFFSET offsetof(struct SaveSector, signature)
 
 #define HALL_OF_FAME_SECTOR 28
 

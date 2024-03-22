@@ -998,7 +998,7 @@ void sub_02005BB8(void)
             var = gMonLinkData.monData[i].pps[3];
             SetMonData(&gPlayerPartyPtr[i], MON_DATA_PP4, &var);
 
-            CpuCopy16((void*) gMonLinkData.monData[i].textBuffer, sub_0200CB34(i), 320);
+            CpuCopy16((void*) gMonLinkData.monData[i].textBuffer, GetTextBufferPointer(i), 320);
         }
     }
 

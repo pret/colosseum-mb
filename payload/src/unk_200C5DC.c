@@ -246,12 +246,12 @@ static struct PlayerLinkInfo *GetPlayerLinkInfo(void)
     return &gPlayerLinkInfo;
 }
 
-extern u8 gUnknown_020241D0[][320];
+extern u8 gTextBuffer[][320];
 extern bool8 gUnknownBoolean; // 16 bytes reserved?
 
-u8 *sub_0200CB34(u32 id)
+u8 *GetTextBufferPointer(u32 id)
 {
-    return gUnknown_020241D0[id];
+    return gTextBuffer[id];
 }
 
 static void SetUnknownBoolean(bool32 val)
@@ -787,10 +787,10 @@ static bool32 ProcessReceiveCommand(u32 val)
             }
             else if (val == LINK_CMD_RECV_TEXT)
             {
-                gTransferData.data = (void *) sub_0200CB34(0);
+                gTransferData.data = (void *) GetTextBufferPointer(0);
                 SetUnknownBoolean(0);
                 REG_JOY_TRANS = val;
-                gTransferData.transferSize = sizeof(*gUnknown_020241D0) * 6;
+                gTransferData.transferSize = sizeof(*gTextBuffer) * 6;
                 gTransferData.transferBytes = currentCmd; // 0
                 gTransferData.currentCmd = val;
             }

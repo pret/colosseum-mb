@@ -3,7 +3,7 @@
 #include "all.h"
 #include "libpmagb/agb_rom.h"
 #include "libpmagb/save.h"
-#include "unk_200E344.h"
+#include "berry_fix.h"
 #include "unk_200C5DC.h"
 #include "gflib/keys.h"
 #include "gflib/bg.h"
@@ -22,6 +22,9 @@ struct RomHeader
     u8 nintendoLogo[156];
     u8 gameTitle[12];
     u8 gameCode[8];
+    u8 DeviceType;
+    u8 zero[7];
+    u8 revision;
 };
 
 extern void VBlankCB(void);
@@ -33,7 +36,7 @@ extern IntrFunc *gTimer1InterruptFunction;
 extern struct Unk02021860Struct gUnknown_02021860;
 extern s32 sub_020063FC(void);
 extern s32 sub_020064BC(u32 a0, u32 a1);
-extern u32 sub_020044F0(u32 a0);
+extern u32 ShowPokemonSummaryScreen(u32 monId);
 extern void InitLink(const u8* gameCode);
 
 void sub_02002A9C(s32 a0, u32 a1, u32 a2);
@@ -82,7 +85,7 @@ inline u32 sub_0200043C(void)
     {
         while (1)
         {
-            main_callback(&var18, buffer, 0);
+            BerryFix(&var18, buffer, 0);
             if (var18 == 5)
                 r4 = 1;
             if (var18 == 11)
@@ -190,7 +193,7 @@ _02000308:\t\n\
 	add r0, sp, #0x44\t\n\
 	mov r1, sp\t\n\
 	movs r2, #0\t\n\
-	bl main_callback\t\n\
+	bl BerryFix\t\n\
 	ldr r1, [sp, #0x44]\t\n\
 	cmp r1, #5\t\n\
 	bne _0200031A\t\n\

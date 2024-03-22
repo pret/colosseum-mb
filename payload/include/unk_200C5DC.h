@@ -56,7 +56,7 @@ extern volatile struct TransferData gTransferData;
 
 void SetSpeciesCaughtFlag(u32 species, struct Pokemon *mon);
 u8 GetPlayerMapType(void);
-u8 *sub_0200CB34(u32 id);
+u8 *GetTextBufferPointer(u32 id);
 struct PlayerLinkInfo *SetPlayerLinkInfo(u8 *sav2, u8 *sav1, u32 saveStatus);
 s32 StringCompare(const u8 *str1, const u8 *str2);
 u8 *StringCopy(u8 *dst, const u8 *src);

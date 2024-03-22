@@ -14,16 +14,16 @@ gUnknown_02021860:
 gUnknown_02021985:
 	.space 0xb
 
-gUnknown_02021990:
+gMonSummaryScreen:
 	.space 0x44
 
-gUnknown_020219D4:
+gSummaryCurrentMonMoves:
 	.space 0xa
 
-gUnknown_020219DE:
+gCurrentMoveSlot:
 	.space 0x1
 
-gUnknown_020219DF:
+gIsNotShowingMoveDetails:
 	.space 0x1
 
 gUnknown_020219E0:
@@ -146,7 +146,7 @@ gPlayerLinkInfo:
 	.space 0x278
 
 	.align 4
-gUnknown_020241D0:
+gTextBuffer:
 	.space 0x780 @ 6 * 320
 
 gUnknownBoolean:
@@ -168,4 +168,4 @@ gTransferData:
 	.space 0x34
 
 	.include "agb_flash.o"
-	.include "unk_200E344.o"
+	.include "berry_fix.o"

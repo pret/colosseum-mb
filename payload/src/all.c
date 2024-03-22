@@ -2,7 +2,7 @@
 #include "gflib.h"
 #include "all.h"
 #include "libpmagb/agb_rom.h"
-#include "unk_200E344.h"
+#include "berry_fix.h"
 #include "unk_200C5DC.h"
 #include "gflib/keys.h"
 #include "gflib/bg.h"
@@ -132,7 +132,7 @@ extern const struct RomHeader gRomHeader;
 extern struct Unk02021860Struct gUnknown_02021860;
 extern s32 sub_020063FC(void);
 extern s32 sub_020064BC(u32 a0, u32 a1);
-extern u32 sub_020044F0(u32 a0);
+extern u32 ShowPokemonSummaryScreen(u32 monId);
 
 void sub_02002A9C(s32 a0, u32 a1, u32 a2);
 void sub_02002C44(void);
@@ -704,7 +704,7 @@ u32 sub_02000CA4(struct UnkSpriteMonIconStruct *a0, u32 monId, s32 x, s32 y)
     u32 personality;
     struct Sprite *sprite;
 
-    a0->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES2, NULL);
+    a0->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES_OR_EGG, NULL);
     if (a0->species == SPECIES_NONE)
         return SPECIES_NONE;
 
@@ -1161,7 +1161,7 @@ s32 sub_02001A8C(u32 monId)
         case 4:
             PlaySE(SONG_SE_SELECT);
             FadeOut();
-            gUnknown_02021860.selectedMon = sub_020044F0(gUnknown_02021860.selectedMon);
+            gUnknown_02021860.selectedMon = ShowPokemonSummaryScreen(gUnknown_02021860.selectedMon);
             monId = gUnknown_02021860.selectedMon;
             if (gUnknown_02021860.unk11A == 1)
             {
@@ -1310,7 +1310,7 @@ s32 sub_02001F04(s32 ret)
         case 4:
             PlaySE(SONG_SE_SELECT);
             FadeOut();
-            gUnknown_02021860.selectedMon = sub_020044F0(gUnknown_02021860.selectedMon);
+            gUnknown_02021860.selectedMon = ShowPokemonSummaryScreen(gUnknown_02021860.selectedMon);
             if (gUnknown_02021860.unk11A == 1)
             {
                 if (gUnknown_02021860.selectedMon == 0)
