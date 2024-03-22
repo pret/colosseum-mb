@@ -32,11 +32,11 @@ extern const struct RomHeader gRomHeader;
 extern u8 gUnknown_020217B4;
 extern u8 gUnknown_020217B8;
 
-extern IntrFunc *gUnknown_0201F4AC;
+extern IntrFunc *gTimer1InterruptFunction;
 extern struct Unk02021860Struct gUnknown_02021860;
 extern s32 sub_020063FC(void);
 extern s32 sub_020064BC(u32 a0, u32 a1);
-extern u32 sub_020044F0(u32 a0);
+extern u32 ShowPokemonSummaryScreen(u32 monId);
 extern void sub_0200D924(const u8*);
 
 void sub_02002A9C(s32 a0, u32 a1, u32 a2);
@@ -76,7 +76,7 @@ inline u32 sub_0200043C(void)
     u8 buffer[64];
     u32 var18 = 0;
     u32 r4 = 0;
-    u32 language = gAgbPmRomParams->gameLanguage;
+    u32 language = gAgbPmRomParams->language;
 
     if (language != LANGUAGE_ENGLISH)
         return 0;
@@ -105,7 +105,7 @@ void GF_Main(void)
     u16 monStatus;
 
     DetectROM();
-    sub_020098D8(2, gUnknown_0201F4AC);
+    InitFlash(2, gTimer1InterruptFunction);
     SaveBlocksInit();
     SetSaveSectorPtrs();
     gUnknown_020217B4 = ReadSaveBlockChunks();
@@ -162,10 +162,10 @@ NAKED void GF_Main(void)
     asm_unified("push {r4, r5, r6, r7, lr}\t\n\
 	sub sp, #0x48\t\n\
 	bl DetectROM\t\n\
-	ldr r0, =gUnknown_0201F4AC\t\n\
+	ldr r0, =gTimer1InterruptFunction\t\n\
 	ldr r1, [r0]\t\n\
 	movs r0, #2\t\n\
-	bl sub_020098D8\t\n\
+	bl InitFlash\t\n\
 	bl SaveBlocksInit\t\n\
 	bl SetSaveSectorPtrs\t\n\
 	ldr r4, =gUnknown_020217B4\t\n\

@@ -102,7 +102,7 @@ static u32 ValidateGameVersion(void)
     version = *(const u8 *)0x080000BC; // gRomHeader.revision
     shouldUpdate  = -1;
 
-    for (i = 0; i < NELEMS(sVersionData); i++)
+    for (i = 0; i < ARRAY_COUNT(sVersionData); i++)
     {
         if (languageCode != sVersionData[i][0])
         {

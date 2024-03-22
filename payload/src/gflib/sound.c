@@ -1,27 +1,28 @@
 #include "global.h"
 #include "gflib/sound.h"
 
-static u8 gUnknown_02021368;
-static bool8 isSoundVsync;
+static bool8 sIsSoundVSyncPaused;
+static bool8 sIsSoundVsync;
 
 void InitSound(void)
 {
-    gUnknown_02021368 = 0;
-    isSoundVsync = 0;
+    sIsSoundVSyncPaused = 0;
+    sIsSoundVsync = FALSE;
     m4aSoundInit();
 }
 
 void PauseSoundVSync(void)
 {
-    gUnknown_02021368 = 1;
-    isSoundVsync = 0;
+    sIsSoundVSyncPaused = 1;
+    sIsSoundVsync = FALSE;
 }
 
-bool32 EnableSoundVSync(u32 a0)
+bool32 EnableSoundVSync(u32 enable)
 {
-    if (a0 && gUnknown_02021368)
-        isSoundVsync = 1;
-    return isSoundVsync;
+    if (enable && sIsSoundVSyncPaused)
+        sIsSoundVsync = TRUE;
+
+    return sIsSoundVsync;
 }
 
 void PlaySE(u16 song)
@@ -33,7 +34,7 @@ void PlaySE(u16 song)
     m4aMPlayImmInit(mPlayInfo);
 }
 
-void StopSE(u16 song)
+void UNUSED StopSE(u16 song)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
@@ -41,21 +42,21 @@ void StopSE(u16 song)
     m4aMPlayStop(mPlayInfo);
 }
 
-void StopAllSound(void)
+void UNUSED StopAllSound(void)
 {
     m4aMPlayAllStop();
 }
 
-bool8 sub_020093AC(void)
+bool8 UNUSED ReturnTrue(void)
 {
     return TRUE;
 }
 
-void FadeOutSE(u16 song, u16 _speed)
+void UNUSED FadeOutSE(u16 song, u16 _speed)
 {
     struct MusicPlayerInfo * mPlayInfo;
-
     u16 speed = _speed >> 4;
+
     if (speed == 0)
         speed = 1;
 
@@ -63,7 +64,7 @@ void FadeOutSE(u16 song, u16 _speed)
     m4aMPlayFadeOut(mPlayInfo, speed);
 }
 
-void SetSEVolume(u16 song, u16 volume)
+void UNUSED SetSEVolume(u16 song, u16 volume)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
@@ -71,7 +72,7 @@ void SetSEVolume(u16 song, u16 volume)
     m4aMPlayVolumeControl(mPlayInfo, 0xFF, volume);
 }
 
-void SetSETempo(u16 song, u16 tempo)
+void UNUSED SetSETempo(u16 song, u16 tempo)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
@@ -79,7 +80,7 @@ void SetSETempo(u16 song, u16 tempo)
     m4aMPlayTempoControl(mPlayInfo, tempo);
 }
 
-void SetSEPitch(u16 song, s16 pitch)
+void UNUSED SetSEPitch(u16 song, s16 pitch)
 {
     struct MusicPlayerInfo * mPlayInfo;
 
@@ -89,12 +90,12 @@ void SetSEPitch(u16 song, s16 pitch)
 
 void SoundVSyncOff(void)
 {
-    isSoundVsync = 0;
+    sIsSoundVsync = FALSE;
     m4aSoundVSyncOff();
 }
 
 void SoundVSyncOn(void)
 {
     m4aSoundVSyncOn();
-    isSoundVsync = 1;
+    sIsSoundVsync = TRUE;
 }

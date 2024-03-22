@@ -447,4 +447,6 @@
 #define SPECIES_UNOWN_EMARK (SPECIES_UNOWN_B + 25)
 #define SPECIES_UNOWN_QMARK (SPECIES_UNOWN_B + 26)
 
+#define INVALID_ICON_SPECIES SPECIES_OLD_UNOWN_J // Oddly specific, used when an icon should be a ?. Any of the 'old unown' would work
+
 #endif  // GUARD_CONSTANTS_SPECIES_H

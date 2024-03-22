@@ -12,9 +12,10 @@ static u16 sKeyRepeatTimer;
 void ReadKeys(void)
 {
     u32 keyInput;
-    u16 * prevKeys_p = &gHeldKeys;
-    u16 newKeys = (keyInput = REG_KEYINPUT ^ KEYS_MASK) & ~*prevKeys_p;
+    u16 * prevKeys = &gHeldKeys;
+    u16 newKeys = (keyInput = REG_KEYINPUT ^ KEYS_MASK) & ~*prevKeys;
     gNewKeys = newKeys;
+
     if (gHeldKeys != keyInput)
     {
         gNewAndRepeatedKeys = keyInput;
@@ -29,6 +30,7 @@ void ReadKeys(void)
     {
         gNewAndRepeatedKeys = 0;
     }
+
     gHeldKeys = keyInput;
 }
 

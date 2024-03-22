@@ -14,16 +14,16 @@ gUnknown_02021860:
 gUnknown_02021985:
 	.space 0xb
 
-gUnknown_02021990:
+gMonSummaryScreen:
 	.space 0x44
 
-gUnknown_020219D4:
+gSummaryCurrentMonMoves:
 	.space 0xa
 
-gUnknown_020219DE:
+gCurrentMoveSlot:
 	.space 0x1
 
-gUnknown_020219DF:
+gIsNotShowingMoveDetails:
 	.space 0x1
 
 gUnknown_020219E0:
@@ -104,13 +104,13 @@ gLastSaveBlockPtr:
 	.space 0x4
 
 	@ gflib/save.o
-gFirstSaveSector:
+gLastWrittenSector:
 	.space 0x4
 
-gPrevSaveCounter:
+gLastSaveCounter:
 	.space 0xc
 
-gUnknown_02022F10:
+gSaveStatusFlags:
 	.space 0x14
 
 gLastKnownGoodSector:
@@ -122,13 +122,13 @@ gDamagedSaveSectors:
 gSaveCounter:
 	.space 0x4
 
-gFastSaveSection:
+gReadWriteSector:
 	.space 0x10
 
 gSaveReadBuffer:
 	.space 0x1000
 
-gUnknown_02023F40:
+gIncrementalSectorId:
 	.space 0x10
 
 	@ gflib/trade.o
@@ -146,7 +146,7 @@ gUnknown_02023F50:
 	.space 0x278
 
 	.align 4
-gUnknown_020241D0:
+gTextBuffer:
 	.space 0x780 @ 6 * 320
 
 gUnknown_02024950:

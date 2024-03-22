@@ -31,7 +31,7 @@
 #include "constants/vars.h"
 #include "constants/flags.h"
 
-#define NELEMS(arr) (sizeof(arr)/sizeof(*(arr)))
+#define ARRAY_COUNT(array) (size_t)(sizeof(array) / sizeof((array)[0]))
 
 #define MOVE_NAME_LENGTH 12
 #define POKEMON_NAME_LENGTH 10
