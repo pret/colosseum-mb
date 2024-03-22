@@ -66,7 +66,7 @@ extern const struct Subsprites gSubspritePokeBall[];
 extern const struct Subsprites gSubspriteMoveSelector[];
 
 static void PrintMainInfo(u32 monId, bool32 skipInitialDraws);
-static void sub_0200461C(struct Sprite *sprite);
+static void SpriteCB_MoveSelector(struct Sprite *sprite);
 
 // This file's functions
 static void InitGraphics(void)
@@ -102,7 +102,7 @@ static void CreatePartyMonFrontPic(struct PokemonSummaryScreenData *sum, u32 mon
     const struct CompressedSpritePalette *frontPicPal;
     u32 personality;
     bool32 noFlip;
-    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->baseStats;
+    const struct SpeciesInfo *speciesInfo = gAgbPmRomParams->speciesInfo;
 
     sum->species = GetMonData(&gPlayerPartyPtr[monId], MON_DATA_SPECIES, NULL);
 
@@ -118,7 +118,7 @@ static void CreatePartyMonFrontPic(struct PokemonSummaryScreenData *sum, u32 mon
     noFlip = speciesInfo[sum->species].noFlip;
     DelayFrames(1);
 
-    frontPicSheet = &gAgbPmRomParams->monFrontPicTable[sum->speciesPic];
+    frontPicSheet = &gAgbPmRomParams->monFrontPics[sum->speciesPic];
     bufferPic = GetPicUncompPtr();
     LZ77UnCompVram(frontPicSheet->data, bufferPic);
     DrawSpindasSpots(sum->species, personality, bufferPic);
@@ -313,7 +313,7 @@ static void PrintMovesPage(u32 monId)
     u32 move, moveType;
     s32 ppCurr, ppBonuses, ppMax;
     struct Pokemon *mon = &gPlayerPartyPtr[monId];
-    const struct BattleMove *battleMoves = gAgbPmRomParams->battleMoves;
+    const struct BattleMove *moves = gAgbPmRomParams->moves;
 
     SetTextColor(gMonSummaryScreen.mainWindow, 1, 8);
     SetBgTilemapBufferPaletteRect(0, 24, 4, 5, 8, 15);
@@ -325,7 +325,7 @@ static void PrintMovesPage(u32 monId)
         ppCurr = GetBoxMonPPByMoveSlot(&mon->box, i);
         ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
         ppMax = CalculatePPWithBonus(move, ppBonuses, i);
-        moveType = battleMoves[move].type;
+        moveType = moves[move].type;
 
         gMonSummaryScreen.moves[i] = move;
 
@@ -395,7 +395,7 @@ static void PrintPowerAndAccuracy(u32 monId, u32 moveSlot)
 {
     u8 text[8];
     struct Pokemon *mon = &gPlayerPartyPtr[monId];
-    const struct BattleMove *battleMoves = gAgbPmRomParams->battleMoves;
+    const struct BattleMove *moves = gAgbPmRomParams->moves;
 
     FillWindowCharBufferRect(gMonSummaryScreen.leftWindow, 6, 3, 3, 4, 0);
     SetBgTilemapBufferPaletteRect(0, 7, 15, 3, 4, 15);
@@ -415,26 +415,26 @@ static void PrintPowerAndAccuracy(u32 monId, u32 moveSlot)
             TextWindowSetXY(gMonSummaryScreen.leftWindow, 52, 24);
             gMonSummaryScreen.leftWindow->glyphWidth = 6;
 
-            if (battleMoves[move].power <= 1)
+            if (moves[move].power <= 1)
             {
                 RenderText(gMonSummaryScreen.leftWindow, gText_3Dashes);
             }
             else
             {
-                NumToPmString3RightAlign(text, battleMoves[move].power);
+                NumToPmString3RightAlign(text, moves[move].power);
                 RenderText(gMonSummaryScreen.leftWindow, text);
             }
 
             TextWindowSetXY(gMonSummaryScreen.leftWindow, 52, 40);
             gMonSummaryScreen.leftWindow->glyphWidth = 6;
 
-            if (battleMoves[move].accuracy == 0)
+            if (moves[move].accuracy == 0)
             {
                 RenderText(gMonSummaryScreen.leftWindow, gText_3Dashes);
             }
             else
             {
-                NumToPmString3RightAlign(text, battleMoves[move].accuracy);
+                NumToPmString3RightAlign(text, moves[move].accuracy);
                 RenderText(gMonSummaryScreen.leftWindow, text);
             }
         }
@@ -575,7 +575,7 @@ static void PrintMainInfo(u32 monId, bool32 skipInitialDraws)
         gMonSummaryScreen.ballSprite = AddSprite(0, 128, gSubspritePokeBall);
 
     SetSpritePaletteNum(gMonSummaryScreen.ballSprite, 3);
-    LZ77UnCompVram(BoxMonCaughtBallToItemId(&mon->box), (void *)VRAM + 0x12800);
+    LZ77UnCompVram(BoxMonGetCaughtBallItemSpriteSheet(&mon->box), (void *)VRAM + 0x12800);
     LZ77UnCompVram(BoxMonGetCaughtBallItemPalette(&mon->box), (void *)PLTT + 0x260);
     primaryStatus = GetMonStatus(mon);
 
@@ -740,7 +740,7 @@ static s32 MovesPageHandleInput(s32 monId)
             gMonSummaryScreen.currentMoveSlot = 0;
             gMonSummaryScreen.moveSelectorSprite = AddSprite(80, 32, gSubspriteMoveSelector);
             SetSpritePaletteNum(gMonSummaryScreen.moveSelectorSprite, 5);
-            gMonSummaryScreen.moveSelectorSprite->callback = sub_0200461C;
+            gMonSummaryScreen.moveSelectorSprite->callback = SpriteCB_MoveSelector;
             CopyRectWithinBgTilemapBuffer(2, 0, 20, 20, 3, 10, 11);
             TextWindowSetXY(gMonSummaryScreen.mainWindow, 32, 72);
             RenderText(gMonSummaryScreen.mainWindow, gText_Cancel3);
@@ -896,9 +896,9 @@ static void PrintMoveDescription_(s32 monId, u32 moveSlot)
     PrintMoveDescription(monId, moveSlot);
 }
 
-static void sub_0200461C(struct Sprite *sprite)
+static void SpriteCB_MoveSelector(struct Sprite *sprite)
 {
-    switch (sprite->unk14[0])
+    switch (sprite->data[0])
     {
     case 1:
         SetSpriteInvisible(sprite, FALSE);
@@ -907,10 +907,10 @@ static void sub_0200461C(struct Sprite *sprite)
         SetSpriteInvisible(sprite, TRUE);
         break;
     case 39:
-        sprite->unk14[0] = 0;
+        sprite->data[0] = 0;
         break;
     }
 
-    sprite->unk14[0]++;
+    sprite->data[0]++;
 }
 

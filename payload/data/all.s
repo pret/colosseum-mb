@@ -113,7 +113,7 @@ gUnknown_0201F3AC::
 	.space 256
 
 	.align 2, 0
-gUnknown_0201F4AC::
+gTimer1InterruptFunction::
 	.4byte gIntrTable + 0x18
 
 gUnknown_0201F4B0::

@@ -104,13 +104,13 @@ gLastSaveBlockPtr:
 	.space 0x4
 
 	@ gflib/save.o
-gFirstSaveSector:
+gLastWrittenSector:
 	.space 0x4
 
-gPrevSaveCounter:
+gLastSaveCounter:
 	.space 0xc
 
-gUnknown_02022F10:
+gSaveStatusFlags:
 	.space 0x14
 
 gLastKnownGoodSector:
@@ -122,13 +122,13 @@ gDamagedSaveSectors:
 gSaveCounter:
 	.space 0x4
 
-gFastSaveSection:
+gReadWriteSector:
 	.space 0x10
 
 gSaveReadBuffer:
 	.space 0x1000
 
-gUnknown_02023F40:
+gIncrementalSectorId:
 	.space 0x10
 
 	@ gflib/trade.o

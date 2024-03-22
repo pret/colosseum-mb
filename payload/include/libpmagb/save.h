@@ -14,6 +14,6 @@ bool32 sub_0200A2C8(s32 a);
 u8* ReadFirstSaveSector(void);
 void SetSaveSectorPtrs(void);
 u32 ReadSaveBlockChunks(void);
-s32 sub_020098D8(u32 timerNum, IntrFunc * intrFunc);
+s32 InitFlash(u32 timerNum, IntrFunc * intrFunc);
 
 #endif //PMAGB_SAVE_H

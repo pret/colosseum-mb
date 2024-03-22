@@ -72,7 +72,7 @@ s32 validate_rom_header_internal(void)
     languageCode = *(const u8 *)0x080000AF;
     version = *(const u8 *)0x080000BC;
     sp4 = -1;
-    for (i = 0; i < NELEMS(gUnknown_0201F298); i++)
+    for (i = 0; i < ARRAY_COUNT(gUnknown_0201F298); i++)
     {
         if (languageCode != gUnknown_0201F298[i][0])
         {

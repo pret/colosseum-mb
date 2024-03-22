@@ -187,21 +187,21 @@ struct Struct_gUnknown_02023F50 *sub_0200C9C0(u8 *sav2, u8 *sav1, u32 arg2)
     {
         u8 *saveData;
 
-        if (!gAgbPmRomParams->unkB8_1)
+        if (!gAgbPmRomParams->blockLinkColoXD)
         {
             structPtr->field0_0 = sub_0200CD88();
             structPtr->field0_1 = ((GetPlayerMapType() & 2) != 0);
             structPtr->field0_2 = IsFRLG();
             structPtr->field0_3 = ((GetPlayerMapType() & 0x80) != 0);
-            structPtr->field0_4 = gAgbPmRomParams->gameLanguage;
+            structPtr->field0_4 = gAgbPmRomParams->language;
         }
-        saveData = &sav2[gAgbPmRomParams->sb2PlayerNameOffs];
+        saveData = &sav2[gAgbPmRomParams->playerNameOffset];
         StringCopy(structPtr->field4, saveData);
 
-        saveData = &sav2[gAgbPmRomParams->sb2PlayerGenderOffs];
+        saveData = &sav2[gAgbPmRomParams->playerGenderOffset];
         structPtr->field12 = *saveData;
 
-        saveData = &sav2[gAgbPmRomParams->sb2PlayerIdOffs];
+        saveData = &sav2[gAgbPmRomParams->trainerIdOffset];
         for (i = 0; i < 4; i++)
             structPtr->field16[i] = saveData[i];
 
@@ -352,7 +352,7 @@ void DetectROM(void)
 
     if (r3 == 1)
     {
-        if (gAgbPmRomParams->gameLanguage == LANGUAGE_ENGLISH)
+        if (gAgbPmRomParams->language == LANGUAGE_ENGLISH)
             gRomDetection_IsEnglishROM = TRUE;
         else
             gRomDetection_IsEnglishROM = FALSE;
@@ -364,7 +364,7 @@ u8 GetPlayerMapType(void)
     u8 ret;
     if (!gRomDetection_IsRubySapphire)
     {
-        ret = *((u8 *)(gSaveBlock2Ptr) + gAgbPmRomParams->sb2SpecialSaveWarpOffs);
+        ret = *((u8 *)(gSaveBlock2Ptr) + gAgbPmRomParams->warpFlagsOffset);
     }
     else
     {
@@ -384,7 +384,7 @@ u8 sub_0200CD88(void)
 {
     bool32 val;
     if (!gRomDetection_IsRubySapphire)
-        val = ((*((u8 *)(gSaveBlock2Ptr) + gAgbPmRomParams->gcnLinkFlagsOffs) & 1));
+        val = ((*((u8 *)(gSaveBlock2Ptr) + gAgbPmRomParams->gcnLinkFlagsOffset) & 1));
     else
         val = CheckFlag(0x801);
 
@@ -396,7 +396,7 @@ u8 sub_0200CD88(void)
 
 bool32 IsFRLG(void)
 {
-    if (gAgbPmRomParams->gameVersion == VERSION_FIRE_RED || gAgbPmRomParams->gameVersion == VERSION_LEAF_GREEN)
+    if (gAgbPmRomParams->version == VERSION_FIRE_RED || gAgbPmRomParams->version == VERSION_LEAF_GREEN)
         return TRUE;
     else
         return FALSE;
@@ -404,8 +404,8 @@ bool32 IsFRLG(void)
 
 bool32 CheckGameClear(void)
 {
-    u8 *flagsPtr = gSaveBlock1Ptr + gAgbPmRomParams->flagsOffs + (gAgbPmRomParams->sysGameClearFlagIdx / 8);
-    return (*flagsPtr & (1 << (gAgbPmRomParams->sysGameClearFlagIdx % 8))) != 0;
+    u8 *flagsPtr = gSaveBlock1Ptr + gAgbPmRomParams->flagsOffset + (gAgbPmRomParams->gameClearFlag / 8);
+    return (*flagsPtr & (1 << (gAgbPmRomParams->gameClearFlag % 8))) != 0;
 }
 
 u16 GetStringSizeHandleExtCtrlCodes(u8 *str)
@@ -596,7 +596,7 @@ static inline void CopyN(s32 n, u8 *dst, const u8 *src)
 
 void sub_0200D1AC(u32 val)
 {
-    u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffs;
+    u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffset;
     // Note: cast is needed here to make the code match. The whole struct is declared as volatile, but unkStruct isn't treated as volatile in this function.
     // It's possible only certain members of gUnknown_02024960 were volatile.
     struct UnkStruct868 *unkStruct = (struct UnkStruct868 *) &gUnknown_02024960.unk868;
@@ -824,7 +824,7 @@ void sub_0200D624(void)
 {
     bool32 gameClear;
     u32 joyTransVal;
-    u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffs;
+    u8 *ptr = (u8 *)(gSaveBlock1Ptr) + gAgbPmRomParams->externalEventDataOffset;
     struct UnkStruct868 *unkStruct = (struct UnkStruct868 *) &gUnknown_02024960.unk868;
 
     switch (gUnknown_020251F0.field10)
