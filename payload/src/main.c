@@ -32,7 +32,7 @@ extern IntrFunc *gTimer1InterruptFunction;
 extern struct Unk02021860Struct gUnknown_02021860;
 extern s32 sub_020063FC(void);
 extern s32 sub_020064BC(u32 a0, u32 a1);
-extern u32 sub_020044F0(u32 a0);
+extern u32 ShowPokemonSummaryScreen(u32 monId);
 extern void sub_0200D924(const u8*);
 
 void sub_02002A9C(s32 a0, u32 a1, u32 a2);

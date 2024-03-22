@@ -329,15 +329,15 @@ gMonFrontPicSubspriteTable::
 	.4byte gUnknown_0201FA24
 	.4byte gUnknown_0201FA0C
 
-gUnknown_0201FA44::
+gSubspriteType::
 	sprite 1, 2, 0, 0, 0x000, 0, 0, 1
 	dummy_sprite
 
-gUnknown_0201FA5C::
+gSubspritePokeBall::
 	sprite 0, 1, 0, 0, 0x140, 0, 0, 1
 	dummy_sprite
 
-gUnknown_0201FA74::
+gSubspriteMoveSelector::
 	sprite 0, 1, 0, 0, 0x0c0, 0, 0, 1
 	sprite 0, 1, 16, 0, 0x0c4, 0, 0, 1
 	sprite 0, 1, 32, 0, 0x0c4, 0, 0, 1
@@ -350,12 +350,12 @@ gUnknown_0201FA74::
 	sprite 0, 1, 144, 0, 0x0c0, 1, 0, 1
 	dummy_sprite
 
-gUnknown_0201FAF8::
+gSubspriteStatus::
 	sprite 1, 1, 0, 0, 0x0A0, 0, 0, 1
 	dummy_sprite
 
 	.align 2, 0
-gUnknown_0201FB10::
+gWindowTemplateSummaryTitlePane::
 	.byte 0 @ bg
 	.byte 0 @ left
 	.byte 0 @ top
@@ -378,7 +378,7 @@ gUnknown_0201FB10::
 	.byte 0 @ start Y
 
 	.align 2, 0
-gUnknown_0201FB30::
+gWindowTemplateSummaryLeftPane::
 	.byte 0 @ bg
 	.byte 1 @ left
 	.byte 12 @ top
@@ -401,7 +401,7 @@ gUnknown_0201FB30::
 	.byte 0 @ start Y
 
 	.align 2, 0
-gUnknown_0201FB50::
+gWindowTemplateSummaryMainPane::
 	.byte 0 @ bg
 	.byte 11 @ left
 	.byte 3 @ top
@@ -424,7 +424,7 @@ gUnknown_0201FB50::
 	.byte 0 @ start Y
 
 	.align 2, 0
-gUnknown_0201FB70::
+gWindowTemplateSummaryInputPane::
 	.byte 0 @ bg
 	.byte 25 @ left
 	.byte 0 @ top
