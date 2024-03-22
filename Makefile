@@ -77,7 +77,7 @@ TOOLDIRS := $(filter-out tools/agbcc tools/binutils,$(wildcard tools/*))
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
 
 # Special rules for particular files
-$(OBJ_DIR)/src/unk_200E344.o: CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
+$(OBJ_DIR)/src/berry_fix.o: CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
 $(OBJ_DIR)/src/siirtc.o:      CC1    := tools/agbcc/bin/agbcc
 $(OBJ_DIR)/src/siirtc.o:      CFLAGS := -mthumb-interwork -fhex-asm -Wimplicit -Werror
 

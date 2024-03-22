@@ -168,4 +168,4 @@ gUnknown_020251F0:
 	.space 0x34
 
 	.include "agb_flash.o"
-	.include "unk_200E344.o"
+	.include "berry_fix.o"

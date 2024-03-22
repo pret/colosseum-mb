@@ -2,7 +2,7 @@
 #include "gflib.h"
 #include "all.h"
 #include "libpmagb/agb_rom.h"
-#include "unk_200E344.h"
+#include "berry_fix.h"
 #include "unk_200C5DC.h"
 #include "gflib/keys.h"
 #include "gflib/bg.h"
