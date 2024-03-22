@@ -27,9 +27,9 @@ struct RomHeader
     u8 revision;
 };
 
-extern void sub_0200D9EC(void);
+extern void VBlankCB(void);
 extern const struct RomHeader gRomHeader;
-extern u8 gUnknown_020217B4;
+extern u8 gSaveStatus;
 extern u8 gUnknown_020217B8;
 
 extern IntrFunc *gTimer1InterruptFunction;
@@ -37,7 +37,7 @@ extern struct Unk02021860Struct gUnknown_02021860;
 extern s32 sub_020063FC(void);
 extern s32 sub_020064BC(u32 a0, u32 a1);
 extern u32 ShowPokemonSummaryScreen(u32 monId);
-extern void sub_0200D924(const u8*);
+extern void InitLink(const u8* gameCode);
 
 void sub_02002A9C(s32 a0, u32 a1, u32 a2);
 void sub_02002C44(void);
@@ -56,18 +56,18 @@ bool8 sub_0200023C(void)
     u32 r0;
 
     sub_02006490();
-    if (gUnknown_02024960.unk_03_0 == 0)
+    if (gMonLinkData.unk_03_0 == 0)
     {
-        gUnknown_02024960.unk_858 = 1;
+        gMonLinkData.unk_858 = 1;
     }
     else
     {
-        gUnknown_02024960.unk_858 = 2;
+        gMonLinkData.unk_858 = 2;
     }
     sub_02002A9C(0, sub_02006490(), 1);
-    r0 = gUnknown_02024960.unk_87E | (gUnknown_02024960.unk_87B << 16);
-    gUnknown_02024960.unk_880 = r0;
-    gUnknown_02024960.unk_87F = 1;
+    r0 = gMonLinkData.unk_87E | (gMonLinkData.unk_87B << 16);
+    gMonLinkData.unk_880 = r0;
+    gMonLinkData.unk_87F = 1;
     return FALSE;
 }
 
@@ -108,22 +108,22 @@ void GF_Main(void)
     InitFlash(2, gTimer1InterruptFunction);
     SaveBlocksInit();
     SetSaveSectorPtrs();
-    gUnknown_020217B4 = ReadSaveBlockChunks();
+    gSaveStatus = ReadSaveBlockChunks();
 
     gUnknown_020217B8 = sub_0200043C();
 
     InitSound();
     sub_02002C44();
     SetKeyRepeatTiming(0x28, 5);
-    REG_IE = 1;
+    REG_IE = INTR_FLAG_VBLANK;
     REG_DISPSTAT = 8;
     REG_DISPCNT &= (0xFF7F);
     REG_IME = 1;
-    sub_0200C9C0(gSaveBlock2Ptr, gSaveBlock1Ptr, gUnknown_020217B4);
+    SetPlayerLinkInfo(gSaveBlock2Ptr, gSaveBlock1Ptr, gSaveStatus);
 
-    sub_0200D924(gRomHeader.unkA8);
+    InitLink(gRomHeader.gameCode);
 
-    SetVBlankCallback(sub_0200D9EC);
+    SetVBlankCallback(VBlankCB);
     PauseSoundVSync();
     GenerateFontHalfrowLookupTable((u32 *) 0x03004000);
     FadeOut();
@@ -135,7 +135,7 @@ void GF_Main(void)
             sub_02005BB8();
             if (sub_020064B0() == 0)
             {
-                sub_02005704((gUnknown_02024960.unk_03_0 != 0) ? gUnknown_02024960.unk_03_0 - 1 : 0);
+                sub_02005704((gMonLinkData.unk_03_0 != 0) ? gMonLinkData.unk_03_0 - 1 : 0);
             }
             else
             {
@@ -168,7 +168,7 @@ NAKED void GF_Main(void)
 	bl InitFlash\t\n\
 	bl SaveBlocksInit\t\n\
 	bl SetSaveSectorPtrs\t\n\
-	ldr r4, =gUnknown_020217B4\t\n\
+	ldr r4, =gSaveStatus\t\n\
 	bl ReadSaveBlockChunks\t\n\
 	strb r0, [r4]\t\n\
 	ldr r5, =gUnknown_020217B8\t\n\
@@ -235,12 +235,12 @@ _0200032C:\t\n\
 	ldr r0, [r0]\t\n\
 	ldr r1, =gSaveBlock1Ptr\t\n\
 	ldr r1, [r1]\t\n\
-	ldr r2, =gUnknown_020217B4\t\n\
+	ldr r2, =gSaveStatus\t\n\
 	ldrb r2, [r2]\t\n\
-	bl sub_0200C9C0\t\n\
+	bl SetPlayerLinkInfo\t\n\
 	adds r0, r6, #0\t\n\
-	bl sub_0200D924\t\n\
-	ldr r0, =sub_0200D9EC\t\n\
+	bl InitLink\t\n\
+	ldr r0, =VBlankCB\t\n\
 	bl SetVBlankCallback\t\n\
 	bl PauseSoundVSync\t\n\
 	ldr r0, =0x03004000\t\n\
@@ -255,7 +255,7 @@ _02000384:\t\n\
 	bl sub_020064B0\t\n\
 	cmp r0, #0\t\n\
 	bne _020003E4\t\n\
-	ldr r1, =gUnknown_02024960\t\n\
+	ldr r1, =gMonLinkData\t\n\
 	ldrb r0, [r1, #3]\t\n\
 	lsls r0, r0, #0x19\t\n\
 	cmp r0, #0\t\n\

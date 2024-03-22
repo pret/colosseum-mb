@@ -1,5 +1,5 @@
 
-gUnknown_020217B4:
+gSaveStatus:
 	.space 0x4
 
 gUnknown_020217B8:
@@ -142,17 +142,17 @@ struct {
 	u8 giftRibbons[11];
 };
 */
-gUnknown_02023F50:
+gPlayerLinkInfo:
 	.space 0x278
 
 	.align 4
 gTextBuffer:
 	.space 0x780 @ 6 * 320
 
-gUnknown_02024950:
+gUnknownBoolean:
 	.space 0x10
 
-gUnknown_02024960:
+gMonLinkData:
 	.space 0x884
 
 gRomDetection_IsEnglishROM:
@@ -164,7 +164,7 @@ gAgbPmRomParams:
 gRomDetection_IsRubySapphire:
 	.space 0x4
 
-gUnknown_020251F0:
+gTransferData:
 	.space 0x34
 
 	.include "agb_flash.o"
