@@ -5,6 +5,7 @@
 #include "unk_200C5DC.h"
 #include "gflib/text.h"
 #include "gflib/gfxload.h"
+#include "graphics.h"
 #include "libpmagb/pic_uncomp.h"
 #include "libpmagb/agb_rom.h"
 #include "libpmagb/berry.h"
@@ -14,18 +15,6 @@
 #include "constants/moves.h"
 #include "constants/items.h"
 #include "constants/songs.h"
-
-extern u8 gIsNotShowingMoveDetails; // Occupies the same memory as gMonSummaryScreen.isNotShowingMoveDetails
-extern u8 gCurrentMoveSlot; // Occupies the same memory as gMonSummaryScreen.currentMoveSlot
-extern u16 gSummaryCurrentMonMoves[]; // Occupies the same memory as gMonSummaryScreen.moves
-
-extern const u32 gSummaryScreen_Pal[];
-extern const u32 gSummaryScreen_Gfx[];
-extern const u32 gSummaryIcons_Gfx[];
-extern const u32 gSummaryScreen_Moves_Tilemap[];
-extern const u32 gSummaryScreen_Skills_Tilemap[];
-extern const u32 gTypeStatusIcons_Pal[];
-extern const u32 gTypeStatusIcons_Gfx[];
 
 struct PokemonSummaryScreenData
 {
@@ -45,9 +34,9 @@ struct PokemonSummaryScreenData
     /*0x2C*/ struct Sprite *moveTypeSprites[MAX_MON_MOVES];
     /*0x3C*/ u32 unused2;
     /*0x40*/ struct Sprite *moveSelectorSprite;
-    /*0x44*/ u16 moves[MAX_MON_MOVES + 1]; // gSummaryCurrentMonMoves
-    /*0x4E*/ u8 currentMoveSlot; // gCurrentMoveSlot
-    /*0x4F*/ u8 isNotShowingMoveDetails; // gIsNotShowingMoveDetails
+    /*0x44*/ u16 moves[MAX_MON_MOVES + 1];
+    /*0x4E*/ u8 currentMoveSlot;
+    /*0x4F*/ u8 isNotShowingMoveDetails;
     /*0x50*/ u8 currentMonId;
     /*0x51*/ u8 unused4;
 };
@@ -447,7 +436,7 @@ static void ToggleMoveDetails(u32 monId, u32 moveSlot)
 {
     struct PokemonSummaryScreenData *strPtr = &gMonSummaryScreen;
 
-    if (gIsNotShowingMoveDetails == FALSE)
+    if (gMonSummaryScreen.isNotShowingMoveDetails == FALSE)
     {
         FillWindowCharBufferRect(strPtr->leftWindow, 0, 2, 9, 6, 0);
 
@@ -472,7 +461,7 @@ static void ToggleMoveDetails(u32 monId, u32 moveSlot)
         RenderText(strPtr->leftWindow, gText_Accuracy);
         PrintPowerAndAccuracy(monId, moveSlot);
         DelayFrames(1);
-        gIsNotShowingMoveDetails = TRUE;
+        gMonSummaryScreen.isNotShowingMoveDetails = TRUE;
     }
     else
     {
@@ -489,7 +478,7 @@ static void ToggleMoveDetails(u32 monId, u32 moveSlot)
         CopyRectWithinBgTilemapBuffer(2, 0, 0, 9, 7, 1, 13);
         gBgTilemapBufferTransferScheduled[2] = TRUE;
         PrintMainInfo(monId, TRUE);
-        gIsNotShowingMoveDetails = FALSE;
+        gMonSummaryScreen.isNotShowingMoveDetails = FALSE;
     }
 }
 
@@ -763,41 +752,41 @@ static s32 MovesPageHandleInput(s32 monId)
 
                 DelayFrames(1);
                 keys = gNewKeys;
-                previousMoveSlot = gCurrentMoveSlot;
+                previousMoveSlot = gMonSummaryScreen.currentMoveSlot;
 
                 if (keys & DPAD_DOWN)
                 {
                     PlaySE(SONG_SE_SELECT);
 
-                    for (newMoveSlot = -1, tempMoveSlot = gCurrentMoveSlot + 1; newMoveSlot == -1; tempMoveSlot++)
+                    for (newMoveSlot = -1, tempMoveSlot = gMonSummaryScreen.currentMoveSlot + 1; newMoveSlot == -1; tempMoveSlot++)
                     {
                         if (tempMoveSlot == 5)
                             tempMoveSlot = 0;
 
-                        if (gSummaryCurrentMonMoves[tempMoveSlot] != MOVE_NONE) // if (gMonSummaryScreen.moves[tempMoveSlot] != MOVE_NONE)
+                        if (gMonSummaryScreen.moves[tempMoveSlot] != MOVE_NONE)
                             newMoveSlot = tempMoveSlot;
                     }
 
-                    gCurrentMoveSlot = newMoveSlot;
+                    gMonSummaryScreen.currentMoveSlot = newMoveSlot;
                 }
 
                 if (keys & DPAD_UP)
                 {
                     PlaySE(SONG_SE_SELECT);
 
-                    for (newMoveSlot = -1, tempMoveSlot = gCurrentMoveSlot - 1; newMoveSlot == -1; tempMoveSlot--)
+                    for (newMoveSlot = -1, tempMoveSlot = gMonSummaryScreen.currentMoveSlot - 1; newMoveSlot == -1; tempMoveSlot--)
                     {
                         if (tempMoveSlot == -1)
                             tempMoveSlot = 4;
 
-                        if (gSummaryCurrentMonMoves[tempMoveSlot] != MOVE_NONE) // if (gMonSummaryScreen.moves[tempMoveSlot] != MOVE_NONE)
+                        if (gMonSummaryScreen.moves[tempMoveSlot] != MOVE_NONE)
                             newMoveSlot = tempMoveSlot;
                     }
 
-                    gCurrentMoveSlot = newMoveSlot;
+                    gMonSummaryScreen.currentMoveSlot = newMoveSlot;
                 }
 
-                if (previousMoveSlot != gMonSummaryScreen.currentMoveSlot) // if (previousMoveSlot != gCurrentMoveSlot)
+                if (previousMoveSlot != gMonSummaryScreen.currentMoveSlot)
                 {
                     PrintPowerAndAccuracy(monId, gMonSummaryScreen.currentMoveSlot);
                     PrintMoveDescription(monId, gMonSummaryScreen.currentMoveSlot);

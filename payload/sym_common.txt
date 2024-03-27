@@ -15,19 +15,7 @@ gUnknown_02021985:
 	.space 0xb
 
 gMonSummaryScreen:
-	.space 0x44
-
-gSummaryCurrentMonMoves:
-	.space 0xa
-
-gCurrentMoveSlot:
-	.space 0x1
-
-gIsNotShowingMoveDetails:
-	.space 0x1
-
-gUnknown_020219E0:
-	.space 0x4
+	.space 0x54
 
 gMessageWindowPtr:
 	.space 0xc
